@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <application
+        android:name=".ExpressiveWeatherApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:largeHeap="true"
+        android:hardwareAccelerated="true"
+        android:windowSoftInputMode="adjustResize"
+        android:enableOnBackInvokedCallback="true"
+        android:theme="@style/Theme.ExpressiveWeather">
+
+        <!-- Google Maps API Key (Injected via Gradle manifestPlaceholders from local.properties / env) -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.screens.WindDetailActivity"
+            android:exported="false" />
+
+
+        <activity
+            android:name=".ui.screens.TodayDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.HourlyDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.SettingsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.LanguageSelectionActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.RadarDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.BentoDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.screens.SetupActivity"
+            android:exported="true" />
+
+        <!-- 警戒レベル・キキクル Live Updates 常駐フォアグラウンドサービス -->
+        <service
+            android:name=".data.KikikuruLiveAlertService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|location" />
+
+        <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (AlarmManager & Boot復元) -->
+        <receiver
+            android:name=".data.WeatherUpdateReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="com.example.expressiveweather.action.ALARM_WEATHER_UPDATE" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

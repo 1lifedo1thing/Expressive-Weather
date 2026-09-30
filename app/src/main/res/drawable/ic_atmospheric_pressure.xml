@@ -1,0 +1,29 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- 上矢印（下向き）: 軸 + 矢頭 -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M11,1.8h2c0.55,0 1,0.45 1,1v3.2h-4v-3.2c0,-0.55 0.45,-1 1,-1z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M7,5h10c0.45,0 0.7,0.5 0.38,0.82l-5,5c-0.2,0.2 -0.55,0.2 -0.76,0l-5,-5c-0.32,-0.32 -0.07,-0.82 0.38,-0.82z" />
+
+    <!-- 中央の水平2本線（横長、幅16） -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M4,10h16c0.55,0 1,0.45 1,1s-0.45,1 -1,1h-16c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M4,13h16c0.55,0 1,0.45 1,1s-0.45,1 -1,1h-16c-0.55,0 -1,-0.45 -1,-1s0.45,-1 1,-1z" />
+
+    <!-- 下矢印（上向き）: 矢頭 + 軸 -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M7,19h10c0.45,0 0.7,-0.5 0.38,-0.82l-5,-5c-0.2,-0.2 -0.55,-0.2 -0.76,0l-5,5c-0.32,0.32 -0.07,0.82 0.38,0.82z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M11,18h2v3.2c0,0.55 -0.45,1 -1,1s-1,-0.45 -1,-1v-3.2z" />
+</vector>

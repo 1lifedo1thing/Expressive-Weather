@@ -1,0 +1,89 @@
+// Rain on the OUTSIDE of a frosted window. Only the weather layer is sampled;
+// text and controls are composed above this effect and never refracted.
+uniform shader scene;
+uniform float2 resolution;
+uniform float time;
+uniform float density;
+uniform float strength;
+uniform float night;
+
+float hash21(float2 p) {
+    return fract(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+}
+
+// xy: lens slope, z: water coverage, w: cleared condensation trail.
+float4 beads(float2 p) {
+    float cell = 27.0;
+    float2 id = floor(p / cell);
+    float seed = hash21(id);
+    float2 center = (id + 0.22 + float2(seed, hash21(id + 8.3)) * 0.56) * cell;
+    float grow = 0.78 + 0.22 * sin(time * 0.17 + seed * 40.0);
+    float radius = (1.1 + seed * seed * 3.5) * grow;
+    float2 q = (p - center) / float2(radius, radius * (1.0 + seed * 0.22));
+    float d = length(q);
+    float mask = (1.0 - smoothstep(0.82, 1.10, d)) * step(seed, 0.46 + strength * 0.10);
+    return float4(q * mask, mask, 0.0);
+}
+
+float4 runningDrops(float2 p, float cellWidth, float cellHeight, float speed, float salt) {
+    float lane = floor(p.x / cellWidth);
+    float laneSeed = hash21(float2(lane, salt));
+    // Each lane has its own continuous travel speed; wrapping happens off screen.
+    float travel = time * speed * (0.72 + laneSeed * 0.55);
+    float2 grid = float2(p.x, p.y - travel + laneSeed * cellHeight);
+    float2 id = floor(grid / float2(cellWidth, cellHeight));
+    float seed = hash21(id + salt);
+    float2 local = grid - (id + 0.5) * float2(cellWidth, cellHeight);
+    float wobble = sin(p.y * 0.025 + laneSeed * 50.0) * 2.1
+        + sin(p.y * 0.061 + laneSeed * 23.0) * 0.7;
+    float centerX = (seed - 0.5) * cellWidth * 0.48 + wobble;
+    float radius = 3.3 + seed * 3.2;
+    float2 q = float2((local.x - centerX) / radius, local.y / (radius * 1.65));
+    // Narrow shoulder, heavy rounded lower edge: surface tension against gravity.
+    q.x *= 1.0 + 0.20 * clamp(-q.y, 0.0, 1.0);
+    float d = length(q);
+    float enabled = step(seed, 0.56 + strength * 0.12);
+    float mask = (1.0 - smoothstep(0.86, 1.07, d)) * enabled;
+    float behind = -local.y;
+    float trailLength = cellHeight * (0.27 + seed * 0.13);
+    float fade = (1.0 - smoothstep(8.0, trailLength, behind)) * smoothstep(0.0, 7.0, behind);
+    float width = 0.65 + 1.1 * fade;
+    float trail = (1.0 - smoothstep(width, width + 1.15, abs(local.x - centerX))) * fade * enabled;
+    return float4(q * mask, mask, trail);
+}
+
+half4 main(float2 fragCoord) {
+    float2 p = fragCoord / density;
+    float4 small = beads(p);
+    float4 first = runningDrops(p, 67.0, 285.0, 19.0 + strength * 9.0, 4.7);
+    float4 second = runningDrops(p + float2(31.0, 117.0), 103.0, 397.0,
+        30.0 + strength * 14.0, 19.3);
+    float4 water = small;
+    if (first.z > water.z) water = first;
+    if (second.z > water.z) water = second;
+    float trail = max(first.w, second.w);
+    float wet = max(water.z, trail * 0.8);
+    float2 normal = water.xy;
+    float2 offset = normal * density * (8.0 + 5.0 * water.z);
+    float2 uv = fragCoord + offset;
+    // Five-tap diffusion: dry glass scatters light, wet paths reveal a clearer view.
+    float blur = density * mix(3.8, 0.35, wet);
+    float2 lo = float2(0.5);
+    float2 hi = max(lo, resolution - 0.5);
+    half3 color = scene.eval(clamp(uv, lo, hi)).rgb * 0.28;
+    color += scene.eval(clamp(uv + float2(blur, blur), lo, hi)).rgb * 0.18;
+    color += scene.eval(clamp(uv + float2(-blur, blur), lo, hi)).rgb * 0.18;
+    color += scene.eval(clamp(uv + float2(blur, -blur), lo, hi)).rgb * 0.18;
+    color += scene.eval(clamp(uv - float2(blur, blur), lo, hi)).rgb * 0.18;
+    float grain = hash21(floor(fragCoord * 0.72)) - 0.5;
+    color = mix(color, half3(0.64, 0.73, 0.78), half((1.0 - wet) * (0.075 - night * 0.03)));
+    color += half3(grain * 0.017 * (1.0 - wet));
+    // Fresnel-like dark rim and small upper-left / lower-right window reflections.
+    float edge = smoothstep(0.42, 0.94, length(normal)) * water.z;
+    color *= half(1.0 - edge * 0.37);
+    float glint = pow(max(0.0, dot(normal, float2(-0.60, -0.80))), 8.0) * water.z;
+    float caustic = pow(max(0.0, dot(normal, float2(0.45, 0.89))), 12.0) * water.z;
+    color += half3(0.76, 0.88, 0.96) * half(glint * 0.70 + caustic * 0.33);
+    color += half3(0.45, 0.59, 0.66) * half(trail * 0.035);
+    return half4(clamp(color, 0.0, 1.0), 1.0);
+}

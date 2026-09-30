@@ -1,0 +1,10 @@
+## local.properties example for Expressive Weather
+# Copy this file to local.properties and add your own keys/paths.
+
+# Location of the Android SDK
+sdk.dir=/Users/YOUR_USERNAME/Library/Android/sdk
+
+# Google Maps API Key for Android (Maps SDK for Android)
+# Get a key from Google Cloud Console: https://console.cloud.google.com/
+# Restrict the key to Android apps with package name `com.expressiveweather.app` and your SHA-1 fingerprint.
+MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY
