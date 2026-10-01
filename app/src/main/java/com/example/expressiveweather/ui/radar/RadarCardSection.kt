@@ -213,14 +213,15 @@ fun RadarCardSection(
         }
     }
 
+    val cardShape = RoundedCornerShape(28.dp)
     Card(
-        shape = RoundedCornerShape(28.dp),
+        shape = cardShape,
         colors = CardDefaults.cardColors(containerColor = cardColor),
         border = cardBorder,
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier
             .fillMaxWidth()
-            .frostedGlassEffect(hazeState, isFrostedGlassEnabled)
+            .frostedGlassEffect(hazeState, isFrostedGlassEnabled, shape = cardShape)
             .snowTileAccumulation(
                 isSnowing = isSnowing,
                 isDark = atmosphere.isDark,

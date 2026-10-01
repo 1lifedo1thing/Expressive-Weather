@@ -34,6 +34,8 @@ object SettingsDataHolder {
     var isWmoAlertsEnabled: Boolean = true
     var isWmoAlwaysEnabled: Boolean = false
     var isWmoTestEnabled: Boolean = false
+    var isMeteoAlarmAlertsEnabled: Boolean = true
+    var isMeteoAlarmTestEnabled: Boolean = false
     var initialSection: String = SECTION_ALL
 
     // コールバック
@@ -53,6 +55,8 @@ object SettingsDataHolder {
     var onToggleWmoAlerts: ((Boolean) -> Unit)? = null
     var onToggleWmoAlways: ((Boolean) -> Unit)? = null
     var onToggleWmoTest: ((Boolean) -> Unit)? = null
+    var onToggleMeteoAlarmAlerts: ((Boolean) -> Unit)? = null
+    var onToggleMeteoAlarmTest: ((Boolean) -> Unit)? = null
     var onCyclePrecipitationDemo: (() -> Unit)? = null
     var onToggleTemperatureUnit: (() -> Unit)? = null
     var onSelectWindSpeedUnit: ((WindSpeedUnit) -> Unit)? = null
@@ -91,6 +95,8 @@ object SettingsDataHolder {
         isWmoAlertsEnabled: Boolean = true,
         isWmoAlwaysEnabled: Boolean = false,
         isWmoTestEnabled: Boolean = false,
+        isMeteoAlarmAlertsEnabled: Boolean = true,
+        isMeteoAlarmTestEnabled: Boolean = false,
         initialSection: String = SECTION_ALL,
         onToggleWeatherAdaptiveTheme: (() -> Unit)? = null,
         onSelectThemePreset: ((ThemePreset) -> Unit)? = null,
@@ -108,6 +114,8 @@ object SettingsDataHolder {
         onToggleWmoAlerts: ((Boolean) -> Unit)? = null,
         onToggleWmoAlways: ((Boolean) -> Unit)? = null,
         onToggleWmoTest: ((Boolean) -> Unit)? = null,
+        onToggleMeteoAlarmAlerts: ((Boolean) -> Unit)? = null,
+        onToggleMeteoAlarmTest: ((Boolean) -> Unit)? = null,
         onCyclePrecipitationDemo: (() -> Unit)? = null,
         onToggleTemperatureUnit: (() -> Unit)? = null,
         onSelectWindSpeedUnit: ((WindSpeedUnit) -> Unit)? = null,
@@ -138,6 +146,8 @@ object SettingsDataHolder {
         this.isWmoAlertsEnabled = isWmoAlertsEnabled
         this.isWmoAlwaysEnabled = isWmoAlwaysEnabled
         this.isWmoTestEnabled = isWmoTestEnabled
+        this.isMeteoAlarmAlertsEnabled = isMeteoAlarmAlertsEnabled
+        this.isMeteoAlarmTestEnabled = isMeteoAlarmTestEnabled
         this.initialSection = initialSection
         this.onToggleWeatherAdaptiveTheme = onToggleWeatherAdaptiveTheme
         this.onSelectThemePreset = onSelectThemePreset
@@ -155,6 +165,8 @@ object SettingsDataHolder {
         this.onToggleWmoAlerts = onToggleWmoAlerts
         this.onToggleWmoAlways = onToggleWmoAlways
         this.onToggleWmoTest = onToggleWmoTest
+        this.onToggleMeteoAlarmAlerts = onToggleMeteoAlarmAlerts
+        this.onToggleMeteoAlarmTest = onToggleMeteoAlarmTest
         this.onCyclePrecipitationDemo = onCyclePrecipitationDemo
         this.onToggleTemperatureUnit = onToggleTemperatureUnit
         this.onSelectWindSpeedUnit = onSelectWindSpeedUnit
@@ -187,6 +199,8 @@ object SettingsDataHolder {
         isWmoAlertsEnabled = true
         isWmoAlwaysEnabled = false
         isWmoTestEnabled = false
+        isMeteoAlarmAlertsEnabled = true
+        isMeteoAlarmTestEnabled = false
         initialSection = SECTION_ALL
         onToggleWeatherAdaptiveTheme = null
         onSelectThemePreset = null
@@ -204,6 +218,8 @@ object SettingsDataHolder {
         onToggleWmoAlerts = null
         onToggleWmoAlways = null
         onToggleWmoTest = null
+        onToggleMeteoAlarmAlerts = null
+        onToggleMeteoAlarmTest = null
         onCyclePrecipitationDemo = null
         onToggleTemperatureUnit = null
         onSelectWindSpeedUnit = null

@@ -29,11 +29,6 @@ class WindDetailActivity : ComponentActivity() {
         com.example.expressiveweather.util.LocaleUtils.applyLocaleToActivity(this)
         enableEdgeToEdge()
 
-        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        })
 
         val weatherData = WindDetailDataHolder.weatherData
         val city = WindDetailDataHolder.city ?: WeatherRepository().defaultCity

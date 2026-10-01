@@ -26,6 +26,14 @@ import com.example.expressiveweather.data.TemperatureUnit
 import com.example.expressiveweather.data.WeatherData
 import com.example.expressiveweather.data.getLocalizedLabel
 import com.example.expressiveweather.data.localizedName
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bookmark
+import androidx.compose.material.icons.rounded.BookmarkAdd
+import androidx.compose.material3.Surface
+import androidx.compose.ui.draw.clip
 import com.example.expressiveweather.theme.GoogleSansFlexHeroTemp
 import com.example.expressiveweather.theme.WeatherAtmosphereTheme
 
@@ -42,6 +50,9 @@ fun TabletWeatherHeader(
     weather: WeatherData,
     temperatureUnit: TemperatureUnit,
     atmosphere: WeatherAtmosphereTheme,
+    isSaved: Boolean = false,
+    isDefault: Boolean = false,
+    onToggleSave: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val language = LocalAppLanguage.current
@@ -72,16 +83,41 @@ fun TabletWeatherHeader(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.weight(1.1f, fill = false)
         ) {
-            Text(
-                text = cityName,
-                style = TextStyle(
-                    fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    shadow = shadow
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text(
+                    text = cityName,
+                    style = TextStyle(
+                        fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        shadow = shadow
+                    )
                 )
-            )
+
+                if (onToggleSave != null && !isDefault) {
+                    Surface(
+                        shape = CircleShape,
+                        color = if (isSaved) Color.White.copy(alpha = 0.28f) else Color.White.copy(alpha = 0.18f),
+                        modifier = Modifier
+                            .size(34.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = onToggleSave)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = if (isSaved) Icons.Rounded.Bookmark else Icons.Rounded.BookmarkAdd,
+                                contentDescription = if (isSaved) strings.removeSaved else strings.addLocation,
+                                tint = Color.White,
+                                modifier = Modifier.size(19.dp)
+                            )
+                        }
+                    }
+                }
+            }
             Text(
                 text = conditionName,
                 style = TextStyle(

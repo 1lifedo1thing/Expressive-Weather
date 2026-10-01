@@ -4,6 +4,7 @@ import com.example.expressiveweather.data.City
 import com.example.expressiveweather.data.TemperatureUnit
 import com.example.expressiveweather.data.WeatherCondition
 import com.example.expressiveweather.data.WeatherRepository
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -17,7 +18,15 @@ class MainScreenViewModelTest {
 
     @Before
     fun setUp() {
+        MainScreenViewModel.staticGlobalAlertsOverride.value = null
+        MainScreenViewModel.staticNowcastOverride.value = null
         repository = WeatherRepository()
+    }
+
+    @After
+    fun tearDown() {
+        MainScreenViewModel.staticGlobalAlertsOverride.value = null
+        MainScreenViewModel.staticNowcastOverride.value = null
     }
 
     @Test

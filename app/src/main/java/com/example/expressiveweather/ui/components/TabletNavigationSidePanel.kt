@@ -24,8 +24,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.AddLocationAlt
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DeleteOutline
+import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.LocationCity
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.MyLocation
@@ -38,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +50,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
@@ -67,6 +74,7 @@ import com.example.expressiveweather.data.localizedName
 @Composable
 fun TabletNavigationRail(
     onExpandClick: () -> Unit,
+    onAddLocationClick: () -> Unit = onExpandClick,
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -74,6 +82,7 @@ fun TabletNavigationRail(
     val railBgColor = colorScheme.surfaceContainer
     val buttonBgColor = colorScheme.surfaceContainerHighest
     val iconColor = colorScheme.onSurface
+    val strings = LocalAppStrings.current
 
     Surface(
         modifier = modifier
@@ -93,36 +102,64 @@ fun TabletNavigationRail(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // 上部: ハンバーガーボタン (≡)
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = buttonBgColor,
-                modifier = Modifier
-                    .size(46.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = onExpandClick
-                    )
+            // 上部: ハンバーガーボタン (≡) + 地名検索・追加ボタン (📍+)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        imageVector = Icons.Rounded.Menu,
-                        contentDescription = "Expand side panel",
-                        tint = iconColor,
-                        modifier = Modifier.size(24.dp)
-                    )
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = buttonBgColor,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = onExpandClick
+                        )
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Rounded.Menu,
+                            contentDescription = "Expand side panel",
+                            tint = iconColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+
+                // 2つ目のアイコン：地名追加・検索ボタン (📍+)
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = buttonBgColor,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = onAddLocationClick
+                        )
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = Icons.Rounded.AddLocationAlt,
+                            contentDescription = strings.addLocation,
+                            tint = iconColor,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
 
             // 下部: 設定ボタン (⚙️)
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = buttonBgColor,
                 modifier = Modifier
-                    .size(46.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(14.dp))
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
@@ -153,12 +190,16 @@ fun TabletNavigationDrawer(
     currentCity: City,
     defaultCity: City,
     savedCities: List<City>,
+    recentSearches: List<City> = emptyList(),
     searchResults: List<City>,
     isSearching: Boolean,
     onCitySelected: (City, Boolean) -> Unit,
+    onSaveCity: (City) -> Unit,
     onRemoveSavedCity: (City) -> Unit,
     onSearchQueryChange: (String) -> Unit,
     onSettingsClick: () -> Unit,
+    initialFocusSearch: Boolean = false,
+    onInitialFocusHandled: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val language = LocalAppLanguage.current
@@ -167,6 +208,14 @@ fun TabletNavigationDrawer(
     val colorScheme = MaterialTheme.colorScheme
 
     var searchQuery by remember { mutableStateOf("") }
+    val searchFocusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(initialFocusSearch) {
+        if (initialFocusSearch) {
+            searchFocusRequester.requestFocus()
+            onInitialFocusHandled()
+        }
+    }
 
     val drawerBgColor = colorScheme.surfaceContainer
     val cardItemBgColor = colorScheme.secondaryContainer
@@ -276,7 +325,9 @@ fun TabletNavigationDrawer(
                                 cursorBrush = SolidColor(cardItemTextColor),
                                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                                 keyboardActions = KeyboardActions(onSearch = { focusManager.clearFocus() }),
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(searchFocusRequester)
                             )
                         }
 
@@ -329,10 +380,21 @@ fun TabletNavigationDrawer(
                         modifier = Modifier.weight(1f)
                     ) {
                         items(searchResults, key = { it.id }) { resultCity ->
+                            val isResultSaved = savedCities.any {
+                                it.id == resultCity.id || (it.latitude == resultCity.latitude && it.longitude == resultCity.longitude)
+                            }
                             CityPillCard(
                                 city = resultCity,
                                 isSelected = resultCity.id == currentCity.id,
                                 isDefault = false,
+                                isSaved = isResultSaved,
+                                onSaveToggle = {
+                                    if (isResultSaved) {
+                                        onRemoveSavedCity(resultCity)
+                                    } else {
+                                        onSaveCity(resultCity)
+                                    }
+                                },
                                 onClick = {
                                     onCitySelected(resultCity, true)
                                     searchQuery = ""
@@ -343,44 +405,178 @@ fun TabletNavigationDrawer(
                         }
                     }
                 } else {
-                    // 3. 現在地カード: 「📍 現在地(東京都) 日本」
-                    val isDefaultSelected = currentCity.id == defaultCity.id || currentCity.id == "current"
-                    CityPillCard(
-                        city = defaultCity,
-                        isSelected = isDefaultSelected,
-                        isDefault = true,
-                        onClick = {
-                            onCitySelected(defaultCity, false)
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // 4. セクション見出し: 「登録された地名」
-                    Text(
-                        text = strings.savedLocations,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = sectionHeaderColor,
-                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 6.dp)
-                    )
-
-                    // 5. 登録地名リスト
+                    // 通常表示 (現在地 + 現在表示中の未保存都市 + 登録された地名 + 最近の検索)
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         modifier = Modifier
                             .weight(1f)
                             .padding(bottom = 60.dp) // 右下設定ボタン用の余白
                     ) {
-                        items(savedCities, key = { it.id }) { savedCity ->
-                            val isSelected = savedCity.id == currentCity.id
+                        // 1. 現在地カード: 「📍 現在地(東京都) 日本」
+                        item(key = "default_location") {
+                            val isDefaultSelected = currentCity.id == defaultCity.id ||
+                                    (currentCity.latitude == defaultCity.latitude && currentCity.longitude == defaultCity.longitude) ||
+                                    currentCity.id == "current"
                             CityPillCard(
-                                city = savedCity,
-                                isSelected = isSelected,
-                                isDefault = false,
-                                onClick = { onCitySelected(savedCity, false) },
-                                onDelete = { onRemoveSavedCity(savedCity) }
+                                city = defaultCity,
+                                isSelected = isDefaultSelected,
+                                isDefault = true,
+                                onClick = {
+                                    onCitySelected(defaultCity, false)
+                                }
                             )
+                        }
+
+                        // 2. 現在表示中の都市が未保存の場合、ここに明示表示して登録可能にする
+                        val isCurrentDefault = currentCity.id == defaultCity.id ||
+                                (currentCity.latitude == defaultCity.latitude && currentCity.longitude == defaultCity.longitude) ||
+                                currentCity.id == "current"
+                        val isCurrentSaved = savedCities.any {
+                            it.id == currentCity.id || (it.latitude == currentCity.latitude && it.longitude == currentCity.longitude)
+                        }
+                        if (!isCurrentDefault && !isCurrentSaved) {
+                            item(key = "currently_viewing_unsaved") {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(
+                                        text = strings.currentlyViewing,
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = sectionHeaderColor,
+                                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                                    )
+                                    CityPillCard(
+                                        city = currentCity,
+                                        isSelected = true,
+                                        isDefault = false,
+                                        isSaved = false,
+                                        onSaveToggle = { onSaveCity(currentCity) },
+                                        onClick = {}
+                                    )
+                                }
+                            }
+                        }
+
+                        // 3. セクション見出し: 「登録された地名」 + 「＋」地名追加ボタン
+                        item(key = "saved_locations_header") {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = strings.savedLocations,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = sectionHeaderColor
+                                )
+
+                                // 地名を追加ボタン (＋)
+                                Surface(
+                                    shape = CircleShape,
+                                    color = actionButtonBgColor,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .clickable { searchFocusRequester.requestFocus() }
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.Add,
+                                            contentDescription = strings.addLocation,
+                                            tint = actionButtonIconColor,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        // 4. 登録地名リスト (空の場合は「＋ 地名を追加」誘導カード)
+                        if (savedCities.isEmpty()) {
+                            item(key = "no_saved_locations") {
+                                Surface(
+                                    shape = RoundedCornerShape(18.dp),
+                                    color = colorScheme.surfaceContainerHighest.copy(alpha = 0.55f),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(18.dp))
+                                        .clickable { searchFocusRequester.requestFocus() }
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 14.dp, horizontal = 16.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Rounded.AddLocationAlt,
+                                            contentDescription = null,
+                                            tint = colorScheme.primary,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = strings.addLocation,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = colorScheme.primary
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            items(savedCities, key = { it.id }) { savedCity ->
+                                val isSelected = savedCity.id == currentCity.id ||
+                                        (savedCity.latitude == currentCity.latitude && savedCity.longitude == currentCity.longitude)
+                                CityPillCard(
+                                    city = savedCity,
+                                    isSelected = isSelected,
+                                    isDefault = false,
+                                    onClick = { onCitySelected(savedCity, false) },
+                                    onDelete = { onRemoveSavedCity(savedCity) }
+                                )
+                            }
+                        }
+
+                        // 5. 最近検索した項目 (Recent Searches)
+                        if (recentSearches.isNotEmpty()) {
+                            item(key = "recent_searches_header") {
+                                Spacer(modifier = Modifier.height(6.dp))
+                                Text(
+                                    text = strings.recentSearches,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = sectionHeaderColor,
+                                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                                )
+                            }
+                            items(recentSearches.take(3), key = { "recent_${it.id}" }) { recentCity ->
+                                val isRecentSaved = savedCities.any {
+                                    it.id == recentCity.id || (it.latitude == recentCity.latitude && it.longitude == recentCity.longitude)
+                                }
+                                val isSelected = recentCity.id == currentCity.id ||
+                                        (recentCity.latitude == currentCity.latitude && recentCity.longitude == currentCity.longitude)
+                                CityPillCard(
+                                    city = recentCity,
+                                    isSelected = isSelected,
+                                    isDefault = false,
+                                    isSaved = isRecentSaved,
+                                    onSaveToggle = {
+                                        if (isRecentSaved) {
+                                            onRemoveSavedCity(recentCity)
+                                        } else {
+                                            onSaveCity(recentCity)
+                                        }
+                                    },
+                                    onClick = { onCitySelected(recentCity, false) }
+                                )
+                            }
                         }
                     }
                 }
@@ -423,6 +619,8 @@ private fun CityPillCard(
     isSelected: Boolean,
     isDefault: Boolean,
     onClick: () -> Unit,
+    isSaved: Boolean = false,
+    onSaveToggle: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null
 ) {
     val language = LocalAppLanguage.current
@@ -489,18 +687,44 @@ private fun CityPillCard(
                 }
             }
 
-            if (onDelete != null && !isDefault) {
+            // 右側アクション: 登録/解除トグル (+ / ✓)
+            if (onSaveToggle != null) {
+                Surface(
+                    shape = CircleShape,
+                    color = if (isSaved) colorScheme.surfaceContainerHighest else colorScheme.primary,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onSaveToggle)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            imageVector = if (isSaved) Icons.Rounded.Check else Icons.Rounded.Add,
+                            contentDescription = if (isSaved) strings.removeSaved else strings.addLocation,
+                            tint = if (isSaved) contentTextColor else colorScheme.onPrimary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            } else if (onDelete != null && !isDefault) {
                 IconButton(
                     onClick = onDelete,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(32.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.DeleteOutline,
-                        contentDescription = "Delete",
-                        tint = contentTextColor.copy(alpha = 0.6f),
-                        modifier = Modifier.size(18.dp)
+                        contentDescription = strings.removeSaved,
+                        tint = contentTextColor.copy(alpha = 0.65f),
+                        modifier = Modifier.size(19.dp)
                     )
                 }
+            } else if (isSelected && !isDefault) {
+                Icon(
+                    imageVector = Icons.Rounded.Check,
+                    contentDescription = strings.selected,
+                    tint = contentTextColor,
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }

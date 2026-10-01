@@ -246,23 +246,25 @@ fun DetailScaffold(
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
-                                compositingStrategy = CompositingStrategy.Offscreen
+                                compositingStrategy = if (scrollProgress > 0.01f) CompositingStrategy.Offscreen else CompositingStrategy.Auto
                             }
                             .drawWithContent {
                                 drawContent()
-                                // 上部の見切れ部分をグラデーションでフェードアウト
-                                val topAlpha = 1f - scrollProgress
-                                drawRect(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            Color.Black.copy(alpha = topAlpha),
-                                            Color.Black
+                                // 上部の見切れ部分をスクロール時のみグラデーションでフェードアウト
+                                if (scrollProgress > 0.01f) {
+                                    val topAlpha = (1f - scrollProgress).coerceIn(0f, 1f)
+                                    drawRect(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Black.copy(alpha = topAlpha),
+                                                Color.Black
+                                            ),
+                                            startY = 0f,
+                                            endY = fadeHeightPx
                                         ),
-                                        startY = 0f,
-                                        endY = fadeHeightPx
-                                    ),
-                                    blendMode = BlendMode.DstIn
-                                )
+                                        blendMode = BlendMode.DstIn
+                                    )
+                                }
                             }
                             .verticalScroll(scrollState)
                             .padding(horizontal = 20.dp, vertical = 6.dp)

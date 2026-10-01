@@ -494,6 +494,7 @@ data class PrecipitationNowcast(
     val localizedTargetTimeLabels: Map<String, String> = emptyMap(),
     val isJapan: Boolean = false,
     val isUS: Boolean = false,
+    val isEurope: Boolean = false,
     val dataSourceName: String? = null
 ) {
     fun localizedHeadline(language: AppLanguage): String {

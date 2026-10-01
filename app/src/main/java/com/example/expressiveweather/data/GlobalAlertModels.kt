@@ -12,7 +12,8 @@ enum class AlertSource(val displayName: String, val shortName: String) {
     NWS("米国国立気象局 (NOAA NWS)", "NWS"),
     GDACS("全球災害警報調整システム (国連/欧州委員会 GDACS)", "GDACS"),
     JMA("気象庁 (JMA)", "JMA"),
-    WMO("世界気象機関 (WMO)", "WMO")
+    WMO("世界気象機関 (WMO)", "WMO"),
+    METEOALARM("欧州気象警報ネットワーク (MeteoAlarm)", "MeteoAlarm")
 }
 
 /**
@@ -28,7 +29,7 @@ enum class AlertSeverity {
 }
 
 /**
- * 全球・米国・国内の統一気象防災警報アイテム
+ * 全球・米国・欧州・国内の統一気象防災警報アイテム
  */
 @Serializable
 data class GlobalAlertItem(
@@ -54,6 +55,7 @@ data class GlobalAlertItem(
             AlertSource.NWS -> translateNwsEvent(eventName, language)
             AlertSource.GDACS -> translateGdacsEvent(eventName, eventTypeCode, language)
             AlertSource.WMO -> translateWmoEvent(eventName, language)
+            AlertSource.METEOALARM -> translateMeteoAlarmEvent(eventName, language)
             AlertSource.JMA -> eventName
         }
     }
@@ -316,6 +318,67 @@ data class GlobalAlertItem(
                     lower.contains("avalanche") -> "雪崩警報"
                     lower.contains("fire") -> "火險警報"
                     else -> "WMO警報: $event"
+                }
+                AppLanguage.ENGLISH -> event
+            }
+        }
+
+        /**
+         * 欧州気象警報ネットワーク (MeteoAlarm / EUMETNET) 警報名の多言語翻訳
+         * 11種の公式危険種別 (Awareness Types) を完全サポート
+         */
+        fun translateMeteoAlarmEvent(event: String, language: AppLanguage): String {
+            if (language == AppLanguage.ENGLISH) return event
+
+            val lower = event.lowercase(Locale.ROOT)
+            return when (language) {
+                AppLanguage.JAPANESE -> when {
+                    lower.contains("coastal") -> "沿岸高波・波浪警報"
+                    lower.contains("avalanche") || lower.contains("lawine") -> "雪崩警報"
+                    lower.contains("forest") || lower.contains("fire") || lower.contains("waldbrand") || lower.contains("incendie") -> "森林火災警報"
+                    lower.contains("thunder") || lower.contains("gewitter") || lower.contains("orage") || lower.contains("tormenta") -> "雷雨・落雷警報"
+                    lower.contains("snow") || lower.contains("ice") || lower.contains("schnee") || lower.contains("neige") || lower.contains("nieve") -> "大雪・路面凍結警報"
+                    lower.contains("flash flood") -> "鉄砲水警報"
+                    lower.contains("flood") || lower.contains("hochwasser") || lower.contains("inondation") -> "洪水警報"
+                    lower.contains("rain") || lower.contains("regen") || lower.contains("pluie") || lower.contains("lluvia") -> "大雨・豪雨警報"
+                    lower.contains("gale") || lower.contains("storm") -> "暴風警報"
+                    lower.contains("wind") || lower.contains("böen") || lower.contains("vent") || lower.contains("viento") -> "強風・暴風警報"
+                    lower.contains("high-temperature") || lower.contains("high temp") || lower.contains("heat") || lower.contains("hitze") || lower.contains("canicule") -> "猛暑・極度高温警報"
+                    lower.contains("low-temperature") || lower.contains("low temp") || lower.contains("cold") || lower.contains("freeze") || lower.contains("kälte") || lower.contains("froid") -> "低温・極度寒波警報"
+                    lower.contains("fog") || lower.contains("nebel") || lower.contains("brouillard") || lower.contains("niebla") -> "濃霧警報"
+                    else -> "欧州気象警報: $event"
+                }
+                AppLanguage.SIMPLIFIED_CHINESE -> when {
+                    lower.contains("coastal") -> "沿海风浪海啸预警"
+                    lower.contains("avalanche") || lower.contains("lawine") -> "雪崩预警"
+                    lower.contains("forest") || lower.contains("fire") || lower.contains("waldbrand") || lower.contains("incendie") -> "森林火险预警"
+                    lower.contains("thunder") || lower.contains("gewitter") || lower.contains("orage") || lower.contains("tormenta") -> "强雷暴对流预警"
+                    lower.contains("snow") || lower.contains("ice") || lower.contains("schnee") || lower.contains("neige") || lower.contains("nieve") -> "暴雪道路结冰预警"
+                    lower.contains("flash flood") -> "山洪暴发预警"
+                    lower.contains("flood") || lower.contains("hochwasser") || lower.contains("inondation") -> "洪水预警"
+                    lower.contains("rain") || lower.contains("regen") || lower.contains("pluie") || lower.contains("lluvia") -> "暴雨预警"
+                    lower.contains("gale") || lower.contains("storm") -> "烈风风暴预警"
+                    lower.contains("wind") || lower.contains("böen") || lower.contains("vent") || lower.contains("viento") -> "大风强风预警"
+                    lower.contains("high-temperature") || lower.contains("high temp") || lower.contains("heat") || lower.contains("hitze") || lower.contains("canicule") -> "极度高温热浪预警"
+                    lower.contains("low-temperature") || lower.contains("low temp") || lower.contains("cold") || lower.contains("freeze") || lower.contains("kälte") || lower.contains("froid") -> "严寒寒潮预警"
+                    lower.contains("fog") || lower.contains("nebel") || lower.contains("brouillard") || lower.contains("niebla") -> "大雾预警"
+                    else -> "欧洲气象预警: $event"
+                }
+                AppLanguage.TRADITIONAL_CHINESE -> when {
+                    lower.contains("coastal") -> "沿海風浪海嘯警報"
+                    lower.contains("avalanche") || lower.contains("lawine") -> "雪崩警報"
+                    lower.contains("forest") || lower.contains("fire") || lower.contains("waldbrand") || lower.contains("incendie") -> "森林火險警報"
+                    lower.contains("thunder") || lower.contains("gewitter") || lower.contains("orage") || lower.contains("tormenta") -> "強雷雨對流警報"
+                    lower.contains("snow") || lower.contains("ice") || lower.contains("schnee") || lower.contains("neige") || lower.contains("nieve") -> "暴雪道路結冰警報"
+                    lower.contains("flash flood") -> "暴洪/山洪警報"
+                    lower.contains("flood") || lower.contains("hochwasser") || lower.contains("inondation") -> "洪水警報"
+                    lower.contains("rain") || lower.contains("regen") || lower.contains("pluie") || lower.contains("lluvia") -> "暴雨/豪雨警報"
+                    lower.contains("gale") || lower.contains("storm") -> "烈風風暴警報"
+                    lower.contains("wind") || lower.contains("böen") || lower.contains("vent") || lower.contains("viento") -> "強風大風警報"
+                    lower.contains("high-temperature") || lower.contains("high temp") || lower.contains("heat") || lower.contains("hitze") || lower.contains("canicule") -> "極度高溫熱浪警報"
+                    lower.contains("low-temperature") || lower.contains("low temp") || lower.contains("cold") || lower.contains("freeze") || lower.contains("kälte") || lower.contains("froid") -> "嚴寒寒潮警報"
+                    lower.contains("fog") || lower.contains("nebel") || lower.contains("brouillard") || lower.contains("niebla") -> "濃霧警報"
+                    else -> "歐洲氣象警報: $event"
                 }
                 AppLanguage.ENGLISH -> event
             }

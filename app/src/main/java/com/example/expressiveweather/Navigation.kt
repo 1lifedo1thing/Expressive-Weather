@@ -174,7 +174,8 @@ fun MainNavigation() {
                 putExtra(BentoDetailActivity.EXTRA_CARD_TYPE, card.name)
               }
               context.startActivity(intent)
-            }
+            },
+            onNavigateToAlertDetail = { _ -> }
           )
         }
         entry<WindDetail> {

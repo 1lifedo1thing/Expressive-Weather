@@ -645,5 +645,252 @@ class PrecipitationAnalyzerTest {
         assertEquals(RainStatus.DRY, nowcast.status)
         assertEquals(0.0, nowcast.currentIntensityMm, 0.001)
     }
+
+    // =========================================================================
+    // 16. ヨーロッパ地域の判定とECMWFデータソース帰属の検証
+    // =========================================================================
+
+    @Test
+    fun testEuropeLocationDetection() {
+        // ヨーロッパ主要都市
+        assertTrue(isLocationOrCountryInEurope("France", 48.8566, 2.3522))
+        assertTrue(isLocationOrCountryInEurope("フランス", 48.8566, 2.3522))
+        assertTrue(isLocationOrCountryInEurope("FR", 48.8566, 2.3522))
+        assertTrue(isLocationOrCountryInEurope("United Kingdom", 51.5074, -0.1278))
+        assertTrue(isLocationOrCountryInEurope("Germany", 52.5200, 13.4050))
+        assertTrue(isLocationOrCountryInEurope("Italy", 41.9028, 12.4964))
+
+        // ヨーロッパ外
+        assertFalse(isLocationOrCountryInEurope("Japan", 35.6895, 139.6917))
+        assertFalse(isLocationOrCountryInEurope("日本", 35.6895, 139.6917))
+        assertFalse(isLocationOrCountryInEurope("United States", 40.7128, -74.0060))
+        assertFalse(isLocationOrCountryInEurope("Australia", -33.8688, 151.2093))
+    }
+
+    @Test
+    fun testEuropeAttributionEcmwf() {
+        val nowMillis = isoFormat.parse("2026-09-24T15:00")!!.time
+        val times = listOf("2026-09-24T15:00", "2026-09-24T15:30")
+        val precips = listOf(0.0, 0.0)
+
+        val nowcast = PrecipitationAnalyzer.analyze(
+            currentPrecipMm = 0.0,
+            currentCondition = WeatherCondition.CLOUDY,
+            minutelyTimes = times,
+            minutelyPrecips = precips,
+            minutelyCodes = listOf(3, 3),
+            hourlyForecast = listOf(
+                HourlyForecast(
+                    timeLabel = "16:00",
+                    hour = 16,
+                    tempC = 18,
+                    condition = WeatherCondition.RAIN,
+                    precipProb = 60,
+                    humidity = 70,
+                    windSpeedKmH = 10.0,
+                    dewPointC = 12,
+                    isDay = true,
+                    precipitationMm = 0.0
+                )
+            ),
+            country = "France",
+            latitude = 48.8566,
+            longitude = 2.3522,
+            nowMillis = nowMillis
+        )
+
+        assertTrue(nowcast.isEurope)
+        assertFalse(nowcast.isJapan)
+        assertFalse(nowcast.isUS)
+        assertEquals("欧州中期予報センター (ECMWF) / 各気象機関", nowcast.dataSourceName)
+        assertTrue(nowcast.subText.contains("ECMWF予報"))
+    }
+
+    // =========================================================================
+    // 17. 海外における幽霊降水（Fake Rain: 5分で止むループ）の防止検証
+    // =========================================================================
+
+    @Test
+    fun testOverseasNoFakeRainWhenZeroPrecip() {
+        val nowMillis = isoFormat.parse("2026-09-24T15:00")!!.time
+        // 天気コードはSHOWERSやRAINだが、実際の降水量は0.0、分単位データもすべて0.0
+        val times = listOf(
+            "2026-09-24T15:00",
+            "2026-09-24T15:05",
+            "2026-09-24T15:10",
+            "2026-09-24T15:15"
+        )
+        val precips = listOf(0.0, 0.0, 0.0, 0.0)
+
+        val nowcast = PrecipitationAnalyzer.analyze(
+            currentPrecipMm = 0.0,
+            currentCondition = WeatherCondition.RAIN,
+            minutelyTimes = times,
+            minutelyPrecips = precips,
+            minutelyCodes = listOf(80, 80, 80, 80),
+            hourlyForecast = emptyList(),
+            country = "France",
+            latitude = 48.8566,
+            longitude = 2.3522,
+            nowMillis = nowMillis
+        )
+
+        // 降水量0.0の分単位データがある場合、人工的な1.5mm/hが注入されず、RAINING（あと5分で止む）にならないこと
+        assertEquals(RainStatus.DRY, nowcast.status)
+        assertFalse(nowcast.headline.contains("雨が止む見込み"))
+    }
+
+    // =========================================================================
+    // 18. 降水継続時間に応じた段階的表現（Tiered Duration）の検証
+    // =========================================================================
+
+    @Test
+    fun testTieredRainDurationUnder90Min() {
+        val nowMillis = isoFormat.parse("2026-09-24T15:00")!!.time
+        // 15:00から雨、15:35（35分後）に0.0mmで止む
+        val times = listOf(
+            "2026-09-24T15:00",
+            "2026-09-24T15:20",
+            "2026-09-24T15:35",
+            "2026-09-24T15:45"
+        )
+        val precips = listOf(3.0, 2.0, 0.0, 0.0)
+
+        val nowcast = PrecipitationAnalyzer.analyze(
+            currentPrecipMm = 3.0,
+            currentCondition = WeatherCondition.RAIN,
+            minutelyTimes = times,
+            minutelyPrecips = precips,
+            minutelyCodes = listOf(61, 61, 0, 0),
+            hourlyForecast = emptyList(),
+            country = "France",
+            latitude = 48.8566,
+            longitude = 2.3522,
+            nowMillis = nowMillis
+        )
+
+        assertEquals(RainStatus.RAINING, nowcast.status)
+        assertEquals(35, nowcast.minutesRemaining)
+        // 90分以内: 「15時35分頃に雨が止む見込みです」
+        assertTrue(nowcast.headline.contains("15時35分頃に雨が止む見込みです"))
+    }
+
+    @Test
+    fun testTieredRainDurationBetween90And180Min() {
+        val nowMillis = isoFormat.parse("2026-09-24T15:00")!!.time
+        // 15:00は雨。分単位は60分後まで雨が続く
+        val times = listOf(
+            "2026-09-24T15:00",
+            "2026-09-24T15:30",
+            "2026-09-24T16:00"
+        )
+        val precips = listOf(2.5, 2.0, 1.5)
+
+        // 時間予報で17:00まで雨、18:00に止む (17:00 = 120分後)
+        val hourly = listOf(
+            HourlyForecast(
+                timeLabel = "15:00",
+                hour = 15,
+                tempC = 15,
+                condition = WeatherCondition.RAIN,
+                precipProb = 80,
+                humidity = 85,
+                windSpeedKmH = 10.0,
+                dewPointC = 12,
+                isDay = true,
+                precipitationMm = 2.5
+            ),
+            HourlyForecast(
+                timeLabel = "16:00",
+                hour = 16,
+                tempC = 15,
+                condition = WeatherCondition.RAIN,
+                precipProb = 70,
+                humidity = 85,
+                windSpeedKmH = 10.0,
+                dewPointC = 12,
+                isDay = true,
+                precipitationMm = 2.0
+            ),
+            HourlyForecast(
+                timeLabel = "17:00",
+                hour = 17,
+                tempC = 14,
+                condition = WeatherCondition.RAIN,
+                precipProb = 60,
+                humidity = 80,
+                windSpeedKmH = 8.0,
+                dewPointC = 11,
+                isDay = true,
+                precipitationMm = 1.0
+            ),
+            HourlyForecast(
+                timeLabel = "18:00",
+                hour = 18,
+                tempC = 14,
+                condition = WeatherCondition.CLOUDY,
+                precipProb = 10,
+                humidity = 70,
+                windSpeedKmH = 5.0,
+                dewPointC = 9,
+                isDay = true,
+                precipitationMm = 0.0
+            )
+        )
+
+        val nowcast = PrecipitationAnalyzer.analyze(
+            currentPrecipMm = 2.5,
+            currentCondition = WeatherCondition.RAIN,
+            minutelyTimes = times,
+            minutelyPrecips = precips,
+            minutelyCodes = listOf(61, 61, 61),
+            hourlyForecast = hourly,
+            country = "France",
+            latitude = 48.8566,
+            longitude = 2.3522,
+            nowMillis = nowMillis
+        )
+
+        assertEquals(RainStatus.RAINING, nowcast.status)
+        val mins = nowcast.minutesRemaining ?: 0
+        assertTrue("minutesRemaining should be between 91 and 180, was $mins", mins in 91..180)
+        // 91〜180分: 「〜頃まで雨が続く見込みです」（「止む」ではなく「続く」）
+        assertTrue(nowcast.headline.contains("頃まで雨が続く見込みです"))
+    }
+
+    @Test
+    fun testTieredRainDurationOver180Min() {
+        val nowMillis = isoFormat.parse("2026-09-24T15:00")!!.time
+        // 15:00〜19:00 (4時間以上) 降り続く
+        val hourly = listOf(
+            HourlyForecast("15:00", 15, 15, WeatherCondition.RAIN, 90, 90, 10.0, 12, true, 3.0),
+            HourlyForecast("16:00", 16, 15, WeatherCondition.RAIN, 90, 90, 10.0, 12, true, 3.0),
+            HourlyForecast("17:00", 17, 15, WeatherCondition.RAIN, 90, 90, 10.0, 12, true, 2.5),
+            HourlyForecast("18:00", 18, 14, WeatherCondition.RAIN, 80, 85, 10.0, 12, true, 2.0),
+            HourlyForecast("19:00", 19, 14, WeatherCondition.RAIN, 70, 80, 10.0, 11, true, 1.5),
+            HourlyForecast("20:00", 20, 13, WeatherCondition.CLOUDY, 20, 70, 5.0, 9, false, 0.0)
+        )
+
+        val nowcast = PrecipitationAnalyzer.analyze(
+            currentPrecipMm = 3.0,
+            currentCondition = WeatherCondition.RAIN,
+            minutelyTimes = listOf("2026-09-24T15:00", "2026-09-24T16:00"),
+            minutelyPrecips = listOf(3.0, 3.0),
+            minutelyCodes = listOf(61, 61),
+            hourlyForecast = hourly,
+            country = "United Kingdom",
+            latitude = 51.5074,
+            longitude = -0.1278,
+            nowMillis = nowMillis
+        )
+
+        assertEquals(RainStatus.RAINING, nowcast.status)
+        val mins = nowcast.minutesRemaining ?: 0
+        assertTrue("minutesRemaining should be > 180, was $mins", mins > 180)
+        // 181分以上: 「雨は当面の間（今後X時間）降り続く見込みです」
+        assertTrue(nowcast.headline.contains("雨は当面の間"))
+        assertTrue(nowcast.headline.contains("降り続く見込みです"))
+    }
 }
+
 

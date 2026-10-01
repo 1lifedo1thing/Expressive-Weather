@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Card
@@ -62,6 +64,7 @@ fun MunicipalityDisasterBanner(
     jmaWarnings: List<String> = emptyList(),
     jmaOverviewText: String? = null,
     globalAlerts: List<GlobalAlertItem> = emptyList(),
+    onAlertClick: ((AlertSource) -> Unit)? = null,
     onBannerClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     isDark: Boolean = isSystemInDarkTheme()
@@ -109,135 +112,266 @@ fun MunicipalityDisasterBanner(
             .sortedBy { it.severity.ordinal }
     }
 
-    val hasAnyAlerts = sortedJmaList.isNotEmpty() || nwsAlerts.isNotEmpty() || wmoAlerts.isNotEmpty() || gdacsAlerts.isNotEmpty()
+    // 5. 欧州気象警報ネットワーク (MeteoAlarm) の警報リスト
+    val meteoAlarmAlerts = remember(globalAlerts) {
+        globalAlerts.filter { it.source == AlertSource.METEOALARM }
+            .sortedBy { it.severity.ordinal }
+    }
+
+    val hasAnyAlerts = sortedJmaList.isNotEmpty() || nwsAlerts.isNotEmpty() || meteoAlarmAlerts.isNotEmpty() || wmoAlerts.isNotEmpty() || gdacsAlerts.isNotEmpty()
     if (!hasAnyAlerts) return
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        // ================= A. 気象庁 (JMA) 集約アコーディオンカード =================
+        // ================= A. 気象庁 (JMA) バナーカード =================
         if (sortedJmaList.isNotEmpty()) {
-            JmaAccordionCard(
-                alertInfo = alertInfo,
-                sortedWarnings = sortedJmaList,
-                jmaOverviewText = jmaOverviewText,
-                language = language
+            val hasSpecial = sortedJmaList.any { it.isSpecial }
+            val hasWarning = sortedJmaList.any { it.isWarning }
+            val warningType = when {
+                hasSpecial -> WeatherWarningType.SPECIAL_WARNING
+                hasWarning -> WeatherWarningType.WARNING
+                else -> WeatherWarningType.ADVISORY
+            }
+            val aggregatedTitle = JmaWarningMaster.formatAggregatedTitle(sortedJmaList, language)
+            val rawTitle = sortedJmaList.joinToString("・") { it.name }
+            val description = if (language == AppLanguage.JAPANESE) {
+                alertInfo?.headlineText?.trim()?.ifBlank { null } ?: formatWarningDescription(
+                    rawTitle = rawTitle,
+                    headlineText = null,
+                    language = language
+                )
+            } else {
+                formatWarningDescription(
+                    rawTitle = rawTitle,
+                    headlineText = null,
+                    language = language
+                )
+            }
+
+            DisasterAlertNavigationCard(
+                type = warningType,
+                title = aggregatedTitle,
+                description = description,
+                onClick = { onAlertClick?.invoke(AlertSource.JMA) ?: onBannerClick?.invoke() }
             )
         }
 
-        // ================= B. 米国気象局 (NWS) 集約アコーディオンカード =================
+        // ================= B. 米国気象局 (NWS) バナーカード =================
         if (nwsAlerts.isNotEmpty()) {
-            NwsAccordionCard(
-                alerts = nwsAlerts,
-                language = language
+            val topAlert = nwsAlerts.first()
+            val hasSpecial = nwsAlerts.any { it.type == WeatherWarningType.SPECIAL_WARNING }
+            val hasWarning = nwsAlerts.any { it.type == WeatherWarningType.WARNING }
+            val warningType = when {
+                hasSpecial -> WeatherWarningType.SPECIAL_WARNING
+                hasWarning -> WeatherWarningType.WARNING
+                else -> WeatherWarningType.ADVISORY
+            }
+            val aggregatedTitle = if (nwsAlerts.size == 1) {
+                topAlert.getLocalizedTitle(language)
+            } else {
+                when (language) {
+                    AppLanguage.ENGLISH -> "${topAlert.getLocalizedTitle(language)} & ${nwsAlerts.size - 1} more"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其余${nwsAlerts.size - 1}项预警"
+                    AppLanguage.TRADITIONAL_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其餘${nwsAlerts.size - 1}項預警"
+                    AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${nwsAlerts.size - 1}件の警報・注意報"
+                }
+            }
+            val headline = if (language == AppLanguage.ENGLISH) {
+                topAlert.headline.trim().ifBlank { topAlert.getLocalizedDescription(language) }
+            } else {
+                topAlert.getLocalizedDescription(language)
+            }
+
+            DisasterAlertNavigationCard(
+                type = warningType,
+                title = aggregatedTitle,
+                description = headline,
+                onClick = { onAlertClick?.invoke(AlertSource.NWS) ?: onBannerClick?.invoke() }
             )
         }
 
-        // ================= C. 世界気象機関 (WMO) 集約アコーディオンカード =================
+        // ================= C. 世界気象機関 (WMO) バナーカード =================
         if (wmoAlerts.isNotEmpty()) {
-            WmoAccordionCard(
-                alerts = wmoAlerts,
-                language = language
+            val topAlert = wmoAlerts.first()
+            val hasSpecial = wmoAlerts.any { it.type == WeatherWarningType.SPECIAL_WARNING }
+            val hasWarning = wmoAlerts.any { it.type == WeatherWarningType.WARNING }
+            val warningType = when {
+                hasSpecial -> WeatherWarningType.SPECIAL_WARNING
+                hasWarning -> WeatherWarningType.WARNING
+                else -> WeatherWarningType.ADVISORY
+            }
+            val aggregatedTitle = if (wmoAlerts.size == 1) {
+                topAlert.getLocalizedTitle(language)
+            } else {
+                when (language) {
+                    AppLanguage.ENGLISH -> "${topAlert.getLocalizedTitle(language)} & ${wmoAlerts.size - 1} more"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其余${wmoAlerts.size - 1}项WMO预警"
+                    AppLanguage.TRADITIONAL_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其餘${wmoAlerts.size - 1}項WMO預警"
+                    AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${wmoAlerts.size - 1}件のWMO世界警報"
+                }
+            }
+            val detailedText = if (topAlert.description.isNotBlank() && topAlert.description.trim() != topAlert.eventName.trim()) {
+                topAlert.description.trim().take(160)
+            } else if (topAlert.headline.isNotBlank() && topAlert.headline.trim() != topAlert.eventName.trim()) {
+                topAlert.headline.trim()
+            } else {
+                topAlert.getLocalizedDescription(language)
+            }
+
+            DisasterAlertNavigationCard(
+                type = warningType,
+                title = aggregatedTitle,
+                description = detailedText,
+                onClick = { onAlertClick?.invoke(AlertSource.WMO) ?: onBannerClick?.invoke() }
             )
         }
 
-        // ================= D. 全球災害警報 (GDACS) 集約アコーディオンカード =================
+        // ================= D. 欧州気象警報ネットワーク (MeteoAlarm) バナーカード =================
+        if (meteoAlarmAlerts.isNotEmpty()) {
+            val topAlert = meteoAlarmAlerts.first()
+            val hasSpecial = meteoAlarmAlerts.any { it.type == WeatherWarningType.SPECIAL_WARNING }
+            val hasWarning = meteoAlarmAlerts.any { it.type == WeatherWarningType.WARNING }
+            val warningType = when {
+                hasSpecial -> WeatherWarningType.SPECIAL_WARNING
+                hasWarning -> WeatherWarningType.WARNING
+                else -> WeatherWarningType.ADVISORY
+            }
+            val aggregatedTitle = if (meteoAlarmAlerts.size == 1) {
+                topAlert.getLocalizedTitle(language)
+            } else {
+                when (language) {
+                    AppLanguage.ENGLISH -> "${topAlert.getLocalizedTitle(language)} & ${meteoAlarmAlerts.size - 1} more"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其余${meteoAlarmAlerts.size - 1}项欧洲预警"
+                    AppLanguage.TRADITIONAL_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其餘${meteoAlarmAlerts.size - 1}項歐洲警報"
+                    AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${meteoAlarmAlerts.size - 1}件の欧州気象警報"
+                }
+            }
+            val detailedText = if (topAlert.description.isNotBlank() && topAlert.description.trim() != topAlert.eventName.trim()) {
+                topAlert.description.trim().take(160)
+            } else if (topAlert.headline.isNotBlank() && topAlert.headline.trim() != topAlert.eventName.trim()) {
+                topAlert.headline.trim()
+            } else {
+                topAlert.getLocalizedDescription(language)
+            }
+
+            DisasterAlertNavigationCard(
+                type = warningType,
+                title = aggregatedTitle,
+                description = detailedText,
+                onClick = { onAlertClick?.invoke(AlertSource.METEOALARM) ?: onBannerClick?.invoke() }
+            )
+        }
+
+        // ================= E. 全球災害警報 (GDACS) バナーカード =================
         if (gdacsAlerts.isNotEmpty()) {
-            GdacsAccordionCard(
-                alerts = gdacsAlerts,
-                language = language
+            val topAlert = gdacsAlerts.first()
+            val hasSpecial = gdacsAlerts.any { it.type == WeatherWarningType.SPECIAL_WARNING }
+            val hasWarning = gdacsAlerts.any { it.type == WeatherWarningType.WARNING }
+            val warningType = when {
+                hasSpecial -> WeatherWarningType.SPECIAL_WARNING
+                hasWarning -> WeatherWarningType.WARNING
+                else -> WeatherWarningType.ADVISORY
+            }
+            val aggregatedTitle = if (gdacsAlerts.size == 1) {
+                topAlert.getLocalizedTitle(language)
+            } else {
+                when (language) {
+                    AppLanguage.ENGLISH -> "${topAlert.getLocalizedTitle(language)} & ${gdacsAlerts.size - 1} more"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其余${gdacsAlerts.size - 1}项全球警报"
+                    AppLanguage.TRADITIONAL_CHINESE -> "${topAlert.getLocalizedTitle(language)} 及其餘${gdacsAlerts.size - 1}項全球警報"
+                    AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${gdacsAlerts.size - 1}件の全球警報"
+                }
+            }
+            val titleText = topAlert.getLocalizedTitle(language).ifBlank { topAlert.eventName.trim() }
+
+            DisasterAlertNavigationCard(
+                type = warningType,
+                title = aggregatedTitle,
+                description = titleText,
+                onClick = { onAlertClick?.invoke(AlertSource.GDACS) ?: onBannerClick?.invoke() }
             )
         }
     }
 }
 
 /**
- * A. 気象庁 (JMA) 集約アコーディオンカード
+ * 警報ナビゲーションカード
+ *
+ * 警報アイコン + タイトル + 詳細文章 + 「＞」アイコンを配置し、タップで独立した警報詳細 Activity へ遷移
  */
 @Composable
-private fun JmaAccordionCard(
-    alertInfo: MunicipalityAlertInfo?,
-    sortedWarnings: List<MunicipalityWarningItem>,
-    jmaOverviewText: String?,
-    language: AppLanguage
+fun DisasterAlertNavigationCard(
+    type: WeatherWarningType,
+    title: String,
+    description: String? = null,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var isExpanded by remember { mutableStateOf(false) }
+    val colors = WeatherAlertColors.forWarningType(type)
 
-    val hasSpecial = sortedWarnings.any { it.isSpecial }
-    val hasWarning = sortedWarnings.any { it.isWarning }
-
-    val warningType = when {
-        hasSpecial -> WeatherWarningType.SPECIAL_WARNING // 赤色: 特別警戒 (#FFB4AB / #690005)
-        hasWarning -> WeatherWarningType.WARNING         // 橙色: 警戒 (#FFDBC9 / #341100)
-        else -> WeatherWarningType.ADVISORY              // 黄色: 注意 (#FFCA00 / #624E00)
-    }
-    val colors = WeatherAlertColors.forWarningType(warningType)
-
-    val aggregatedTitle = JmaWarningMaster.formatAggregatedTitle(sortedWarnings, language)
-    val rawTitle = sortedWarnings.joinToString("・") { it.name }
-    // 展開前（小さくされた状態）: 日本語時は公式ヘッドライン、英語・中国語時はローカライズされた説明文を表示
-    val description = if (language == AppLanguage.JAPANESE) {
-        alertInfo?.headlineText?.trim()?.ifBlank { null } ?: formatWarningDescription(
-            rawTitle = rawTitle,
-            headlineText = null,
-            language = language
-        )
-    } else {
-        formatWarningDescription(
-            rawTitle = rawTitle,
-            headlineText = null,
-            language = language
-        )
-    }
-
-    AccordionDisasterAlertCard(
-        type = warningType,
-        title = aggregatedTitle,
-        description = description,
-        isExpanded = isExpanded,
-        onToggleExpand = { isExpanded = !isExpanded }
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(20.dp))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.cardBg,
+            contentColor = colors.contentColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        // 1. タップで展開された時: 府県気象情報の解説本文（存在する場合）
-        if (!jmaOverviewText.isNullOrBlank()) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(18.dp)),
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = colors.cardBg,
-                    contentColor = colors.contentColor
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(
-                        text = getJmaOverviewLabel(language),
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colors.contentColor
+                    Icon(
+                        imageVector = Icons.Rounded.Warning,
+                        contentDescription = null,
+                        tint = colors.contentColor,
+                        modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+
                     Text(
-                        text = jmaOverviewText.trim(),
+                        text = title,
+                        fontSize = 16.5.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.contentColor,
+                        lineHeight = 22.sp
+                    )
+                }
+
+                if (!description.isNullOrBlank()) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = description,
                         fontSize = 13.sp,
+                        fontWeight = FontWeight.Normal,
                         lineHeight = 18.5.sp,
                         color = colors.contentColor
                     )
                 }
             }
-        }
 
-        // 2. 各警報・注意報カード一覧（多言語対応）
-        sortedWarnings.forEach { item ->
-            JmaIndividualWarningCard(
-                item = item,
-                language = language
+            Spacer(modifier = Modifier.width(12.dp))
+
+            // ＞ アイコン (詳細ページへの遷移を示す)
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                contentDescription = null,
+                tint = colors.contentColor.copy(alpha = 0.85f),
+                modifier = Modifier.size(24.dp)
             )
         }
     }
@@ -249,12 +383,13 @@ private fun JmaAccordionCard(
  * タップで現象・避難行動・警戒ポイントがインライン展開されます（多言語対応）。
  */
 @Composable
-private fun JmaIndividualWarningCard(
+internal fun JmaIndividualWarningCard(
     item: MunicipalityWarningItem,
     language: AppLanguage,
+    initiallyExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isDetailOpen by remember { mutableStateOf(false) }
+    var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
     val detail = remember(item.name) { JmaWarningMaster.getDetailByName(item.name) }
     val localizedName = remember(item.name, language) {
         JmaWarningMaster.getLocalizedWarningName(item.name, language)
@@ -464,12 +599,13 @@ private fun NwsAccordionCard(
  * NWS 個別警報カード
  */
 @Composable
-private fun NwsIndividualAlertCard(
+internal fun NwsIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
+    initiallyExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isDetailOpen by remember { mutableStateOf(false) }
+    var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
     val colors = WeatherAlertColors.forWarningType(alert.type)
 
     val arrowRotation by animateFloatAsState(
@@ -637,12 +773,13 @@ private fun WmoAccordionCard(
  * WMO 個別警報カード
  */
 @Composable
-private fun WmoIndividualAlertCard(
+internal fun WmoIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
+    initiallyExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isDetailOpen by remember { mutableStateOf(false) }
+    var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
     val colors = WeatherAlertColors.forWarningType(alert.type)
 
     val arrowRotation by animateFloatAsState(
@@ -756,6 +893,218 @@ private fun WmoIndividualAlertCard(
 }
 
 /**
+ * 欧州気象警報ネットワーク (MeteoAlarm) 個別警報カード
+ */
+@Composable
+fun MeteoAlarmIndividualAlertCard(
+    alert: GlobalAlertItem,
+    language: AppLanguage,
+    initiallyExpanded: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
+    val colors = WeatherAlertColors.forWarningType(alert.type)
+
+    val arrowRotation by animateFloatAsState(
+        targetValue = if (isDetailOpen) 180f else 0f,
+        label = "MeteoAlarmCardArrow"
+    )
+
+    val severityBadgeText = when (alert.type) {
+        WeatherWarningType.SPECIAL_WARNING -> when (language) {
+            AppLanguage.JAPANESE -> "特別警戒 (Red: Extreme)"
+            AppLanguage.ENGLISH -> "Red Warning (Extreme Hazard)"
+            AppLanguage.SIMPLIFIED_CHINESE -> "红色特别警报 (Extreme)"
+            AppLanguage.TRADITIONAL_CHINESE -> "紅色特別警報 (Extreme)"
+        }
+        WeatherWarningType.WARNING -> when (language) {
+            AppLanguage.JAPANESE -> "警戒 (Orange: Severe)"
+            AppLanguage.ENGLISH -> "Orange Warning (Severe Hazard)"
+            AppLanguage.SIMPLIFIED_CHINESE -> "橙色警报 (Severe)"
+            AppLanguage.TRADITIONAL_CHINESE -> "橙色警報 (Severe)"
+        }
+        else -> when (language) {
+            AppLanguage.JAPANESE -> "注意 (Yellow: Moderate)"
+            AppLanguage.ENGLISH -> "Yellow Warning (Moderate Hazard)"
+            AppLanguage.SIMPLIFIED_CHINESE -> "黄色注意预警 (Moderate)"
+            AppLanguage.TRADITIONAL_CHINESE -> "黃色注意預警 (Moderate)"
+        }
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(18.dp))
+            .clickable { isDetailOpen = !isDetailOpen }
+            .animateContentSize(),
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = colors.cardBg,
+            contentColor = colors.contentColor
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Warning,
+                        contentDescription = null,
+                        tint = colors.contentColor,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Column {
+                        Text(
+                            text = alert.getLocalizedTitle(language),
+                            fontSize = 15.5.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.contentColor
+                        )
+                        Text(
+                            text = severityBadgeText,
+                            fontSize = 11.5.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = colors.contentColor.copy(alpha = 0.85f)
+                        )
+                    }
+                }
+                Icon(
+                    imageVector = Icons.Rounded.KeyboardArrowDown,
+                    contentDescription = getExpandCollapseDescription(isDetailOpen, language),
+                    tint = colors.contentColor,
+                    modifier = Modifier
+                        .size(22.dp)
+                        .rotate(arrowRotation)
+                )
+            }
+
+            AnimatedVisibility(
+                visible = isDetailOpen,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    // 展開後: 概要・解説本文
+                    if (alert.description.isNotBlank()) {
+                        Column {
+                            Text(
+                                text = getMeteoAlarmOverviewLabel(language),
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.contentColor
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = alert.description.trim(),
+                                fontSize = 13.sp,
+                                lineHeight = 18.5.sp,
+                                color = colors.contentColor
+                            )
+                        }
+                    }
+
+                    // 展開後: 防災指示・行動指針
+                    if (!alert.instruction.isNullOrBlank()) {
+                        Column {
+                            Text(
+                                text = getMeteoAlarmInstructionLabel(language),
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.contentColor
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = alert.instruction.trim(),
+                                fontSize = 13.sp,
+                                lineHeight = 18.5.sp,
+                                color = colors.contentColor
+                            )
+                        }
+                    }
+
+                    // 展開後: 対象エリア
+                    if (!alert.areaDesc.isNullOrBlank()) {
+                        Column {
+                            Text(
+                                text = getMeteoAlarmAreaLabel(language),
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.contentColor
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = alert.areaDesc.trim(),
+                                fontSize = 13.sp,
+                                lineHeight = 18.sp,
+                                color = colors.contentColor
+                            )
+                        }
+                    }
+
+                    // 展開後: 有効期間
+                    if (!alert.effectiveTime.isNullOrBlank() || !alert.expiresTime.isNullOrBlank()) {
+                        val onsetStr = alert.effectiveTime?.take(16)?.replace("T", " ") ?: "即時"
+                        val expiresStr = alert.expiresTime?.take(16)?.replace("T", " ") ?: "未定"
+                        val periodLabel = when (language) {
+                            AppLanguage.JAPANESE -> "【有効期間】"
+                            AppLanguage.ENGLISH -> "【Valid Period】"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "【生效时间】"
+                            AppLanguage.TRADITIONAL_CHINESE -> "【生效時間】"
+                        }
+                        Column {
+                            Text(
+                                text = periodLabel,
+                                fontSize = 12.5.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.contentColor
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = "$onsetStr 〜 $expiresStr",
+                                fontSize = 12.5.sp,
+                                color = colors.contentColor.copy(alpha = 0.9f)
+                            )
+                        }
+                    }
+
+                    // 発信元クレジット
+                    Surface(
+                        shape = RoundedCornerShape(8.dp),
+                        color = colors.contentColor.copy(alpha = 0.12f),
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        Text(
+                            text = "提供元: EUMETNET / MeteoAlarm ＆ 欧州各国気象機関 (NMHS)",
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.contentColor,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
  * D. 全球災害警報 (GDACS) 集約アコーディオンカード
  */
 @Composable
@@ -810,12 +1159,13 @@ private fun GdacsAccordionCard(
  * GDACS 個別警報カード
  */
 @Composable
-private fun GdacsIndividualAlertCard(
+internal fun GdacsIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
+    initiallyExpanded: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isDetailOpen by remember { mutableStateOf(false) }
+    var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
     val colors = WeatherAlertColors.forWarningType(alert.type)
 
     val arrowRotation by animateFloatAsState(
@@ -911,70 +1261,91 @@ private fun GdacsIndividualAlertCard(
 
 // ================= 多言語ヘルパー関数 =================
 
-private fun getJmaOverviewLabel(language: AppLanguage): String = when (language) {
+internal fun getJmaOverviewLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【府県気象情報】"
     AppLanguage.ENGLISH -> "【Regional Weather Commentary】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【县级气象信息】"
     AppLanguage.TRADITIONAL_CHINESE -> "【縣級氣象資訊】"
 }
 
-private fun getPhenomenonLabel(language: AppLanguage): String = when (language) {
+internal fun getPhenomenonLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【現象と想定される被害】"
     AppLanguage.ENGLISH -> "【Expected Hazards & Impacts】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【预期灾害与影响】"
     AppLanguage.TRADITIONAL_CHINESE -> "【預期災害與影響】"
 }
 
-private fun getActionGuideLabel(language: AppLanguage): String = when (language) {
+internal fun getActionGuideLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【推奨される避難・安全行動】"
     AppLanguage.ENGLISH -> "【Recommended Safety Actions】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【推荐避险与安全行动】"
     AppLanguage.TRADITIONAL_CHINESE -> "【推薦避難與安全行動】"
 }
 
-private fun getCautionPointsLabel(language: AppLanguage): String = when (language) {
+internal fun getCautionPointsLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【警戒ポイント】"
     AppLanguage.ENGLISH -> "【Key Watch Points】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【警戒重点】"
     AppLanguage.TRADITIONAL_CHINESE -> "【警戒重點】"
 }
 
-private fun getNwsInstructionLabel(language: AppLanguage): String = when (language) {
+internal fun getNwsInstructionLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【避難・安全確保行動】"
     AppLanguage.ENGLISH -> "【Recommended Actions】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【避险与安全防护行动】"
     AppLanguage.TRADITIONAL_CHINESE -> "【避難與安全防護行動】"
 }
 
-private fun getNwsDescriptionLabel(language: AppLanguage): String = when (language) {
+internal fun getNwsDescriptionLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【詳細解説】"
     AppLanguage.ENGLISH -> "【Detailed Description】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【详细说明】"
     AppLanguage.TRADITIONAL_CHINESE -> "【詳細說明】"
 }
 
-private fun getGdacsDescriptionLabel(language: AppLanguage): String = when (language) {
+internal fun getGdacsDescriptionLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【災害概要】"
     AppLanguage.ENGLISH -> "【Disaster Summary】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【灾害概要】"
     AppLanguage.TRADITIONAL_CHINESE -> "【災害概要】"
 }
 
-private fun getWmoOverviewLabel(language: AppLanguage): String = when (language) {
+internal fun getWmoOverviewLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【災害概要・警報状況】"
     AppLanguage.ENGLISH -> "【Disaster Overview & Status】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【灾害概要与预警情况】"
     AppLanguage.TRADITIONAL_CHINESE -> "【災害概要與預警情況】"
 }
 
-private fun getWmoAreaLabel(language: AppLanguage): String = when (language) {
+internal fun getWmoAreaLabel(language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> "【対象地域】"
     AppLanguage.ENGLISH -> "【Affected Area】"
     AppLanguage.SIMPLIFIED_CHINESE -> "【影响区域】"
     AppLanguage.TRADITIONAL_CHINESE -> "【受影響區域】"
 }
 
-private fun getExpandCollapseDescription(isExpanded: Boolean, language: AppLanguage): String = when (language) {
+internal fun getMeteoAlarmOverviewLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.JAPANESE -> "【気象警報状況・解説】"
+    AppLanguage.ENGLISH -> "【Weather Warning & Details】"
+    AppLanguage.SIMPLIFIED_CHINESE -> "【气象预警情况与详情】"
+    AppLanguage.TRADITIONAL_CHINESE -> "【氣象警報情況與詳情】"
+}
+
+internal fun getMeteoAlarmInstructionLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.JAPANESE -> "【防災行動・指示】"
+    AppLanguage.ENGLISH -> "【Recommended Safety Actions】"
+    AppLanguage.SIMPLIFIED_CHINESE -> "【防灾避险与应对行动】"
+    AppLanguage.TRADITIONAL_CHINESE -> "【防災避險與應對行動】"
+}
+
+internal fun getMeteoAlarmAreaLabel(language: AppLanguage): String = when (language) {
+    AppLanguage.JAPANESE -> "【対象地域】"
+    AppLanguage.ENGLISH -> "【Affected Region】"
+    AppLanguage.SIMPLIFIED_CHINESE -> "【影响区域】"
+    AppLanguage.TRADITIONAL_CHINESE -> "【受影響區域】"
+}
+
+internal fun getExpandCollapseDescription(isExpanded: Boolean, language: AppLanguage): String = when (language) {
     AppLanguage.JAPANESE -> if (isExpanded) "折りたたむ" else "詳細を見る"
     AppLanguage.ENGLISH -> if (isExpanded) "Collapse" else "View details"
     AppLanguage.SIMPLIFIED_CHINESE -> if (isExpanded) "折叠" else "查看详情"
@@ -984,7 +1355,7 @@ private fun getExpandCollapseDescription(isExpanded: Boolean, language: AppLangu
 /**
  * 警報カードの説明文整形（多言語対応）
  */
-private fun formatWarningDescription(
+internal fun formatWarningDescription(
     rawTitle: String,
     headlineText: String?,
     language: AppLanguage

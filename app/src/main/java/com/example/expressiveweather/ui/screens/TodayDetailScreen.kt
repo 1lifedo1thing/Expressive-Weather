@@ -174,7 +174,6 @@ fun TodayDetailScreen(
             LocalAppLanguage provides language,
             LocalAppStrings provides strings
         ) {
-            BackHandler(onBack = onBack)
             val themeColorScheme = MaterialTheme.colorScheme
             val themeSurface = themeColorScheme.surface
             val themeContainer = themeColorScheme.surfaceContainer
@@ -349,22 +348,24 @@ fun TodayDetailScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .graphicsLayer {
-                                compositingStrategy = CompositingStrategy.Offscreen
+                                compositingStrategy = if (scrollProgress > 0.01f) CompositingStrategy.Offscreen else CompositingStrategy.Auto
                             }
                             .drawWithContent {
                                 drawContent()
-                                val topAlpha = 1f - scrollProgress
-                                drawRect(
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            Color.Black.copy(alpha = topAlpha),
-                                            Color.Black
+                                if (scrollProgress > 0.01f) {
+                                    val topAlpha = (1f - scrollProgress).coerceIn(0f, 1f)
+                                    drawRect(
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                Color.Black.copy(alpha = topAlpha),
+                                                Color.Black
+                                            ),
+                                            startY = 0f,
+                                            endY = fadeHeightPx
                                         ),
-                                        startY = 0f,
-                                        endY = fadeHeightPx
-                                    ),
-                                    blendMode = BlendMode.DstIn
-                                )
+                                        blendMode = BlendMode.DstIn
+                                    )
+                                }
                             }
                             .verticalScroll(scrollState)
                             .padding(horizontal = 20.dp, vertical = 6.dp)

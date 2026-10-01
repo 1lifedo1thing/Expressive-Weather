@@ -43,8 +43,13 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         private const val PREFS_NAME = "expressive_weather_prefs"
         private const val KEY_LAST_UPDATE_TIME = "last_bg_weather_update_time_ms"
         private const val KEY_LAST_UPDATE_CITY = "last_bg_weather_update_city"
+        private const val KEY_LAST_UPDATE_LAT = "last_bg_weather_update_lat"
+        private const val KEY_LAST_UPDATE_LON = "last_bg_weather_update_lon"
         private const val KEY_LAST_UPDATE_STATUS = "last_bg_weather_update_status"
         private const val REQUEST_CODE_ALARM = 4001
+        private const val REQUEST_CODE_LOCATION_PENDING = 4002
+
+        const val ACTION_LOCATION_CHANGED = "com.example.expressiveweather.action.LOCATION_CHANGED"
 
         @Volatile
         private var INSTANCE: WeatherBackgroundUpdateManager? = null
@@ -62,8 +67,34 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         }
     }
 
+    private fun getLocationPendingIntent(): PendingIntent {
+        val intent = Intent(context, WeatherUpdateReceiver::class.java).apply {
+            action = ACTION_LOCATION_CHANGED
+        }
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0)
+        return PendingIntent.getBroadcast(context, REQUEST_CODE_LOCATION_PENDING, intent, flags)
+    }
+
+    private fun registerBackgroundLocationUpdates() {
+        try {
+            locationProvider.registerBackgroundLocationUpdates(getLocationPendingIntent())
+            Log.d(TAG, "Registered background location change listener via PendingIntent.")
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to register background location updates: ${e.message}")
+        }
+    }
+
+    private fun unregisterBackgroundLocationUpdates() {
+        try {
+            locationProvider.unregisterBackgroundLocationUpdates(getLocationPendingIntent())
+            Log.d(TAG, "Unregistered background location change listener.")
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed to unregister background location updates: ${e.message}")
+        }
+    }
+
     /**
-     * すべてのスケジュール機構（WorkManager, AlarmManager, In-Memoryループ）を一括設定
+     * すべてのスケジュール機構（WorkManager, AlarmManager, バックグラウンド位置変更リスナー, In-Memoryループ）を一括設定
      */
     fun scheduleAll() {
         val interval = weatherRepository.getWeatherUpdateInterval()
@@ -76,6 +107,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
 
         scheduleWorkManager(interval)
         scheduleNextAlarm()
+        registerBackgroundLocationUpdates()
         startPeriodicUpdate()
     }
 
@@ -99,6 +131,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
             Log.w(TAG, "Error cancelling WorkManager work: ${e.message}")
         }
         cancelAlarm()
+        unregisterBackgroundLocationUpdates()
         periodicJob?.cancel()
         periodicJob = null
     }
@@ -273,9 +306,12 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         Log.d(TAG, "=== Starting Scheduled Background Weather Update ===")
 
         try {
+            var currentGpsLocation: android.location.Location? = null
+
             // 1. 対象の主都市（現在地、または最後に選択された都市/デフォルト都市）を特定
             val primaryCity: City = if (locationProvider.hasLocationPermission()) {
-                val loc = locationProvider.getCurrentLocation(forceFresh = false)
+                val loc = locationProvider.getCurrentLocation(forceFresh = true)
+                currentGpsLocation = loc
                 if (loc != null) {
                     val resolved = locationProvider.resolveCity(loc)
                     Log.d(TAG, "Primary target resolved from current GPS: ${resolved.name} (${resolved.latitude}, ${resolved.longitude})")
@@ -296,15 +332,18 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
             val weatherData = weatherRepository.refresh(primaryCity)
             Log.d(TAG, "Weather data successfully cached in Room for ${primaryCity.name}: ${weatherData.currentTempC}°C, ${weatherData.condition}")
 
-            // 3. 降雨ナウキャストの評価とステータスバー・ライブ通知の更新
+            // 3. 降雨ナウキャストの評価とステータスバー・ライブ通知の更新（現在位置座標を伝達）
             val nowcast = weatherData.precipitationNowcast
-            if (nowcast != null) {
+            if (nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining ?: 0) > 0) {
                 Log.d(TAG, "Precipitation nowcast active for ${primaryCity.name}: ${nowcast.headline} (${nowcast.minutesRemaining} min). Updating live notification.")
                 PrecipitationLiveNotificationManager.updateRainLiveNotification(
                     context,
                     nowcast,
-                    primaryCity.name
+                    primaryCity.name,
+                    currentGpsLocation
                 )
+            } else if (PrecipitationLiveNotificationManager.currentActiveNowcast != null) {
+                PrecipitationLiveNotificationManager.onRainStoppedAtNewLocation(context, primaryCity.name)
             } else {
                 PrecipitationLiveNotificationManager.cancel(context)
             }
@@ -316,13 +355,90 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                 Log.w(TAG, "Kikikuru alert check error in background: ${e.message}")
             }
 
-            // 5. 最終更新時刻とステータスを記録（現在地のみを確実に更新）
-            saveUpdateSuccess(primaryCity.name)
+            // 5. 最終更新時刻・座標・ステータスを記録
+            saveUpdateSuccess(primaryCity.name, currentGpsLocation?.latitude, currentGpsLocation?.longitude)
             Log.d(TAG, "=== Background Weather Update Completed Successfully for ${primaryCity.name} (Current Location Only) ===")
             true
         } catch (e: Exception) {
             Log.e(TAG, "Background weather update failed: ${e.message}", e)
             saveUpdateFailure(e.message ?: "Unknown error")
+            false
+        }
+    }
+
+    /**
+     * バックグラウンドで端末の現在位置が移動した際の高精度自動追従処理
+     * 移動距離が100m以上の場合に新地点の気象データおよび降水ナウキャストを再取得
+     */
+    suspend fun onBackgroundLocationChanged(newLocation: android.location.Location): Boolean = withContext(Dispatchers.IO) {
+        val interval = weatherRepository.getWeatherUpdateInterval()
+        if (interval == WeatherUpdateInterval.OFF) {
+            Log.d(TAG, "onBackgroundLocationChanged ignored: updates are OFF.")
+            return@withContext true
+        }
+
+        val lastLat = getLastUpdateLat()
+        val lastLon = getLastUpdateLon()
+
+        val distance = if (lastLat != null && lastLon != null) {
+            val prevLoc = android.location.Location("last").apply {
+                latitude = lastLat
+                longitude = lastLon
+            }
+            prevLoc.distanceTo(newLocation)
+        } else {
+            Float.MAX_VALUE
+        }
+
+        if (distance < 100f) {
+            Log.d(TAG, "Background location jitter: moved ${distance.toInt()}m < 100m threshold. Skipping update.")
+            return@withContext true
+        }
+
+        Log.d(TAG, "=== Background Location Changed: Moved ${distance.toInt()}m to (${newLocation.latitude}, ${newLocation.longitude}) ===")
+
+        try {
+            // 1. 新地点の市区町村・地名を逆ジオコーディング
+            val primaryCity = locationProvider.resolveCity(newLocation)
+            Log.d(TAG, "Resolved new location city: ${primaryCity.name} (${primaryCity.country})")
+
+            // 2. 新地点の最新気象データ・降雨ナウキャストを取得＆Roomキャッシュ
+            val weatherData = weatherRepository.refresh(primaryCity)
+            Log.d(TAG, "Weather refreshed for ${primaryCity.name}: ${weatherData.currentTempC}°C, condition: ${weatherData.condition}")
+
+            // 3. 降雨ナウキャストの評価とLive Notification更新（移動追従）
+            val nowcast = weatherData.precipitationNowcast
+            if (nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining ?: 0) > 0) {
+                Log.d(TAG, "Active nowcast at new location ${primaryCity.name}: ${nowcast.headline} (${nowcast.minutesRemaining}m). Updating Live Updates.")
+                PrecipitationLiveNotificationManager.updateRainLiveNotification(
+                    context,
+                    nowcast,
+                    primaryCity.name,
+                    newLocation
+                )
+            } else if (PrecipitationLiveNotificationManager.currentActiveNowcast != null) {
+                Log.d(TAG, "Rain ceased at new location ${primaryCity.name}. Posting rain stopped notification.")
+                PrecipitationLiveNotificationManager.onRainStoppedAtNewLocation(context, primaryCity.name)
+            }
+
+            // 4. キキクル・気象警報の移動先再判定
+            try {
+                KikikuruBackgroundMonitor.getInstance(context).onLocationUpdated(
+                    newLocation,
+                    primaryCity.name,
+                    primaryCity.country
+                )
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed updating Kikikuru on location shift: ${e.message}")
+            }
+
+            // 5. 最終更新位置と時刻を保存
+            saveUpdateSuccess(primaryCity.name, newLocation.latitude, newLocation.longitude)
+            Log.d(TAG, "=== Background Location Following Completed Successfully for ${primaryCity.name} ===")
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Error handling background location shift: ${e.message}", e)
+            saveUpdateFailure(e.message ?: "Unknown location update error")
             false
         }
     }
@@ -344,6 +460,30 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
     }
 
     /**
+     * 最終更新された緯度を取得
+     */
+    fun getLastUpdateLat(): Double? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return if (prefs.contains(KEY_LAST_UPDATE_LAT)) {
+            prefs.getFloat(KEY_LAST_UPDATE_LAT, 0f).toDouble()
+        } else {
+            null
+        }
+    }
+
+    /**
+     * 最終更新された経度を取得
+     */
+    fun getLastUpdateLon(): Double? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return if (prefs.contains(KEY_LAST_UPDATE_LON)) {
+            prefs.getFloat(KEY_LAST_UPDATE_LON, 0f).toDouble()
+        } else {
+            null
+        }
+    }
+
+    /**
      * バッテリー最適化除外（制限なし）状態かどうか
      */
     fun isBatteryOptimizationIgnored(): Boolean {
@@ -355,13 +495,18 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         }
     }
 
-    private fun saveUpdateSuccess(cityName: String) {
-        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+    private fun saveUpdateSuccess(cityName: String, lat: Double? = null, lon: Double? = null) {
+        val editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .edit()
             .putLong(KEY_LAST_UPDATE_TIME, System.currentTimeMillis())
             .putString(KEY_LAST_UPDATE_CITY, cityName)
             .putString(KEY_LAST_UPDATE_STATUS, "SUCCESS")
-            .apply()
+
+        if (lat != null && lon != null) {
+            editor.putFloat(KEY_LAST_UPDATE_LAT, lat.toFloat())
+            editor.putFloat(KEY_LAST_UPDATE_LON, lon.toFloat())
+        }
+        editor.apply()
     }
 
     private fun saveUpdateFailure(error: String) {

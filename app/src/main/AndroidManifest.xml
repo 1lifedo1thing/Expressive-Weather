@@ -74,6 +74,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.screens.AlertDetailActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".ui.screens.SetupActivity"
             android:exported="true" />
 
@@ -83,7 +87,13 @@
             android:exported="false"
             android:foregroundServiceType="dataSync|location" />
 
-        <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (AlarmManager & Boot復元) -->
+        <!-- 雨雲接近 & 降り止み Live Updates 常駐フォアグラウンドサービス (現在位置自動追従) -->
+        <service
+            android:name=".data.PrecipitationLiveService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync|location" />
+
+        <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (AlarmManager, 位置変更 & Boot復元) -->
         <receiver
             android:name=".data.WeatherUpdateReceiver"
             android:exported="true">
@@ -91,6 +101,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="com.example.expressiveweather.action.ALARM_WEATHER_UPDATE" />
+                <action android:name="com.example.expressiveweather.action.LOCATION_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

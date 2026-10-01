@@ -99,8 +99,9 @@ fun WeatherFooterStatusSection(
         getDataSourcesList(isJapan, isUs, currentLang)
     }
 
+    val cardShape = RoundedCornerShape(32.dp)
     Card(
-        shape = RoundedCornerShape(32.dp),
+        shape = cardShape,
         colors = CardDefaults.cardColors(
             containerColor = cardColor
         ),
@@ -108,7 +109,7 @@ fun WeatherFooterStatusSection(
         elevation = CardDefaults.cardElevation(0.dp),
         modifier = modifier
             .fillMaxWidth()
-            .frostedGlassEffect(hazeState, isFrostedGlassEnabled)
+            .frostedGlassEffect(hazeState, isFrostedGlassEnabled, shape = cardShape)
             .snowTileAccumulation(
                 isSnowing = isSnowing,
                 isDark = isDark,

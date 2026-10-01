@@ -65,10 +65,14 @@ class SettingsActivity : ComponentActivity() {
         val isWmoAlertsEnabled = SettingsDataHolder.isWmoAlertsEnabled
         val isWmoAlwaysEnabled = SettingsDataHolder.isWmoAlwaysEnabled
         val isWmoTest = SettingsDataHolder.isWmoTestEnabled
+        val isMeteoAlarmAlertsEnabled = SettingsDataHolder.isMeteoAlarmAlertsEnabled
+        val isMeteoAlarmTest = SettingsDataHolder.isMeteoAlarmTestEnabled
         val onToggleGdacsAlerts = SettingsDataHolder.onToggleGdacsAlerts ?: {}
         val onToggleWmoAlerts = SettingsDataHolder.onToggleWmoAlerts ?: {}
         val onToggleWmoAlways = SettingsDataHolder.onToggleWmoAlways ?: {}
         val onToggleWmo = SettingsDataHolder.onToggleWmoTest ?: {}
+        val onToggleMeteoAlarmAlerts = SettingsDataHolder.onToggleMeteoAlarmAlerts ?: {}
+        val onToggleMeteoAlarm = SettingsDataHolder.onToggleMeteoAlarmTest ?: {}
         val onToggleNws = SettingsDataHolder.onToggleNwsTest ?: {}
         val onToggleGdacs = SettingsDataHolder.onToggleGdacsTest ?: {}
         val onCyclePrecipitationDemo = SettingsDataHolder.onCyclePrecipitationDemo ?: {}
@@ -104,6 +108,8 @@ class SettingsActivity : ComponentActivity() {
                 isWmoAlertsEnabled = isWmoAlertsEnabled,
                 isWmoAlwaysEnabled = isWmoAlwaysEnabled,
                 isWmoTestEnabled = isWmoTest,
+                isMeteoAlarmAlertsEnabled = isMeteoAlarmAlertsEnabled,
+                isMeteoAlarmTestEnabled = isMeteoAlarmTest,
                 initialSection = initialSection,
                 onToggleWeatherAdaptiveTheme = onToggleTheme,
                 onSelectThemePreset = onSelectPreset,
@@ -121,6 +127,8 @@ class SettingsActivity : ComponentActivity() {
                 onToggleWmoAlerts = onToggleWmoAlerts,
                 onToggleWmoAlways = onToggleWmoAlways,
                 onToggleWmoTest = onToggleWmo,
+                onToggleMeteoAlarmAlerts = onToggleMeteoAlarmAlerts,
+                onToggleMeteoAlarmTest = onToggleMeteoAlarm,
                 onCyclePrecipitationDemo = onCyclePrecipitationDemo,
                 onToggleTemperatureUnit = onToggleUnit,
                 onSelectWindSpeedUnit = onSelectWindUnit,

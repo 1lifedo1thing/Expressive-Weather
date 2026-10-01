@@ -228,7 +228,6 @@ fun WeatherBentoGrid(
                             scaleY = scale
                         }
                         .zIndex(if (isDragging) 100f else if (isSettling) 50f else 1f)
-                        .frostedGlassEffect(hazeState, isFrostedGlassEnabled)
                         .snowTileAccumulation(
                             isSnowing = isSnowing,
                             isDark = atmosphere.isDark,

@@ -51,6 +51,10 @@ object PrecipitationLiveNotificationManager {
         private set
 
     @Volatile
+    var currentActiveLocation: android.location.Location? = null
+        private set
+
+    @Volatile
     var isTestActive: Boolean = false
         private set
 
@@ -273,12 +277,33 @@ object PrecipitationLiveNotificationManager {
     }
 
     /**
+     * フォアグラウンドサービス起動直後に OS へ提示する安全な初期通知
+     * ForegroundServiceDidNotStartInTimeException を 100% 抑止するために使用
+     */
+    fun buildSafeForegroundNotification(context: Context): Notification {
+        createNotificationChannel(context)
+        val nowcast = currentActiveNowcast
+        if (nowcast != null && nowcast.isLiveActive) {
+            return buildRainLiveNotification(context, nowcast, currentActiveCityName.ifBlank { "現在地" })
+        }
+        val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle("雨雲接近・降雨予測を監視中")
+            .setContentText("現在地の最新気象レーダーを受信待機しています")
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setOngoing(true)
+            .setAutoCancel(false)
+        return builder.build()
+    }
+
+    /**
      * 降雨予測に基づく Live Updates 通知の更新または終了
      */
     fun updateRainLiveNotification(
         context: Context,
         nowcast: PrecipitationNowcast,
-        cityName: String
+        cityName: String,
+        location: android.location.Location? = null
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -307,35 +332,138 @@ object PrecipitationLiveNotificationManager {
 
         currentActiveNowcast = nowcast
         currentActiveCityName = cityName
+        if (location != null) {
+            currentActiveLocation = location
+        }
 
+        // Android 16+ Rich Ongoing Notifications / Galaxy Now Bar と結合した常駐フォアグラウンドサービスを起動
+        // これにより、バックグラウンドでもOSによるプロセス強制終了や測位制限を受けずに移動追従を継続可能
         try {
-            val notification = buildRainLiveNotification(context, nowcast, cityName)
-            notificationManager.notify(NOTIFICATION_ID, notification)
-            startTickerIfNeeded(context)
-            Log.d(TAG, "Dispatched Rain Live Countdown Notification: ${nowcast.headline} (${nowcast.minutesRemaining}m)")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to dispatch rain live notification: ${e.message}", e)
+            PrecipitationLiveService.startOrUpdate(context)
+            Log.d(TAG, "Triggered PrecipitationLiveService for $cityName: ${nowcast.headline} (${nowcast.minutesRemaining}m)")
+        } catch (e: Throwable) {
+            Log.w(TAG, "Failed to start PrecipitationLiveService, falling back to direct notification: ${e.message}")
+            try {
+                val notification = buildRainLiveNotification(context, nowcast, cityName)
+                notificationManager.notify(NOTIFICATION_ID, notification)
+                startTickerIfNeeded(context)
+            } catch (ex: Exception) {
+                Log.e(TAG, "Failed direct notification dispatch: ${ex.message}", ex)
+            }
         }
     }
 
     /**
-     * 1分毎に残り分数を更新するリアルタイムタイカー
+     * サービスやバックグラウンド更新処理から内部ナウキャスト状態を同期更新
      */
-    private fun startTickerIfNeeded(context: Context) {
+    fun updateActiveNowcastFromBackground(
+        context: Context,
+        nowcast: PrecipitationNowcast,
+        cityName: String,
+        location: android.location.Location? = null
+    ) {
+        currentActiveNowcast = nowcast
+        currentActiveCityName = cityName
+        if (location != null) {
+            currentActiveLocation = location
+        }
+    }
+
+    /**
+     * 移動先で雨が止んだことを検知した際、または降雨終了時の通知表示と完了処理
+     */
+    fun onRainStoppedAtNewLocation(context: Context, cityName: String) {
+        val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val language = SettingsDataHolder.language
+
+        val finishChip = when (language) {
+            AppLanguage.ENGLISH -> "Rain has stopped"
+            AppLanguage.SIMPLIFIED_CHINESE -> "雨已经停了"
+            AppLanguage.TRADITIONAL_CHINESE -> "雨已經停了"
+            AppLanguage.JAPANESE -> "雨が止みました"
+        }
+        val targetCity = cityName.ifBlank { currentActiveCityName }
+        val finishTitle = "$finishChip • $targetCity"
+
+        val finishNotif = NotificationCompat.Builder(context, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setContentTitle(finishTitle)
+            .setContentText(finishChip)
+            .setSubText(finishChip)
+            .setAutoCancel(true)
+            .setOngoing(false)
+            .build()
+        nm.notify(NOTIFICATION_ID, finishNotif)
+
+        // 状態を初期化しサービスとタイカーを停止
+        cancel(context)
+    }
+
+    /**
+     * 1分毎に残り分数を更新するリアルタイムタイカー（サービス非稼働時のフォールバックおよびインメモリ管理用）
+     */
+    fun startTickerIfNeeded(context: Context) {
         if (tickerJob?.isActive == true) return
         tickerJob = managerScope.launch {
+            val locationProvider = CurrentLocationProvider(context)
+            var tickCount = 0
+
             while (isActive) {
                 delay(60 * 1000L) // 1分間隔
+                tickCount++
+
                 val nowcast = currentActiveNowcast ?: break
                 val targetMillis = nowcast.targetTimestampMillis ?: break
                 val now = System.currentTimeMillis()
                 val remainingMin = ((targetMillis - now) / 60000L).toInt()
 
+                // フォールバックモードでも現在地の移動を監視
+                val freshLoc = locationProvider.getCurrentLocation(forceFresh = false)
+                val prevLoc = currentActiveLocation
+                val movedDistance = if (freshLoc != null && prevLoc != null) prevLoc.distanceTo(freshLoc) else 0f
+
+                if (freshLoc != null && (movedDistance >= 75f || tickCount % 3 == 0)) {
+                    try {
+                        val newCity = locationProvider.resolveCity(freshLoc)
+                        val repo = WeatherRepository(context = context)
+                        val weatherData = repo.refresh(newCity)
+                        val freshNowcast = weatherData.precipitationNowcast
+                        if (freshNowcast != null && freshNowcast.isLiveActive && (freshNowcast.minutesRemaining ?: 0) > 0) {
+                            currentActiveLocation = freshLoc
+                            currentActiveNowcast = freshNowcast
+                            currentActiveCityName = newCity.name
+                            val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                            nm.notify(NOTIFICATION_ID, buildRainLiveNotification(context, freshNowcast, newCity.name))
+                            continue
+                        } else {
+                            onRainStoppedAtNewLocation(context, newCity.name)
+                            break
+                        }
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Fallback ticker location follow error: ${e.message}")
+                    }
+                }
+
                 if (remainingMin <= 0) {
                     // カウントダウン完了
                     val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    val finishChip = if (nowcast.status == RainStatus.RAIN_APPROACHING) "雨が降り始めました" else "雨が止みました"
-                    val finishTitle = if (nowcast.status == RainStatus.RAIN_APPROACHING) "雨が降り始めました • $currentActiveCityName" else "雨が止みました • $currentActiveCityName"
+                    val language = SettingsDataHolder.language
+                    val isApproaching = nowcast.status == RainStatus.RAIN_APPROACHING
+                    val finishChip = when {
+                        isApproaching -> when (language) {
+                            AppLanguage.ENGLISH -> "Rain has started"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "开始下雨了"
+                            AppLanguage.TRADITIONAL_CHINESE -> "開始下雨了"
+                            AppLanguage.JAPANESE -> "雨が降り始めました"
+                        }
+                        else -> when (language) {
+                            AppLanguage.ENGLISH -> "Rain has stopped"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "雨已经停了"
+                            AppLanguage.TRADITIONAL_CHINESE -> "雨已經停了"
+                            AppLanguage.JAPANESE -> "雨が止みました"
+                        }
+                    }
+                    val finishTitle = "$finishChip • $currentActiveCityName"
                     val finishNotif = NotificationCompat.Builder(context, CHANNEL_ID)
                         .setSmallIcon(android.R.drawable.stat_sys_warning)
                         .setContentTitle(finishTitle)
@@ -368,14 +496,19 @@ object PrecipitationLiveNotificationManager {
     }
 
     /**
-     * 通知の消去およびタイカー停止
+     * 通知の消去およびサービス・タイカー停止
      */
     fun cancel(context: Context) {
         isTestActive = false
         currentActiveNowcast = null
         currentActiveCityName = ""
+        currentActiveLocation = null
         tickerJob?.cancel()
         tickerJob = null
+
+        // フォアグラウンドサービスを安全に停止
+        PrecipitationLiveService.stop(context)
+
         val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         nm.cancel(NOTIFICATION_ID)
     }

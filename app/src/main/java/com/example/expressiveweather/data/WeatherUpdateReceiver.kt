@@ -38,6 +38,36 @@ class WeatherUpdateReceiver : BroadcastReceiver() {
                 }
             }
 
+            WeatherBackgroundUpdateManager.ACTION_LOCATION_CHANGED -> {
+                val location: android.location.Location? = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableExtra(android.location.LocationManager.KEY_LOCATION_CHANGED, android.location.Location::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableExtra(android.location.LocationManager.KEY_LOCATION_CHANGED)
+                } ?: run {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableArrayListExtra("locations", android.location.Location::class.java)?.lastOrNull()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        intent.getParcelableArrayListExtra<android.location.Location>("locations")?.lastOrNull()
+                    }
+                }
+
+                if (location != null) {
+                    Log.d(TAG, "Location changed broadcast received: (${location.latitude}, ${location.longitude})")
+                    val pendingResult = goAsync()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            WeatherBackgroundUpdateManager.getInstance(context).onBackgroundLocationChanged(location)
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Failed handling background location change: ${e.message}", e)
+                        } finally {
+                            pendingResult.finish()
+                        }
+                    }
+                }
+            }
+
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 Log.d(TAG, "System event $action: Rescheduling all background weather workers & alarms.")

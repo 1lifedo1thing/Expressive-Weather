@@ -178,7 +178,11 @@ class CurrentLocationProvider(private val context: Context) {
      * 返り値のラムダを実行することで購読解除が可能
      */
     @SuppressLint("MissingPermission")
-    fun startLocationUpdates(onLocationChanged: (Location) -> Unit): () -> Unit {
+    fun startLocationUpdates(
+        minTime: Long = 5_000L,
+        minDistance: Float = 30f,
+        onLocationChanged: (Location) -> Unit
+    ): () -> Unit {
         if (!hasLocationPermission() || locationManager == null) return {}
 
         val listener = android.location.LocationListener { location ->
@@ -207,8 +211,8 @@ class CurrentLocationProvider(private val context: Context) {
             try {
                 locationManager.requestLocationUpdates(
                     provider,
-                    5_000L,
-                    30f,
+                    minTime,
+                    minDistance,
                     listener,
                     context.mainLooper
                 )
@@ -220,6 +224,59 @@ class CurrentLocationProvider(private val context: Context) {
                 locationManager.removeUpdates(listener)
             } catch (_: Exception) {}
         }
+    }
+
+    /**
+     * バックグラウンド位置変更（PendingIntent）を登録
+     * 省電力のためデフォルトで5分または250m移動間隔でOSから通知
+     */
+    @SuppressLint("MissingPermission")
+    fun registerBackgroundLocationUpdates(
+        pendingIntent: android.app.PendingIntent,
+        minTime: Long = 5 * 60 * 1000L,
+        minDistance: Float = 250f
+    ) {
+        if (!hasLocationPermission() || locationManager == null) return
+
+        val providers = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                if (locationManager.isProviderEnabled(LocationManager.FUSED_PROVIDER)) {
+                    providers.add(LocationManager.FUSED_PROVIDER)
+                }
+            } catch (_: Exception) {}
+        }
+        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            providers.add(LocationManager.GPS_PROVIDER)
+        }
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+            providers.add(LocationManager.NETWORK_PROVIDER)
+        }
+        if (locationManager.isProviderEnabled(LocationManager.PASSIVE_PROVIDER)) {
+            providers.add(LocationManager.PASSIVE_PROVIDER)
+        }
+
+        for (provider in providers) {
+            try {
+                locationManager.requestLocationUpdates(
+                    provider,
+                    minTime,
+                    minDistance,
+                    pendingIntent
+                )
+            } catch (_: Exception) {}
+        }
+    }
+
+    /**
+     * バックグラウンド位置変更（PendingIntent）の登録解除
+     */
+    @SuppressLint("MissingPermission")
+    fun unregisterBackgroundLocationUpdates(pendingIntent: android.app.PendingIntent) {
+        if (locationManager == null) return
+        try {
+            locationManager.removeUpdates(pendingIntent)
+        } catch (_: Exception) {}
     }
 
     /**

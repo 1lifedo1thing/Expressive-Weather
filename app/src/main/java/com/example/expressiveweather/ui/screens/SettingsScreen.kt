@@ -80,6 +80,8 @@ fun SettingsScreen(
     isWmoAlertsEnabled: Boolean = true,
     isWmoAlwaysEnabled: Boolean = false,
     isWmoTestEnabled: Boolean = false,
+    isMeteoAlarmAlertsEnabled: Boolean = true,
+    isMeteoAlarmTestEnabled: Boolean = false,
     initialSection: String = SettingsDataHolder.SECTION_ALL,
     onToggleWeatherAdaptiveTheme: () -> Unit,
     onSelectThemePreset: (ThemePreset) -> Unit = {},
@@ -97,6 +99,8 @@ fun SettingsScreen(
     onToggleWmoAlerts: (Boolean) -> Unit = {},
     onToggleWmoAlways: (Boolean) -> Unit = {},
     onToggleWmoTest: (Boolean) -> Unit = {},
+    onToggleMeteoAlarmAlerts: (Boolean) -> Unit = {},
+    onToggleMeteoAlarmTest: (Boolean) -> Unit = {},
     onCyclePrecipitationDemo: () -> Unit = {},
     onToggleTemperatureUnit: () -> Unit,
     onSelectWindSpeedUnit: (WindSpeedUnit) -> Unit = {},
@@ -122,6 +126,8 @@ fun SettingsScreen(
     var currentWmoAlerts by remember(isWmoAlertsEnabled) { mutableStateOf(isWmoAlertsEnabled) }
     var currentWmoAlways by remember(isWmoAlwaysEnabled) { mutableStateOf(isWmoAlwaysEnabled) }
     var currentWmoTest by remember(isWmoTestEnabled) { mutableStateOf(isWmoTestEnabled) }
+    var currentMeteoAlarmAlerts by remember(isMeteoAlarmAlertsEnabled) { mutableStateOf(isMeteoAlarmAlertsEnabled) }
+    var currentMeteoAlarmTest by remember(isMeteoAlarmTestEnabled) { mutableStateOf(isMeteoAlarmTestEnabled) }
     val isSystemDark = isSystemInDarkTheme()
     val isDark = ThemeMode.resolveIsDark(
         themeMode = currentThemeMode,
@@ -1094,7 +1100,41 @@ fun SettingsScreen(
                                 }
                             )
 
-                            // 4. WMO公式気象警報（海外専用）
+                            // 4. MeteoAlarm 欧州公式気象警報（欧州専用）
+                            Android15SettingsCard(
+                                title = when (currentLang) {
+                                    AppLanguage.JAPANESE -> "MeteoAlarm 欧州公式気象警報"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "MeteoAlarm 欧洲官方气象预警"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "MeteoAlarm 歐洲官方氣象警報"
+                                    AppLanguage.ENGLISH -> "MeteoAlarm Official European Alerts"
+                                },
+                                subtitle = when (currentLang) {
+                                    AppLanguage.JAPANESE -> "EUMETNET加盟の欧州39カ国の国立気象機関による公式警報（最優先取得）"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "获取EUMETNET欧洲39国国家气象机构的官方预警（最优先）"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "擷取EUMETNET歐洲39國國家氣象機構的官方警報（最優先）"
+                                    AppLanguage.ENGLISH -> "Official weather warnings from 39 European national met services (EUMETNET - highest priority)"
+                                },
+                                icon = Icons.Rounded.Warning,
+                                iconBackgroundColor = colorScheme.secondaryContainer,
+                                iconTintColor = colorScheme.onSecondaryContainer,
+                                position = ConnectedCardPosition.Middle,
+                                trailing = {
+                                    Switch(
+                                        checked = currentMeteoAlarmAlerts,
+                                        onCheckedChange = { checked ->
+                                            currentMeteoAlarmAlerts = checked
+                                            onToggleMeteoAlarmAlerts(checked)
+                                        }
+                                    )
+                                },
+                                onClick = {
+                                    val next = !currentMeteoAlarmAlerts
+                                    currentMeteoAlarmAlerts = next
+                                    onToggleMeteoAlarmAlerts(next)
+                                }
+                            )
+
+                            // 5. WMO公式気象警報（海外専用）
                             Android15SettingsCard(
                                 title = when (currentLang) {
                                     AppLanguage.JAPANESE -> "WMO公式気象警報（海外専用）"
@@ -1103,10 +1143,10 @@ fun SettingsScreen(
                                     AppLanguage.ENGLISH -> "WMO Official Alerts (International)"
                                 },
                                 subtitle = when (currentLang) {
-                                    AppLanguage.JAPANESE -> "世界190カ国以上の国家気象警報を取得（日本・米国除く）"
-                                    AppLanguage.SIMPLIFIED_CHINESE -> "获取全球190多个国家官方预警（日本/美国除外）"
-                                    AppLanguage.TRADITIONAL_CHINESE -> "擷取全球190多個國家官方預警（日本/美國除外）"
-                                    AppLanguage.ENGLISH -> "Official weather alerts across 190+ countries (excl. JP & US)"
+                                    AppLanguage.JAPANESE -> "世界190カ国以上の国家気象警報を取得（日本・米国・MeteoAlarm対象国除く）"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "获取全球190多个国家官方预警（日本/美国/MeteoAlarm覆盖国除外）"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "擷取全球190多個國家官方預警（日本/美國/MeteoAlarm覆蓋國除外）"
+                                    AppLanguage.ENGLISH -> "Official weather alerts across 190+ countries (excl. JP, US & MeteoAlarm)"
                                 },
                                 icon = Icons.Rounded.Public,
                                 iconBackgroundColor = colorScheme.primaryContainer,
@@ -1128,19 +1168,19 @@ fun SettingsScreen(
                                 }
                             )
 
-                            // 5. 常にWMOを有効化（日本・米国でも有効化）
+                            // 5. 常にWMOを有効化（日本・米国・MeteoAlarm対象国でも有効化）
                             Android15SettingsCard(
                                 title = when (currentLang) {
-                                    AppLanguage.JAPANESE -> "日本・米国でも常にWMOを有効化"
-                                    AppLanguage.SIMPLIFIED_CHINESE -> "日本/美国也始终启用WMO预警"
-                                    AppLanguage.TRADITIONAL_CHINESE -> "日本/美國也始終啟用WMO預警"
-                                    AppLanguage.ENGLISH -> "Always Enable WMO (including JP & US)"
+                                    AppLanguage.JAPANESE -> "日本・米国・MeteoAlarm対象国でも常にWMOを有効化"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "日本/美国/MeteoAlarm覆盖国也始终启用WMO预警"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "日本/美國/MeteoAlarm覆蓋國也始終啟用WMO預警"
+                                    AppLanguage.ENGLISH -> "Always Enable WMO (including JP, US & MeteoAlarm)"
                                 },
                                 subtitle = when (currentLang) {
-                                    AppLanguage.JAPANESE -> "直接取得（気象庁/NWS）に加えWMO警報も並行取得"
-                                    AppLanguage.SIMPLIFIED_CHINESE -> "在直接获取（气象厅/NWS）的基础上同步获取WMO预警"
-                                    AppLanguage.TRADITIONAL_CHINESE -> "在直接擷取（氣象廳/NWS）的基礎上同步擷取WMO預警"
-                                    AppLanguage.ENGLISH -> "Fetch WMO alerts in addition to JMA / NWS direct data"
+                                    AppLanguage.JAPANESE -> "直接取得（気象庁/NWS/MeteoAlarm）に加えWMO警報も並行取得"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "在直接获取（气象厅/NWS/MeteoAlarm）的基础上同步获取WMO预警"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "在直接擷取（氣象廳/NWS/MeteoAlarm）的基礎上同步擷取WMO預警"
+                                    AppLanguage.ENGLISH -> "Fetch WMO alerts in addition to JMA / NWS / MeteoAlarm direct data"
                                 },
                                 icon = Icons.Rounded.Sync,
                                 iconBackgroundColor = colorScheme.secondaryContainer,
@@ -1555,7 +1595,44 @@ fun SettingsScreen(
                                 }
                             )
 
-                            // 8. 雨雲接近・降雨LiveUpdatesテスト
+                            // 8. MeteoAlarm (欧州気象警報) テスト
+                            Android15SettingsCard(
+                                title = when (currentLang) {
+                                    AppLanguage.JAPANESE -> "MeteoAlarm 欧州気象警報テスト"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "测试MeteoAlarm欧洲气象预警"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "測試MeteoAlarm歐洲氣象警報"
+                                    AppLanguage.ENGLISH -> "Test MeteoAlarm European Alerts"
+                                },
+                                subtitle = when (currentLang) {
+                                    AppLanguage.JAPANESE -> "特別警戒(雪崩)・警戒(暴風)・注意(大雨)の欧州警報カードをテスト表示"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "在主屏测试显示特别警戒(雪崩)/警戒(大风)/注意(暴雨)欧洲预警"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "在主螢幕測試顯示特別警戒(雪崩)/警戒(大風)/注意(暴雨)歐洲警報"
+                                    AppLanguage.ENGLISH -> "Display sample European alerts (Avalanche, Wind, Rain)"
+                                },
+                                icon = Icons.Rounded.Warning,
+                                iconBackgroundColor = colorScheme.secondaryContainer,
+                                iconTintColor = colorScheme.onSecondaryContainer,
+                                position = ConnectedCardPosition.Middle,
+                                trailing = {
+                                    Switch(
+                                        checked = currentMeteoAlarmTest,
+                                        onCheckedChange = null
+                                    )
+                                },
+                                onClick = {
+                                    val next = !currentMeteoAlarmTest
+                                    currentMeteoAlarmTest = next
+                                    SettingsDataHolder.isMeteoAlarmTestEnabled = next
+                                    onToggleMeteoAlarmTest(next)
+                                    Toast.makeText(
+                                        context,
+                                        if (next) "MeteoAlarmテスト警報をONにしました" else "MeteoAlarmテスト警報をOFFにしました",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            )
+
+                            // 9. 雨雲接近・降雨LiveUpdatesテスト
                             Android15SettingsCard(
                                 title = when (currentLang) {
                                     AppLanguage.JAPANESE -> "雨雲LiveUpdates・カウントダウンテスト"

@@ -45,6 +45,8 @@ data class WeatherUiState(
     val isWmoAlertsEnabled: Boolean = true,
     val isWmoAlwaysEnabled: Boolean = false,
     val isWmoTestEnabled: Boolean = false,
+    val isMeteoAlarmAlertsEnabled: Boolean = true,
+    val isMeteoAlarmTestEnabled: Boolean = false,
     val globalAlertsOverride: List<GlobalAlertItem>? = null,
     val precipitationNowcastOverride: PrecipitationNowcast? = null,
     val currentAlert: MunicipalityAlertInfo? = null,
@@ -88,6 +90,8 @@ class MainScreenViewModel(
             isWmoAlertsEnabled = repository.getWmoAlertsEnabled(),
             isWmoAlwaysEnabled = repository.isWmoAlwaysEnabled(),
             isWmoTestEnabled = false,
+            isMeteoAlarmAlertsEnabled = repository.getMeteoAlarmAlertsEnabled(),
+            isMeteoAlarmTestEnabled = false,
             isKikikuruTestEnabled = repository.getKikikuruTestEnabled()
         )
     )
@@ -105,12 +109,12 @@ class MainScreenViewModel(
         }
         viewModelScope.launch {
             staticNowcastOverride.collect { override ->
-                _uiState.value = _uiState.value.copy(precipitationNowcastOverride = override)
+                _uiState.update { it.copy(precipitationNowcastOverride = override) }
             }
         }
         viewModelScope.launch {
             staticGlobalAlertsOverride.collect { override ->
-                _uiState.value = _uiState.value.copy(globalAlertsOverride = override)
+                _uiState.update { it.copy(globalAlertsOverride = override) }
             }
         }
     }
@@ -286,7 +290,7 @@ class MainScreenViewModel(
 
     fun setFrostedGlassEnabled(enabled: Boolean) {
         if (_uiState.value.isFrostedGlassEnabled != enabled) {
-            _uiState.value = _uiState.value.copy(isFrostedGlassEnabled = enabled)
+            _uiState.update { it.copy(isFrostedGlassEnabled = enabled) }
             repository.setFrostedGlassEnabled(enabled)
         }
     }
@@ -298,7 +302,7 @@ class MainScreenViewModel(
 
     fun setColorfulShapesEnabled(enabled: Boolean) {
         if (_uiState.value.isColorfulShapesEnabled != enabled) {
-            _uiState.value = _uiState.value.copy(isColorfulShapesEnabled = enabled)
+            _uiState.update { it.copy(isColorfulShapesEnabled = enabled) }
             repository.setColorfulShapesEnabled(enabled)
         }
     }
@@ -433,11 +437,29 @@ class MainScreenViewModel(
         setWmoAlwaysEnabled(enabled ?: !_uiState.value.isWmoAlwaysEnabled)
     }
 
-    private fun rebuildGlobalAlertOverrides(nwsOn: Boolean, gdacsOn: Boolean, wmoOn: Boolean): List<GlobalAlertItem>? {
+    fun setMeteoAlarmAlertsEnabled(enabled: Boolean) {
+        if (_uiState.value.isMeteoAlarmAlertsEnabled == enabled) return
+        repository.setMeteoAlarmAlertsEnabled(enabled)
+        val currentWeather = _uiState.value.weatherData
+        _uiState.value = _uiState.value.copy(
+            isMeteoAlarmAlertsEnabled = enabled,
+            weatherData = if (enabled || currentWeather == null) currentWeather else {
+                currentWeather.copy(globalAlerts = currentWeather.globalAlerts.filterNot { it.source == AlertSource.METEOALARM })
+            }
+        )
+        if (enabled) refreshWeather()
+    }
+
+    fun toggleMeteoAlarmAlerts(enabled: Boolean? = null) {
+        setMeteoAlarmAlertsEnabled(enabled ?: !_uiState.value.isMeteoAlarmAlertsEnabled)
+    }
+
+    private fun rebuildGlobalAlertOverrides(nwsOn: Boolean, gdacsOn: Boolean, wmoOn: Boolean, meteoAlarmOn: Boolean): List<GlobalAlertItem>? {
         val overrides = mutableListOf<GlobalAlertItem>()
         if (nwsOn) overrides.addAll(NwsAlertRepository.createSampleAlerts())
         if (gdacsOn) overrides.addAll(GdacsAlertRepository.createSampleAlerts())
         if (wmoOn) overrides.addAll(WmoAlertRepository.createSampleAlerts())
+        if (meteoAlarmOn) overrides.addAll(MeteoAlarmRepository.createSampleAlerts())
         return if (overrides.isEmpty()) null else overrides
     }
 
@@ -448,7 +470,8 @@ class MainScreenViewModel(
         val next = enabled
         val gdacsOn = _uiState.value.isGdacsTestEnabled
         val wmoOn = _uiState.value.isWmoTestEnabled
-        val finalOverrides = rebuildGlobalAlertOverrides(next, gdacsOn, wmoOn)
+        val meteoAlarmOn = _uiState.value.isMeteoAlarmTestEnabled
+        val finalOverrides = rebuildGlobalAlertOverrides(next, gdacsOn, wmoOn, meteoAlarmOn)
         com.example.expressiveweather.ui.screens.SettingsDataHolder.isNwsTestEnabled = next
         staticGlobalAlertsOverride.value = finalOverrides
         _uiState.value = _uiState.value.copy(
@@ -469,7 +492,8 @@ class MainScreenViewModel(
         val next = enabled
         val nwsOn = _uiState.value.isNwsTestEnabled
         val wmoOn = _uiState.value.isWmoTestEnabled
-        val finalOverrides = rebuildGlobalAlertOverrides(nwsOn, next, wmoOn)
+        val meteoAlarmOn = _uiState.value.isMeteoAlarmTestEnabled
+        val finalOverrides = rebuildGlobalAlertOverrides(nwsOn, next, wmoOn, meteoAlarmOn)
         com.example.expressiveweather.ui.screens.SettingsDataHolder.isGdacsTestEnabled = next
         staticGlobalAlertsOverride.value = finalOverrides
         _uiState.value = _uiState.value.copy(
@@ -490,7 +514,8 @@ class MainScreenViewModel(
         val next = enabled
         val nwsOn = _uiState.value.isNwsTestEnabled
         val gdacsOn = _uiState.value.isGdacsTestEnabled
-        val finalOverrides = rebuildGlobalAlertOverrides(nwsOn, gdacsOn, next)
+        val meteoAlarmOn = _uiState.value.isMeteoAlarmTestEnabled
+        val finalOverrides = rebuildGlobalAlertOverrides(nwsOn, gdacsOn, next, meteoAlarmOn)
         com.example.expressiveweather.ui.screens.SettingsDataHolder.isWmoTestEnabled = next
         staticGlobalAlertsOverride.value = finalOverrides
         _uiState.value = _uiState.value.copy(
@@ -502,6 +527,28 @@ class MainScreenViewModel(
     fun toggleWmoTest(enabled: Boolean? = null) {
         val next = enabled ?: !_uiState.value.isWmoTestEnabled
         setWmoTestEnabled(next)
+    }
+
+    /**
+     * MeteoAlarm (欧州気象警報ネットワーク) 警報テスト (赤: 特別警戒 / 橙: 警戒 / 黄: 注意)
+     */
+    fun setMeteoAlarmTestEnabled(enabled: Boolean) {
+        val next = enabled
+        val nwsOn = _uiState.value.isNwsTestEnabled
+        val gdacsOn = _uiState.value.isGdacsTestEnabled
+        val wmoOn = _uiState.value.isWmoTestEnabled
+        val finalOverrides = rebuildGlobalAlertOverrides(nwsOn, gdacsOn, wmoOn, next)
+        com.example.expressiveweather.ui.screens.SettingsDataHolder.isMeteoAlarmTestEnabled = next
+        staticGlobalAlertsOverride.value = finalOverrides
+        _uiState.value = _uiState.value.copy(
+            isMeteoAlarmTestEnabled = next,
+            globalAlertsOverride = finalOverrides
+        )
+    }
+
+    fun toggleMeteoAlarmTest(enabled: Boolean? = null) {
+        val next = enabled ?: !_uiState.value.isMeteoAlarmTestEnabled
+        setMeteoAlarmTestEnabled(next)
     }
 
     /**
@@ -655,6 +702,21 @@ class MainScreenViewModel(
         // 現在地画面を表示中かつ位置が変化した（または未ロード）場合は即座に天候を再取得
         if (isViewingCurrent && (hasMovedSignificantly || _uiState.value.weatherData == null)) {
             observeWeatherForCity(city)
+        } else if (hasMovedSignificantly && PrecipitationLiveNotificationManager.currentActiveNowcast != null) {
+            // 他画面選択中であってもLive Updates通知がアクティブな場合は、現在地移動に伴い即座にナウキャストを再取得して追従
+            viewModelScope.launch {
+                try {
+                    val weather = repository.refresh(city)
+                    val nowcast = weather.precipitationNowcast
+                    repository.context?.let { ctx ->
+                        if (nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining ?: 0) > 0) {
+                            PrecipitationLiveNotificationManager.updateRainLiveNotification(ctx, nowcast, city.name, loc)
+                        } else {
+                            PrecipitationLiveNotificationManager.onRainStoppedAtNewLocation(ctx, city.name)
+                        }
+                    }
+                } catch (_: Exception) {}
+            }
         }
 
         // 位置移動（市区町村変更）検知時のキキクル警戒情報即時再判定トリガー
@@ -802,8 +864,11 @@ class MainScreenViewModel(
                                         KikikuruNotificationManager.updateLiveAlertNotification(ctx, alert, city.name)
                                     }
                                     val nowcast = _uiState.value.precipitationNowcastOverride ?: result.data.precipitationNowcast
-                                    if (nowcast != null) {
-                                        PrecipitationLiveNotificationManager.updateRainLiveNotification(ctx, nowcast, city.name)
+                                    if (nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining ?: 0) > 0) {
+                                        val loc = locationProvider?.getCurrentLocation(forceFresh = false)
+                                        PrecipitationLiveNotificationManager.updateRainLiveNotification(ctx, nowcast, city.name, loc)
+                                    } else if (PrecipitationLiveNotificationManager.currentActiveNowcast != null) {
+                                        PrecipitationLiveNotificationManager.onRainStoppedAtNewLocation(ctx, city.name)
                                     }
                                 }
                             }

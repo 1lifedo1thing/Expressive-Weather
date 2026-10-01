@@ -178,6 +178,7 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
         try {
             val repo = WeatherRepository(context = context)
             val isUs = NwsAlertRepository.isUnitedStates(city)
+            val isMeteoAlarm = MeteoAlarmRepository.isSupported(city)
             val alerts = mutableListOf<GlobalAlertItem>()
 
             if (isUs) {
@@ -188,7 +189,15 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
                 }
             }
 
-            if (repo.getWmoAlertsEnabled() && (!isUs || repo.isWmoAlwaysEnabled())) {
+            if (isMeteoAlarm && repo.getMeteoAlarmAlertsEnabled()) {
+                try {
+                    alerts.addAll(MeteoAlarmRepository.fetchAlertsForCity(city))
+                } catch (e: Exception) {
+                    Log.w(TAG, "MeteoAlarm alert fetch failed: ${e.message}")
+                }
+            }
+
+            if (repo.getWmoAlertsEnabled() && ((!isUs && !isMeteoAlarm) || repo.isWmoAlwaysEnabled())) {
                 try {
                     alerts.addAll(WmoAlertRepository.fetchAlertsForCity(city, alwaysEnabled = repo.isWmoAlwaysEnabled()))
                 } catch (e: Exception) {

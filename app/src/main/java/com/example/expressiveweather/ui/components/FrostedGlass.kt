@@ -7,11 +7,13 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -66,11 +68,13 @@ fun Modifier.frostedGlassEffect(
     hazeState: HazeState?,
     isFrosted: Boolean,
     tintColor: Color = MaterialTheme.colorScheme.primary,
-    blurRadius: Dp = 14.dp
+    blurRadius: Dp = 14.dp,
+    shape: Shape? = null
 ): Modifier {
     if (!isFrosted || hazeState == null) return this
     val isDark = isSystemInDarkTheme()
-    return this.then(
+    val base = if (shape != null) this.clip(shape) else this
+    return base.then(
         Modifier.hazeEffect(
             state = hazeState,
             style = HazeMaterials.regular().copy(
@@ -94,13 +98,15 @@ fun Modifier.horizontalScrollFade(
 ): Modifier = this.then(
     Modifier
         .graphicsLayer {
-            val needsFade = scrollState.value > 0 || (scrollState.maxValue > 0 && scrollState.value < scrollState.maxValue)
+            val needsFade = scrollState.maxValue > 0 && (scrollState.value > 0 || scrollState.value < scrollState.maxValue)
             compositingStrategy = if (needsFade) CompositingStrategy.Offscreen else CompositingStrategy.Auto
         }
         .drawWithContent {
             drawContent()
+            if (scrollState.maxValue <= 0) return@drawWithContent
             val fadeWidthPx = fadeWidth.toPx()
             val width = size.width
+            if (width <= 0f) return@drawWithContent
 
             val leftAlpha = if (scrollState.value > 0) 0f else 1f
             val rightAlpha = if (scrollState.value < scrollState.maxValue) 0f else 1f

@@ -91,6 +91,14 @@ object PrecipitationAnalyzer {
             c.contains("アメリカ") || c.contains("米国") || c.contains("United States", ignoreCase = true) || c.equals("US", ignoreCase = true) || c.equals("USA", ignoreCase = true)
         }
 
+        val isEurope = if (latitude != null && longitude != null) {
+            isLocationOrCountryInEurope(country, latitude, longitude)
+        } else {
+            val c = country?.trim() ?: ""
+            val lower = c.lowercase()
+            listOf("france", "フランス", "germany", "ドイツ", "uk", "イギリス", "italy", "イタリア", "spain", "スペイン", "europe", "ヨーロッパ").any { lower.contains(it) || c.contains(it) }
+        }
+
         // 日本の場合は Open-Meteo 等の外部ソース情報を完全にシャットアウト
         val effectiveMinutelyTimes = if (isJapan) null else minutelyTimes
         val effectiveMinutelyPrecips = if (isJapan) null else minutelyPrecips
@@ -121,14 +129,17 @@ object PrecipitationAnalyzer {
         // 2. 現在の降雨状態 (実効雨量) の算出
         val firstFramePrecip = timeline.firstOrNull()?.precipMmPerHour ?: 0.0
         val isRainByCondition = isConditionRain(currentCondition, currentPrecipMm)
-        val effectiveCurrentRain = if (isRainByCondition) {
-            maxOf(currentPrecipMm.coerceAtLeast(0.0), firstFramePrecip, 1.5)
-        } else {
+        val effectiveCurrentRain = if (firstFramePrecip > 0.0 || currentPrecipMm > 0.0) {
             maxOf(currentPrecipMm.coerceAtLeast(0.0), firstFramePrecip)
+        } else if (isRainByCondition && minutelyPrecips.isNullOrEmpty()) {
+            // 分単位データがない地域（国内等）で天気が雨の場合のフォールバック
+            1.5
+        } else {
+            0.0
         }
 
-        // 状態 DRY vs RAINING の判定 (雨の天気なら無条件でRAINING)
-        val isRaining = isRainByCondition || effectiveCurrentRain >= THRESHOLD_RAIN_START
+        // 状態 DRY vs RAINING の判定
+        val isRaining = effectiveCurrentRain >= THRESHOLD_RAIN_START
 
         val futurePrecipFrames = timeline.filter {
             it.timestampMillis > nowMillis && it.tier != TimelineTier.TIER4_PREFECTURAL_6H
@@ -142,7 +153,8 @@ object PrecipitationAnalyzer {
                 futureFrames = futurePrecipFrames,
                 minutelyPoints = minutelyPoints,
                 isJapan = isJapan,
-                isUS = isUS
+                isUS = isUS,
+                isEurope = isEurope
             )
         } else {
             analyzeDryState(
@@ -152,7 +164,8 @@ object PrecipitationAnalyzer {
                 minutelyPoints = minutelyPoints,
                 jmaOverview = jmaOverview,
                 isJapan = isJapan,
-                isUS = isUS
+                isUS = isUS,
+                isEurope = isEurope
             )
         }
     }
@@ -167,7 +180,8 @@ object PrecipitationAnalyzer {
         minutelyPoints: List<MinutelyRainPoint>,
         jmaOverview: String?,
         isJapan: Boolean,
-        isUS: Boolean
+        isUS: Boolean,
+        isEurope: Boolean = false
     ): PrecipitationNowcast {
         // 未来のタイムラインを先頭から順に走査し、雨量が 1.0 mm/h 以上となった最初の時刻を探索
         // ノイズ除外条件: 2フレーム連続で 0.8 mm/h 以上が続くこと
@@ -295,6 +309,7 @@ object PrecipitationAnalyzer {
                         isPeak = false,
                         isJapan = isJapan,
                         isUS = isUS,
+                        isEurope = isEurope,
                         multilingual = multilingual
                     )
                 }
@@ -333,6 +348,7 @@ object PrecipitationAnalyzer {
                         isPeak = false,
                         isJapan = isJapan,
                         isUS = isUS,
+                        isEurope = isEurope,
                         multilingual = multilingual
                     )
                 }
@@ -371,6 +387,7 @@ object PrecipitationAnalyzer {
                         isPeak = false,
                         isJapan = isJapan,
                         isUS = isUS,
+                        isEurope = isEurope,
                         multilingual = multilingual
                     )
                 }
@@ -391,7 +408,8 @@ object PrecipitationAnalyzer {
             val (sourceJa, sourceEn, sourceZhCn, sourceZhTw) = when {
                 isJapan -> listOf("気象庁予報", "JMA Forecast", "气象厅预报", "氣象廳預報")
                 isUS -> listOf("NOAA/NWS予報", "NOAA/NWS Forecast", "NOAA/NWS预报", "NOAA/NWS預報")
-                else -> listOf("気象予報", "Weather Forecast", "天气预报", "天氣預報")
+                isEurope -> listOf("ECMWF予報", "ECMWF Forecast", "ECMWF预报", "ECMWF預報")
+                else -> listOf("国際数値予報", "Global NWP Forecast", "国际数值预报", "國際數值預報")
             }
 
             val multilingual = createMultilingualTexts(
@@ -421,6 +439,7 @@ object PrecipitationAnalyzer {
                 isPeak = false,
                 isJapan = isJapan,
                 isUS = isUS,
+                isEurope = isEurope,
                 multilingual = multilingual
             )
         }
@@ -454,6 +473,7 @@ object PrecipitationAnalyzer {
                 isPeak = false,
                 isJapan = isJapan,
                 isUS = isUS,
+                isEurope = isEurope,
                 multilingual = multilingual
             )
         }
@@ -488,6 +508,7 @@ object PrecipitationAnalyzer {
             isPeak = false,
             isJapan = isJapan,
             isUS = isUS,
+            isEurope = isEurope,
             multilingual = multilingual
         )
     }
@@ -501,7 +522,8 @@ object PrecipitationAnalyzer {
         futureFrames: List<TimelineFrame>,
         minutelyPoints: List<MinutelyRainPoint>,
         isJapan: Boolean = false,
-        isUS: Boolean = false
+        isUS: Boolean = false,
+        isEurope: Boolean = false
     ): PrecipitationNowcast {
         val peakIntensity = maxOf(effectiveCurrentRain, futureFrames.maxOfOrNull { it.precipMmPerHour } ?: 0.0)
 
@@ -568,6 +590,7 @@ object PrecipitationAnalyzer {
                 isPeak = true,
                 isJapan = isJapan,
                 isUS = isUS,
+                isEurope = isEurope,
                 multilingual = multilingual
             )
         }
@@ -576,69 +599,162 @@ object PrecipitationAnalyzer {
         if (endFrame != null) {
             val endTime = endFrame.timestampMillis
             val diffMin = ((endTime - nowMillis) / (60 * 1000L)).toInt().coerceAtLeast(1)
-            if (diffMin <= 900) {
-                val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE) else roundToNearest10Min(endTime, AppLanguage.JAPANESE)
-                val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH) else roundToNearest10Min(endTime, AppLanguage.ENGLISH)
-                val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE)
-                val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE)
+            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE) else roundToNearest10Min(endTime, AppLanguage.JAPANESE)
+            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH) else roundToNearest10Min(endTime, AppLanguage.ENGLISH)
+            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE)
+            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE)
 
-                val hours = diffMin / 60
-                val mins = diffMin % 60
-                val durationJa = when {
-                    hours > 0 && mins > 0 -> "約${hours}時間${mins}分"
-                    hours > 0 -> "約${hours}時間"
-                    else -> "約${mins}分"
+            val hours = diffMin / 60
+            val mins = diffMin % 60
+            val durationJa = when {
+                hours > 0 && mins > 0 -> "約${hours}時間${mins}分"
+                hours > 0 -> "約${hours}時間"
+                else -> "約${mins}分"
+            }
+            val durationEn = when {
+                hours > 0 && mins > 0 -> "about ${hours}h ${mins}m"
+                hours > 0 -> "about ${hours} hour${if (hours > 1) "s" else ""}"
+                else -> "about ${mins} min"
+            }
+            val durationZh = when {
+                hours > 0 && mins > 0 -> "约${hours}小时${mins}分钟"
+                hours > 0 -> "约${hours}小时"
+                else -> "约${mins}分钟"
+            }
+
+            when {
+                // A. 短時間 (90分以内): 「もうすぐ雨が止む」
+                diffMin <= 90 -> {
+                    val jaHeadline = if (diffMin < 15) "まもなく雨が止む見込みです" else "${timeLabelJa}頃に雨が止む見込みです"
+                    val enHeadline = if (diffMin < 15) "Rain stopping shortly" else "Rain stopping around $timeLabelEn"
+                    val zhCnHeadline = if (diffMin < 15) "雨很快就会停" else "预计 $timeLabelZhCn 左右雨停"
+                    val zhTwHeadline = if (diffMin < 15) "雨很快就會停" else "預計 $timeLabelZhTw 左右雨停"
+
+                    val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
+                    val enSubText = "Rain expected to continue for $durationEn (stopping around $timeLabelEn). Conditions will gradually improve."
+                    val zhCnSubText = "预计降雨还将持续 $durationZh（$timeLabelZhCn 左右雨停），之后逐渐好转。"
+                    val zhTwSubText = "預計降雨還將持續 $durationZh（$timeLabelZhTw 左右雨停），之後逐漸好轉。"
+
+                    val multilingual = createMultilingualTexts(
+                        jaHeadline = jaHeadline,
+                        enHeadline = enHeadline,
+                        zhCnHeadline = zhCnHeadline,
+                        zhTwHeadline = zhTwHeadline,
+                        jaSubText = jaSubText,
+                        enSubText = enSubText,
+                        zhCnSubText = zhCnSubText,
+                        zhTwSubText = zhTwSubText,
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+
+                    return buildNowcast(
+                        status = RainStatus.RAINING,
+                        targetTimestampMillis = endTime,
+                        minutesRemaining = diffMin,
+                        currentIntensityMm = effectiveCurrentRain,
+                        peakIntensityMm = peakIntensity,
+                        maxProbability = 90,
+                        minutelyPoints = minutelyPoints,
+                        isLiveActive = true,
+                        isPeak = false,
+                        isJapan = isJapan,
+                        isUS = isUS,
+                        isEurope = isEurope,
+                        multilingual = multilingual
+                    )
                 }
-                val durationEn = when {
-                    hours > 0 && mins > 0 -> "about ${hours}h ${mins}m"
-                    hours > 0 -> "about ${hours} hour${if (hours > 1) "s" else ""}"
-                    else -> "about ${mins} min"
+
+                // B. 中時間 (91分〜180分: 1.5時間〜3時間): 「XX:XX頃まで雨が続く見込み」
+                diffMin in 91..180 -> {
+                    val jaHeadline = "${timeLabelJa}頃まで雨が続く見込みです"
+                    val enHeadline = "Rain continuing until around $timeLabelEn"
+                    val zhCnHeadline = "预计降雨将持续至 $timeLabelZhCn 左右"
+                    val zhTwHeadline = "預計降雨將持續至 $timeLabelZhTw 左右"
+
+                    val jaSubText = "あと${durationJa}雨が降り続く予想です。次第に雨脚が弱まる見込みです。"
+                    val enSubText = "Rain expected to continue for $durationEn. Conditions will gradually ease."
+                    val zhCnSubText = "预计降雨还将持续 $durationZh，之后雨势逐渐减弱。"
+                    val zhTwSubText = "預計降雨還將持續 $durationZh，之後雨勢逐漸減弱。"
+
+                    val multilingual = createMultilingualTexts(
+                        jaHeadline = jaHeadline,
+                        enHeadline = enHeadline,
+                        zhCnHeadline = zhCnHeadline,
+                        zhTwHeadline = zhTwHeadline,
+                        jaSubText = jaSubText,
+                        enSubText = enSubText,
+                        zhCnSubText = zhCnSubText,
+                        zhTwSubText = zhTwSubText,
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+
+                    return buildNowcast(
+                        status = RainStatus.RAINING,
+                        targetTimestampMillis = endTime,
+                        minutesRemaining = diffMin,
+                        currentIntensityMm = effectiveCurrentRain,
+                        peakIntensityMm = peakIntensity,
+                        maxProbability = 90,
+                        minutelyPoints = minutelyPoints,
+                        isLiveActive = true,
+                        isPeak = false,
+                        isJapan = isJapan,
+                        isUS = isUS,
+                        isEurope = isEurope,
+                        multilingual = multilingual
+                    )
                 }
-                val durationZh = when {
-                    hours > 0 && mins > 0 -> "约${hours}小时${mins}分钟"
-                    hours > 0 -> "约${hours}小时"
-                    else -> "约${mins}分钟"
+
+                // C. 長時間 (181分〜540分: 3時間〜9時間): 「雨は当面の間（今後X時間）降り続く見込み」
+                diffMin in 181..540 -> {
+                    val approxHours = ((diffMin + 29) / 60).coerceAtLeast(3)
+                    val jaHeadline = "雨は当面の間（今後${approxHours}時間）降り続く見込みです"
+                    val enHeadline = "Rain continuing for the next ${approxHours} hours"
+                    val zhCnHeadline = "预计降雨还将持续约${approxHours}小时"
+                    val zhTwHeadline = "預計降雨還將持續約${approxHours}小時"
+
+                    val jaSubText = "${timeLabelJa}頃まで雨が降り続く予想です。お出かけやお帰りの際は雨具を必ずお持ちください。"
+                    val enSubText = "Rain expected to continue until around $timeLabelEn. Keep an umbrella handy."
+                    val zhCnSubText = "预计降雨将持续至 $timeLabelZhCn 左右，出行请务必备好雨具。"
+                    val zhTwSubText = "預計降雨將持續至 $timeLabelZhTw 左右，出行請務必備好雨具。"
+
+                    val multilingual = createMultilingualTexts(
+                        jaHeadline = jaHeadline,
+                        enHeadline = enHeadline,
+                        zhCnHeadline = zhCnHeadline,
+                        zhTwHeadline = zhTwHeadline,
+                        jaSubText = jaSubText,
+                        enSubText = enSubText,
+                        zhCnSubText = zhCnSubText,
+                        zhTwSubText = zhTwSubText,
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+
+                    return buildNowcast(
+                        status = RainStatus.RAINING,
+                        targetTimestampMillis = endTime,
+                        minutesRemaining = diffMin,
+                        currentIntensityMm = effectiveCurrentRain,
+                        peakIntensityMm = peakIntensity,
+                        maxProbability = 90,
+                        minutelyPoints = minutelyPoints,
+                        isLiveActive = true,
+                        isPeak = false,
+                        isJapan = isJapan,
+                        isUS = isUS,
+                        isEurope = isEurope,
+                        multilingual = multilingual
+                    )
                 }
-
-                val jaHeadline = if (diffMin < 15) "まもなく雨が止む見込みです" else "${timeLabelJa}頃に雨が止む見込みです"
-                val enHeadline = if (diffMin < 15) "Rain stopping shortly" else "Rain stopping around $timeLabelEn"
-                val zhCnHeadline = if (diffMin < 15) "雨很快就会停" else "预计 $timeLabelZhCn 左右雨停"
-                val zhTwHeadline = if (diffMin < 15) "雨很快就會停" else "預計 $timeLabelZhTw 左右雨停"
-
-                val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
-                val enSubText = "Rain expected to continue for $durationEn (stopping around $timeLabelEn). Conditions will gradually improve."
-                val zhCnSubText = "预计降雨还将持续 $durationZh（$timeLabelZhCn 左右雨停），之后逐渐好转。"
-                val zhTwSubText = "預計降雨還將持續 $durationZh（$timeLabelZhTw 左右雨停），之後逐漸好轉。"
-
-                val multilingual = createMultilingualTexts(
-                    jaHeadline = jaHeadline,
-                    enHeadline = enHeadline,
-                    zhCnHeadline = zhCnHeadline,
-                    zhTwHeadline = zhTwHeadline,
-                    jaSubText = jaSubText,
-                    enSubText = enSubText,
-                    zhCnSubText = zhCnSubText,
-                    zhTwSubText = zhTwSubText,
-                    jaTimeLabel = timeLabelJa,
-                    enTimeLabel = timeLabelEn,
-                    zhCnTimeLabel = timeLabelZhCn,
-                    zhTwTimeLabel = timeLabelZhTw
-                )
-
-                return buildNowcast(
-                    status = RainStatus.RAINING,
-                    targetTimestampMillis = endTime,
-                    minutesRemaining = diffMin,
-                    currentIntensityMm = effectiveCurrentRain,
-                    peakIntensityMm = peakIntensity,
-                    maxProbability = 90,
-                    minutelyPoints = minutelyPoints,
-                    isLiveActive = true,
-                    isPeak = false,
-                    isJapan = isJapan,
-                    isUS = isUS,
-                    multilingual = multilingual
-                )
             }
         }
 
@@ -670,6 +786,7 @@ object PrecipitationAnalyzer {
             isPeak = false,
             isJapan = isJapan,
             isUS = isUS,
+            isEurope = isEurope,
             multilingual = multilingual
         )
     }
@@ -701,12 +818,15 @@ object PrecipitationAnalyzer {
 
         // 現在フレーム (t = 0)
         val isRainNow = isConditionRain(currentCondition, currentPrecipMm)
+        val parsedMinutelyNow = parsedMinutely.firstOrNull { Math.abs(it.first - nowMillis) <= 10 * 60 * 1000L }?.second
         val nowPrecip = if (currentPrecipMm > 0.0) {
             currentPrecipMm
+        } else if (parsedMinutelyNow != null) {
+            parsedMinutelyNow
         } else if (isRainNow) {
-            1.5
+            hourlyForecast.firstOrNull()?.precipitationMm?.takeIf { it > 0.0 } ?: 1.5
         } else {
-            parsedMinutely.firstOrNull { Math.abs(it.first - nowMillis) <= 10 * 60 * 1000L }?.second ?: 0.0
+            0.0
         }
         timeline.add(
             TimelineFrame(
@@ -1069,6 +1189,7 @@ object PrecipitationAnalyzer {
         isPeak: Boolean = false,
         isJapan: Boolean = false,
         isUS: Boolean = false,
+        isEurope: Boolean = false,
         dataSourceName: String? = null,
         multilingual: Triple<Map<String, String>, Map<String, String>, Map<String, String>>
     ): PrecipitationNowcast {
@@ -1080,7 +1201,8 @@ object PrecipitationAnalyzer {
         val resolvedDataSource = dataSourceName ?: when {
             isJapan -> "気象庁 (JMA)"
             isUS -> "米国気象局 (NOAA/NWS)"
-            else -> "Open-Meteo"
+            isEurope -> "欧州中期予報センター (ECMWF) / 各気象機関"
+            else -> "ECMWF・NOAA 国際数値気象モデル"
         }
 
         return PrecipitationNowcast(
@@ -1101,6 +1223,7 @@ object PrecipitationAnalyzer {
             localizedTargetTimeLabels = timeLabels,
             isJapan = isJapan,
             isUS = isUS,
+            isEurope = isEurope,
             dataSourceName = resolvedDataSource
         )
     }
@@ -1153,6 +1276,7 @@ object PrecipitationAnalyzer {
     ): PrecipitationNowcast {
         val isJapan = isLocationOrCountryInJapan(weather.city.country, weather.city.latitude, weather.city.longitude)
         val isUS = isLocationOrCountryInUnitedStates(weather.city.country, weather.city.latitude, weather.city.longitude)
+        val isEurope = isLocationOrCountryInEurope(weather.city.country, weather.city.latitude, weather.city.longitude)
 
         // 1. 今後何時間雨が降り続くか（hourlyForecastから探索）
         var stopHourIndex: Int? = null
@@ -1171,7 +1295,7 @@ object PrecipitationAnalyzer {
             weather.hourlyForecast.take(6).maxOfOrNull { it.precipitationMm } ?: effectivePrecip
         )
 
-        // 降雨が6時間以内に止む場合
+        // 降雨が一定時間内に止む場合
         if (stopHourIndex != null && stopHourIndex in 1..15) {
             val diffMin = stopHourIndex * 60
             val endTime = nowMillis + diffMin * 60 * 1000L
@@ -1198,30 +1322,67 @@ object PrecipitationAnalyzer {
                 else -> "约${mins}分钟"
             }
 
-            val jaHeadline = if (diffMin < 15) "まもなく雨が止む見込みです" else "${timeLabelJa}頃に雨が止む見込みです"
-            val enHeadline = if (diffMin < 15) "Rain stopping shortly" else "Rain stopping around $timeLabelEn"
-            val zhCnHeadline = if (diffMin < 15) "雨很快就会停" else "预计 $timeLabelZhCn 左右雨停"
-            val zhTwHeadline = if (diffMin < 15) "雨很快就會停" else "預計 $timeLabelZhTw 左右雨停"
+            val multilingual = when {
+                diffMin <= 90 -> {
+                    val jaHeadline = if (diffMin < 15) "まもなく雨が止む見込みです" else "${timeLabelJa}頃に雨が止む見込みです"
+                    val enHeadline = if (diffMin < 15) "Rain stopping shortly" else "Rain stopping around $timeLabelEn"
+                    val zhCnHeadline = if (diffMin < 15) "雨很快就会停" else "预计 $timeLabelZhCn 左右雨停"
+                    val zhTwHeadline = if (diffMin < 15) "雨很快就會停" else "預計 $timeLabelZhTw 左右雨停"
 
-            val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
-            val enSubText = "Rain expected to continue for $durationEn (stopping around $timeLabelEn). Conditions will gradually improve."
-            val zhCnSubText = "预计降雨还将持续 $durationZh（$timeLabelZhCn 左右雨停），之后逐渐好转。"
-            val zhTwSubText = "預計降雨還將持續 $durationZh（$timeLabelZhTw 左右雨停），之後逐漸好轉。"
+                    val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
+                    val enSubText = "Rain expected to continue for $durationEn (stopping around $timeLabelEn). Conditions will gradually improve."
+                    val zhCnSubText = "预计降雨还将持续 $durationZh（$timeLabelZhCn 左右雨停），之后逐渐好转。"
+                    val zhTwSubText = "預計降雨還將持續 $durationZh（$timeLabelZhTw 左右雨停），之後逐漸好轉。"
 
-            val multilingual = createMultilingualTexts(
-                jaHeadline = jaHeadline,
-                enHeadline = enHeadline,
-                zhCnHeadline = zhCnHeadline,
-                zhTwHeadline = zhTwHeadline,
-                jaSubText = jaSubText,
-                enSubText = enSubText,
-                zhCnSubText = zhCnSubText,
-                zhTwSubText = zhTwSubText,
-                jaTimeLabel = timeLabelJa,
-                enTimeLabel = timeLabelEn,
-                zhCnTimeLabel = timeLabelZhCn,
-                zhTwTimeLabel = timeLabelZhTw
-            )
+                    createMultilingualTexts(
+                        jaHeadline = jaHeadline,
+                        enHeadline = enHeadline,
+                        zhCnHeadline = zhCnHeadline,
+                        zhTwHeadline = zhTwHeadline,
+                        jaSubText = jaSubText,
+                        enSubText = enSubText,
+                        zhCnSubText = zhCnSubText,
+                        zhTwSubText = zhTwSubText,
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+                }
+                diffMin in 91..180 -> {
+                    createMultilingualTexts(
+                        jaHeadline = "${timeLabelJa}頃まで雨が続く見込みです",
+                        enHeadline = "Rain continuing until around $timeLabelEn",
+                        zhCnHeadline = "预计降雨将持续至 $timeLabelZhCn 左右",
+                        zhTwHeadline = "預計降雨將持續至 $timeLabelZhTw 左右",
+                        jaSubText = "あと${durationJa}雨が降り続く予想です。次第に雨脚が弱まる見込みです。",
+                        enSubText = "Rain expected to continue for $durationEn. Conditions will gradually ease.",
+                        zhCnSubText = "预计降雨还将持续 $durationZh，之后雨势逐渐减弱。",
+                        zhTwSubText = "預計降雨還將持續 $durationZh，之後雨勢逐漸減弱。",
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+                }
+                else -> {
+                    val approxHours = ((diffMin + 29) / 60).coerceAtLeast(3)
+                    createMultilingualTexts(
+                        jaHeadline = "雨は当面の間（今後${approxHours}時間）降り続く見込みです",
+                        enHeadline = "Rain continuing for the next ${approxHours} hours",
+                        zhCnHeadline = "预计降雨还将持续约${approxHours}小时",
+                        zhTwHeadline = "預計降雨還將持續約${approxHours}小時",
+                        jaSubText = "${timeLabelJa}頃まで雨が降り続く予想です。お出かけやお帰りの際は雨具を必ずお持ちください。",
+                        enSubText = "Rain expected to continue until around $timeLabelEn. Keep an umbrella handy.",
+                        zhCnSubText = "预计降雨将持续至 $timeLabelZhCn 左右，出行请务必备好雨具。",
+                        zhTwSubText = "預計降雨將持續至 $timeLabelZhTw 左右，出行請務必備好雨具。",
+                        jaTimeLabel = timeLabelJa,
+                        enTimeLabel = timeLabelEn,
+                        zhCnTimeLabel = timeLabelZhCn,
+                        zhTwTimeLabel = timeLabelZhTw
+                    )
+                }
+            }
 
             // チャート用のMinutelyRainPoint (13点: 0分〜60分)
             val minutelyPoints = (0..12).map { idx ->
@@ -1250,6 +1411,7 @@ object PrecipitationAnalyzer {
                 isPeak = false,
                 isJapan = isJapan,
                 isUS = isUS,
+                isEurope = isEurope,
                 multilingual = multilingual
             )
         } else {
@@ -1291,6 +1453,7 @@ object PrecipitationAnalyzer {
                 isPeak = false,
                 isJapan = isJapan,
                 isUS = isUS,
+                isEurope = isEurope,
                 multilingual = multilingual
             )
         }
@@ -1497,3 +1660,55 @@ object PrecipitationAnalyzer {
         return list
     }
 }
+
+/**
+ * 国名情報および座標からヨーロッパ領域かどうかを判定する
+ */
+fun isLocationOrCountryInEurope(country: String?, latitude: Double, longitude: Double): Boolean {
+    // 日本または米国の領域であればヨーロッパではない
+    if (isLocationOrCountryInJapan(country, latitude, longitude) ||
+        isLocationOrCountryInUnitedStates(country, latitude, longitude)
+    ) {
+        return false
+    }
+
+    if (!country.isNullOrBlank()) {
+        val trimmed = country.trim()
+        val lower = trimmed.lowercase()
+        val europeanKeywords = listOf(
+            "france", "フランス", "法国", "法國",
+            "germany", "ドイツ", "德国", "德國", "deutschland",
+            "united kingdom", "uk", "great britain", "イギリス", "英国", "英國",
+            "italy", "イタリア", "意大利", "italia",
+            "spain", "スペイン", "西班牙", "españa",
+            "switzerland", "スイス", "瑞士", "schweiz", "suisse",
+            "netherlands", "オランダ", "荷兰", "荷蘭", "nederland",
+            "belgium", "ベルギー", "比利时", "比利時", "belgique",
+            "sweden", "スウェーデン", "瑞典", "sverige",
+            "norway", "ノルウェー", "挪威", "norge",
+            "finland", "フィンランド", "芬兰", "芬蘭", "suomi",
+            "denmark", "デンマーク", "丹麦", "丹麥", "danmark",
+            "austria", "オーストリア", "奥地利", "奧地利", "österreich",
+            "portugal", "ポルトガル", "葡萄牙",
+            "ireland", "アイルランド", "爱尔兰", "愛爾蘭",
+            "poland", "ポーランド", "波兰", "波蘭", "polska",
+            "czech", "チェコ", "捷克", "česko",
+            "greece", "ギリシャ", "希腊", "希臘", "hellas",
+            "hungary", "ハンガリー", "匈牙利", "magyarország",
+            "romania", "ルーマニア", "罗马尼亚", "羅馬尼亞",
+            "ukraine", "ウクライナ", "乌克兰", "烏克蘭",
+            "europe", "ヨーロッパ", "欧洲", "歐洲"
+        )
+        if (europeanKeywords.any { lower.contains(it) || trimmed.contains(it) }) {
+            return true
+        }
+        val isoCodes = setOf("FR", "DE", "GB", "UK", "IT", "ES", "CH", "NL", "BE", "SE", "NO", "FI", "DK", "AT", "PT", "IE", "PL", "CZ", "GR", "HU", "RO", "UA")
+        if (isoCodes.contains(trimmed.uppercase())) {
+            return true
+        }
+    }
+
+    // ヨーロッパの緯度経度バウンディングボックス: 北緯34度〜72度, 西経25度〜東経45度
+    return latitude in 34.0..72.0 && longitude in -25.0..45.0
+}
+

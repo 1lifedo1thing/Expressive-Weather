@@ -133,6 +133,10 @@ import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.Surface
 import androidx.compose.ui.text.style.TextOverflow
 import android.os.Build
+import com.example.expressiveweather.data.WeatherData
+import com.example.expressiveweather.data.GlobalAlertItem
+import com.example.expressiveweather.ui.screens.AlertDetailActivity
+import com.example.expressiveweather.ui.screens.AlertDetailDataHolder
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -161,6 +165,7 @@ fun MainScreen(
     onNavigateToHourlyDetail: (initialHour: Int?) -> Unit = {},
     onNavigateToRadarDetail: () -> Unit = {},
     onNavigateToBentoDetail: (card: BentoCardType) -> Unit = {},
+    onNavigateToAlertDetail: (AlertSource?) -> Unit = {},
     modifier: Modifier = Modifier,
     backgroundCondition: WeatherCondition? = null,
     backgroundIsDay: Boolean? = null
@@ -391,6 +396,8 @@ fun MainScreen(
                         isWmoAlertsEnabled = uiState.isWmoAlertsEnabled,
                         isWmoAlwaysEnabled = uiState.isWmoAlwaysEnabled,
                         isWmoTestEnabled = uiState.isWmoTestEnabled,
+                        isMeteoAlarmAlertsEnabled = uiState.isMeteoAlarmAlertsEnabled,
+                        isMeteoAlarmTestEnabled = uiState.isMeteoAlarmTestEnabled,
                         initialSection = SettingsDataHolder.SECTION_ALL,
                         onToggleWeatherAdaptiveTheme = { viewModel.toggleWeatherAdaptiveTheme() },
                         onSelectThemePreset = { viewModel.setThemePreset(it) },
@@ -408,6 +415,8 @@ fun MainScreen(
                         onToggleWmoAlerts = { viewModel.toggleWmoAlerts(it) },
                         onToggleWmoAlways = { viewModel.toggleWmoAlways(it) },
                         onToggleWmoTest = { viewModel.toggleWmoTest(it) },
+                        onToggleMeteoAlarmAlerts = { viewModel.setMeteoAlarmAlertsEnabled(it) },
+                        onToggleMeteoAlarmTest = { viewModel.toggleMeteoAlarmTest(it) },
                         onCyclePrecipitationDemo = { viewModel.cyclePrecipitationDemoState() },
                         onToggleTemperatureUnit = { viewModel.toggleTemperatureUnit() },
                         onSelectWindSpeedUnit = { viewModel.setWindSpeedUnit(it) },
@@ -486,7 +495,32 @@ fun MainScreen(
                     )
                 }
 
+                val navigateToAlertDetailPage: (AlertSource?, WeatherData?, MunicipalityAlertInfo?, List<GlobalAlertItem>) -> Unit = { source, wData, aInfo, gAlerts ->
+                    AlertDetailDataHolder.set(
+                        weather = wData,
+                        city = uiState.selectedCity,
+                        language = uiState.language,
+                        weatherAdaptiveThemeEnabled = uiState.weatherAdaptiveThemeEnabled,
+                        themePreset = uiState.themePreset,
+                        themeMode = uiState.themeMode,
+                        alertInfo = aInfo,
+                        jmaWarnings = wData?.jmaWarnings.orEmpty(),
+                        jmaOverviewText = wData?.jmaOverviewText,
+                        globalAlerts = gAlerts,
+                        targetSource = source
+                    )
+                    val intent = Intent(context, AlertDetailActivity::class.java).apply {
+                        if (source != null) {
+                            putExtra(AlertDetailActivity.EXTRA_SOURCE, source.name)
+                        }
+                    }
+                    context.startActivity(intent)
+                    onNavigateToAlertDetail(source)
+                }
+
                 if (isTabletLayout) {
+                    var shouldFocusTabletSearch by remember { mutableStateOf(false) }
+
                     if (isTabletPanelExpanded) {
                         BackHandler {
                             isTabletPanelExpanded = false
@@ -497,7 +531,14 @@ fun MainScreen(
                         Row(modifier = Modifier.fillMaxSize()) {
                             // Left Collapsed Side Rail (Always 76dp steady)
                             TabletNavigationRail(
-                                onExpandClick = { isTabletPanelExpanded = true },
+                                onExpandClick = {
+                                    shouldFocusTabletSearch = false
+                                    isTabletPanelExpanded = true
+                                },
+                                onAddLocationClick = {
+                                    shouldFocusTabletSearch = true
+                                    isTabletPanelExpanded = true
+                                },
                                 onSettingsClick = launchSettings
                             )
 
@@ -547,10 +588,25 @@ fun MainScreen(
                                             verticalArrangement = Arrangement.spacedBy(16.dp)
                                         ) {
                                             // 1. Tablet Wide Weather Header (City, FeelsLike/MinMax, Big Temp + Icon)
+                                            val isTabletCityDefault = weather.city.id == uiState.defaultCity.id ||
+                                                    (weather.city.latitude == uiState.defaultCity.latitude && weather.city.longitude == uiState.defaultCity.longitude) ||
+                                                    weather.city.id == "current"
+                                            val isTabletCitySaved = uiState.savedCities.any {
+                                                it.id == weather.city.id || (it.latitude == weather.city.latitude && it.longitude == weather.city.longitude)
+                                            }
                                             TabletWeatherHeader(
                                                 weather = weather,
                                                 temperatureUnit = uiState.temperatureUnit,
-                                                atmosphere = atmosphere
+                                                atmosphere = atmosphere,
+                                                isSaved = isTabletCitySaved,
+                                                isDefault = isTabletCityDefault,
+                                                onToggleSave = {
+                                                    if (isTabletCitySaved) {
+                                                        viewModel.removeSavedCity(weather.city)
+                                                    } else {
+                                                        viewModel.saveCity(weather.city)
+                                                    }
+                                                }
                                             )
 
                                             // Cache Status Badge
@@ -618,8 +674,11 @@ fun MainScreen(
                                                 jmaWarnings = weather.jmaWarnings,
                                                 jmaOverviewText = weather.jmaOverviewText,
                                                 globalAlerts = activeGlobalAlertsTablet,
+                                                onAlertClick = { source ->
+                                                    navigateToAlertDetailPage(source, weather, currentAlertInfo, activeGlobalAlertsTablet)
+                                                },
                                                 onBannerClick = {
-                                                    onNavigateToRadarDetail()
+                                                    navigateToAlertDetailPage(null, weather, currentAlertInfo, activeGlobalAlertsTablet)
                                                 }
                                             )
 
@@ -775,23 +834,12 @@ fun MainScreen(
                         }
                     }
 
-                    // 2. オーバーレイ背景スクリム（フェードイン/フェードアウトのみで全画面移動のGPU負荷をゼロ化）
-                    androidx.compose.animation.AnimatedVisibility(
-                        visible = isTabletPanelExpanded,
-                        enter = androidx.compose.animation.fadeIn(
-                            animationSpec = androidx.compose.animation.core.tween(durationMillis = 200, easing = androidx.compose.animation.core.LinearEasing)
-                        ),
-                        exit = androidx.compose.animation.fadeOut(
-                            animationSpec = androidx.compose.animation.core.tween(durationMillis = 160, easing = androidx.compose.animation.core.LinearEasing)
-                        ),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .zIndex(99f)
-                    ) {
+                    // 2. タブレットドロワー外タップ検知レイヤー（半透明黒ボックスを除去し、クリアな背景を保ったままタップで閉じる）
+                    if (isTabletPanelExpanded) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .background(Color.Black.copy(alpha = 0.32f))
+                                .zIndex(99f)
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
@@ -830,18 +878,22 @@ fun MainScreen(
                             currentCity = uiState.selectedCity,
                             defaultCity = uiState.defaultCity,
                             savedCities = uiState.savedCities,
+                            recentSearches = uiState.recentSearches,
                             searchResults = uiState.searchResults,
                             isSearching = uiState.isSearching,
                             onCitySelected = { city, fromSearch ->
                                 onSelectCityAction(city, fromSearch)
                                 isTabletPanelExpanded = false
                             },
+                            onSaveCity = { viewModel.saveCity(it) },
                             onRemoveSavedCity = { viewModel.removeSavedCity(it) },
                             onSearchQueryChange = { viewModel.searchCities(it) },
                             onSettingsClick = {
                                 isTabletPanelExpanded = false
                                 launchSettings()
-                            }
+                            },
+                            initialFocusSearch = shouldFocusTabletSearch,
+                            onInitialFocusHandled = { shouldFocusTabletSearch = false }
                         )
                     }
                 }
@@ -959,8 +1011,11 @@ fun MainScreen(
                                 jmaWarnings = weather.jmaWarnings,
                                 jmaOverviewText = weather.jmaOverviewText,
                                 globalAlerts = activeGlobalAlertsMobile,
+                                onAlertClick = { source ->
+                                    navigateToAlertDetailPage(source, weather, currentAlertInfo, activeGlobalAlertsMobile)
+                                },
                                 onBannerClick = {
-                                    onNavigateToRadarDetail()
+                                    navigateToAlertDetailPage(null, weather, currentAlertInfo, activeGlobalAlertsMobile)
                                 }
                             )
 
@@ -1240,6 +1295,8 @@ fun MainScreen(
                                 isWmoAlertsEnabled = uiState.isWmoAlertsEnabled,
                                 isWmoAlwaysEnabled = uiState.isWmoAlwaysEnabled,
                                 isWmoTestEnabled = uiState.isWmoTestEnabled,
+                                isMeteoAlarmAlertsEnabled = uiState.isMeteoAlarmAlertsEnabled,
+                                isMeteoAlarmTestEnabled = uiState.isMeteoAlarmTestEnabled,
                                 initialSection = section,
                                 onToggleWeatherAdaptiveTheme = { viewModel.toggleWeatherAdaptiveTheme() },
                                 onSelectThemePreset = { viewModel.setThemePreset(it) },
@@ -1257,6 +1314,8 @@ fun MainScreen(
                                 onToggleWmoAlerts = { viewModel.toggleWmoAlerts(it) },
                                 onToggleWmoAlways = { viewModel.toggleWmoAlways(it) },
                                 onToggleWmoTest = { viewModel.toggleWmoTest(it) },
+                                onToggleMeteoAlarmAlerts = { viewModel.setMeteoAlarmAlertsEnabled(it) },
+                                onToggleMeteoAlarmTest = { viewModel.toggleMeteoAlarmTest(it) },
                                 onCyclePrecipitationDemo = { viewModel.cyclePrecipitationDemoState() },
                                 onToggleTemperatureUnit = { viewModel.toggleTemperatureUnit() },
                                 onSelectWindSpeedUnit = { viewModel.setWindSpeedUnit(it) },

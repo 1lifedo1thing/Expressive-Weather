@@ -31,11 +31,6 @@ class BentoDetailActivity : ComponentActivity() {
         com.example.expressiveweather.util.LocaleUtils.applyLocaleToActivity(this)
         enableEdgeToEdge()
 
-        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        })
 
         val extraCardName = intent.getStringExtra(EXTRA_CARD_TYPE)
         val cardType = extraCardName?.let { runCatching { BentoCardType.valueOf(it) }.getOrNull() }

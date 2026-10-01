@@ -278,6 +278,18 @@ class WeatherRepository(
             ?.apply()
     }
 
+    fun getMeteoAlarmAlertsEnabled(): Boolean {
+        val prefs = context?.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
+        return prefs?.getBoolean("meteoalarm_alerts_enabled", true) ?: true
+    }
+
+    fun setMeteoAlarmAlertsEnabled(enabled: Boolean) {
+        context?.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
+            ?.edit()
+            ?.putBoolean("meteoalarm_alerts_enabled", enabled)
+            ?.apply()
+    }
+
     fun isWmoAlwaysEnabled(): Boolean {
         val prefs = context?.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
         return prefs?.getBoolean("wmo_always_enabled", false) ?: false
@@ -585,13 +597,15 @@ class WeatherRepository(
     private fun enrichWeatherData(weather: WeatherData, fetchedAtMillis: Long, city: City): WeatherData {
         val isJapanLoc = isLocationOrCountryInJapan(city.country, city.latitude, city.longitude)
         val isUSLoc = isLocationOrCountryInUnitedStates(city.country, city.latitude, city.longitude)
+        val isEuropeLoc = isLocationOrCountryInEurope(city.country, city.latitude, city.longitude)
         val resolvedSource = if (weather.dataSourceName.isNotBlank() && !weather.dataSourceName.contains("Open-Meteo ＆ NOAA") && (!isJapanLoc || !weather.dataSourceName.contains("Open-Meteo"))) {
             weather.dataSourceName
         } else {
-            if (isJapanLoc) {
-                "気象データ提供元: 気象庁 (JMA)"
-            } else {
-                "気象データ提供元: Open-Meteo ＆ NOAA ＆ RainViewer"
+            when {
+                isJapanLoc -> "気象データ提供元: 気象庁 (JMA)"
+                isUSLoc -> "気象データ提供元: 米国気象局 (NOAA/NWS)"
+                isEuropeLoc -> "気象データ提供元: 欧州中期予報センター (ECMWF) ＆ RainViewer"
+                else -> "気象データ提供元: Open-Meteo ＆ NOAA ＆ RainViewer"
             }
         }
         val enrichedNowcast = weather.precipitationNowcast?.let { nowcast ->
@@ -623,13 +637,17 @@ class WeatherRepository(
                 updated.copy(isJapan = true, dataSourceName = "気象庁 (JMA)")
             } else if (isUSLoc && !updated.isUS) {
                 updated.copy(isUS = true, dataSourceName = "米国気象局 (NOAA/NWS)")
+            } else if (isEuropeLoc && !updated.isEurope) {
+                updated.copy(isEurope = true, dataSourceName = "欧州中期予報センター (ECMWF) / 各気象機関")
             } else {
                 updated
             }
         }
+        val isWmoExcluded = WmoAlertRepository.isCityExcludedFromWmo(city, isWmoAlwaysEnabled())
         val filteredAlerts = weather.globalAlerts
             .filter { getGdacsAlertsEnabled() || it.source != AlertSource.GDACS }
-            .filter { getWmoAlertsEnabled() || it.source != AlertSource.WMO }
+            .filter { (getWmoAlertsEnabled() && !isWmoExcluded) || it.source != AlertSource.WMO }
+            .filter { getMeteoAlarmAlertsEnabled() || it.source != AlertSource.METEOALARM }
         return weather.copy(
             fetchedAtMillis = fetchedAtMillis,
             dataSourceName = resolvedSource,
@@ -674,7 +692,7 @@ class WeatherRepository(
         }
 
         // Room DB に保存
-        val sourceFilteredData = filterDisabledGlobalAlerts(freshData)
+        val sourceFilteredData = filterDisabledGlobalAlerts(freshData, city)
         val jsonString = WeatherJsonSerializer.serialize(sourceFilteredData)
         weatherDao?.insertOrUpdate(
             WeatherCacheEntity(
@@ -692,10 +710,12 @@ class WeatherRepository(
     private fun needsHumidityForecastRefresh(weather: WeatherData): Boolean =
         weather.dailyForecast.any { it.humidityAvg != null && it.humidityAvgSource == null }
 
-    private fun filterDisabledGlobalAlerts(weather: WeatherData): WeatherData {
+    private fun filterDisabledGlobalAlerts(weather: WeatherData, city: City? = null): WeatherData {
+        val isWmoExcluded = city != null && WmoAlertRepository.isCityExcludedFromWmo(city, isWmoAlwaysEnabled())
         val filtered = weather.globalAlerts
             .filter { getGdacsAlertsEnabled() || it.source != AlertSource.GDACS }
-            .filter { getWmoAlertsEnabled() || it.source != AlertSource.WMO }
+            .filter { (getWmoAlertsEnabled() && !isWmoExcluded) || it.source != AlertSource.WMO }
+            .filter { getMeteoAlarmAlertsEnabled() || it.source != AlertSource.METEOALARM }
         return weather.copy(globalAlerts = filtered)
     }
 
@@ -782,6 +802,7 @@ class WeatherRepository(
         val weatherDeferred = async { fetchWeatherForecast(city) }
         val aqiDeferred = async { fetchAirQuality(city) }
         val isUs = NwsAlertRepository.isUnitedStates(city)
+        val isMeteoAlarm = MeteoAlarmRepository.isSupported(city)
 
         // 1. 米国気象局 (NWS) - 米国都市用直接取得
         val nwsAlertsDeferred = async {
@@ -795,7 +816,17 @@ class WeatherRepository(
             }
         }
 
-        // 2. 全球災害警報 (GDACS)
+        // 2. 欧州気象警報ネットワーク (MeteoAlarm / EUMETNET) - サポート全域直接取得（最優先）
+        val meteoAlarmAlertsDeferred: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (isMeteoAlarm && getMeteoAlarmAlertsEnabled()) async {
+            try {
+                MeteoAlarmRepository.fetchAlertsForCity(city)
+            } catch (e: Exception) {
+                Log.w("WeatherRepository", "MeteoAlarm alert fetch failed: ${e.message}")
+                emptyList()
+            }
+        } else null
+
+        // 3. 全球災害警報 (GDACS)
         val gdacsAlertsDeferred: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (getGdacsAlertsEnabled()) async {
             try {
                 GdacsAlertRepository.fetchAlertsForCity(city)
@@ -805,8 +836,8 @@ class WeatherRepository(
             }
         } else null
 
-        // 3. 世界気象機関 (WMO) - 日本・米国以外の海外地域専用（「常にオン」時は米国でも並行取得）
-        val shouldFetchWmo = getWmoAlertsEnabled() && (!isUs || isWmoAlwaysEnabled())
+        // 4. 世界気象機関 (WMO) - 日本・米国・MeteoAlarm対象国以外の海外地域専用（「常にオン」時は並行取得）
+        val shouldFetchWmo = getWmoAlertsEnabled() && ((!isUs && !isMeteoAlarm) || isWmoAlwaysEnabled())
         val wmoAlertsDeferred: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (shouldFetchWmo) async {
             try {
                 WmoAlertRepository.fetchAlertsForCity(city, alwaysEnabled = isWmoAlwaysEnabled())
@@ -818,15 +849,18 @@ class WeatherRepository(
 
         val (weatherJson, aqiJson) = Pair(weatherDeferred.await(), aqiDeferred.await())
         val nwsAlerts = nwsAlertsDeferred.await()
+        val meteoAlarmAlerts = meteoAlarmAlertsDeferred?.await().orEmpty()
         val gdacsAlerts = gdacsAlertsDeferred?.await().orEmpty()
         val wmoAlerts = wmoAlertsDeferred?.await().orEmpty()
-        val combinedAlerts = (nwsAlerts + gdacsAlerts + wmoAlerts).distinctBy { it.id }
+        val combinedAlerts = (nwsAlerts + meteoAlarmAlerts + gdacsAlerts + wmoAlerts).distinctBy { it.id }
 
         val parsed = parseWeatherData(city, weatherJson, aqiJson)
         val gdacsSource = if (getGdacsAlertsEnabled()) " ＆ GDACS" else ""
         val wmoSource = if (wmoAlerts.isNotEmpty() || shouldFetchWmo) " ＆ WMO" else ""
         val source = if (isUs) {
             "気象データ提供元: Open-Meteo ＆ NOAA/NWS ＆ RainViewer$gdacsSource$wmoSource"
+        } else if (isMeteoAlarm) {
+            "気象データ提供元: Open-Meteo ＆ MeteoAlarm ＆ RainViewer$gdacsSource$wmoSource"
         } else {
             "気象データ提供元: Open-Meteo ＆ RainViewer$wmoSource$gdacsSource"
         }

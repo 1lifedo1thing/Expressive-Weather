@@ -17,9 +17,12 @@ import java.util.Locale
  *
  * エンドポイント: https://severeweather.wmo.int/json/wmo_all.json
  * - 世界190カ国以上の国家気象水文機関 (NMHS) の公式CAP気象警報をリアルタイム集約
- * - 基本原則: 日本 (気象庁直接) および米国 (NOAA/NWS直接) では直接取得方式を維持。
- *   それ以外の世界各国 (欧州、カナダ、豪州、中国、韓国、東南アジア、中南米、アフリカ等) 専用として機能。
- *   ただし「常にWMOをオンにする (alwaysEnabled)」が有効な場合は日本・米国でも並行取得可能。
+ * - 基本原則:
+ *   1. 日本: 気象庁 (JMA / キキクル) 直接取得を最優先
+ *   2. 米国: NOAA / NWS 直接取得を最優先
+ *   3. 欧州・加盟39カ国: MeteoAlarm (EUMETNET) 直接取得を最優先
+ *   4. 上記以外の全世界 (カナダ、豪州、ニュージーランド、東アジア、東南アジア、中南米、アフリカ等): WMO公式警報を使用
+ *   ただし「常にWMOをオンにする (alwaysEnabled)」が有効な場合は日本・米国・MeteoAlarm対象国でも並行取得可能。
  * - 新カラー体系: 黄色：注意 (ADVISORY) / 橙色：警戒 (WARNING) / 赤色：特別警戒 (SPECIAL_WARNING)
  */
 object WmoAlertRepository {
@@ -50,24 +53,32 @@ object WmoAlertRepository {
     )
 
     /**
+     * 日本・米国・MeteoAlarm対象国など、直接取得が優先される地域かどうかを判定
+     * alwaysEnabled = true の場合は除外されない（falseを返却）
+     */
+    fun isCityExcludedFromWmo(city: City, alwaysEnabled: Boolean = false): Boolean {
+        if (alwaysEnabled) return false
+        val inJapan = isLocationOrCountryInJapan(city.country, city.latitude, city.longitude)
+        val inUs = NwsAlertRepository.isUnitedStates(city)
+        val inMeteoAlarm = MeteoAlarmRepository.isSupported(city)
+        return inJapan || inUs || inMeteoAlarm
+    }
+
+    /**
      * 都市の国名・緯度経度に基づき、該当するWMO公式気象警報を取得
      *
      * @param city 対象都市
      * @param forceFresh 強制再取得フラグ
-     * @param alwaysEnabled 日本・米国でも常にWMOを取得するかどうか（デフォルト: false）
+     * @param alwaysEnabled 日本・米国・MeteoAlarm対象国でも常にWMOを取得するかどうか（デフォルト: false）
      */
     suspend fun fetchAlertsForCity(
         city: City,
         forceFresh: Boolean = false,
         alwaysEnabled: Boolean = false
     ): List<GlobalAlertItem> = withContext(Dispatchers.IO) {
-        // 日本・米国ガード: alwaysEnabled でない限り、日本と米国では直接取得を尊重しWMOは完全スキップ
-        if (!alwaysEnabled) {
-            val inJapan = isLocationOrCountryInJapan(city.country, city.latitude, city.longitude)
-            val inUs = NwsAlertRepository.isUnitedStates(city)
-            if (inJapan || inUs) {
-                return@withContext emptyList()
-            }
+        // 日本・米国・MeteoAlarm対象地域ガード: alwaysEnabled でない限り、各地域の直接取得を尊重しWMOは完全スキップ
+        if (isCityExcludedFromWmo(city, alwaysEnabled)) {
+            return@withContext emptyList()
         }
 
         val allItems = getAllWmoItems(forceFresh)

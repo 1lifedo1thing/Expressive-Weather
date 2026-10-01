@@ -45,6 +45,16 @@ object NwsAlertRepository {
             return true
         }
 
+        // カナダやメキシコなど他国が明示されている場合は米国とみなさない
+        if (cUpper.contains("CANADA") || cUpper == "CA" ||
+            cUpper.contains("MEXICO") || cUpper == "MX" ||
+            cUpper.contains("CUBA") || cUpper.contains("BAHAMAS") ||
+            country.contains("カナダ") || country.contains("メキシコ") ||
+            country.contains("日本") || cUpper.contains("JAPAN")
+        ) {
+            return false
+        }
+
         val lat = city.latitude
         val lon = city.longitude
         // 米国本土
