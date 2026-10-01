@@ -42,7 +42,7 @@ Android 16+ の **Rich Ongoing Notifications（Live Updates）** に対応し、
 ### 1. UI & インタラクションデザイン
 
 * **Material3Expressiveを念頭に置いたデザイン**:
-  * `androidx.graphics.shapes` / Material 3 Expressive Shapes を用いた角丸・ポリゴンシェイプのダイナミックアニメーション。
+  * `androidx.graphics.shapes` / Material 3 Expressive Shapes を用いた角丸・ポリゴンシェイプのアニメーション。
 
 * **多言語対応**:
   * 日本語、英語、簡体字中国語、繁体字中国語
