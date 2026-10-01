@@ -2,7 +2,6 @@
   <br />
   <img src="docs/images/logo.png" alt="Expressive Weather Logo" width="110" />
   <h1>Expressive Weather</h1>
-  <p><strong>Material 3 Expressive デザインシステムと高精度気象レーダー・防災情報を統合した Android 天気アプリ</strong></p>
 
   <p>
     <a href="https://m3.material.io/">
@@ -42,8 +41,7 @@ Android 16+ の **Rich Ongoing Notifications（Live Updates）** に対応し、
 
 ### 1. UI & インタラクションデザイン
 
-* **ベントグリッド（Bento Grid）レイアウト**:
-  * 気温・降水確率・風向風速・UV指数・日の出日の入り・気圧・視程などの気象データを、視覚的階層の明確なモジュール構造で配置。
+* **Material3Expressiveを念頭に置いたデザイン**:
   * `androidx.graphics.shapes` / Material 3 Expressive Shapes を用いた角丸・ポリゴンシェイプのダイナミックアニメーション。
 
 * **多言語対応**:
