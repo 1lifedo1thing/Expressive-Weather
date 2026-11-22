@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
@@ -10,13 +11,14 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.POST_PROMOTED_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".ExpressiveWeatherApp"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -79,13 +81,22 @@
 
         <activity
             android:name=".ui.screens.SetupActivity"
-            android:exported="true" />
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.widget.WidgetConfigActivity"
+            android:exported="true"
+            android:label="@string/widget_config_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
 
         <!-- 警戒レベル・キキクル Live Updates 常駐フォアグラウンドサービス -->
         <service
             android:name=".data.KikikuruLiveAlertService"
             android:exported="false"
-            android:foregroundServiceType="dataSync|location" />
+            android:foregroundServiceType="dataSync" />
 
         <!-- 雨雲接近 & 降り止み Live Updates 常駐フォアグラウンドサービス (現在位置自動追従) -->
         <service
@@ -93,16 +104,87 @@
             android:exported="false"
             android:foregroundServiceType="dataSync|location" />
 
-        <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (AlarmManager, 位置変更 & Boot復元) -->
+        <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (内部専用) -->
         <receiver
             android:name=".data.WeatherUpdateReceiver"
+            android:exported="false" />
+
+        <!-- 端末再起動およびアップデート時のスケジュール復元用レシーバー -->
+        <receiver
+            android:name=".data.WeatherBootReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="com.example.expressiveweather.action.ALARM_WEATHER_UPDATE" />
-                <action android:name="com.example.expressiveweather.action.LOCATION_CHANGED" />
             </intent-filter>
+        </receiver>
+
+        <!-- ホーム画面ウィジェット（コンパクト 2x2） -->
+        <receiver
+            android:name=".ui.widget.WeatherWidgetCompactProvider"
+            android:exported="true"
+            android:label="@string/widget_name_compact">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.DATE_CHANGED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_compact" />
+        </receiver>
+
+        <!-- ホーム画面ウィジェット（ワイド中 4x2） -->
+        <receiver
+            android:name=".ui.widget.WeatherWidgetMediumProvider"
+            android:exported="true"
+            android:label="@string/widget_name_medium">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_medium" />
+        </receiver>
+
+        <!-- ホーム画面ウィジェット（ダッシュボード大 4x4） -->
+        <receiver
+            android:name=".ui.widget.WeatherWidgetLargeProvider"
+            android:exported="true"
+            android:label="@string/widget_name_large">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_large" />
+        </receiver>
+
+        <!-- ホーム画面ウィジェット（Material Shape 2x2） -->
+        <receiver
+            android:name=".ui.widget.WeatherWidgetShapeProvider"
+            android:exported="true"
+            android:label="@string/widget_name_shape">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_shape" />
+        </receiver>
+
+        <!-- ホーム画面ウィジェット（Material You 雨雲レーダー 4x2） -->
+        <receiver
+            android:name=".ui.widget.WeatherWidgetRadarProvider"
+            android:exported="true"
+            android:label="@string/widget_name_radar">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_radar" />
         </receiver>
     </application>
 

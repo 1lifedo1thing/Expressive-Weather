@@ -1,0 +1,10 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Exact MaterialShapes.Pill normalized & fitted path -->
+    <path
+        android:fillColor="@color/widget_my_primary_container"
+        android:pathData="M170.15,29.85 C182.79,42.48 191.21,59.35 193.15,78.19 C193.43,80.96 193.72,83.72 194.00,86.49 C193.88,108.25 185.18,129.08 169.80,144.46 C161.35,152.91 152.91,161.35 144.46,169.80 C129.08,185.18 108.25,193.88 86.49,194.00 C83.72,193.72 80.96,193.43 78.19,193.15 C40.51,189.27 10.73,159.49 6.85,121.81 C6.57,119.04 6.28,116.28 6.00,113.51 C6.12,91.75 14.82,70.92 30.20,55.54 C38.65,47.09 47.09,38.65 55.54,30.20 C70.92,14.82 91.75,6.12 113.51,6.00 C116.28,6.28 119.04,6.57 121.81,6.85 C140.65,8.79 157.52,17.21 170.15,29.85 Z" />
+</vector>

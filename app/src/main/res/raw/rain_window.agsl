@@ -18,7 +18,7 @@ float4 beads(float2 p) {
     float seed = hash21(id);
     float2 center = (id + 0.22 + float2(seed, hash21(id + 8.3)) * 0.56) * cell;
     float grow = 0.78 + 0.22 * sin(time * 0.17 + seed * 40.0);
-    float radius = (1.1 + seed * seed * 3.5) * grow;
+    float radius = max(0.01, (1.1 + seed * seed * 3.5) * grow);
     float2 q = (p - center) / float2(radius, radius * (1.0 + seed * 0.22));
     float d = length(q);
     float mask = (1.0 - smoothstep(0.82, 1.10, d)) * step(seed, 0.46 + strength * 0.10);
@@ -53,7 +53,8 @@ float4 runningDrops(float2 p, float cellWidth, float cellHeight, float speed, fl
 }
 
 half4 main(float2 fragCoord) {
-    float2 p = fragCoord / density;
+    float safeDensity = max(density, 0.01);
+    float2 p = fragCoord / safeDensity;
     float4 small = beads(p);
     float4 first = runningDrops(p, 67.0, 285.0, 19.0 + strength * 9.0, 4.7);
     float4 second = runningDrops(p + float2(31.0, 117.0), 103.0, 397.0,
@@ -64,13 +65,14 @@ half4 main(float2 fragCoord) {
     float trail = max(first.w, second.w);
     float wet = max(water.z, trail * 0.8);
     float2 normal = water.xy;
-    float2 offset = normal * density * (8.0 + 5.0 * water.z);
+    float2 offset = normal * safeDensity * (8.0 + 5.0 * water.z);
     float2 uv = fragCoord + offset;
     // Five-tap diffusion: dry glass scatters light, wet paths reveal a clearer view.
-    float blur = density * mix(3.8, 0.35, wet);
+    float blur = safeDensity * mix(3.8, 0.35, wet);
     float2 lo = float2(0.5);
     float2 hi = max(lo, resolution - 0.5);
-    half3 color = scene.eval(clamp(uv, lo, hi)).rgb * 0.28;
+    half4 centerSample = scene.eval(clamp(uv, lo, hi));
+    half3 color = centerSample.rgb * 0.28;
     color += scene.eval(clamp(uv + float2(blur, blur), lo, hi)).rgb * 0.18;
     color += scene.eval(clamp(uv + float2(-blur, blur), lo, hi)).rgb * 0.18;
     color += scene.eval(clamp(uv + float2(blur, -blur), lo, hi)).rgb * 0.18;
@@ -85,5 +87,5 @@ half4 main(float2 fragCoord) {
     float caustic = pow(max(0.0, dot(normal, float2(0.45, 0.89))), 12.0) * water.z;
     color += half3(0.76, 0.88, 0.96) * half(glint * 0.70 + caustic * 0.33);
     color += half3(0.45, 0.59, 0.66) * half(trail * 0.035);
-    return half4(clamp(color, 0.0, 1.0), 1.0);
+    return half4(clamp(color, 0.0, 1.0), centerSample.a);
 }

@@ -1,0 +1,55 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="300dp"
+    android:height="240dp"
+    android:viewportWidth="300"
+    android:viewportHeight="240">
+
+    <!-- Material You base land -->
+    <path
+        android:fillColor="@color/widget_my_map_land"
+        android:pathData="M0,0 L300,0 L300,240 L0,240 Z" />
+
+    <!-- Stylized bay / ocean bottom-right -->
+    <path
+        android:fillColor="@color/widget_my_map_water"
+        android:pathData="M210,130 C235,115 268,125 300,110 L300,240 L175,240 C172,210 185,188 195,168 C202,152 195,140 210,130 Z" />
+
+    <!-- Subtle river flowing into the bay -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/widget_my_map_water"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:pathData="M-10,54 C60,72 115,105 152,138 C176,158 196,170 212,186" />
+
+    <!-- Subtle administrative boundary curves -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:strokeColor="@color/widget_my_text_secondary"
+        android:strokeAlpha="0.24"
+        android:strokeWidth="1.5"
+        android:pathData="M18,164 C62,140 105,134 148,144 C180,152 214,142 256,112 M136,-5 C128,45 138,88 152,142" />
+
+    <!-- Material You harmonized rain radar band -->
+    <path
+        android:fillColor="#5538BDF8"
+        android:pathData="M48,72 C74,48 134,46 168,78 C196,104 222,126 196,158 C170,188 112,174 82,148 C50,122 24,94 48,72 Z" />
+    <path
+        android:fillColor="#770284C7"
+        android:pathData="M86,84 C104,70 140,72 162,92 C180,110 182,130 162,144 C142,158 104,148 86,128 C72,114 70,96 86,84 Z" />
+    <path
+        android:fillColor="#880369A1"
+        android:pathData="M114,98 C126,90 144,94 152,106 C158,116 150,128 136,130 C120,132 106,120 108,108 C108,104 110,100 114,98 Z" />
+
+    <!-- Center location halo + pin -->
+    <path
+        android:fillColor="@color/widget_my_accent"
+        android:fillAlpha="0.28"
+        android:pathData="M150,120 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M150,120 m-8,0 a8,8 0 1,0 16,0 a8,8 0 1,0 -16,0" />
+    <path
+        android:fillColor="@color/widget_my_accent"
+        android:pathData="M150,120 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+</vector>

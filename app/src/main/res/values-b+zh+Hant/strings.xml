@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">天氣</string>
+    <string name="app_name">Expressive Weather</string>
+    <string name="widget_name_compact">天氣（精簡）</string>
+    <string name="widget_desc_compact">精簡顯示目前天氣、溫度與高低溫。</string>
+    <string name="widget_name_medium">天氣與逐時預報（中）</string>
+    <string name="widget_desc_medium">一眼掌握目前天氣與未來 5 小時逐時預報方塊。</string>
+    <string name="widget_name_large">天氣儀表板（大）</string>
+    <string name="widget_desc_large">整合目前天氣、逐時預報卡片與未來 7 天每週天氣預報。</string>
+    <string name="widget_name_shape">天氣（Material Shape）</string>
+    <string name="widget_desc_shape">具備有機 Material 3 Expressive 幾何造型的極簡溫度與天氣圖示小工具。</string>
+    <string name="widget_name_radar">降雨雷達 (Material You 2×4)</string>
+    <string name="widget_desc_radar">採用裝置 Material You 配色的即時降雨雷達地圖與目前天氣預報小工具。</string>
+    <string name="widget_config_title">小工具設定</string>
+    <string name="widget_preview_city">東京</string>
+    <string name="widget_preview_sunny">晴朗</string>
+    <string name="widget_preview_now">現在</string>
+    <string name="widget_preview_radar_live">17:10 實況</string>
+    <string name="widget_preview_d0">今天</string>
+    <string name="widget_preview_d1">明天</string>
+    <string name="widget_preview_d2">週一</string>
+    <string name="widget_preview_d3">週二</string>
+    <string name="widget_preview_d4">週三</string>
+    <string name="widget_preview_d5">週四</string>
+    <string name="widget_preview_d6">週五</string>
 </resources>

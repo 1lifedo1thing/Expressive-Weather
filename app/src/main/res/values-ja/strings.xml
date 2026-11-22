@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">天気</string>
+    <string name="app_name">Expressive Weather</string>
+    <string name="widget_name_compact">天気 (コンパクト)</string>
+    <string name="widget_desc_compact">現在の天気・気温・最高/最低気温をシンプルにコンパクト表示します。</string>
+    <string name="widget_name_medium">天気 ＆ 時間別予報 (中)</string>
+    <string name="widget_desc_medium">現在の天気と今後5時間の予報ボックスを一目で確認できます。</string>
+    <string name="widget_name_large">天気ダッシュボード (大)</string>
+    <string name="widget_desc_large">現在の天気・時間別予報・7日間の週間予報をまとめたダッシュボードウィジェットです。</string>
+    <string name="widget_name_shape">天気 (Material Shape)</string>
+    <string name="widget_desc_shape">有機的な Material 3 Expressive シェイプに気温と天気シンボルを表示するミニマルウィジェットです。</string>
+    <string name="widget_name_radar">雨雲レーダー (Material You 2×4)</string>
+    <string name="widget_desc_radar">壁紙の Material You カラーに調和する雨雲レーダーマップと現在天気・今後の予報を表示します。</string>
+    <string name="widget_config_title">ウィジェット設定</string>
+    <string name="widget_preview_city">東京</string>
+    <string name="widget_preview_sunny">快晴</string>
+    <string name="widget_preview_now">現在</string>
+    <string name="widget_preview_radar_live">17:10 実況</string>
+    <string name="widget_preview_d0">今日</string>
+    <string name="widget_preview_d1">明日</string>
+    <string name="widget_preview_d2">月</string>
+    <string name="widget_preview_d3">火</string>
+    <string name="widget_preview_d4">水</string>
+    <string name="widget_preview_d5">木</string>
+    <string name="widget_preview_d6">金</string>
 </resources>

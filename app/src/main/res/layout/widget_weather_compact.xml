@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_mask"
+    android:clipToOutline="true">
+
+    <ImageView
+        android:id="@+id/widget_bg_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:importantForAccessibility="no"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:id="@+id/widget_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Header: City + Ghost Refresh -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/widget_location_icon"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="3dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_widget_location_24" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start">
+
+                <ImageView
+                    android:id="@+id/widget_city_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitStart" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Hero: Large Google Sans Temp Left + Unified App Icon Right -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start">
+
+                <ImageView
+                    android:id="@+id/widget_current_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitStart" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/widget_weather_icon"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_fluent_weather_sunny_24" />
+        </LinearLayout>
+
+        <!-- Footer: Condition Left + Hi/Lo Right -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start">
+
+                <ImageView
+                    android:id="@+id/widget_condition_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitStart" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/widget_high_low"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:importantForAccessibility="no"
+                android:scaleType="fitEnd" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

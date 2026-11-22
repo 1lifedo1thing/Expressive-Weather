@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="widget_my_surface">#FFEAF3FC</color>
+    <color name="widget_my_surface_variant">#FFD6E6F7</color>
+    <color name="widget_my_primary_container">#FFC2E7FF</color>
+    <color name="widget_my_on_primary_container">#FF001D35</color>
+    <color name="widget_my_accent">#FF006494</color>
+    <color name="widget_my_text_primary">#FF0D1D2A</color>
+    <color name="widget_my_text_secondary">#FF425466</color>
+    <color name="widget_my_map_water">#FFCFE2F5</color>
+    <color name="widget_my_map_land">#FFF3F7FC</color>
+    <color name="widget_default_bg_start">#FF2E6AA6</color>
+    <color name="widget_default_bg_end">#FF194B80</color>
+    <color name="widget_tray_expressive">#26FFFFFF</color>
+    <color name="widget_pill_expressive">#33FFFFFF</color>
+</resources>

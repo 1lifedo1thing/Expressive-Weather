@@ -14,15 +14,35 @@ val localProperties = Properties().apply {
     }
 }
 
+val keystoreProperties = Properties().apply {
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
+}
+
 val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY")
     ?: System.getenv("MAPS_API_KEY")
     ?: ""
 
+val releaseStoreFilePath: String? = keystoreProperties.getProperty("storeFile")
+    ?: System.getenv("KEYSTORE_PATH")
+val releaseStorePassword: String? = keystoreProperties.getProperty("storePassword")
+    ?: System.getenv("KEYSTORE_PASSWORD")
+val releaseKeyAlias: String? = keystoreProperties.getProperty("keyAlias")
+    ?: System.getenv("KEY_ALIAS")
+val releaseKeyPassword: String? = keystoreProperties.getProperty("keyPassword")
+    ?: System.getenv("KEY_PASSWORD")
+val hasReleaseSigning: Boolean = !releaseStoreFilePath.isNullOrBlank() &&
+    !releaseStorePassword.isNullOrBlank() &&
+    !releaseKeyAlias.isNullOrBlank() &&
+    !releaseKeyPassword.isNullOrBlank()
+
 android {
-    namespace = "com.example.expressiveweather"
+    namespace = "io.github.nemynew.expressiveweather"
     compileSdk = 36
     defaultConfig {
-        applicationId = "com.expressiveweather.app"
+        applicationId = "io.github.nemynew.expressiveweather"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -32,10 +52,40 @@ android {
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseStoreFilePath!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
+    flavorDimensions += "distribution"
+    productFlavors {
+        create("play") {
+            dimension = "distribution"
+            buildConfigField("boolean", "IS_PLAY_DISTRIBUTION", "true")
+            buildConfigField("boolean", "ENABLE_EXTERNAL_DONATION_LINKS", "false")
+            buildConfigField("boolean", "ALLOW_BATTERY_OPTIMIZATION_REQUEST_DIALOG", "false")
+        }
+        create("github") {
+            dimension = "distribution"
+            buildConfigField("boolean", "IS_PLAY_DISTRIBUTION", "false")
+            buildConfigField("boolean", "ENABLE_EXTERNAL_DONATION_LINKS", "true")
+            buildConfigField("boolean", "ALLOW_BATTERY_OPTIMIZATION_REQUEST_DIALOG", "true")
+        }
+    }
+
     buildTypes {
         release {
-            isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            isMinifyEnabled = true
+            isShrinkResources = true
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -46,7 +96,7 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 
@@ -129,4 +179,5 @@ dependencies {
 
 ksp {
   arg("room.generateKotlin", "true")
+  arg("room.schemaLocation", "$projectDir/schemas")
 }

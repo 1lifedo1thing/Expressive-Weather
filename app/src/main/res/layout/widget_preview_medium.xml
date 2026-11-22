@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_bg_material_you"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- Top Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="4dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_widget_location_24"
+                    android:tint="@color/widget_my_text_primary" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/google_sans_flex"
+                    android:text="@string/widget_preview_city"
+                    android:textColor="@color/widget_my_text_primary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:fontFamily="@font/google_sans_flex"
+                    android:text="17:30"
+                    android:textColor="@color/widget_my_text_secondary"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="@font/google_sans_flex"
+                android:text="@string/widget_preview_sunny"
+                android:textColor="@color/widget_my_text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="6dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_fluent_weather_sunny_24"
+            android:tint="@color/widget_my_accent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/google_sans_flex"
+            android:letterSpacing="-0.04"
+            android:text="22°"
+            android:textColor="@color/widget_my_text_primary"
+            android:textSize="36sp" />
+    </LinearLayout>
+
+    <!-- 5 Individual Material You Rounded Hourly Boxes -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        android:baselineAligned="false"
+        android:orientation="horizontal">
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginEnd="5dp" android:layout_weight="1" android:background="@drawable/widget_preview_my_box_active" android:gravity="center" android:orientation="vertical" android:paddingVertical="4dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="@string/widget_preview_now" android:textColor="@color/widget_my_on_primary_container" android:textSize="10sp" android:textStyle="bold" />
+            <ImageView android:layout_width="21dp" android:layout_height="21dp" android:layout_marginTop="2dp" android:importantForAccessibility="no" android:src="@drawable/ic_fluent_weather_sunny_24" android:tint="@color/widget_my_on_primary_container" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="0%" android:textColor="@color/widget_my_accent" android:textSize="9sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="22°" android:textColor="@color/widget_my_on_primary_container" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginEnd="5dp" android:layout_weight="1" android:background="@drawable/widget_preview_my_box_idle" android:gravity="center" android:orientation="vertical" android:paddingVertical="4dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="18:00" android:textColor="@color/widget_my_text_secondary" android:textSize="10sp" />
+            <ImageView android:layout_width="21dp" android:layout_height="21dp" android:layout_marginTop="2dp" android:importantForAccessibility="no" android:src="@drawable/ic_fluent_weather_partly_cloudy_day_24" android:tint="@color/widget_my_accent" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="10%" android:textColor="@color/widget_my_accent" android:textSize="9sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="23°" android:textColor="@color/widget_my_text_primary" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginEnd="5dp" android:layout_weight="1" android:background="@drawable/widget_preview_my_box_idle" android:gravity="center" android:orientation="vertical" android:paddingVertical="4dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="19:00" android:textColor="@color/widget_my_text_secondary" android:textSize="10sp" />
+            <ImageView android:layout_width="21dp" android:layout_height="21dp" android:layout_marginTop="2dp" android:importantForAccessibility="no" android:src="@drawable/ic_fluent_weather_cloudy_24" android:tint="@color/widget_my_accent" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="20%" android:textColor="@color/widget_my_accent" android:textSize="9sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="21°" android:textColor="@color/widget_my_text_primary" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_marginEnd="5dp" android:layout_weight="1" android:background="@drawable/widget_preview_my_box_idle" android:gravity="center" android:orientation="vertical" android:paddingVertical="4dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="20:00" android:textColor="@color/widget_my_text_secondary" android:textSize="10sp" />
+            <ImageView android:layout_width="21dp" android:layout_height="21dp" android:layout_marginTop="2dp" android:importantForAccessibility="no" android:src="@drawable/ic_fluent_weather_rain_24" android:tint="@color/widget_my_accent" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="60%" android:textColor="@color/widget_my_accent" android:textSize="9sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="19°" android:textColor="@color/widget_my_text_primary" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1" android:background="@drawable/widget_preview_my_box_idle" android:gravity="center" android:orientation="vertical" android:paddingVertical="4dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="21:00" android:textColor="@color/widget_my_text_secondary" android:textSize="10sp" />
+            <ImageView android:layout_width="21dp" android:layout_height="21dp" android:layout_marginTop="2dp" android:importantForAccessibility="no" android:src="@drawable/ic_fluent_weather_moon_24" android:tint="@color/widget_my_accent" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="10%" android:textColor="@color/widget_my_accent" android:textSize="9sp" android:textStyle="bold" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/google_sans_flex" android:text="18°" android:textColor="@color/widget_my_text_primary" android:textSize="13sp" android:textStyle="bold" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
