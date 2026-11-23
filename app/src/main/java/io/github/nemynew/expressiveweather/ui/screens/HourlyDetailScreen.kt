@@ -154,15 +154,31 @@ fun HourlyDetailScreen(
                 .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = when (language) {
-                    AppLanguage.JAPANESE -> "天気データを読み込み中..."
-                    AppLanguage.SIMPLIFIED_CHINESE -> "正在加载天气数据..."
-                    AppLanguage.TRADITIONAL_CHINESE -> "正在載入天氣資料..."
-                    AppLanguage.ENGLISH -> "Loading weather data..."
-                },
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = when (language) {
+                        AppLanguage.JAPANESE -> "天気データを読み込み中..."
+                        AppLanguage.SIMPLIFIED_CHINESE -> "正在加载天气数据..."
+                        AppLanguage.TRADITIONAL_CHINESE -> "正在載入天氣資料..."
+                        AppLanguage.ENGLISH -> "Loading weather data..."
+                    },
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                androidx.compose.material3.TextButton(onClick = onBack) {
+                    Text(
+                        text = when (language) {
+                            AppLanguage.JAPANESE -> "戻る"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "返回"
+                            AppLanguage.TRADITIONAL_CHINESE -> "返回"
+                            AppLanguage.ENGLISH -> "Back"
+                        }
+                    )
+                }
+            }
         }
         return
     }

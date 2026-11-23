@@ -100,7 +100,12 @@ class MainActivity : ComponentActivity() {
     val selectCurrent = intent.getBooleanExtra(WeatherWidgetUpdater.EXTRA_WIDGET_SELECT_CURRENT, false)
     val pinnedCity = if (!selectCurrent && !cityJson.isNullOrBlank()) {
       try {
-        WeatherJsonSerializer.json.decodeFromString<City>(cityJson)
+        WeatherJsonSerializer.json.decodeFromString<City>(cityJson).takeIf { city ->
+          city.latitude.isFinite() &&
+            city.longitude.isFinite() &&
+            city.latitude in -90.0..90.0 &&
+            city.longitude in -180.0..180.0
+        }
       } catch (_: Exception) {
         null
       }

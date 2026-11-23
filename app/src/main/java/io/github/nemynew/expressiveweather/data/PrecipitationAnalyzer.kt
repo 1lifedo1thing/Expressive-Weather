@@ -76,7 +76,8 @@ object PrecipitationAnalyzer {
         latitude: Double? = null,
         longitude: Double? = null,
         conditionName: String? = null,
-        jmaMinutelySeries: List<Pair<Long, Double>>? = null
+        jmaMinutelySeries: List<Pair<Long, Double>>? = null,
+        timeZone: TimeZone? = null
     ): PrecipitationNowcast {
         val isJapan = if (latitude != null && longitude != null) {
             isLocationOrCountryInJapan(country, latitude, longitude)
@@ -86,6 +87,8 @@ object PrecipitationAnalyzer {
             val c = country?.trim() ?: ""
             c.contains("日本") || c.contains("Japan", ignoreCase = true) || c.equals("JP", ignoreCase = true) || c.equals("JPN", ignoreCase = true)
         }
+
+        val effectiveTimeZone = timeZone ?: if (isJapan) TimeZone.getTimeZone("Asia/Tokyo") else TimeZone.getDefault()
 
         val isUS = if (latitude != null && longitude != null) {
             isLocationOrCountryInUnitedStates(country, latitude, longitude)
@@ -115,7 +118,8 @@ object PrecipitationAnalyzer {
             minutelyPrecips = effectiveMinutelyPrecips,
             hourlyForecast = hourlyForecast,
             popSlots = popSlots,
-            jmaMinutelySeries = jmaMinutelySeries
+            jmaMinutelySeries = jmaMinutelySeries,
+            timeZone = effectiveTimeZone
         )
 
         // MinutelyRainPoint のリスト (下位互換およびUI描画用)
@@ -158,7 +162,8 @@ object PrecipitationAnalyzer {
                 minutelyPoints = minutelyPoints,
                 isJapan = isJapan,
                 isUS = isUS,
-                isEurope = isEurope
+                isEurope = isEurope,
+                timeZone = effectiveTimeZone
             )
         } else {
             analyzeDryState(
@@ -169,7 +174,8 @@ object PrecipitationAnalyzer {
                 jmaOverview = jmaOverview,
                 isJapan = isJapan,
                 isUS = isUS,
-                isEurope = isEurope
+                isEurope = isEurope,
+                timeZone = effectiveTimeZone
             )
         }
     }
@@ -185,7 +191,8 @@ object PrecipitationAnalyzer {
         jmaOverview: String?,
         isJapan: Boolean,
         isUS: Boolean,
-        isEurope: Boolean = false
+        isEurope: Boolean = false,
+        timeZone: TimeZone = TimeZone.getDefault()
     ): PrecipitationNowcast {
         // 未来のタイムラインを先頭から順に走査し、雨量が 1.0 mm/h 以上となった最初の時刻を探索
         // ノイズ除外条件: 2フレーム連続で 0.8 mm/h 以上が続くこと
@@ -231,10 +238,10 @@ object PrecipitationAnalyzer {
                 // 1. 直近60分以内に降り始める場合
                 diffMinutes <= 60 -> {
                     val isHeavy = maxPrecipInEvent >= THRESHOLD_HEAVY_RAIN
-                    val timeLabelJa = formatTo5MinTime(startTime, AppLanguage.JAPANESE)
-                    val timeLabelEn = formatTo5MinTime(startTime, AppLanguage.ENGLISH)
-                    val timeLabelZhCn = formatTo5MinTime(startTime, AppLanguage.SIMPLIFIED_CHINESE)
-                    val timeLabelZhTw = formatTo5MinTime(startTime, AppLanguage.TRADITIONAL_CHINESE)
+                    val timeLabelJa = formatTo5MinTime(startTime, AppLanguage.JAPANESE, timeZone)
+                    val timeLabelEn = formatTo5MinTime(startTime, AppLanguage.ENGLISH, timeZone)
+                    val timeLabelZhCn = formatTo5MinTime(startTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+                    val timeLabelZhTw = formatTo5MinTime(startTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
                     val jaHeadline = if (diffMinutes < 15) {
                         if (isHeavy) "まもなく激しい雨が降ります" else "まもなく雨が降り始めます"
@@ -320,10 +327,10 @@ object PrecipitationAnalyzer {
 
                 // 2. 1時間後から6時間後までに降り始める場合 (10分単位の刻み)
                 diffMinutes <= 360 -> {
-                    val timeLabelJa = roundToNearest10Min(startTime, AppLanguage.JAPANESE)
-                    val timeLabelEn = roundToNearest10Min(startTime, AppLanguage.ENGLISH)
-                    val timeLabelZhCn = roundToNearest10Min(startTime, AppLanguage.SIMPLIFIED_CHINESE)
-                    val timeLabelZhTw = roundToNearest10Min(startTime, AppLanguage.TRADITIONAL_CHINESE)
+                    val timeLabelJa = roundToNearest10Min(startTime, AppLanguage.JAPANESE, timeZone)
+                    val timeLabelEn = roundToNearest10Min(startTime, AppLanguage.ENGLISH, timeZone)
+                    val timeLabelZhCn = roundToNearest10Min(startTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+                    val timeLabelZhTw = roundToNearest10Min(startTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = "${timeLabelJa}頃から雨が降り始める見込みです",
@@ -359,10 +366,10 @@ object PrecipitationAnalyzer {
 
                 // 3. 6時間後から15時間後までに降り始める場合 (1時間単位の丸め)
                 else -> {
-                    val roundedHourJa = roundToNearestHour(startTime, AppLanguage.JAPANESE)
-                    val roundedHourEn = roundToNearestHour(startTime, AppLanguage.ENGLISH)
-                    val roundedHourZhCn = roundToNearestHour(startTime, AppLanguage.SIMPLIFIED_CHINESE)
-                    val roundedHourZhTw = roundToNearestHour(startTime, AppLanguage.TRADITIONAL_CHINESE)
+                    val roundedHourJa = roundToNearestHour(startTime, AppLanguage.JAPANESE, timeZone)
+                    val roundedHourEn = roundToNearestHour(startTime, AppLanguage.ENGLISH, timeZone)
+                    val roundedHourZhCn = roundToNearestHour(startTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+                    val roundedHourZhTw = roundToNearestHour(startTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = "${roundedHourJa}頃から雨が降り出す見込みです",
@@ -403,10 +410,10 @@ object PrecipitationAnalyzer {
         // =====================================================================
         val rainyBlock = tier4Blocks.firstOrNull { it.precipProbability >= 50 }
         if (rainyBlock != null) {
-            val (headlineJa, labelJa) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.JAPANESE)
-            val (headlineEn, labelEn) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.ENGLISH)
-            val (headlineZhCn, labelZhCn) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.SIMPLIFIED_CHINESE)
-            val (headlineZhTw, labelZhTw) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.TRADITIONAL_CHINESE)
+            val (headlineJa, labelJa) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.JAPANESE, timeZone)
+            val (headlineEn, labelEn) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.ENGLISH, timeZone)
+            val (headlineZhCn, labelZhCn) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+            val (headlineZhTw, labelZhTw) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
             val pop = rainyBlock.precipProbability
             val (sourceJa, sourceEn, sourceZhCn, sourceZhTw) = when {
@@ -527,7 +534,8 @@ object PrecipitationAnalyzer {
         minutelyPoints: List<MinutelyRainPoint>,
         isJapan: Boolean = false,
         isUS: Boolean = false,
-        isEurope: Boolean = false
+        isEurope: Boolean = false,
+        timeZone: TimeZone = TimeZone.getDefault()
     ): PrecipitationNowcast {
         val peakIntensity = maxOf(effectiveCurrentRain, futureFrames.maxOfOrNull { it.precipMmPerHour } ?: 0.0)
 
@@ -564,10 +572,10 @@ object PrecipitationAnalyzer {
         if (peakFrame != null) {
             val peakTime = peakFrame.timestampMillis
             val diffMin = ((peakTime - nowMillis) / (60 * 1000L)).toInt().coerceAtLeast(1)
-            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.JAPANESE) else roundToNearest10Min(peakTime, AppLanguage.JAPANESE)
-            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.ENGLISH) else roundToNearest10Min(peakTime, AppLanguage.ENGLISH)
-            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.SIMPLIFIED_CHINESE) else roundToNearest10Min(peakTime, AppLanguage.SIMPLIFIED_CHINESE)
-            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.TRADITIONAL_CHINESE) else roundToNearest10Min(peakTime, AppLanguage.TRADITIONAL_CHINESE)
+            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.JAPANESE, timeZone) else roundToNearest10Min(peakTime, AppLanguage.JAPANESE, timeZone)
+            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.ENGLISH, timeZone) else roundToNearest10Min(peakTime, AppLanguage.ENGLISH, timeZone)
+            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone) else roundToNearest10Min(peakTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.TRADITIONAL_CHINESE, timeZone) else roundToNearest10Min(peakTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
             val multilingual = createMultilingualTexts(
                 jaHeadline = "${timeLabelJa}頃から雨がさらに強まる見込みです",
@@ -605,10 +613,10 @@ object PrecipitationAnalyzer {
         if (endFrame != null) {
             val endTime = endFrame.timestampMillis
             val diffMin = ((endTime - nowMillis) / (60 * 1000L)).toInt().coerceAtLeast(1)
-            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE) else roundToNearest10Min(endTime, AppLanguage.JAPANESE)
-            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH) else roundToNearest10Min(endTime, AppLanguage.ENGLISH)
-            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE)
-            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE)
+            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.JAPANESE, timeZone)
+            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH, timeZone) else roundToNearest10Min(endTime, AppLanguage.ENGLISH, timeZone)
+            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
             val hours = diffMin / 60
             val mins = diffMin % 60
@@ -808,7 +816,8 @@ object PrecipitationAnalyzer {
         minutelyPrecips: List<Double>?,
         hourlyForecast: List<HourlyForecast>,
         popSlots: List<PopSlot>?,
-        jmaMinutelySeries: List<Pair<Long, Double>>? = null
+        jmaMinutelySeries: List<Pair<Long, Double>>? = null,
+        timeZone: TimeZone = TimeZone.getDefault()
     ): List<TimelineFrame> {
         val timeline = mutableListOf<TimelineFrame>()
 
@@ -821,7 +830,7 @@ object PrecipitationAnalyzer {
             parsedMinutely.sortBy { it.first }
         } else if (minutelyTimes != null && minutelyPrecips != null && minutelyTimes.size == minutelyPrecips.size) {
             for (i in minutelyTimes.indices) {
-                val tMillis = parseIsoToMillis(minutelyTimes[i]) ?: continue
+                val tMillis = parseIsoToMillis(minutelyTimes[i], timeZone) ?: continue
                 val pVal = minutelyPrecips[i].coerceAtLeast(0.0)
                 parsedMinutely.add(Pair(tMillis, pVal))
             }
@@ -850,7 +859,7 @@ object PrecipitationAnalyzer {
                 precipMmPerHour = nowPrecip,
                 precipProbability = if (nowPrecip >= THRESHOLD_RAIN_START || isRainNow) 90 else 10,
                 tier = TimelineTier.TIER1_NOWCAST_5MIN,
-                timeLabel = formatToHHmm(nowMillis)
+                timeLabel = formatToHHmm(nowMillis, timeZone)
             )
         )
 
@@ -859,8 +868,8 @@ object PrecipitationAnalyzer {
         // =====================================================================
         for (offsetMin in 5..60 step 5) {
             val t = nowMillis + offsetMin * 60 * 1000L
-            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip)
-            val pop = samplePop(t, popSlots, hourlyForecast, pMm)
+            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip, timeZone)
+            val pop = samplePop(t, popSlots, hourlyForecast, pMm, timeZone)
             timeline.add(
                 TimelineFrame(
                     timestampMillis = t,
@@ -868,7 +877,7 @@ object PrecipitationAnalyzer {
                     precipMmPerHour = pMm,
                     precipProbability = pop,
                     tier = TimelineTier.TIER1_NOWCAST_5MIN,
-                    timeLabel = formatToHHmm(t)
+                    timeLabel = formatToHHmm(t, timeZone)
                 )
             )
         }
@@ -878,8 +887,8 @@ object PrecipitationAnalyzer {
         // =====================================================================
         for (offsetMin in 70..360 step 10) {
             val t = nowMillis + offsetMin * 60 * 1000L
-            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip)
-            val pop = samplePop(t, popSlots, hourlyForecast, pMm)
+            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip, timeZone)
+            val pop = samplePop(t, popSlots, hourlyForecast, pMm, timeZone)
             timeline.add(
                 TimelineFrame(
                     timestampMillis = t,
@@ -887,7 +896,7 @@ object PrecipitationAnalyzer {
                     precipMmPerHour = pMm,
                     precipProbability = pop,
                     tier = TimelineTier.TIER2_SHORT_FORECAST_10MIN,
-                    timeLabel = roundToNearest10Min(t)
+                    timeLabel = roundToNearest10Min(t, timeZone = timeZone)
                 )
             )
         }
@@ -898,8 +907,8 @@ object PrecipitationAnalyzer {
         for (offsetHour in 7..15) {
             val offsetMin = offsetHour * 60
             val t = nowMillis + offsetHour * 3600 * 1000L
-            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip)
-            val pop = samplePop(t, popSlots, hourlyForecast, pMm)
+            val pMm = samplePrecip(t, parsedMinutely, hourlyForecast, nowMillis, nowPrecip, timeZone)
+            val pop = samplePop(t, popSlots, hourlyForecast, pMm, timeZone)
             timeline.add(
                 TimelineFrame(
                     timestampMillis = t,
@@ -907,7 +916,7 @@ object PrecipitationAnalyzer {
                     precipMmPerHour = pMm,
                     precipProbability = pop,
                     tier = TimelineTier.TIER3_SHORT_FORECAST_1H,
-                    timeLabel = roundToNearestHour(t)
+                    timeLabel = roundToNearestHour(t, timeZone = timeZone)
                 )
             )
         }
@@ -915,7 +924,7 @@ object PrecipitationAnalyzer {
         // =====================================================================
         // Tier 4: 15時間以降から翌日 (府県天気予報 6時間ブロック)
         // =====================================================================
-        val calBlock = Calendar.getInstance().apply {
+        val calBlock = Calendar.getInstance(timeZone).apply {
             timeInMillis = nowMillis + 15 * 3600 * 1000L
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
@@ -933,6 +942,16 @@ object PrecipitationAnalyzer {
             val pop = if (!popSlots.isNullOrEmpty()) {
                 val matched = popSlots.lastOrNull { bStart >= it.startMillis }
                 matched?.pop ?: 20
+            } else if (hourlyForecast.size >= 16) {
+                // フル24時間以上の時系列では実時刻インデックスで照合し、今日の降雨が翌日へ誤循環するのを防止
+                val startIdx = ((bStart - nowMillis) / (3600 * 1000L)).toInt()
+                val endIdx = ((bEnd - nowMillis) / (3600 * 1000L)).toInt()
+                val inRange = if (startIdx < hourlyForecast.size && endIdx > 0) {
+                    hourlyForecast.subList(startIdx.coerceAtLeast(0), endIdx.coerceAtMost(hourlyForecast.size))
+                } else {
+                    emptyList()
+                }
+                inRange.maxOfOrNull { it.precipProb } ?: 20
             } else {
                 val startHour = calBlock.get(Calendar.HOUR_OF_DAY)
                 val endHour = startHour + 6
@@ -947,7 +966,7 @@ object PrecipitationAnalyzer {
                     precipMmPerHour = 0.0,
                     precipProbability = pop,
                     tier = TimelineTier.TIER4_PREFECTURAL_6H,
-                    timeLabel = formatTier4TimeOfDayExpression(bStart).second
+                    timeLabel = formatTier4TimeOfDayExpression(bStart, timeZone = timeZone).second
                 )
             )
 
@@ -965,7 +984,8 @@ object PrecipitationAnalyzer {
         parsedMinutely: List<Pair<Long, Double>>,
         hourlyForecast: List<HourlyForecast>,
         nowMillis: Long,
-        nowPrecip: Double
+        nowPrecip: Double,
+        timeZone: TimeZone = TimeZone.getDefault()
     ): Double {
         if (parsedMinutely.isNotEmpty()) {
             val minT = parsedMinutely.first().first
@@ -1036,7 +1056,7 @@ object PrecipitationAnalyzer {
             if (isConditionRain(hItem.condition)) return 1.5
         }
 
-        val cal = Calendar.getInstance().apply { timeInMillis = targetMillis }
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = targetMillis }
         val targetHour = cal.get(Calendar.HOUR_OF_DAY)
         val matchedHour = hourlyForecast.firstOrNull { it.hour == targetHour }
         if (matchedHour != null) {
@@ -1054,13 +1074,14 @@ object PrecipitationAnalyzer {
         targetMillis: Long,
         popSlots: List<PopSlot>?,
         hourlyForecast: List<HourlyForecast>,
-        precipMm: Double
+        precipMm: Double,
+        timeZone: TimeZone = TimeZone.getDefault()
     ): Int {
         if (!popSlots.isNullOrEmpty()) {
             val matched = popSlots.lastOrNull { targetMillis >= it.startMillis }
             if (matched != null) return matched.pop
         }
-        val cal = Calendar.getInstance().apply { timeInMillis = targetMillis }
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = targetMillis }
         val hour = cal.get(Calendar.HOUR_OF_DAY)
         val hourlyMatched = hourlyForecast.firstOrNull { it.hour == hour }
         if (hourlyMatched != null) return hourlyMatched.precipProb
@@ -1071,8 +1092,12 @@ object PrecipitationAnalyzer {
     /**
      * 10分単位の丸め時刻文字列の生成 (例: "14時20分" / "14:20")
      */
-    fun roundToNearest10Min(millis: Long, language: AppLanguage = AppLanguage.JAPANESE): String {
-        val cal = Calendar.getInstance().apply { timeInMillis = millis }
+    fun roundToNearest10Min(
+        millis: Long,
+        language: AppLanguage = AppLanguage.JAPANESE,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ): String {
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = millis }
         val minute = cal.get(Calendar.MINUTE)
         val roundedMinute = ((minute + 5) / 10 * 10)
         if (roundedMinute == 60) {
@@ -1092,8 +1117,12 @@ object PrecipitationAnalyzer {
     /**
      * 1時間単位の丸め時刻文字列の生成 (例: "19時" / "19:00")
      */
-    fun roundToNearestHour(millis: Long, language: AppLanguage = AppLanguage.JAPANESE): String {
-        val cal = Calendar.getInstance().apply { timeInMillis = millis }
+    fun roundToNearestHour(
+        millis: Long,
+        language: AppLanguage = AppLanguage.JAPANESE,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ): String {
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = millis }
         val minute = cal.get(Calendar.MINUTE)
         if (minute >= 30) {
             cal.add(Calendar.HOUR_OF_DAY, 1)
@@ -1108,8 +1137,12 @@ object PrecipitationAnalyzer {
     /**
      * 5分単位の時刻文字列の生成 (例: "14時25分" / "14:25")
      */
-    fun formatTo5MinTime(millis: Long, language: AppLanguage = AppLanguage.JAPANESE): String {
-        val cal = Calendar.getInstance().apply { timeInMillis = millis }
+    fun formatTo5MinTime(
+        millis: Long,
+        language: AppLanguage = AppLanguage.JAPANESE,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ): String {
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = millis }
         val minute = cal.get(Calendar.MINUTE)
         val roundedMinute = ((minute + 2) / 5 * 5)
         if (roundedMinute == 60) {
@@ -1129,8 +1162,12 @@ object PrecipitationAnalyzer {
     /**
      * 翌日・15時間以降の時間帯表現 (例: "明日の朝から雨が降る見込みです")
      */
-    fun formatTier4TimeOfDayExpression(blockStartMillis: Long, language: AppLanguage = AppLanguage.JAPANESE): Pair<String, String> {
-        val cal = Calendar.getInstance().apply { timeInMillis = blockStartMillis }
+    fun formatTier4TimeOfDayExpression(
+        blockStartMillis: Long,
+        language: AppLanguage = AppLanguage.JAPANESE,
+        timeZone: TimeZone = TimeZone.getDefault()
+    ): Pair<String, String> {
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = blockStartMillis }
         val hour = cal.get(Calendar.HOUR_OF_DAY)
         return when (language) {
             AppLanguage.JAPANESE -> when (hour) {
@@ -1246,8 +1283,8 @@ object PrecipitationAnalyzer {
         )
     }
 
-    private fun formatToHHmm(millis: Long): String {
-        val cal = Calendar.getInstance().apply { timeInMillis = millis }
+    private fun formatToHHmm(millis: Long, timeZone: TimeZone = TimeZone.getDefault()): String {
+        val cal = Calendar.getInstance(timeZone).apply { timeInMillis = millis }
         return String.format(Locale.JAPAN, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE))
     }
 
@@ -1255,11 +1292,11 @@ object PrecipitationAnalyzer {
         return String.format(Locale.US, "%.1f", mm)
     }
 
-    private fun parseIsoToMillis(isoStr: String): Long? {
+    private fun parseIsoToMillis(isoStr: String, timeZone: TimeZone = TimeZone.getDefault()): Long? {
         return try {
             val clean = if (isoStr.length >= 16) isoStr.substring(0, 16) else isoStr
             val fmt = isoFormatThreadLocal.get() ?: SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US)
-            fmt.timeZone = TimeZone.getDefault()
+            fmt.timeZone = timeZone
             fmt.parse(clean)?.time
         } catch (_: Exception) {
             null
@@ -1297,6 +1334,9 @@ object PrecipitationAnalyzer {
         val isJapan = isLocationOrCountryInJapan(weather.city.country, weather.city.latitude, weather.city.longitude)
         val isUS = isLocationOrCountryInUnitedStates(weather.city.country, weather.city.latitude, weather.city.longitude)
         val isEurope = isLocationOrCountryInEurope(weather.city.country, weather.city.latitude, weather.city.longitude)
+        val timeZone = weather.utcOffsetSeconds?.let { offsetSec ->
+            java.util.SimpleTimeZone(offsetSec * 1000, "CityTZ")
+        } ?: if (isJapan) TimeZone.getTimeZone("Asia/Tokyo") else TimeZone.getDefault()
 
         // 1. 今後何時間雨が降り続くか（hourlyForecastから探索）
         var stopHourIndex: Int? = null
@@ -1319,10 +1359,10 @@ object PrecipitationAnalyzer {
         if (stopHourIndex != null && stopHourIndex in 1..15) {
             val diffMin = stopHourIndex * 60
             val endTime = nowMillis + diffMin * 60 * 1000L
-            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE) else roundToNearest10Min(endTime, AppLanguage.JAPANESE)
-            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH) else roundToNearest10Min(endTime, AppLanguage.ENGLISH)
-            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE)
-            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE)
+            val timeLabelJa = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.JAPANESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.JAPANESE, timeZone)
+            val timeLabelEn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.ENGLISH, timeZone) else roundToNearest10Min(endTime, AppLanguage.ENGLISH, timeZone)
+            val timeLabelZhCn = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.SIMPLIFIED_CHINESE, timeZone)
+            val timeLabelZhTw = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.TRADITIONAL_CHINESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.TRADITIONAL_CHINESE, timeZone)
 
             val hours = diffMin / 60
             val mins = diffMin % 60

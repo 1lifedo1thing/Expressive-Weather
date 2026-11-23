@@ -58,8 +58,8 @@ import io.github.nemynew.expressiveweather.ui.haptics.ExpressiveHapticPattern
 import io.github.nemynew.expressiveweather.ui.haptics.LocalExpressiveHaptics
 
 private enum class SettingsPaneCategory(val sectionKey: String) {
-    APPEARANCE(SettingsDataHolder.SECTION_APPEARANCE),
     GENERAL(SettingsDataHolder.SECTION_GENERAL),
+    APPEARANCE(SettingsDataHolder.SECTION_APPEARANCE),
     SOURCES(SettingsDataHolder.SECTION_SOURCES),
     APP_INFO("app_info"),
     DEBUG(SettingsDataHolder.SECTION_DEBUG)
@@ -133,7 +133,6 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val expressHaptics = LocalExpressiveHaptics.current
     var currentHapticIntensity by remember(hapticIntensity) { mutableStateOf(hapticIntensity) }
     var currentWeatherHaptics by remember(isWeatherHapticsEnabled) { mutableStateOf(isWeatherHapticsEnabled) }
     var currentPreset by remember(themePreset) { mutableStateOf(themePreset) }
@@ -302,8 +301,10 @@ fun SettingsScreen(
         darkTheme = isDark,
         weatherCondition = if (currentPreset == ThemePreset.WEATHER) condition else null,
         weatherAdaptiveColor = currentPreset == ThemePreset.WEATHER,
-        themePreset = currentPreset
+        themePreset = currentPreset,
+        language = currentLang
     ) {
+        val expressHaptics = LocalExpressiveHaptics.current
         CompositionLocalProvider(
             LocalAppLanguage provides currentLang,
             LocalAppStrings provides currentLang.strings
@@ -1889,20 +1890,18 @@ fun SettingsScreen(
             var selectedCategoryName by rememberSaveable(initialSection) {
                 mutableStateOf(
                     when (initialSection) {
-                        SettingsDataHolder.SECTION_GENERAL,
-                        SettingsDataHolder.SECTION_LANGUAGE,
-                        "language" -> SettingsPaneCategory.GENERAL.name
+                        SettingsDataHolder.SECTION_APPEARANCE -> SettingsPaneCategory.APPEARANCE.name
                         SettingsDataHolder.SECTION_SOURCES -> SettingsPaneCategory.SOURCES.name
                         "app_info" -> SettingsPaneCategory.APP_INFO.name
                         SettingsDataHolder.SECTION_DEBUG -> SettingsPaneCategory.DEBUG.name
-                        else -> SettingsPaneCategory.APPEARANCE.name
+                        else -> SettingsPaneCategory.GENERAL.name
                     }
                 )
             }
             val selectedCategory = SettingsPaneCategory.entries
                 .firstOrNull { it.name == selectedCategoryName }
                 ?.takeIf { it != SettingsPaneCategory.DEBUG || isDebugUnlocked }
-                ?: SettingsPaneCategory.APPEARANCE
+                ?: SettingsPaneCategory.GENERAL
 
             BoxWithConstraints(modifier = modifier.fillMaxSize()) {
                 val isTwoPane = maxWidth >= 600.dp
@@ -1916,8 +1915,8 @@ fun SettingsScreen(
                 if (isTwoPane) {
                     val visibleCategories = remember(isDebugUnlocked) {
                         buildList {
-                            add(SettingsPaneCategory.APPEARANCE)
                             add(SettingsPaneCategory.GENERAL)
+                            add(SettingsPaneCategory.APPEARANCE)
                             add(SettingsPaneCategory.SOURCES)
                             add(SettingsPaneCategory.APP_INFO)
                             if (isDebugUnlocked) add(SettingsPaneCategory.DEBUG)
@@ -2254,9 +2253,6 @@ fun SettingsScreen(
                                     .padding(top = 8.dp, bottom = innerPadding.calculateBottomPadding() + 24.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                if (initialSection == SettingsDataHolder.SECTION_APPEARANCE || initialSection == SettingsDataHolder.SECTION_ALL) {
-                                    renderAppearanceSection()
-                                }
                                 if (initialSection == SettingsDataHolder.SECTION_GENERAL || initialSection == SettingsDataHolder.SECTION_ALL) {
                                     renderGeneralSection(
                                         {
@@ -2265,6 +2261,9 @@ fun SettingsScreen(
                                         },
                                         { currentSubPage = "app_info" }
                                     )
+                                }
+                                if (initialSection == SettingsDataHolder.SECTION_APPEARANCE || initialSection == SettingsDataHolder.SECTION_ALL) {
+                                    renderAppearanceSection()
                                 }
                                 if (initialSection == SettingsDataHolder.SECTION_SOURCES || initialSection == SettingsDataHolder.SECTION_ALL) {
                                     renderSourcesSection()

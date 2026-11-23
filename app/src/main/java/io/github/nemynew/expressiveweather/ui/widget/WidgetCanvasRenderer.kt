@@ -649,8 +649,8 @@ object WidgetCanvasRenderer {
         trackColorArgb: Int = Color.argb(64, 255, 255, 255),
         pillColorArgb: Int = Color.rgb(228, 234, 240)
     ): Bitmap {
-        val width = 560
-        val height = 12
+        val width = 180
+        val height = 10
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
@@ -659,8 +659,8 @@ object WidgetCanvasRenderer {
         val endFrac = ((dayMax - weekMin) / span).coerceIn(startFrac + 0.10f, 1f)
 
         val cy = height / 2f
-        val trackStroke = 4.5f
-        val lineStroke = 9f
+        val trackStroke = 3.5f
+        val lineStroke = 7.5f
         val trackCap = trackStroke / 2f
         val lineCap = lineStroke / 2f
 

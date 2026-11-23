@@ -125,7 +125,7 @@ fun WeatherFooterStatusSection(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // ================= 1. 更新時刻 ＆ タップして更新 =================
+            // ================= 1. 更新時刻 =================
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -163,26 +163,6 @@ fun WeatherFooterStatusSection(
                         .size(15.dp)
                         .then(if (isRefreshing) Modifier.rotate(rotation) else Modifier)
                 )
-                Spacer(modifier = Modifier.width(10.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.TouchApp,
-                        contentDescription = null,
-                        tint = colorScheme.primary.copy(alpha = 0.85f),
-                        modifier = Modifier.size(14.dp)
-                    )
-                    Spacer(modifier = Modifier.width(3.dp))
-                    Text(
-                        text = strings.pullToRefreshHint, // "タップして更新"
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 11.5.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
-                        )
-                    )
-                }
             }
 
             HorizontalDivider(

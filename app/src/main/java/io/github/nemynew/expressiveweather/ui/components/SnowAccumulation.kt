@@ -268,8 +268,8 @@ fun Modifier.snowTileAccumulation(
                 while (true) {
                     withFrameNanos { now ->
                         if (lastFrame != 0L) {
-                            val dt = ((now - lastFrame) / 1_000_000_000f)
-                                .coerceAtMost(0.05f) / motionScale
+                            val dt = (((now - lastFrame) / 1_000_000_000f) / motionScale)
+                                .coerceAtMost(0.05f)
                             driver.timeSec += dt
 
                             val curTile = latestTileOffsetProvider?.invoke()

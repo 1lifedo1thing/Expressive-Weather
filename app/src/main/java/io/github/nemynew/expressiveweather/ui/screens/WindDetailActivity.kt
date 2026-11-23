@@ -41,7 +41,7 @@ class WindDetailActivity : ComponentActivity() {
             savedCityDao = db.savedCityDao(),
             context = applicationContext
         )
-        val hasHolder = WindDetailDataHolder.weatherData != null
+        val hasHolder = WindDetailDataHolder.weatherData != null || WindDetailDataHolder.city != null
         val city = WindDetailDataHolder.city ?: WeatherRepository.decodeCityJsonOrDefault(
             intent.getStringExtra(WeatherRepository.EXTRA_CITY_JSON),
             repo
@@ -57,8 +57,13 @@ class WindDetailActivity : ComponentActivity() {
             var weatherData by remember { mutableStateOf(initialWeather) }
             LaunchedEffect(city) {
                 if (weatherData == null) {
-                    weatherData = repo.getCachedWeatherOrNull(city)
-                        ?: runCatching { repo.getWeatherData(city) }.getOrNull()
+                    weatherData = repo.getCachedWeatherOrNull(city) ?: try {
+                        repo.getWeatherData(city)
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
             }
             val isSystemDark = isSystemInDarkTheme()

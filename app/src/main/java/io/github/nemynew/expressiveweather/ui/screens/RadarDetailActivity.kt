@@ -23,6 +23,61 @@ import androidx.compose.runtime.mutableStateOf
 class RadarDetailActivity : ComponentActivity() {
 
     private val activeLayerIdState = mutableStateOf<String?>(null)
+    private val cityNameState = mutableStateOf("")
+    private val latitudeState = mutableStateOf(35.6895)
+    private val longitudeState = mutableStateOf(139.6917)
+    private val countryState = mutableStateOf<String?>(null)
+
+    private fun isValidCoordinate(lat: Double, lon: Double): Boolean =
+        lat.isFinite() && lon.isFinite() && lat in -90.0..90.0 && lon in -180.0..180.0
+
+    private fun applyLocationFromIntent(intent: Intent, repo: WeatherRepository) {
+        val intentCityJson = intent.getStringExtra(WeatherRepository.EXTRA_CITY_JSON)
+        val decodedIntentCity: io.github.nemynew.expressiveweather.data.City? = intentCityJson?.takeIf { it.isNotBlank() }?.let { raw ->
+            try {
+                io.github.nemynew.expressiveweather.data.WeatherJsonSerializer.json.decodeFromString<io.github.nemynew.expressiveweather.data.City>(raw)
+            } catch (_: Exception) {
+                null
+            }
+        }?.takeIf { isValidCoordinate(it.latitude, it.longitude) }
+        val hasHolder = RadarDataHolder.city != null
+        val fallbackCity = decodedIntentCity
+            ?: (if (hasHolder) RadarDataHolder.city else null)
+            ?: repo.resolveFallbackCurrentCity()
+        val language = if (hasHolder) RadarDataHolder.language else repo.getLanguage()
+        val defaultCurrentLocation = when (language) {
+            io.github.nemynew.expressiveweather.data.AppLanguage.JAPANESE -> "現在地"
+            io.github.nemynew.expressiveweather.data.AppLanguage.ENGLISH -> "Current Location"
+            io.github.nemynew.expressiveweather.data.AppLanguage.SIMPLIFIED_CHINESE -> "当前位置"
+            io.github.nemynew.expressiveweather.data.AppLanguage.TRADITIONAL_CHINESE -> "當前位置"
+        }
+
+        val intentCityName = intent.getStringExtra("city_name")?.takeIf { it.isNotBlank() }
+        cityNameState.value = intentCityName
+            ?: decodedIntentCity?.name?.takeIf { it.isNotBlank() }
+            ?: (if (hasHolder) RadarDataHolder.cityName.takeIf { it.isNotBlank() } else null)
+            ?: fallbackCity.name.takeIf { it.isNotBlank() }
+            ?: defaultCurrentLocation
+
+        val intentHasCoords = intent.hasExtra("extra_lat") && intent.hasExtra("extra_lon")
+        val intentLat = if (intentHasCoords) intent.getDoubleExtra("extra_lat", Double.NaN) else Double.NaN
+        val intentLon = if (intentHasCoords) intent.getDoubleExtra("extra_lon", Double.NaN) else Double.NaN
+        val (resolvedLat, resolvedLon) = when {
+            isValidCoordinate(intentLat, intentLon) -> intentLat to intentLon
+            decodedIntentCity != null -> decodedIntentCity.latitude to decodedIntentCity.longitude
+            hasHolder && isValidCoordinate(RadarDataHolder.latitude, RadarDataHolder.longitude) ->
+                RadarDataHolder.latitude to RadarDataHolder.longitude
+            else -> fallbackCity.latitude to fallbackCity.longitude
+        }
+        latitudeState.value = resolvedLat
+        longitudeState.value = resolvedLon
+
+        val intentCountry = intent.getStringExtra("country")?.takeIf { it.isNotBlank() }
+        countryState.value = intentCountry
+            ?: decodedIntentCity?.country?.takeIf { it.isNotBlank() }
+            ?: (if (hasHolder) RadarDataHolder.country else null)
+            ?: fallbackCity.country
+    }
 
     override fun attachBaseContext(newBase: android.content.Context) {
         super.attachBaseContext(io.github.nemynew.expressiveweather.util.LocaleUtils.applyLocaleToContext(newBase))
@@ -37,33 +92,13 @@ class RadarDetailActivity : ComponentActivity() {
 
         val repo = WeatherRepository(context = applicationContext)
         val hasHolder = RadarDataHolder.city != null
-        val fallbackCity = RadarDataHolder.city ?: WeatherRepository.decodeCityJsonOrDefault(
-            intent.getStringExtra(WeatherRepository.EXTRA_CITY_JSON),
-            repo
-        )
+        applyLocationFromIntent(intent, repo)
+        val fallbackCity = (if (hasHolder) RadarDataHolder.city else null)
+            ?: WeatherRepository.decodeCityJsonOrDefault(
+                intent.getStringExtra(WeatherRepository.EXTRA_CITY_JSON),
+                repo
+            )
         val language = if (hasHolder) RadarDataHolder.language else repo.getLanguage()
-        val defaultCurrentLocation = when (language) {
-            io.github.nemynew.expressiveweather.data.AppLanguage.JAPANESE -> "現在地"
-            io.github.nemynew.expressiveweather.data.AppLanguage.ENGLISH -> "Current Location"
-            io.github.nemynew.expressiveweather.data.AppLanguage.SIMPLIFIED_CHINESE -> "当前位置"
-            io.github.nemynew.expressiveweather.data.AppLanguage.TRADITIONAL_CHINESE -> "當前位置"
-        }
-        val intentCityName = intent.getStringExtra("city_name")
-        val cityName = intentCityName?.takeIf { it.isNotBlank() }
-            ?: RadarDataHolder.cityName.takeIf { it.isNotBlank() }
-            ?: fallbackCity.name.takeIf { it.isNotBlank() }
-            ?: defaultCurrentLocation
-        val latitude = when {
-            intent.hasExtra("extra_lat") -> intent.getDoubleExtra("extra_lat", fallbackCity.latitude)
-            hasHolder && RadarDataHolder.latitude.isFinite() -> RadarDataHolder.latitude
-            else -> fallbackCity.latitude
-        }
-        val longitude = when {
-            intent.hasExtra("extra_lon") -> intent.getDoubleExtra("extra_lon", fallbackCity.longitude)
-            hasHolder && RadarDataHolder.longitude.isFinite() -> RadarDataHolder.longitude
-            else -> fallbackCity.longitude
-        }
-        val country = RadarDataHolder.country ?: fallbackCity.country
         val weatherAdaptiveThemeEnabled = if (hasHolder) RadarDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) RadarDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) RadarDataHolder.themeMode else repo.getThemeMode()
@@ -80,6 +115,10 @@ class RadarDetailActivity : ComponentActivity() {
                 isSystemDark = isSystemDark
             )
             val currentLayerId by activeLayerIdState
+            val currentLat by latitudeState
+            val currentLon by longitudeState
+            val currentCityName by cityNameState
+            val currentCountry by countryState
 
             ExpressiveWeatherTheme(
                 darkTheme = isDark,
@@ -94,10 +133,10 @@ class RadarDetailActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     RadarDetailScreen(
-                        latitude = latitude,
-                        longitude = longitude,
-                        cityName = cityName,
-                        country = country,
+                        latitude = currentLat,
+                        longitude = currentLon,
+                        cityName = currentCityName,
+                        country = currentCountry,
                         showZoomBadge = showZoomBadge,
                         showAllJapanLayers = showAllJapanLayers,
                         onBackClick = { finish() },
@@ -112,6 +151,8 @@ class RadarDetailActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
+        val repo = WeatherRepository(context = applicationContext)
+        applyLocationFromIntent(intent, repo)
         val newLayerId = intent.getStringExtra("initial_layer_id")
         if (!newLayerId.isNullOrBlank()) {
             activeLayerIdState.value = newLayerId

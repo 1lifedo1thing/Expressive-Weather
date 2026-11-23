@@ -41,7 +41,7 @@ class HourlyDetailActivity : ComponentActivity() {
             savedCityDao = db.savedCityDao(),
             context = applicationContext
         )
-        val hasHolder = HourlyDetailDataHolder.weatherData != null
+        val hasHolder = HourlyDetailDataHolder.weatherData != null || HourlyDetailDataHolder.city != null
         val city = HourlyDetailDataHolder.city ?: WeatherRepository.decodeCityJsonOrDefault(
             intent.getStringExtra(WeatherRepository.EXTRA_CITY_JSON),
             repo
@@ -64,8 +64,13 @@ class HourlyDetailActivity : ComponentActivity() {
             var weatherData by remember { mutableStateOf(initialWeather) }
             LaunchedEffect(city) {
                 if (weatherData == null) {
-                    weatherData = repo.getCachedWeatherOrNull(city)
-                        ?: runCatching { repo.getWeatherData(city) }.getOrNull()
+                    weatherData = repo.getCachedWeatherOrNull(city) ?: try {
+                        repo.getWeatherData(city)
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
             }
             val isSystemDark = isSystemInDarkTheme()

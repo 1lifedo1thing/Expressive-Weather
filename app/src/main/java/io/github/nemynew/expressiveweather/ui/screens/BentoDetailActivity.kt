@@ -43,7 +43,7 @@ class BentoDetailActivity : ComponentActivity() {
             savedCityDao = db.savedCityDao(),
             context = applicationContext
         )
-        val hasHolder = BentoDetailDataHolder.weatherData != null
+        val hasHolder = BentoDetailDataHolder.weatherData != null || BentoDetailDataHolder.city != null
         val extraCardName = intent.getStringExtra(EXTRA_CARD_TYPE)
         val cardType = extraCardName?.let { runCatching { BentoCardType.valueOf(it) }.getOrNull() }
             ?: BentoDetailDataHolder.cardType
@@ -63,8 +63,13 @@ class BentoDetailActivity : ComponentActivity() {
             var weatherData by remember { mutableStateOf(initialWeather) }
             LaunchedEffect(city) {
                 if (weatherData == null) {
-                    weatherData = repo.getCachedWeatherOrNull(city)
-                        ?: runCatching { repo.getWeatherData(city) }.getOrNull()
+                    weatherData = repo.getCachedWeatherOrNull(city) ?: try {
+                        repo.getWeatherData(city)
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
             }
             val isSystemDark = isSystemInDarkTheme()

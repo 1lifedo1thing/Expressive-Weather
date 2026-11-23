@@ -271,6 +271,22 @@ object MeteoAlarmRepository {
         }
 
         // 4. 座標近傍判定フォールバック (ヨーロッパ・イスラエルの対象領域内)
+        // ただし明示的に非加盟国名が指定されている場合は乗っ取らず WMO へ委譲する
+        val nonMemberCountries = listOf(
+            "russia", "ロシア", "俄罗斯", "俄羅斯",
+            "turkey", "türkiye", "トルコ", "土耳其",
+            "belarus", "ベラルーシ", "白俄罗斯", "白俄羅斯",
+            "georgia", "ジョージア", "格鲁吉亚", "喬治亞",
+            "armenia", "アルメニア", "azerbaijan", "アゼルバイジャン",
+            "egypt", "エジプト", "morocco", "モロッコ", "algeria", "アルジェリア",
+            "tunisia", "チュニジア", "libya", "リビア", "syria", "シリア",
+            "lebanon", "レバノン", "jordan", "ヨルダン", "iraq", "イラク",
+            "saudi", "サウジアラビア", "iran", "イラン", "kazakhstan", "カザフスタン"
+        )
+        if (country.isNotBlank() && nonMemberCountries.any { country.contains(it) }) {
+            return null
+        }
+
         val lat = city.latitude
         val lon = city.longitude
         val inEurope = lat in 34.0..72.0 && lon in -25.0..45.0
@@ -288,8 +304,8 @@ object MeteoAlarmRepository {
                     closestSlug = c.slug
                 }
             }
-            // 半径約800km以内 (distSq <= 64.0) の最近傍国にマッピング
-            if (minDistanceSq <= 64.0) {
+            // 半径約500km以内 (distSq <= 25.0) の最近傍加盟国にマッピング
+            if (minDistanceSq <= 25.0) {
                 return closestSlug
             }
         }
@@ -393,22 +409,25 @@ object MeteoAlarmRepository {
      * - Orange: Severe (警戒)
      * - Yellow: Moderate / Minor (注意)
      */
-    private fun determineTypeAndSeverity(entry: MeteoAlarmRawEntry): Pair<WeatherWarningType, AlertSeverity> {
-        val s = entry.severity.lowercase(Locale.ROOT)
-        val t = entry.title.lowercase(Locale.ROOT)
+    internal fun determineTypeAndSeverity(entry: MeteoAlarmRawEntry): Pair<WeatherWarningType, AlertSeverity> {
+        val s = entry.severity.trim().lowercase(Locale.ROOT)
+        // CAP 標準 severity メタデータを最優先判定
+        when (s) {
+            "extreme" -> return Pair(WeatherWarningType.SPECIAL_WARNING, AlertSeverity.EXTREME)
+            "severe" -> return Pair(WeatherWarningType.WARNING, AlertSeverity.SEVERE)
+            "moderate" -> return Pair(WeatherWarningType.ADVISORY, AlertSeverity.MODERATE)
+            "minor" -> return Pair(WeatherWarningType.ADVISORY, AlertSeverity.MINOR)
+        }
 
-        val isExtreme = s == "extreme" || t.contains("red ") || t.contains("extreme")
-        if (isExtreme) {
+        // CAP severity が欠落している場合のみタイトルの独立単語（\b）でフォールバック判定
+        val t = entry.title.lowercase(Locale.ROOT)
+        if (Regex("\\b(red|extreme)\\b").containsMatchIn(t)) {
             return Pair(WeatherWarningType.SPECIAL_WARNING, AlertSeverity.EXTREME)
         }
-
-        val isSevere = s == "severe" || t.contains("orange ") || t.contains("severe")
-        if (isSevere) {
+        if (Regex("\\b(orange|severe)\\b").containsMatchIn(t)) {
             return Pair(WeatherWarningType.WARNING, AlertSeverity.SEVERE)
         }
-
-        val isModerate = s == "moderate" || t.contains("yellow ") || s == "minor"
-        if (isModerate) {
+        if (Regex("\\b(yellow|moderate)\\b").containsMatchIn(t)) {
             return Pair(WeatherWarningType.ADVISORY, AlertSeverity.MODERATE)
         }
 

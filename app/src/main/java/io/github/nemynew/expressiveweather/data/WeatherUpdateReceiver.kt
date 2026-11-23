@@ -50,26 +50,9 @@ class WeatherUpdateReceiver : BroadcastReceiver() {
             }
 
             ACTION_ALARM_WIDGET_UPDATE -> {
-                val pendingResult = goAsync()
-                CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
-                    try {
-                        val completed = withTimeoutOrNull(8_500L) {
-                            WeatherWidgetUpdater.refreshWidgetsFromNetwork(appContext)
-                            true
-                        }
-                        if (completed == null) {
-                            WidgetRefreshWorker.enqueueRefresh(appContext)
-                        }
-                    } catch (e: CancellationException) {
-                        throw e
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Alarm widget update failed: ${e.message}", e)
-                        WidgetRefreshWorker.enqueueRefresh(appContext)
-                    } finally {
-                        WidgetRefreshWorker.scheduleNextWidgetAlarm(appContext)
-                        pendingResult.finish()
-                    }
-                }
+                // BroadcastReceiver の 10 秒 ANR 制限を避けるため、ネットワーク更新・レーダー合成は WorkManager へ即時委譲する
+                WidgetRefreshWorker.enqueueRefresh(appContext)
+                WidgetRefreshWorker.scheduleNextWidgetAlarm(appContext)
             }
 
             WeatherBackgroundUpdateManager.ACTION_LOCATION_CHANGED -> {

@@ -245,6 +245,8 @@ class UsRadarRepository(
 
             Log.d(TAG, "Generated US Radar timeline: ${pastFrames.size} obs + ${extrapolationFrames.size} extrap + ${hrrrFrames.size} HRRR = Total ${resultFrames.size} frames (layer=${layer.id})")
             Result.success(resultFrames.sortedBy { it.epochSeconds })
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            throw e
         } catch (e: Exception) {
             Log.e(TAG, "Failed to generate US Radar timeline", e)
             Result.failure(e)

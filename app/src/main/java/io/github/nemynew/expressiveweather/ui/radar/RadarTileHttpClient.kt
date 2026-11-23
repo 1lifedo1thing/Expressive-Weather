@@ -188,17 +188,17 @@ object RadarTileHttpClient {
                         val host = try { URI(urlString).host ?: "unknown" } catch (_: Exception) { "unknown" }
                         Log.d(TAG, "Slow radar tile response: ${elapsedMs}ms, ${res.protocol}, HTTP ${res.code}, host=$host")
                     }
-                    if (res.isSuccessful) {
+                    if (res.code == 404 || res.code == 204) {
+                        // タイルが存在しない（雨雲なし・エリア外）
+                        rememberNoTile(urlString)
+                        return null
+                    } else if (res.isSuccessful) {
                         val bytes = res.body?.bytes()
                         if (bytes != null && isValidImageBytes(bytes)) {
                             noTileUntilMillis.remove(urlString)
                             downloaded = bytes
                             return@use
                         }
-                    } else if (res.code == 404 || res.code == 204) {
-                        // タイルが存在しない（雨雲なし・エリア外）
-                        rememberNoTile(urlString)
-                        return null
                     } else if (res.code in 500..599 || res.code == 429) {
                         // 一時サーバーエラー
                         if (attempt < 1) Thread.sleep(80L)
@@ -249,26 +249,30 @@ object RadarTileHttpClient {
                         }
 
                         override fun onResponse(call: Call, response: Response) {
-                            response.use { res ->
-                                recordNegotiatedProtocol(urlString, res.protocol.toString())
-                                val elapsedMs = (System.nanoTime() - startedAtNanos) / 1_000_000L
-                                if (elapsedMs >= 750L) {
-                                    val host = try { URI(urlString).host ?: "unknown" } catch (_: Exception) { "unknown" }
-                                    Log.d(TAG, "Slow radar tile response: ${elapsedMs}ms, ${res.protocol}, HTTP ${res.code}, host=$host")
+                            try {
+                                response.use { res ->
+                                    recordNegotiatedProtocol(urlString, res.protocol.toString())
+                                    val elapsedMs = (System.nanoTime() - startedAtNanos) / 1_000_000L
+                                    if (elapsedMs >= 750L) {
+                                        val host = try { URI(urlString).host ?: "unknown" } catch (_: Exception) { "unknown" }
+                                        Log.d(TAG, "Slow radar tile response: ${elapsedMs}ms, ${res.protocol}, HTTP ${res.code}, host=$host")
+                                    }
+                                    val bodyBytes = if (res.isSuccessful && res.code != 204) res.body?.bytes() else null
+                                    if (cont.isActive) cont.resume(res.code to bodyBytes)
                                 }
-                                val bodyBytes = if (res.isSuccessful) res.body?.bytes() else null
-                                if (cont.isActive) cont.resume(res.code to bodyBytes)
+                            } catch (e: Throwable) {
+                                if (cont.isActive) cont.resumeWithException(e)
                             }
                         }
                     })
                 }
                 val (code, bytes) = result
-                if (code in 200..299 && bytes != null && isValidImageBytes(bytes)) {
-                    noTileUntilMillis.remove(urlString)
-                    return bytes
-                } else if (code == 404 || code == 204) {
+                if (code == 404 || code == 204) {
                     rememberNoTile(urlString)
                     return null
+                } else if (code in 200..299 && bytes != null && isValidImageBytes(bytes)) {
+                    noTileUntilMillis.remove(urlString)
+                    return bytes
                 } else if ((code in 500..599 || code == 429) && attempt < 1) {
                     delay(80L)
                 }
@@ -303,16 +307,20 @@ object RadarTileHttpClient {
                 }
 
                 override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                    response.use { res ->
-                        if (res.isSuccessful) {
-                            val bytes = res.body?.bytes()
-                            if (bytes != null && isValidImageBytes(bytes)) {
-                                noTileUntilMillis.remove(url)
-                                onTileDownloaded(url, bytes)
+                    try {
+                        response.use { res ->
+                            if (res.code == 404 || res.code == 204) {
+                                rememberNoTile(url)
+                            } else if (res.isSuccessful) {
+                                val bytes = res.body?.bytes()
+                                if (bytes != null && isValidImageBytes(bytes)) {
+                                    noTileUntilMillis.remove(url)
+                                    onTileDownloaded(url, bytes)
+                                }
                             }
-                        } else if (res.code == 404 || res.code == 204) {
-                            rememberNoTile(url)
                         }
+                    } catch (_: Exception) {
+                        // Ignore prefetch read/decode failure on OkHttp dispatcher thread
                     }
                 }
             })

@@ -29,23 +29,34 @@ object AppHttpClient {
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .writeTimeout(10, TimeUnit.SECONDS)
+        .callTimeout(20, TimeUnit.SECONDS)
         .retryOnConnectionFailure(true)
         .build()
+
+    private val shortTimeoutClient: OkHttpClient by lazy {
+        client.newBuilder()
+            .connectTimeout(8, TimeUnit.SECONDS)
+            .readTimeout(8, TimeUnit.SECONDS)
+            .callTimeout(10, TimeUnit.SECONDS)
+            .build()
+    }
+
+    private fun clientForTimeout(timeoutMs: Long): OkHttpClient = when (timeoutMs) {
+        15_000L -> client
+        8_000L -> shortTimeoutClient
+        else -> client.newBuilder()
+            .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+            .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
+            .callTimeout(timeoutMs + 2_000L, TimeUnit.MILLISECONDS)
+            .build()
+    }
 
     suspend fun getText(
         url: String,
         headers: Map<String, String> = emptyMap(),
         timeoutMs: Long = 15_000L
     ): String {
-        val callClient = if (timeoutMs == 15_000L) {
-            client
-        } else {
-            client.newBuilder()
-                .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                .callTimeout(timeoutMs + 2_000L, TimeUnit.MILLISECONDS)
-                .build()
-        }
+        val callClient = clientForTimeout(timeoutMs)
 
         val requestBuilder = Request.Builder()
             .url(url)
@@ -117,15 +128,7 @@ object AppHttpClient {
         timeoutMs: Long = 8_000L
     ): ByteArray? {
         return try {
-            val callClient = if (timeoutMs == 15_000L) {
-                client
-            } else {
-                client.newBuilder()
-                    .connectTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                    .readTimeout(timeoutMs, TimeUnit.MILLISECONDS)
-                    .callTimeout(timeoutMs + 2_000L, TimeUnit.MILLISECONDS)
-                    .build()
-            }
+            val callClient = clientForTimeout(timeoutMs)
 
             val requestBuilder = Request.Builder()
                 .url(url)

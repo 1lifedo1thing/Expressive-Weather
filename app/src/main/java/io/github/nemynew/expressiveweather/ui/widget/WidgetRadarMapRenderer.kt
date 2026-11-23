@@ -204,7 +204,9 @@ object WidgetRadarMapRenderer {
                     tileCoords.map { (txRaw, tx, ty) ->
                         async {
                             val url = provider.buildTileUrl(candidate, tx, ty, zoom)
-                            val bytes = RadarTileHttpClient.getTileBytes(url)
+                            val bytes = kotlinx.coroutines.withTimeoutOrNull(5_000L) {
+                                RadarTileHttpClient.getTileBytesCancellable(url)
+                            }
                             val bmp = bytes?.let {
                                 runCatching { BitmapFactory.decodeByteArray(it, 0, it.size) }.getOrNull()
                             }
@@ -582,7 +584,7 @@ object WidgetRadarMapRenderer {
         bitmap.setPixels(pixels, 0, w, 0, 0, w, h)
     }
 
-    private fun fetchBaseTile(
+    private suspend fun fetchBaseTile(
         context: Context,
         zoom: Int,
         tx: Int,
@@ -604,7 +606,9 @@ object WidgetRadarMapRenderer {
             "https://www.jma.go.jp/tile/gsi/pale/$zoom/$tx/$ty.png"
         )
         for (url in candidates) {
-            val bytes = RadarTileHttpClient.getTileBytes(url) ?: continue
+            val bytes = kotlinx.coroutines.withTimeoutOrNull(4_000L) {
+                RadarTileHttpClient.getTileBytesCancellable(url)
+            } ?: continue
             val decoded = runCatching { BitmapFactory.decodeByteArray(bytes, 0, bytes.size) }.getOrNull() ?: continue
             runCatching { file.writeBytes(bytes) }
             return decoded
@@ -614,7 +618,7 @@ object WidgetRadarMapRenderer {
         } else null
     }
 
-    private fun fetchLabelOverlayTile(
+    private suspend fun fetchLabelOverlayTile(
         context: Context,
         zoom: Int,
         tx: Int,
@@ -629,7 +633,9 @@ object WidgetRadarMapRenderer {
             runCatching { BitmapFactory.decodeFile(file.absolutePath) }.getOrNull()?.let { return it }
         }
         val url = "https://cyberjapandata.gsi.go.jp/xyz/blank/$zoom/$tx/$ty.png"
-        val bytes = RadarTileHttpClient.getTileBytes(url)
+        val bytes = kotlinx.coroutines.withTimeoutOrNull(4_000L) {
+            RadarTileHttpClient.getTileBytesCancellable(url)
+        }
         if (bytes != null) {
             val decoded = runCatching { BitmapFactory.decodeByteArray(bytes, 0, bytes.size) }.getOrNull()
             if (decoded != null) {

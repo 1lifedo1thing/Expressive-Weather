@@ -298,7 +298,7 @@ data class MunicipalityAlertInfo(
     val activeWarningNames: List<String> get() = activeWarnings.map { it.name }
     val hasActiveWarnings: Boolean get() = activeWarnings.isNotEmpty()
     val hasClearedWarnings: Boolean get() = clearedWarnings.isNotEmpty()
-    val hasAnyDisasterInfo: Boolean get() = hasActiveWarnings
+    val hasAnyDisasterInfo: Boolean get() = hasActiveWarnings || hasActiveAlert
 
     /**
      * 4大キキクル（大雨・土砂・浸水・洪水）すべての詳細を確実に取得

@@ -235,23 +235,36 @@ fun PressureDetailScreen(
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
                     text = when (language) {
-                        AppLanguage.ENGLISH -> "24-Hour Pressure Trend"
-                        AppLanguage.SIMPLIFIED_CHINESE -> "24小时气压变化"
-                        AppLanguage.TRADITIONAL_CHINESE -> "24小時氣壓變化"
-                        else -> "24時間の気圧推移"
+                        AppLanguage.ENGLISH -> "Reference Sea-Level Pressure"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "参考海平面气压"
+                        AppLanguage.TRADITIONAL_CHINESE -> "參考海平面氣壓"
+                        else -> "基準海面気圧の目安"
                     },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     fontFamily = GoogleSansFlex
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
+                Text(
+                    text = when (language) {
+                        AppLanguage.ENGLISH -> "Hourly pressure forecast series is not provided by the current data source; the latest observed sea-level pressure is shown as a reference."
+                        AppLanguage.SIMPLIFIED_CHINESE -> "当前数据源未提供逐小时气压预测序列，以下以最新实测海平面气压作为参考基准。"
+                        AppLanguage.TRADITIONAL_CHINESE -> "目前資料來源未提供逐小時氣壓預測序列，以下以最新實測海平面氣壓作為參考基準。"
+                        else -> "現在のデータソースでは時間別気圧予測が提供されていないため、最新の実測海面気圧を基準値として表示しています。"
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                val observedPressure = weather?.pressureHpa ?: 1013
+                val barHeight = ((observedPressure - 980) / 40f).coerceIn(0.15f, 1f) * 60
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                     items(hourlyForecast.take(24)) { item ->
-                        val hourAngle = Math.PI * 2 * (item.hour - 9) / 12.0
-                        val tidalVariation = kotlin.math.round(1.5 * kotlin.math.cos(hourAngle)).toInt()
-                        val itemPressure = (weather?.pressureHpa ?: 1013) + tidalVariation
+                        val itemPressure = observedPressure
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(48.dp)
@@ -263,7 +276,6 @@ fun PressureDetailScreen(
                             )
                             Spacer(modifier = Modifier.height(6.dp))
                             // 縦バー
-                            val barHeight = ((itemPressure - 980) / 40f).coerceIn(0.15f, 1f) * 60
                             Box(
                                 modifier = Modifier
                                     .width(8.dp)

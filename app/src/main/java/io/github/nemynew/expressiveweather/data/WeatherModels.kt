@@ -580,8 +580,87 @@ object WeatherJsonSerializer {
         isLenient = true
     }
 
+    private fun Double.finiteOr(fallback: Double = 0.0): Double = if (isFinite()) this else fallback
+    private fun Float.finiteOr(fallback: Float = 0f): Float = if (isFinite()) this else fallback
+
+    private fun sanitize(data: WeatherData): WeatherData = data.copy(
+        city = data.city.copy(
+            latitude = data.city.latitude.finiteOr(0.0),
+            longitude = data.city.longitude.finiteOr(0.0)
+        ),
+        windSpeedKmH = data.windSpeedKmH.finiteOr(0.0),
+        windDegree = data.windDegree.finiteOr(0f),
+        visibilityKm = data.visibilityKm.finiteOr(10.0),
+        windGustsKmH = data.windGustsKmH.finiteOr(0.0),
+        precipitationMm = data.precipitationMm.finiteOr(0.0),
+        precipitationSumMm = data.precipitationSumMm.finiteOr(0.0),
+        airQuality = data.airQuality.copy(
+            pm25 = data.airQuality.pm25.finiteOr(0.0),
+            pm10 = data.airQuality.pm10.finiteOr(0.0),
+            ozone = data.airQuality.ozone?.takeIf { it.isFinite() },
+            nitrogenDioxide = data.airQuality.nitrogenDioxide?.takeIf { it.isFinite() }
+        ),
+        sunSchedule = data.sunSchedule.copy(
+            dayProgress = data.sunSchedule.dayProgress.finiteOr(0.5f).coerceIn(0f, 1f)
+        ),
+        hourlyForecast = data.hourlyForecast.map {
+            it.copy(
+                windSpeedKmH = it.windSpeedKmH.finiteOr(0.0),
+                precipitationMm = it.precipitationMm.finiteOr(0.0)
+            )
+        },
+        dailyForecast = data.dailyForecast.map { d ->
+            d.copy(
+                uvMax = d.uvMax.finiteOr(0.0),
+                precipitationSumMm = d.precipitationSumMm.finiteOr(0.0),
+                windSpeedMaxKmH = d.windSpeedMaxKmH.finiteOr(0.0),
+                hourlyForecast = d.hourlyForecast.map {
+                    it.copy(
+                        windSpeedKmH = it.windSpeedKmH.finiteOr(0.0),
+                        precipitationMm = it.precipitationMm.finiteOr(0.0)
+                    )
+                }
+            )
+        },
+        windDetails = data.windDetails.copy(
+            windSpeedKmH = data.windDetails.windSpeedKmH.finiteOr(0.0),
+            windSpeedMs = data.windDetails.windSpeedMs.finiteOr(0.0),
+            windGustsKmH = data.windDetails.windGustsKmH.finiteOr(0.0),
+            windGustsMs = data.windDetails.windGustsMs.finiteOr(0.0),
+            windDegree = data.windDetails.windDegree.finiteOr(0f),
+            peakWindSpeedKmH = data.windDetails.peakWindSpeedKmH.finiteOr(0.0),
+            hourlyWind = data.windDetails.hourlyWind.map {
+                it.copy(
+                    windSpeedKmH = it.windSpeedKmH.finiteOr(0.0),
+                    windSpeedMs = it.windSpeedMs.finiteOr(0.0),
+                    windGustsKmH = it.windGustsKmH.finiteOr(0.0),
+                    windGustsMs = it.windGustsMs.finiteOr(0.0),
+                    windDegree = it.windDegree.finiteOr(0f)
+                )
+            },
+            dailyWind = data.windDetails.dailyWind.map {
+                it.copy(
+                    windSpeedMaxKmH = it.windSpeedMaxKmH.finiteOr(0.0),
+                    windSpeedMaxMs = it.windSpeedMaxMs.finiteOr(0.0),
+                    windGustsMaxKmH = it.windGustsMaxKmH.finiteOr(0.0),
+                    windGustsMaxMs = it.windGustsMaxMs.finiteOr(0.0),
+                    dominantWindDegree = it.dominantWindDegree.finiteOr(0f)
+                )
+            }
+        ),
+        precipitationNowcast = data.precipitationNowcast?.let { p ->
+            p.copy(
+                currentIntensityMm = p.currentIntensityMm.finiteOr(0.0),
+                peakIntensityMm = p.peakIntensityMm.finiteOr(0.0),
+                minutelyPoints = p.minutelyPoints.map {
+                    it.copy(precipMm = it.precipMm.finiteOr(0.0))
+                }
+            )
+        }
+    )
+
     fun serialize(data: WeatherData): String {
-        return json.encodeToString(data)
+        return json.encodeToString(sanitize(data))
     }
 
     fun deserialize(jsonString: String): WeatherData? {

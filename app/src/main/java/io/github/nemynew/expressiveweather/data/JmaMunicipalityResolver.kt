@@ -114,6 +114,7 @@ object JmaMunicipalityResolver {
             var maxLen = 0
             var bestMatchedPref = false
 
+            if (cleanName.length >= 2) {
             for (item in allList) {
                 if (cleanName.contains(item.name) || item.name.contains(cleanName)) {
                     val matchesPref = (sanitizedAdmin.isBlank() || item.prefName.contains(sanitizedAdmin) || sanitizedAdmin.contains(item.prefName) || cleanName.contains(item.prefName)) &&
@@ -129,6 +130,7 @@ object JmaMunicipalityResolver {
                         bestMatch = item
                     }
                 }
+            }
             }
 
             return bestMatch

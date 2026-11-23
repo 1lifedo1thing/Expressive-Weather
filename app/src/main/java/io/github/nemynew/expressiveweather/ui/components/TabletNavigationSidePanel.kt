@@ -379,7 +379,7 @@ fun TabletNavigationDrawer(
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         modifier = Modifier.weight(1f)
                     ) {
-                        items(searchResults, key = { it.id }) { resultCity ->
+                        items(searchResults, key = { "search_${it.id}_${it.latitude}_${it.longitude}" }) { resultCity ->
                             val isResultSaved = savedCities.any {
                                 it.id == resultCity.id || (it.latitude == resultCity.latitude && it.longitude == resultCity.longitude)
                             }
@@ -531,7 +531,7 @@ fun TabletNavigationDrawer(
                                 }
                             }
                         } else {
-                            items(savedCities, key = { it.id }) { savedCity ->
+                            items(savedCities, key = { "saved_${it.id}_${it.latitude}_${it.longitude}" }) { savedCity ->
                                 val isSelected = savedCity.id == currentCity.id ||
                                         (savedCity.latitude == currentCity.latitude && savedCity.longitude == currentCity.longitude)
                                 CityPillCard(

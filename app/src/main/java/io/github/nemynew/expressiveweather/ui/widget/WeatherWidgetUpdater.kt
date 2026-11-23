@@ -175,8 +175,7 @@ object WeatherWidgetUpdater {
                 )
                 if (fetchIfMissing) {
                     val repo = createRepository(appCtx)
-                    val defaultStyle = if (isShape || isRadar) WidgetStyle.MATERIAL_YOU else WidgetStyle.WEATHER_EXPRESSIVE
-                    val config = WidgetPreferences.getConfig(appCtx, appWidgetId, defaultStyle)
+                    val config = WidgetPreferences.getConfig(appCtx, appWidgetId, WidgetStyle.MATERIAL_YOU)
                     val currentCity = repo.resolveFallbackCurrentCity()
                     val targetCity = WidgetUiModelBuilder.resolveTargetCity(config, currentCity, repo.defaultCity)
                     val isSystemDark = (appCtx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
@@ -197,6 +196,65 @@ object WeatherWidgetUpdater {
                 throw e
             } catch (e: Exception) {
                 Log.w(TAG, "updateWidgetAsync failed for $appWidgetId: ${e.message}")
+            }
+        }
+    }
+
+    suspend fun updateProviderWidgetsFromCache(
+        context: Context,
+        providerComponent: ComponentName
+    ) = withContext(Dispatchers.IO) {
+        val entries = getActiveWidgets(context).filter { it.providerComponent == providerComponent }
+        if (entries.isEmpty()) return@withContext
+        updateWidgetsFromCache(
+            context = context,
+            targets = entries,
+            refreshingIds = emptySet(),
+            allowEnqueueRefresh = false
+        )
+    }
+
+    suspend fun updateSingleWidgetFromCache(
+        context: Context,
+        appWidgetId: Int,
+        fetchIfMissing: Boolean = false
+    ) = withContext(Dispatchers.IO) {
+        val appCtx = context.applicationContext
+        val entry = getActiveWidgets(appCtx).firstOrNull { it.appWidgetId == appWidgetId }
+        val defaultTier = entry?.defaultTier ?: WidgetSizeTier.MEDIUM
+        val isShape = entry?.isShapeWidget == true
+        val isRadar = entry?.isRadarWidget == true
+        updateWidgetsFromCache(
+            appCtx,
+            listOf(
+                entry ?: ActiveWidgetEntry(
+                    appWidgetId = appWidgetId,
+                    defaultTier = defaultTier,
+                    providerComponent = ComponentName(appCtx, WeatherWidgetMediumProvider::class.java),
+                    isShapeWidget = isShape,
+                    isRadarWidget = isRadar
+                )
+            ),
+            refreshingIds = emptySet(),
+            allowEnqueueRefresh = !fetchIfMissing
+        )
+        if (fetchIfMissing) {
+            val repo = createRepository(appCtx)
+            val config = WidgetPreferences.getConfig(appCtx, appWidgetId, WidgetStyle.MATERIAL_YOU)
+            val currentCity = repo.resolveFallbackCurrentCity()
+            val targetCity = WidgetUiModelBuilder.resolveTargetCity(config, currentCity, repo.defaultCity)
+            val isSystemDark = (appCtx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            val missingWeather = repo.getCachedWeatherOrNull(targetCity) == null
+            val missingRadar = if (isRadar) {
+                val (needMedium, needTall) = resolveRadarSizeNeedsForWidget(
+                    AppWidgetManager.getInstance(appCtx),
+                    appWidgetId
+                )
+                (needMedium && !WidgetRadarMapRenderer.hasCachedComposite(appCtx, targetCity, isSystemDark, 300, 240)) ||
+                    (needTall && !WidgetRadarMapRenderer.hasCachedComposite(appCtx, targetCity, isSystemDark, 420, 220))
+            } else false
+            if (missingWeather || missingRadar) {
+                WidgetRefreshWorker.enqueueRefresh(appCtx, appWidgetId)
             }
         }
     }
@@ -294,7 +352,11 @@ object WeatherWidgetUpdater {
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
-                    Log.w(TAG, "Widget radar map refresh failed for ${need.city.name}: ${e.message}")
+                    if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                        Log.w(TAG, "Widget radar map refresh failed for ${need.city.name}: ${e.message}")
+                    } else {
+                        Log.w(TAG, "Widget radar map refresh failed: ${e.message}")
+                    }
                 }
             }
         }.awaitAll()
@@ -318,8 +380,7 @@ object WeatherWidgetUpdater {
 
         var resolvedCurrentCity = repo.resolveFallbackCurrentCityOrNull()
         val needsCurrentLocation = targets.any { entry ->
-            val defaultStyle = if (entry.isShapeWidget || entry.isRadarWidget) WidgetStyle.MATERIAL_YOU else WidgetStyle.WEATHER_EXPRESSIVE
-            val cfg = WidgetPreferences.getConfig(appCtx, entry.appWidgetId, defaultStyle)
+            val cfg = WidgetPreferences.getConfig(appCtx, entry.appWidgetId, WidgetStyle.MATERIAL_YOU)
             cfg.useCurrentLocation || cfg.pinnedCity == null
         }
         if (needsCurrentLocation && locationProvider.hasLocationPermission()) {
@@ -339,8 +400,7 @@ object WeatherWidgetUpdater {
         // 各ウィジェットのターゲット都市を重複排除
         val uniqueCities = LinkedHashMap<String, City>()
         targets.forEach { entry ->
-            val defaultStyle = if (entry.isShapeWidget || entry.isRadarWidget) WidgetStyle.MATERIAL_YOU else WidgetStyle.WEATHER_EXPRESSIVE
-            val cfg = WidgetPreferences.getConfig(appCtx, entry.appWidgetId, defaultStyle)
+            val cfg = WidgetPreferences.getConfig(appCtx, entry.appWidgetId, WidgetStyle.MATERIAL_YOU)
             val city = WidgetUiModelBuilder.resolveTargetCity(cfg, effectiveCurrentCity, repo.defaultCity)
             val key = LocationKeyNormalizer.normalize(city.latitude, city.longitude)
             uniqueCities.putIfAbsent(key, city)
@@ -356,7 +416,11 @@ object WeatherWidgetUpdater {
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
-                        Log.w(TAG, "Widget network refresh failed for ${city.name}: ${e.message}")
+                        if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                            Log.w(TAG, "Widget network refresh failed for ${city.name}: ${e.message}")
+                        } else {
+                            Log.w(TAG, "Widget network refresh failed: ${e.message}")
+                        }
                     }
                 }
             }
@@ -393,8 +457,7 @@ object WeatherWidgetUpdater {
 
         for (entry in targets) {
             val appWidgetId = entry.appWidgetId
-            val defaultStyle = if (entry.isShapeWidget || entry.isRadarWidget) WidgetStyle.MATERIAL_YOU else WidgetStyle.WEATHER_EXPRESSIVE
-            val config = WidgetPreferences.getConfig(appCtx, appWidgetId, defaultStyle)
+            val config = WidgetPreferences.getConfig(appCtx, appWidgetId, WidgetStyle.MATERIAL_YOU)
             val targetCity = WidgetUiModelBuilder.resolveTargetCity(config, fallbackCurrent, repo.defaultCity)
             val locKey = LocationKeyNormalizer.normalize(targetCity.latitude, targetCity.longitude)
             val weather = cacheByLocationKey.getOrPut(locKey) {
@@ -485,35 +548,30 @@ object WeatherWidgetUpdater {
                 } else {
                     val minW = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0).toFloat()
                     val maxH = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0).toFloat()
+                    // Binder IPC 1MB 上限超過（TransactionTooLargeException）を防ぐため、同時生成する tier 数を最小限に制限
                     val fallbackTiers: List<Pair<SizeF, WidgetSizeTier>> = buildList {
                         when (entry.defaultTier) {
                             WidgetSizeTier.COMPACT, WidgetSizeTier.COMPACT_WIDE -> {
                                 add(SizeF(110f, 52f) to WidgetSizeTier.COMPACT_WIDE)
-                                add(SizeF(250f, 56f) to WidgetSizeTier.WIDE_HOURLY)
-                                add(SizeF(460f, 96f) to WidgetSizeTier.WIDE_HOURLY)
                                 add(SizeF(110f, 110f) to WidgetSizeTier.COMPACT)
-                                add(SizeF(230f, 140f) to WidgetSizeTier.MEDIUM)
                             }
                             WidgetSizeTier.WIDE_HOURLY -> {
                                 add(SizeF(250f, 56f) to WidgetSizeTier.WIDE_HOURLY)
-                                add(SizeF(460f, 96f) to WidgetSizeTier.WIDE_HOURLY)
                                 add(SizeF(230f, 140f) to WidgetSizeTier.MEDIUM)
                             }
                             WidgetSizeTier.MEDIUM -> {
                                 add(SizeF(250f, 56f) to WidgetSizeTier.WIDE_HOURLY)
-                                add(SizeF(460f, 96f) to WidgetSizeTier.WIDE_HOURLY)
-                                add(SizeF(110f, 110f) to WidgetSizeTier.COMPACT)
                                 add(SizeF(230f, 140f) to WidgetSizeTier.MEDIUM)
-                                add(SizeF(230f, 230f) to WidgetSizeTier.LARGE)
                             }
                             WidgetSizeTier.LARGE -> {
-                                add(SizeF(230f, 140f) to WidgetSizeTier.MEDIUM)
                                 add(SizeF(230f, 230f) to WidgetSizeTier.LARGE)
                             }
                         }
                         if (minW > 0f && maxH > 0f) {
                             val currentTier = WidgetSizeTier.fromSizeDp(minW, maxH, entry.defaultTier)
-                            add(SizeF(minW, maxH) to currentTier)
+                            if (none { it.second == currentTier }) {
+                                add(SizeF(minW, maxH) to currentTier)
+                            }
                         }
                     }
                     fallbackTiers.associate { (sz, t) -> sz to getOrBuildTier(t) }
@@ -532,7 +590,32 @@ object WeatherWidgetUpdater {
             try {
                 manager.updateAppWidget(appWidgetId, remoteViews)
             } catch (e: Exception) {
-                Log.e(TAG, "Failed updating appWidgetId=$appWidgetId: ${e.message}", e)
+                val isBinderTooLarge = e is android.os.TransactionTooLargeException ||
+                    e.cause is android.os.TransactionTooLargeException ||
+                    e.message?.contains("TransactionTooLarge", ignoreCase = true) == true
+                if (isBinderTooLarge && !entry.isShapeWidget) {
+                    Log.w(TAG, "TransactionTooLargeException on appWidgetId=$appWidgetId; falling back to single-tier RemoteViews")
+                    try {
+                        val fallbackViews = if (entry.isRadarWidget) {
+                            buildRadarRemoteViewsForTier(
+                                appCtx, appWidgetId, WidgetSizeTier.MEDIUM, config, uiModel, targetCity, isSystemDark, language
+                            )
+                        } else {
+                            val opts = manager.getAppWidgetOptions(appWidgetId)
+                            val w = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0).toFloat()
+                            val h = opts.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0).toFloat()
+                            val singleTier = WidgetSizeTier.fromSizeDp(w, h, entry.defaultTier)
+                            buildRemoteViewsForTier(
+                                appCtx, appWidgetId, singleTier, config, uiModel, isSystemDark, providerComponent
+                            )
+                        }
+                        manager.updateAppWidget(appWidgetId, fallbackViews)
+                    } catch (fallbackEx: Exception) {
+                        Log.e(TAG, "Single-tier fallback update also failed for appWidgetId=$appWidgetId: ${fallbackEx.message}", fallbackEx)
+                    }
+                } else {
+                    Log.e(TAG, "Failed updating appWidgetId=$appWidgetId: ${e.message}", e)
+                }
             }
 
             if (allowEnqueueRefresh && missingRadarCacheForWidget) {
@@ -555,8 +638,27 @@ object WeatherWidgetUpdater {
             sizePx = 384
         )
         views.setImageViewBitmap(R.id.widget_shape_bitmap, bitmap)
+        views.setContentDescription(R.id.widget_root, buildWidgetContentDescription(model))
         views.setOnClickPendingIntent(R.id.widget_root, createOpenAppPendingIntent(context, appWidgetId, model))
         return views
+    }
+
+    private fun buildWidgetContentDescription(model: WidgetUiModel): String {
+        return buildString {
+            append(model.cityName)
+            if (model.currentTempText.isNotBlank()) {
+                append(", ")
+                append(model.currentTempText)
+            }
+            if (model.conditionLabel.isNotBlank()) {
+                append(", ")
+                append(model.conditionLabel)
+            }
+            if (model.highLowText.isNotBlank()) {
+                append(", ")
+                append(model.highLowText)
+            }
+        }
     }
 
     internal fun buildRemoteViewsForTier(
@@ -859,6 +961,7 @@ object WeatherWidgetUpdater {
         }
         }
 
+        views.setContentDescription(R.id.widget_root, buildWidgetContentDescription(model))
         return views
     }
 
@@ -909,6 +1012,7 @@ object WeatherWidgetUpdater {
             )
 
             // レーダー領域タップで雨雲レーダー詳細画面へ、右/本体タップで天気詳細へ
+            views.setContentDescription(R.id.widget_root, buildWidgetContentDescription(model))
             views.setOnClickPendingIntent(
                 R.id.widget_root,
                 createOpenAppPendingIntent(context, appWidgetId, model)

@@ -25,6 +25,39 @@ val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY")
     ?: System.getenv("MAPS_API_KEY")
     ?: ""
 
+val appVersionCode: Int = (project.findProperty("VERSION_CODE")?.toString()
+    ?: System.getenv("VERSION_CODE"))
+    ?.toIntOrNull()
+    ?.coerceAtLeast(1)
+    ?: 1
+
+val appVersionName: String = (project.findProperty("VERSION_NAME")?.toString()
+    ?: System.getenv("VERSION_NAME"))
+    ?.takeIf { it.isNotBlank() }
+    ?: "0.1.0"
+
+val explicitBugReportFlag: String? = project.findProperty("ENABLE_BUG_REPORT")?.toString()
+    ?: System.getenv("ENABLE_BUG_REPORT")
+
+fun isPreReleaseVersionName(versionName: String): Boolean {
+    val normalized = versionName.trim().removePrefix("v").removePrefix("V")
+    val major = normalized.substringBefore('.').substringBefore('-').toIntOrNull()
+    if (major != null && major < 1) return true
+    return normalized.contains("-alpha", ignoreCase = true) ||
+        normalized.contains("-beta", ignoreCase = true) ||
+        normalized.contains("-rc", ignoreCase = true)
+}
+
+val enablePreReleaseBugReport: Boolean = when {
+    explicitBugReportFlag.equals("true", ignoreCase = true) -> true
+    explicitBugReportFlag.equals("false", ignoreCase = true) -> false
+    else -> isPreReleaseVersionName(appVersionName)
+}
+
+val requireReleaseConfig: Boolean = (project.findProperty("REQUIRE_RELEASE_CONFIG")?.toString()
+    ?: System.getenv("REQUIRE_RELEASE_CONFIG"))
+    .equals("true", ignoreCase = true)
+
 val releaseStoreFilePath: String? = keystoreProperties.getProperty("storeFile")
     ?: System.getenv("KEYSTORE_PATH")
 val releaseStorePassword: String? = keystoreProperties.getProperty("storePassword")
@@ -38,6 +71,11 @@ val hasReleaseSigning: Boolean = !releaseStoreFilePath.isNullOrBlank() &&
     !releaseKeyAlias.isNullOrBlank() &&
     !releaseKeyPassword.isNullOrBlank()
 
+if (requireReleaseConfig) {
+    require(mapsApiKey.isNotBlank()) { "REQUIRE_RELEASE_CONFIG=true: MAPS_API_KEY must be configured." }
+    require(hasReleaseSigning) { "REQUIRE_RELEASE_CONFIG=true: release signing config must be configured." }
+}
+
 android {
     namespace = "io.github.nemynew.expressiveweather"
     compileSdk = 36
@@ -45,11 +83,12 @@ android {
         applicationId = "io.github.nemynew.expressiveweather"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("boolean", "ENABLE_PRE_RELEASE_BUG_REPORT", enablePreReleaseBugReport.toString())
     }
 
     signingConfigs {

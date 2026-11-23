@@ -2,6 +2,7 @@ package io.github.nemynew.expressiveweather.ui.widget
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * 全サイズのホーム画面ウィジェット共通 AppWidgetProvider 基底クラス
@@ -59,7 +61,21 @@ abstract class BaseWeatherWidgetProvider(
         newOptions: Bundle
     ) {
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
-        WeatherWidgetUpdater.updateWidgetAsync(context.applicationContext, appWidgetId, fetchIfMissing = true)
+        val appCtx = context.applicationContext
+        val pendingResult = goAsync()
+        receiverScope.launch {
+            try {
+                withTimeoutOrNull(8_000L) {
+                    WeatherWidgetUpdater.updateSingleWidgetFromCache(appCtx, appWidgetId, fetchIfMissing = true)
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.w(TAG, "onAppWidgetOptionsChanged error: ${e.message}", e)
+            } finally {
+                pendingResult.finish()
+            }
+        }
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
@@ -83,7 +99,22 @@ abstract class BaseWeatherWidgetProvider(
             intent.action == Intent.ACTION_TIMEZONE_CHANGED ||
             intent.action == Intent.ACTION_LOCALE_CHANGED
         ) {
-            WeatherWidgetUpdater.updateAllFromCacheAsync(context.applicationContext)
+            val appCtx = context.applicationContext
+            val providerComponent = ComponentName(appCtx, javaClass)
+            val pendingResult = goAsync()
+            receiverScope.launch {
+                try {
+                    withTimeoutOrNull(8_000L) {
+                        WeatherWidgetUpdater.updateProviderWidgetsFromCache(appCtx, providerComponent)
+                    }
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "onReceive cache update error: ${e.message}", e)
+                } finally {
+                    pendingResult.finish()
+                }
+            }
         }
     }
 

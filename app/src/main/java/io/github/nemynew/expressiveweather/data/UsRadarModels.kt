@@ -658,23 +658,29 @@ fun isLocationOrCountryInUnitedStates(country: String?, latitude: Double, longit
         val lower = trimmed.lowercase()
         val mentionsUs = trimmed.contains("アメリカ") ||
             trimmed.contains("米国") ||
+            trimmed.contains("美国") ||
+            trimmed.contains("美國") ||
             lower.contains("united states") ||
-            lower.contains("usa") ||
+            Regex("\\bu\\.?s\\.?a\\.?\\b").containsMatchIn(lower) ||
             trimmed.equals("US", ignoreCase = true) ||
             lower.contains("puerto rico")
         if (mentionsUs) return true
 
         val isExplicitNeighborOrOtherCountry = lower.contains("canada") ||
             trimmed.contains("カナダ") ||
+            trimmed.contains("加拿大") ||
             trimmed.equals("CA", ignoreCase = true) ||
             lower.contains("mexico") ||
             trimmed.contains("メキシコ") ||
+            trimmed.contains("墨西哥") ||
             trimmed.equals("MX", ignoreCase = true) ||
             lower.contains("cuba") ||
             lower.contains("bahamas") ||
             lower.contains("bermuda") ||
             lower.contains("russia") ||
             trimmed.contains("ロシア") ||
+            trimmed.contains("俄罗斯") ||
+            trimmed.contains("俄羅斯") ||
             trimmed.equals("RU", ignoreCase = true)
         if (isExplicitNeighborOrOtherCountry) return false
     }

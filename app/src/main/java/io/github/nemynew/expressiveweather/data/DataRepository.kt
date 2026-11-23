@@ -205,6 +205,9 @@ class WeatherRepository(
         private val _forceRefreshVersion = MutableStateFlow(0L)
         val forceRefreshVersion: StateFlow<Long> = _forceRefreshVersion.asStateFlow()
 
+        private val _externalCitySelection = MutableStateFlow<Pair<Long, City>?>(null)
+        val externalCitySelection: StateFlow<Pair<Long, City>?> = _externalCitySelection.asStateFlow()
+
         val previewConditionOverride = MutableStateFlow<Pair<WeatherCondition?, Boolean?>?>(null)
 
         const val EXTRA_CITY_JSON = "extra_city_json"
@@ -217,6 +220,11 @@ class WeatherRepository(
 
         fun requestForceRefresh() {
             _forceRefreshVersion.value = _forceRefreshVersion.value + 1L
+        }
+
+        fun notifyExternalCitySelected(city: City) {
+            val nextVersion = (_externalCitySelection.value?.first ?: 0L) + 1L
+            _externalCitySelection.value = nextVersion to city
         }
 
         fun encodeCityJson(city: City?): String? {
@@ -784,7 +792,9 @@ class WeatherRepository(
         var lastEmittedFetchedAt: Long? = null
 
         if (initialEntity != null) {
-            val cachedWeather = WeatherJsonSerializer.deserialize(initialEntity.weatherDataJson)
+            val cachedWeather = withContext(Dispatchers.Default) {
+                WeatherJsonSerializer.deserialize(initialEntity.weatherDataJson)
+            }
             if (cachedWeather != null) {
                 hasValidCache = true
                 lastEmittedFetchedAt = initialEntity.fetchedAt
@@ -824,7 +834,9 @@ class WeatherRepository(
                 if (lastEmittedFetchedAt != null && entity.fetchedAt == lastEmittedFetchedAt) {
                     return@collect
                 }
-                val weather = WeatherJsonSerializer.deserialize(entity.weatherDataJson)
+                val weather = withContext(Dispatchers.Default) {
+                    WeatherJsonSerializer.deserialize(entity.weatherDataJson)
+                }
                 if (weather != null) {
                     lastEmittedFetchedAt = entity.fetchedAt
                     val age = System.currentTimeMillis() - entity.fetchedAt
@@ -964,7 +976,7 @@ class WeatherRepository(
         synchronized(activeFetches) {
             if (activeFetches[locationKey]?.isActive == true) return
             lateinit var job: Job
-            job = repositoryScope.launch {
+            job = repositoryScope.launch(start = kotlinx.coroutines.CoroutineStart.LAZY) {
                 try {
                     if (BuildConfig.DEBUG) {
                         Log.d("WeatherRepository", "Revalidating stale weather for $locationKey (${city.name})")
@@ -979,6 +991,7 @@ class WeatherRepository(
                 }
             }
             activeFetches[locationKey] = job
+            job.start()
         }
     }
 
@@ -1055,7 +1068,9 @@ class WeatherRepository(
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
-                Log.w("WeatherRepository", "AMeDAS point fetch failed for station ${areaInfo.stationCode}: ${e.message}")
+                if (BuildConfig.DEBUG) {
+                    Log.w("WeatherRepository", "AMeDAS point fetch failed for station ${areaInfo.stationCode}: ${e.message}")
+                }
                 null
             }
         }
@@ -1512,6 +1527,15 @@ class WeatherRepository(
         val dailyIsoDateParser = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { timeZone = cityTimeZone }
         val dailyTimeList = daily.optJSONArray("time")
 
+        // DST 切替日（23時間/25時間日）でのインデックスずれを防ぐため日付プレフィックスでグループ化
+        val hourlyIndicesByDate = HashMap<String, MutableList<Int>>()
+        for (hIdx in 0 until hourlyTimes.length()) {
+            val datePrefix = hourlyTimes.optString(hIdx, "").take(10)
+            if (datePrefix.length == 10) {
+                hourlyIndicesByDate.getOrPut(datePrefix) { mutableListOf() }.add(hIdx)
+            }
+        }
+
         for (i in 0 until dayCount) {
             val dMax = dailyMaxList.optDouble(i, currentTemp.toDouble()).takeIf { it.isFinite() }?.roundToInt() ?: currentTemp
             val dMin = dailyMinList.optDouble(i, currentTemp.toDouble()).takeIf { it.isFinite() }?.roundToInt() ?: currentTemp
@@ -1548,26 +1572,31 @@ class WeatherRepository(
             val dDaylightSec = daylightList?.optDouble(i, 43200.0)?.toLong() ?: 43200L
             val dDaylightStr = formatDaylightDuration(dDaylightSec)
 
-            // その日 (0:00 - 23:00) の24時間予報を抽出
+            // その日 (0:00 - 23:00) の時間予報を日付ベースで抽出（DST 23h/25h にも対応）
             val dayHourlyList = mutableListOf<HourlyForecast>()
-            val dayStartIdx = i * 24
+            val matchedIndices = if (dateIso.length >= 10) hourlyIndicesByDate[dateIso.take(10)] else null
+            val targetIndices: List<Int> = if (!matchedIndices.isNullOrEmpty()) {
+                matchedIndices
+            } else {
+                val dayStartIdx = i * 24
+                (dayStartIdx until (dayStartIdx + 24).coerceAtMost(hourlyTimes.length())).toList()
+            }
             var sumHumidity = 0
             var countHumidity = 0
-            for (h in 0 until 24) {
-                val hIdx = dayStartIdx + h
+            for (hIdx in targetIndices) {
                 if (hIdx < hourlyTimes.length()) {
                     val hTimeIso = hourlyTimes.getString(hIdx)
                     val hHour = parseHourInt(hTimeIso)
                     val hLabel = String.format(Locale.JAPANESE, "%d:00", hHour)
-                    val hT = hourlyTemps.optDouble(hIdx, ((dMax + dMin) / 2.0)).roundToInt()
+                    val hT = hourlyTemps.optDouble(hIdx, ((dMax + dMin) / 2.0)).takeIf { it.isFinite() }?.roundToInt() ?: ((dMax + dMin) / 2)
                     val hC = hourlyCodes.optInt(hIdx, dCode)
                     val hP = hourlyPrecips?.optInt(hIdx, dPrecip) ?: dPrecip
                     val rawHumidity = hourlyHumidities?.optInt(hIdx, -1) ?: -1
                     val hHum = rawHumidity.takeIf { it in 0..100 } ?: 60
-                    val hW = hourlyWinds?.optDouble(hIdx, dWindMax * 0.7) ?: (dWindMax * 0.7)
-                    val hDew = hourlyDewPoints?.optDouble(hIdx, (hT - 4).toDouble())?.roundToInt() ?: (hT - 4)
+                    val hW = hourlyWinds?.optDouble(hIdx, dWindMax * 0.7)?.takeIf { it.isFinite() } ?: (dWindMax * 0.7)
+                    val hDew = hourlyDewPoints?.optDouble(hIdx, (hT - 4).toDouble())?.takeIf { it.isFinite() }?.roundToInt() ?: (hT - 4)
                     val hIsDay = hourlyIsDays?.optInt(hIdx, if (hHour in 6..18) 1 else 0) == 1
-                    val hPmm = hourlyPrecipMms?.optDouble(hIdx, 0.0) ?: 0.0
+                    val hPmm = hourlyPrecipMms?.optDouble(hIdx, 0.0)?.takeIf { it.isFinite() } ?: 0.0
 
                     if (rawHumidity in 0..100) {
                         sumHumidity += rawHumidity
@@ -1664,7 +1693,8 @@ class WeatherRepository(
             country = city.country,
             latitude = city.latitude,
             longitude = city.longitude,
-            conditionName = specificName
+            conditionName = specificName,
+            timeZone = cityTimeZone
         )
 
         return WeatherData(
@@ -1784,8 +1814,8 @@ class WeatherRepository(
             1, 2 -> WeatherCondition.FEW_CLOUDS
             3 -> WeatherCondition.CLOUDY
             45, 48 -> WeatherCondition.FOG
-            51, 53, 55, 61, 63, 80, 81 -> WeatherCondition.RAIN
-            65, 82 -> WeatherCondition.HEAVY_RAIN
+            51, 53, 55, 56, 57, 61, 63, 66, 80, 81 -> WeatherCondition.RAIN
+            65, 67, 82 -> WeatherCondition.HEAVY_RAIN
             71, 73, 75, 77, 85, 86 -> WeatherCondition.SNOW
             95, 96, 99 -> WeatherCondition.THUNDERSTORM
             else -> WeatherCondition.FEW_CLOUDS

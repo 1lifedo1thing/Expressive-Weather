@@ -53,6 +53,10 @@ object KikikuruNotificationManager {
     var isTestModeActive: Boolean = false
         private set
 
+    // 直近で音・バイブ通知を発火した警戒レベル（昇格時は setOnlyAlertOnce(false) で確実に鳴動）
+    @Volatile
+    private var lastAlertedLevel: Int = 0
+
     private fun persistActiveAlert(context: Context, alertInfo: MunicipalityAlertInfo?, cityName: String) {
         try {
             val editor = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
@@ -87,8 +91,19 @@ object KikikuruNotificationManager {
      */
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "警戒レベル・キキクル Live Updates"
-            val descriptionText = "市区町村で警戒レベル2以上の警報・注意報が発表された際のリアルタイム警戒通知（ライブ通知）"
+            val language = LocaleUtils.getSavedLanguage(context.applicationContext)
+            val name = when (language) {
+                AppLanguage.ENGLISH -> "Disaster Alert Live Updates"
+                AppLanguage.SIMPLIFIED_CHINESE -> "灾害预警实时动态通知"
+                AppLanguage.TRADITIONAL_CHINESE -> "災害警報即時動態通知"
+                AppLanguage.JAPANESE -> "警戒レベル・キキクル Live Updates"
+            }
+            val descriptionText = when (language) {
+                AppLanguage.ENGLISH -> "Real-time ongoing alerts when Level 2+ weather or disaster warnings are active"
+                AppLanguage.SIMPLIFIED_CHINESE -> "当所在地区发布2级以上气象或灾害预警时的实时常驻通知"
+                AppLanguage.TRADITIONAL_CHINESE -> "當所在地區發布2級以上氣象或災害警報時的即時常駐通知"
+                AppLanguage.JAPANESE -> "市区町村で警戒レベル2以上の警報・注意報が発表された際のリアルタイム警戒通知（ライブ通知）"
+            }
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -120,9 +135,15 @@ object KikikuruNotificationManager {
         val level = alertInfo.alertLevel
         val levelNum = level.level
 
-        val primaryDetail = alertInfo.targetDisasterPrimary?.let { alertInfo.getDetailFor(it) }
+        val rawPrimaryDetail = alertInfo.targetDisasterPrimary?.let { alertInfo.getDetailFor(it) }
             ?: alertInfo.allDisasterDetails.maxByOrNull { it.alertLevel.level }
             ?: alertInfo.getDetailFor(DisasterType.HEAVY_RAIN)
+        // primaryDetail のレベルが総合警戒レベルを下回る場合（非大雨特別警報等）は総合レベルを引き継ぐ
+        val primaryDetail = if (rawPrimaryDetail.alertLevel.level < levelNum) {
+            rawPrimaryDetail.copy(alertLevel = level)
+        } else {
+            rawPrimaryDetail
+        }
 
         val primaryDisaster = when (language) {
             AppLanguage.ENGLISH -> primaryDetail.disasterType.shortLabelEn
@@ -185,10 +206,19 @@ object KikikuruNotificationManager {
         val actionText = primaryDetail.getActionAdvice(language)
         val targetLayerId = primaryDetail.disasterType.radarLayerId
 
+        val lastResolvedCity = WeatherRepository.getLastResolvedLocationCity(appContext)
         val clickIntent = Intent(appContext, RadarDetailActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             putExtra("initial_layer_id", targetLayerId)
             putExtra("city_name", targetCity)
+            if (lastResolvedCity != null) {
+                putExtra("latitude", lastResolvedCity.latitude)
+                putExtra("longitude", lastResolvedCity.longitude)
+                putExtra("country", lastResolvedCity.country)
+                runCatching {
+                    putExtra(WeatherRepository.EXTRA_CITY_JSON, WeatherJsonSerializer.json.encodeToString(lastResolvedCity))
+                }
+            }
         }
 
         val pendingIntent = PendingIntent.getActivity(
@@ -222,6 +252,11 @@ object KikikuruNotificationManager {
         val notificationColor = level.colorHex.toInt()
         val badgeBitmap = createLevelBadgeBitmap(appContext, level)
 
+        val isEscalated = levelNum > lastAlertedLevel
+        if (isEscalated) {
+            lastAlertedLevel = levelNum
+        }
+
         val builder = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setLargeIcon(badgeBitmap)
@@ -245,7 +280,7 @@ object KikikuruNotificationManager {
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setOnlyAlertOnce(true)
+            .setOnlyAlertOnce(!isEscalated)
             .setContentIntent(pendingIntent)
             .setAutoCancel(false)
             .addAction(
@@ -429,6 +464,7 @@ object KikikuruNotificationManager {
             currentActiveAlertInfo = null
             currentActiveCityName = ""
             isTestModeActive = false
+            lastAlertedLevel = 0
             persistActiveAlert(appContext, null, "")
             KikikuruLiveAlertService.stop(appContext)
             notificationManager.cancel(NOTIFICATION_ID)

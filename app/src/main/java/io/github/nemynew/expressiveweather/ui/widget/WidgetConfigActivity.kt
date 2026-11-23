@@ -11,7 +11,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -137,11 +138,13 @@ class WidgetConfigActivity : ComponentActivity() {
         )
 
         val providerInfo = AppWidgetManager.getInstance(applicationContext)?.getAppWidgetInfo(appWidgetId)
+        val isCompactWidget = (providerInfo?.provider?.className == WeatherWidgetCompactProvider::class.java.name) ||
+            (io.github.nemynew.expressiveweather.BuildConfig.DEBUG && intent?.getBooleanExtra("preview_compact", false) == true)
         val isShapeWidget = (providerInfo?.provider?.className == WeatherWidgetShapeProvider::class.java.name) ||
             (io.github.nemynew.expressiveweather.BuildConfig.DEBUG && intent?.getBooleanExtra("preview_shape", false) == true)
         val isRadarWidget = (providerInfo?.provider?.className == WeatherWidgetRadarProvider::class.java.name) ||
             (io.github.nemynew.expressiveweather.BuildConfig.DEBUG && intent?.getBooleanExtra("preview_radar", false) == true)
-        val defaultStyle = if (isShapeWidget || isRadarWidget) WidgetStyle.MATERIAL_YOU else WidgetStyle.WEATHER_EXPRESSIVE
+        val defaultStyle = WidgetStyle.MATERIAL_YOU
         val initialConfig = WidgetPreferences.getConfig(applicationContext, appWidgetId, defaultStyle)
         val language = repo.getLanguage()
         val tempUnit = repo.getTemperatureUnit()
@@ -156,6 +159,7 @@ class WidgetConfigActivity : ComponentActivity() {
             ) {
                 WidgetConfigScreen(
                     initialConfig = initialConfig,
+                    isCompactWidget = isCompactWidget,
                     isShapeWidget = isShapeWidget,
                     isRadarWidget = isRadarWidget,
                     language = language,
@@ -189,6 +193,7 @@ class WidgetConfigActivity : ComponentActivity() {
 @Composable
 private fun WidgetConfigScreen(
     initialConfig: WidgetConfig,
+    isCompactWidget: Boolean,
     isShapeWidget: Boolean,
     isRadarWidget: Boolean,
     language: AppLanguage,
@@ -313,7 +318,13 @@ private fun WidgetConfigScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onCancel) {
-                        Icon(Icons.Rounded.Close, contentDescription = null)
+                        val closeDesc = when (language) {
+                            AppLanguage.JAPANESE -> "閉じる"
+                            AppLanguage.ENGLISH -> "Close"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
+                            AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                        }
+                        Icon(Icons.Rounded.Close, contentDescription = closeDesc)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -383,6 +394,16 @@ private fun WidgetConfigScreen(
                             windUnit = windUnit
                         )
                     }
+                    isCompactWidget -> {
+                        WidgetCompactLivePreviewCard(
+                            config = draftConfig,
+                            weather = previewWeather,
+                            fallbackCity = activeTargetCity,
+                            language = language,
+                            tempUnit = tempUnit,
+                            windUnit = windUnit
+                        )
+                    }
                     else -> {
                         WidgetLivePreviewCard(
                             config = draftConfig,
@@ -430,7 +451,6 @@ private fun WidgetConfigScreen(
                     WidgetStyle.entries.forEach { style ->
                         val isSelected = style == selectedStyle
                         Card(
-                            onClick = { selectedStyle = style },
                             shape = RoundedCornerShape(20.dp),
                             colors = CardDefaults.cardColors(
                                 containerColor = if (isSelected) {
@@ -439,7 +459,14 @@ private fun WidgetConfigScreen(
                                     MaterialTheme.colorScheme.surfaceContainerLow
                                 }
                             ),
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(20.dp))
+                                .selectable(
+                                    selected = isSelected,
+                                    onClick = { selectedStyle = style },
+                                    role = Role.RadioButton
+                                )
                         ) {
                             Row(
                                 modifier = Modifier
@@ -449,7 +476,7 @@ private fun WidgetConfigScreen(
                             ) {
                                 RadioButton(
                                     selected = isSelected,
-                                    onClick = { selectedStyle = style }
+                                    onClick = null
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Column(modifier = Modifier.weight(1f)) {
@@ -555,7 +582,13 @@ private fun WidgetConfigScreen(
                             CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
                         } else if (searchQuery.isNotEmpty()) {
                             IconButton(onClick = { searchQuery = "" }) {
-                                Icon(Icons.Rounded.Close, contentDescription = null)
+                                val clearDesc = when (language) {
+                                    AppLanguage.JAPANESE -> "検索をクリア"
+                                    AppLanguage.ENGLISH -> "Clear search"
+                                    AppLanguage.SIMPLIFIED_CHINESE -> "清除搜索"
+                                    AppLanguage.TRADITIONAL_CHINESE -> "清除搜尋"
+                                }
+                                Icon(Icons.Rounded.Close, contentDescription = clearDesc)
                             }
                         }
                     },
@@ -1077,6 +1110,152 @@ private fun WidgetRadarLivePreviewCard(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun WidgetCompactLivePreviewCard(
+    config: WidgetConfig,
+    weather: WeatherData?,
+    fallbackCity: City,
+    language: AppLanguage,
+    tempUnit: TemperatureUnit,
+    windUnit: WindSpeedUnit
+) {
+    val context = LocalContext.current
+    val isDark = isSystemInDarkTheme()
+    val model = remember(config, weather, fallbackCity, language, tempUnit, windUnit) {
+        WidgetUiModelBuilder.build(
+            config = config,
+            weather = weather,
+            language = language,
+            temperatureUnit = tempUnit,
+            windSpeedUnit = windUnit,
+            fallbackCity = fallbackCity
+        )
+    }
+
+    val glassOpacity = config.glassOpacity.coerceIn(0.15f, 0.95f)
+    val myPalette = remember(context, isDark) {
+        WidgetCanvasRenderer.resolveMaterialYouPalette(context, isDark)
+    }
+    val colors = remember(myPalette, config.style, config.glassOpacity, isDark) {
+        resolvePreviewSurfaceColors(myPalette, config, isDark)
+    }
+    val bgBitmap = remember(config.style, glassOpacity, model.condition, model.isDay, isDark, myPalette) {
+        WidgetCanvasRenderer.renderBackgroundBitmap(
+            context = context,
+            sizeTier = WidgetSizeTier.COMPACT,
+            style = config.style,
+            condition = model.condition,
+            isDay = model.isDay,
+            isSystemDark = isDark,
+            myPalette = myPalette,
+            glassOpacity = glassOpacity
+        )
+    }
+    val compactHiLo = if (model.hasData) model.highLowText.substringBefore("・").trim() else model.highLowText
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(26.dp))
+            .background(
+                if (colors.isFrosted) {
+                    Color(myPalette.wallpaperPrimaryColor).copy(alpha = 0.35f)
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                }
+            )
+            .padding(vertical = 18.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(width = 188.dp, height = 168.dp)
+                .clip(RoundedCornerShape(24.dp))
+        ) {
+            Image(
+                bitmap = bgBitmap.asImageBitmap(),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.FillBounds
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(14.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (model.isCurrentLocation) {
+                        Icon(
+                            Icons.Rounded.MyLocation,
+                            contentDescription = null,
+                            tint = colors.fgPrimary,
+                            modifier = Modifier.size(12.dp)
+                        )
+                        Spacer(Modifier.width(4.dp))
+                    }
+                    Text(
+                        text = model.cityName,
+                        color = colors.fgPrimary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = model.currentTempText,
+                        color = colors.fgPrimary,
+                        fontFamily = GoogleSansFlex,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 40.sp,
+                        maxLines = 1
+                    )
+                    Icon(
+                        painter = painterResource(WeatherIconHelper.getConditionDrawable(model.condition, model.isDay)),
+                        contentDescription = null,
+                        tint = Color(WidgetCanvasRenderer.getConditionIconTint(model.condition, model.isDay, colors.isLightSurface)),
+                        modifier = Modifier.size(44.dp)
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = model.conditionLabel,
+                        color = colors.fgPrimary,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 13.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(Modifier.width(6.dp))
+                    Text(
+                        text = compactHiLo,
+                        color = colors.fgSecondary,
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 12.5.sp,
+                        maxLines = 1
+                    )
                 }
             }
         }

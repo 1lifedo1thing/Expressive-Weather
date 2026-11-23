@@ -259,8 +259,8 @@ internal fun RainAtmosphere(
                 while (true) {
                     withFrameNanos { now ->
                         if (lastFrame != 0L) {
-                            secondsState.floatValue += ((now - lastFrame) / 1_000_000_000f)
-                                .coerceAtMost(0.05f) / motionScale
+                            secondsState.floatValue += (((now - lastFrame) / 1_000_000_000f) / motionScale)
+                                .coerceAtMost(0.05f)
 
                             if (condition == WeatherCondition.THUNDERSTORM &&
                                 lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)
@@ -268,18 +268,20 @@ internal fun RainAtmosphere(
                                 val t = secondsState.floatValue
                                 val cycleIndex = (t / 9.2f).toInt()
                                 val epoch = t % 9.2f
-                                if (cycleIndex != lastCycleIndex) {
-                                    lastCycleIndex = cycleIndex
-                                    strike1Fired = false
-                                    strike3Fired = false
-                                }
-                                if (epoch >= 2.10f && !strike1Fired) {
-                                    strike1Fired = true
-                                    expressHaptics.play(ExpressiveHapticPattern.WEATHER_THUNDER_RUMBLE)
-                                }
-                                if (epoch >= 7.40f && !strike3Fired) {
-                                    strike3Fired = true
-                                    expressHaptics.play(ExpressiveHapticPattern.WEATHER_THUNDER_RUMBLE)
+                                if (cycleIndex == 0) {
+                                    if (cycleIndex != lastCycleIndex) {
+                                        lastCycleIndex = cycleIndex
+                                        strike1Fired = false
+                                        strike3Fired = false
+                                    }
+                                    if (epoch >= 2.10f && !strike1Fired) {
+                                        strike1Fired = true
+                                        expressHaptics.play(ExpressiveHapticPattern.WEATHER_THUNDER_RUMBLE)
+                                    }
+                                    if (epoch >= 7.40f && !strike3Fired) {
+                                        strike3Fired = true
+                                        expressHaptics.play(ExpressiveHapticPattern.WEATHER_THUNDER_RUMBLE)
+                                    }
                                 }
                             }
                         }

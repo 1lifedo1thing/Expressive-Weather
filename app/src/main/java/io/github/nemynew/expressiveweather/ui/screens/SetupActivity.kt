@@ -4,14 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import io.github.nemynew.expressiveweather.data.CurrentLocationProvider
 import io.github.nemynew.expressiveweather.data.WeatherRepository
 import io.github.nemynew.expressiveweather.data.local.WeatherDatabase
 import io.github.nemynew.expressiveweather.theme.ExpressiveWeatherTheme
+import io.github.nemynew.expressiveweather.theme.ThemeMode
+import io.github.nemynew.expressiveweather.theme.ThemePreset
 
 /**
  * セットアップ画面（SetupScreen）を独立して起動するための Activity。
@@ -35,10 +42,30 @@ class SetupActivity : ComponentActivity() {
             context = applicationContext
         )
         val locationProvider = CurrentLocationProvider(applicationContext)
-        val language = repository.getLanguage()
+        val initialLanguage = repository.getLanguage()
+        val themeMode = repository.getThemeMode()
+        val themePreset = repository.getThemePreset()
+        val weatherAdaptiveThemeEnabled = repository.isWeatherAdaptiveThemeEnabled()
+        val lastCity = repository.resolveFallbackCurrentCity()
+        val cachedWeather = repository.getMemoryCachedWeatherOrNull(lastCity)
 
         setContent {
-            ExpressiveWeatherTheme(language = language) {
+            var activeLanguage by remember { mutableStateOf(initialLanguage) }
+            val isSystemDark = isSystemInDarkTheme()
+            val isDark = ThemeMode.resolveIsDark(
+                themeMode = themeMode,
+                isDay = cachedWeather?.isDay ?: !isSystemDark,
+                isSystemDark = isSystemDark
+            )
+
+            ExpressiveWeatherTheme(
+                darkTheme = isDark,
+                dynamicColor = (themePreset == ThemePreset.SYSTEM),
+                weatherCondition = cachedWeather?.condition,
+                weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
+                themePreset = themePreset,
+                language = activeLanguage
+            ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -46,7 +73,14 @@ class SetupActivity : ComponentActivity() {
                     SetupScreen(
                         repository = repository,
                         locationProvider = locationProvider,
+                        isRerun = true,
+                        onDismiss = { finish() },
+                        onLanguageChanged = { newLang ->
+                            activeLanguage = newLang
+                            io.github.nemynew.expressiveweather.util.LocaleUtils.applyLocaleToActivity(this@SetupActivity)
+                        },
                         onSetupComplete = { city ->
+                            WeatherRepository.notifyExternalCitySelected(city)
                             setResult(RESULT_OK)
                             finish()
                         }

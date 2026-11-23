@@ -419,7 +419,16 @@ class ExpressiveHapticController(context: Context) {
             VibrationEffect.Composition.PRIMITIVE_SPIN
         )
         try {
-            val supported = v.arePrimitivesSupported(*candidates)
+            val supported = v.arePrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_CLICK,
+                VibrationEffect.Composition.PRIMITIVE_TICK,
+                VibrationEffect.Composition.PRIMITIVE_LOW_TICK,
+                VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
+                VibrationEffect.Composition.PRIMITIVE_QUICK_FALL,
+                VibrationEffect.Composition.PRIMITIVE_SLOW_RISE,
+                VibrationEffect.Composition.PRIMITIVE_THUD,
+                VibrationEffect.Composition.PRIMITIVE_SPIN
+            )
             val result = LinkedHashSet<Int>()
             for (i in candidates.indices) {
                 if (i < supported.size && supported[i]) {
@@ -613,6 +622,21 @@ class ExpressiveHapticController(context: Context) {
             val attrs = VibrationAttributes.Builder().setUsage(usage).build()
             v.vibrate(effect, attrs)
         } else {
+            // API 26–32 ではシステム設定の「タッチ操作時のバイブレーション」を尊重する（緊急警報除く）
+            if (!isUrgentAlert) {
+                val systemTouchHapticsEnabled = try {
+                    @Suppress("DEPRECATION")
+                    val key = android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED
+                    android.provider.Settings.System.getInt(
+                        appContext.contentResolver,
+                        key,
+                        1
+                    ) != 0
+                } catch (_: Exception) {
+                    true
+                }
+                if (!systemTouchHapticsEnabled) return
+            }
             @Suppress("DEPRECATION")
             v.vibrate(effect)
         }

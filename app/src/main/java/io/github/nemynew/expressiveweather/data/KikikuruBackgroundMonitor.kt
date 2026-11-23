@@ -8,6 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,6 +27,7 @@ import kotlinx.coroutines.launch
 class KikikuruBackgroundMonitor private constructor(private val context: Context) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var periodicJob: Job? = null
+    @Volatile
     private var lastMunicipalityCode: String? = null
 
     private val _currentAlert = MutableStateFlow<MunicipalityAlertInfo?>(null)
@@ -66,12 +69,14 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
         periodicJob = scope.launch {
             Log.d(TAG, "Started dynamic periodic alert & warning monitoring loop (Current location only).")
             while (isActive) {
-                try {
-                    checkCurrentAlert(forceFresh = true)
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "Periodic alert check error: ${e.message}")
+                if (!KikikuruLiveAlertService.isActivePolling) {
+                    try {
+                        checkCurrentAlert(forceFresh = true)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Periodic alert check error: ${e.message}")
+                    }
                 }
 
                 // 警報・特別警報が発表中、キキクル警戒中（レベル2以上）、または重大な全球警報がある場合は3分間隔に頻度を引き上げ
@@ -204,55 +209,73 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
             val repo = WeatherRepository(context = context)
             val isUs = NwsAlertRepository.isUnitedStates(city)
             val isMeteoAlarm = MeteoAlarmRepository.isSupported(city)
-            val alerts = mutableListOf<GlobalAlertItem>()
 
-            if (isUs) {
-                try {
-                    alerts.addAll(NwsAlertRepository.fetchActiveAlerts(city))
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "NWS alert fetch failed: ${e.message}")
-                }
-            }
+            val alerts = coroutineScope {
+                val nwsDef: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (isUs) async {
+                    try {
+                        NwsAlertRepository.fetchActiveAlerts(city)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "NWS alert fetch failed: ${e.message}")
+                        emptyList()
+                    }
+                } else null
 
-            if (isMeteoAlarm && repo.getMeteoAlarmAlertsEnabled()) {
-                try {
-                    alerts.addAll(MeteoAlarmRepository.fetchAlertsForCity(city))
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "MeteoAlarm alert fetch failed: ${e.message}")
-                }
-            }
+                val meteoDef: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (isMeteoAlarm && repo.getMeteoAlarmAlertsEnabled()) async {
+                    try {
+                        MeteoAlarmRepository.fetchAlertsForCity(city)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "MeteoAlarm alert fetch failed: ${e.message}")
+                        emptyList()
+                    }
+                } else null
 
-            if (repo.getWmoAlertsEnabled() && ((!isUs && !isMeteoAlarm) || repo.isWmoAlwaysEnabled())) {
-                try {
-                    alerts.addAll(WmoAlertRepository.fetchAlertsForCity(city, alwaysEnabled = repo.isWmoAlwaysEnabled()))
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "WMO alert fetch failed: ${e.message}")
-                }
-            }
+                val wmoDef: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (repo.getWmoAlertsEnabled() && ((!isUs && !isMeteoAlarm) || repo.isWmoAlwaysEnabled())) async {
+                    try {
+                        WmoAlertRepository.fetchAlertsForCity(city, alwaysEnabled = repo.isWmoAlwaysEnabled())
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "WMO alert fetch failed: ${e.message}")
+                        emptyList()
+                    }
+                } else null
 
-            if (repo.getGdacsAlertsEnabled()) {
-                try {
-                    alerts.addAll(GdacsAlertRepository.fetchAlertsForCity(city))
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "GDACS alert fetch failed: ${e.message}")
+                val gdacsDef: kotlinx.coroutines.Deferred<List<GlobalAlertItem>>? = if (repo.getGdacsAlertsEnabled()) async {
+                    try {
+                        GdacsAlertRepository.fetchAlertsForCity(city)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "GDACS alert fetch failed: ${e.message}")
+                        emptyList()
+                    }
+                } else null
+
+                buildList {
+                    addAll(nwsDef?.await().orEmpty())
+                    addAll(meteoDef?.await().orEmpty())
+                    addAll(wmoDef?.await().orEmpty())
+                    addAll(gdacsDef?.await().orEmpty())
                 }
             }
 
             val distinctAlerts = alerts.distinctBy { it.id }
             _currentGlobalAlerts.value = distinctAlerts
-            Log.d(TAG, "Updated global alerts for current location (${city.name}): ${distinctAlerts.size} items")
+            if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                Log.d(TAG, "Updated global alerts for current location (${city.name}): ${distinctAlerts.size} items")
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.w(TAG, "Failed evaluating global alerts for ${city.name}: ${e.message}")
+            if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                Log.w(TAG, "Failed evaluating global alerts for ${city.name}: ${e.message}")
+            } else {
+                Log.w(TAG, "Failed evaluating global alerts: ${e.message}")
+            }
         }
     }
 
@@ -287,11 +310,17 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
             if (notifyUser) {
                 KikikuruNotificationManager.updateLiveAlertNotification(context, alertInfo)
             }
-            Log.d(TAG, "Alert check finished for ${muni.name}: Lv.${alertInfo.alertLevel.level} (${alertInfo.alertLevel.title}), Active Warnings: ${alertInfo.activeWarnings.count { it.isWarning || it.isSpecial }}")
+            if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                Log.d(TAG, "Alert check finished for ${muni.name}: Lv.${alertInfo.alertLevel.level} (${alertInfo.alertLevel.title}), Active Warnings: ${alertInfo.activeWarnings.count { it.isWarning || it.isSpecial }}")
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.e(TAG, "Failed evaluating alert for ${muni.name}: ${e.message}", e)
+            if (io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+                Log.e(TAG, "Failed evaluating alert for ${muni.name}: ${e.message}", e)
+            } else {
+                Log.e(TAG, "Failed evaluating alert: ${e.message}")
+            }
         }
     }
 }

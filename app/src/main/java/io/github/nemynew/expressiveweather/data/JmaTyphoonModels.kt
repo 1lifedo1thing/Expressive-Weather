@@ -177,7 +177,11 @@ data class JmaTyphoonPoint(
                 }
             }
             AppLanguage.ENGLISH -> {
-                val base = if (categoryName.contains("温帯")) "Extratropical Low" else "Typhoon"
+                val base = when {
+                    categoryName.contains("温帯") -> "Extratropical Low"
+                    categoryName.contains("熱帯低気圧") -> "Tropical Depression"
+                    else -> "Typhoon"
+                }
                 when {
                     hasScale && hasIntensity -> "${scale.enName} & ${intensity.enName} $base"
                     hasScale -> "${scale.enName} $base"
@@ -186,19 +190,29 @@ data class JmaTyphoonPoint(
                 }
             }
             AppLanguage.SIMPLIFIED_CHINESE -> {
+                val base = when {
+                    categoryName.contains("温帯") -> "温带气旋"
+                    categoryName.contains("熱帯低気圧") -> "热带低压"
+                    else -> "台风"
+                }
                 when {
                     hasScale && hasIntensity -> "${scale.zhCnName}${intensity.zhCnName}"
-                    hasScale -> "${scale.zhCnName}台风"
+                    hasScale -> "${scale.zhCnName}$base"
                     hasIntensity -> intensity.zhCnName
-                    else -> if (categoryName.contains("温帯")) "温带气旋" else "台风"
+                    else -> base
                 }
             }
             AppLanguage.TRADITIONAL_CHINESE -> {
+                val base = when {
+                    categoryName.contains("温帯") -> "溫帶氣旋"
+                    categoryName.contains("熱帯低気圧") -> "熱帶性低氣壓"
+                    else -> "颱風"
+                }
                 when {
                     hasScale && hasIntensity -> "${scale.zhTwName}${intensity.zhTwName}"
-                    hasScale -> "${scale.zhTwName}颱風"
+                    hasScale -> "${scale.zhTwName}$base"
                     hasIntensity -> intensity.zhTwName
-                    else -> if (categoryName.contains("温帯")) "溫帶氣旋" else "颱風"
+                    else -> base
                 }
             }
         }
@@ -243,17 +257,26 @@ data class JmaTyphoonItem(
     val probabilityCircles: List<JmaProbabilityCircleGeometry>, // 予報円
     val stormWarningAreas: List<JmaStormWarningAreaGeometry> = emptyList() // 暴風警戒域
 ) {
-    fun localizedName(language: AppLanguage): String = when (language) {
-        AppLanguage.JAPANESE -> "$formattedNumber ($nameJp)"
-        AppLanguage.ENGLISH -> "Typhoon $formattedNumber ($nameEn)"
-        AppLanguage.SIMPLIFIED_CHINESE -> "第$formattedNumber ($nameEn)"
-        AppLanguage.TRADITIONAL_CHINESE -> "第$formattedNumber ($nameEn)"
+    private fun numericOrder(): Int? = Regex("(\\d+)").find(formattedNumber)?.groupValues?.get(1)?.toIntOrNull()
+        ?: rawTyphoonNumber.takeLast(2).toIntOrNull()
+
+    fun localizedName(language: AppLanguage): String {
+        val num = numericOrder()
+        return when (language) {
+            AppLanguage.JAPANESE -> "$formattedNumber ($nameJp)"
+            AppLanguage.ENGLISH -> if (num != null) "Typhoon No.$num ($nameEn)" else "Typhoon $formattedNumber ($nameEn)"
+            AppLanguage.SIMPLIFIED_CHINESE -> if (num != null) "第${num}号台风 ($nameEn)" else "$formattedNumber ($nameEn)"
+            AppLanguage.TRADITIONAL_CHINESE -> if (num != null) "第${num}號颱風 ($nameEn)" else "$formattedNumber ($nameEn)"
+        }
     }
 
-    fun simpleName(language: AppLanguage): String = when (language) {
-        AppLanguage.JAPANESE -> "$formattedNumber $nameJp"
-        AppLanguage.ENGLISH -> "$formattedNumber $nameEn"
-        AppLanguage.SIMPLIFIED_CHINESE -> "$formattedNumber $nameEn"
-        AppLanguage.TRADITIONAL_CHINESE -> "$formattedNumber $nameEn"
+    fun simpleName(language: AppLanguage): String {
+        val num = numericOrder()
+        return when (language) {
+            AppLanguage.JAPANESE -> "$formattedNumber $nameJp"
+            AppLanguage.ENGLISH -> if (num != null) "No.$num $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.SIMPLIFIED_CHINESE -> if (num != null) "第${num}号 $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.TRADITIONAL_CHINESE -> if (num != null) "第${num}號 $nameEn" else "$formattedNumber $nameEn"
+        }
     }
 }

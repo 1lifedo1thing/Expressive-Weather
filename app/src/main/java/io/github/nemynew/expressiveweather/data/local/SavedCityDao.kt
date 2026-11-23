@@ -15,13 +15,13 @@ interface SavedCityDao {
     @Query("SELECT * FROM saved_cities ORDER BY savedAt ASC")
     suspend fun getAllSavedCitiesOnce(): List<SavedCityEntity>
 
-    @Query("SELECT * FROM saved_cities WHERE id = :id OR (ABS(latitude - :latitude) < 0.01 AND ABS(longitude - :longitude) < 0.01) LIMIT 1")
+    @Query("SELECT * FROM saved_cities WHERE id = :id OR (ABS(latitude - :latitude) < 0.01 AND ABS(longitude - :longitude) < 0.01) ORDER BY CASE WHEN id = :id THEN 0 ELSE 1 END, savedAt ASC LIMIT 1")
     suspend fun findMatchingCity(id: String, latitude: Double, longitude: Double): SavedCityEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(city: SavedCityEntity): Long
 
-    @Query("DELETE FROM saved_cities WHERE id = :id OR (ABS(latitude - :latitude) < 0.01 AND ABS(longitude - :longitude) < 0.01)")
+    @Query("DELETE FROM saved_cities WHERE id = :id OR (ABS(latitude - :latitude) < 0.002 AND ABS(longitude - :longitude) < 0.002)")
     suspend fun deleteCity(id: String, latitude: Double, longitude: Double): Int
 
     @Query("DELETE FROM saved_cities WHERE id = :id")

@@ -121,10 +121,37 @@ fun WindDetailScreen(
 ) {
     if (weather == null) {
         Box(
-            modifier = modifier.fillMaxSize(),
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
             contentAlignment = Alignment.Center
         ) {
-            Text("No weather data available")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = when (language) {
+                        AppLanguage.JAPANESE -> "天気データを取得できませんでした"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "无法获取天气数据"
+                        AppLanguage.TRADITIONAL_CHINESE -> "無法取得天氣資料"
+                        AppLanguage.ENGLISH -> "Weather data is currently unavailable"
+                    },
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                androidx.compose.material3.TextButton(onClick = onBack) {
+                    Text(
+                        text = when (language) {
+                            AppLanguage.JAPANESE -> "戻る"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "返回"
+                            AppLanguage.TRADITIONAL_CHINESE -> "返回"
+                            AppLanguage.ENGLISH -> "Back"
+                        }
+                    )
+                }
+            }
         }
         return
     }

@@ -136,30 +136,39 @@ class CurrentLocationProvider(context: Context) {
         if (candidateProviders.isNotEmpty()) {
             val freshLocation = withTimeoutOrNull(2000L) {
                 suspendCancellableCoroutine<Location?> { cont ->
+                    // プロバイダ毎に個別の CancellationSignal を生成し、1件取得またはタイムアウト時に全プロバイダを確実にキャンセルする
                     @Suppress("DEPRECATION")
-                    val cancellationSignal = androidx.core.os.CancellationSignal()
-                    cont.invokeOnCancellation { cancellationSignal.cancel() }
+                    val signals = candidateProviders.map { androidx.core.os.CancellationSignal() }
+                    fun cancelAllSignals() {
+                        signals.forEach { sig ->
+                            try { sig.cancel() } catch (_: Exception) {}
+                        }
+                    }
+                    cont.invokeOnCancellation { cancelAllSignals() }
                     val returned = AtomicBoolean(false)
                     val remaining = AtomicInteger(candidateProviders.size)
 
-                    for (provider in candidateProviders) {
+                    candidateProviders.forEachIndexed { idx, provider ->
+                        val signal = signals[idx]
                         try {
                             @Suppress("DEPRECATION")
                             LocationManagerCompat.getCurrentLocation(
                                 locationManager,
                                 provider,
-                                cancellationSignal,
+                                signal,
                                 ContextCompat.getMainExecutor(appContext)
                             ) { location ->
                                 if (location != null && returned.compareAndSet(false, true)) {
-                                    cancellationSignal.cancel()
+                                    cancelAllSignals()
                                     if (cont.isActive) cont.resume(location)
                                 } else if (remaining.decrementAndGet() == 0 && returned.compareAndSet(false, true)) {
+                                    cancelAllSignals()
                                     if (cont.isActive) cont.resume(null)
                                 }
                             }
                         } catch (_: Exception) {
                             if (remaining.decrementAndGet() == 0 && returned.compareAndSet(false, true)) {
+                                cancelAllSignals()
                                 if (cont.isActive) cont.resume(null)
                             }
                         }

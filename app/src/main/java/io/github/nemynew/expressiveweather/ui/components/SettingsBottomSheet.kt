@@ -156,7 +156,12 @@ fun SettingsBottomSheet(
                     // 項目 1: 「一般設定」（テーマprimaryContainer色、末尾に＞）
                     SettingsPopupListItem(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "一般設定" else strings.generalSettingsTitle,
-                        subtitle = if (currentLanguage == AppLanguage.JAPANESE) "気温、速度など" else "Temperature, wind speed, etc.",
+                        subtitle = when (currentLanguage) {
+                            AppLanguage.JAPANESE -> "言語・単位・通知など"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "语言、单位与通知等"
+                            AppLanguage.TRADITIONAL_CHINESE -> "語言、單位與通知等"
+                            AppLanguage.ENGLISH -> "Language, units, alerts, etc."
+                        },
                         leadingIcon = Icons.Rounded.Build,
                         iconBackground = colorScheme.primaryContainer,
                         iconTint = colorScheme.onPrimaryContainer,
@@ -175,7 +180,12 @@ fun SettingsBottomSheet(
                     // 項目 2: 「外観設定」（テーマsecondaryContainer色、末尾に＞）
                     SettingsPopupListItem(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "外観設定" else strings.appearanceTitle,
-                        subtitle = null,
+                        subtitle = when (currentLanguage) {
+                            AppLanguage.JAPANESE -> "テーマ・ガラス表現・図形"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "主题配色与视觉效果"
+                            AppLanguage.TRADITIONAL_CHINESE -> "主題配色與視覺效果"
+                            AppLanguage.ENGLISH -> "Theme, glass & shapes"
+                        },
                         leadingIcon = Icons.Rounded.Palette,
                         iconBackground = colorScheme.secondaryContainer,
                         iconTint = colorScheme.onSecondaryContainer,
@@ -194,7 +204,12 @@ fun SettingsBottomSheet(
                     // 項目 3: 「情報ソース」（テーマtertiaryContainer色、末尾に＞）
                     SettingsPopupListItem(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "情報ソース" else strings.dataSourcesTitle,
-                        subtitle = if (currentLanguage == AppLanguage.JAPANESE) "気象データ設定" else "Weather data settings",
+                        subtitle = when (currentLanguage) {
+                            AppLanguage.JAPANESE -> "気象データ設定"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "气象数据源与缓存设置"
+                            AppLanguage.TRADITIONAL_CHINESE -> "氣象資料來源與快取設定"
+                            AppLanguage.ENGLISH -> "Weather data settings"
+                        },
                         leadingIcon = Icons.Rounded.Info,
                         iconBackground = colorScheme.tertiaryContainer,
                         iconTint = colorScheme.onTertiaryContainer,

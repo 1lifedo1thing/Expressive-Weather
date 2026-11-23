@@ -155,7 +155,8 @@ object WidgetUiModelBuilder {
             AppLanguage.TRADITIONAL_CHINESE -> "風速"
         }
         val windFormatted = windSpeedUnit.formatCompact(weather.windSpeedKmH, language)
-        val humidityWindText = "$humidityLabel ${weather.humidity}% ・ $windLabel $windFormatted"
+        val dotSep = if (language == AppLanguage.ENGLISH) " • " else " ・ "
+        val humidityWindText = "$humidityLabel ${weather.humidity}%$dotSep$windLabel $windFormatted"
 
         val updatingSuffix = when (language) {
             AppLanguage.JAPANESE -> "更新中…"
@@ -171,7 +172,7 @@ object WidgetUiModelBuilder {
 
         val alertBanner: WidgetAlertBanner? = null
 
-        val compactSubtitle = "$conditionLabel ・ $highLowText"
+        val compactSubtitle = "$conditionLabel$dotSep$highLowText"
 
         val hourlyItems = weather.hourlyForecast.take(6).map { item ->
             val t = temperatureUnit.convert(item.tempC)
@@ -189,7 +190,8 @@ object WidgetUiModelBuilder {
             dailyList = weather.dailyForecast,
             language = language,
             temperatureUnit = temperatureUnit,
-            nowMillis = nowMillis
+            nowMillis = nowMillis,
+            utcOffsetSeconds = weather.utcOffsetSeconds
         )
         val weekMinTemp = dailyConverted.minOfOrNull { it.minTempVal } ?: minTemp
         val weekMaxTemp = dailyConverted.maxOfOrNull { it.maxTempVal } ?: maxTemp
@@ -221,10 +223,13 @@ object WidgetUiModelBuilder {
         dailyList: List<io.github.nemynew.expressiveweather.data.DailyForecast>,
         language: AppLanguage,
         temperatureUnit: TemperatureUnit,
-        nowMillis: Long
+        nowMillis: Long,
+        utcOffsetSeconds: Int? = null
     ): List<WidgetDailyItem> {
         if (dailyList.isEmpty()) return emptyList()
-        val todayCal = java.util.Calendar.getInstance().apply {
+        val timeZone = utcOffsetSeconds?.let { java.util.SimpleTimeZone(it * 1000, "CityTZ") }
+            ?: java.util.TimeZone.getDefault()
+        val todayCal = java.util.Calendar.getInstance(timeZone).apply {
             timeInMillis = nowMillis
             set(java.util.Calendar.HOUR_OF_DAY, 0)
             set(java.util.Calendar.MINUTE, 0)

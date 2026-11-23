@@ -46,7 +46,7 @@ class AlertDetailActivity : ComponentActivity() {
             savedCityDao = db.savedCityDao(),
             context = applicationContext
         )
-        val hasHolder = AlertDetailDataHolder.weatherData != null
+        val hasHolder = AlertDetailDataHolder.weatherData != null || AlertDetailDataHolder.city != null
         val sourceParam = intent.getStringExtra(EXTRA_SOURCE)?.let {
             runCatching { AlertSource.valueOf(it) }.getOrNull()
         } ?: AlertDetailDataHolder.targetSource
@@ -69,8 +69,13 @@ class AlertDetailActivity : ComponentActivity() {
             var weatherData by remember { mutableStateOf(initialWeather) }
             LaunchedEffect(city) {
                 if (weatherData == null) {
-                    weatherData = repo.getCachedWeatherOrNull(city)
-                        ?: runCatching { repo.getWeatherData(city) }.getOrNull()
+                    weatherData = repo.getCachedWeatherOrNull(city) ?: try {
+                        repo.getWeatherData(city)
+                    } catch (e: kotlinx.coroutines.CancellationException) {
+                        throw e
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
             }
             val alertInfo = holderAlertInfo ?: weatherData?.alertInfo

@@ -12,12 +12,12 @@ import kotlinx.serialization.encodeToString
  * ウィジェットの外観スタイル
  */
 enum class WidgetStyle(val id: String) {
-    /** 天候・昼夜連動の Expressive グラデーション */
-    WEATHER_EXPRESSIVE("weather_expressive"),
     /** Material You（Android 12+ 壁紙ダイナミックカラー / 端末ライト・ダークモード連動） */
     MATERIAL_YOU("material_you"),
     /** Material You ベースの半透明デザイン（透明度調整可） */
-    FROSTED_GLASS("frosted_glass");
+    FROSTED_GLASS("frosted_glass"),
+    /** 天候・昼夜連動の Expressive グラデーション */
+    WEATHER_EXPRESSIVE("weather_expressive");
 
     fun getDisplayName(language: AppLanguage): String = when (this) {
         WEATHER_EXPRESSIVE -> when (language) {
@@ -63,7 +63,7 @@ enum class WidgetStyle(val id: String) {
 
     companion object {
         fun fromId(id: String?): WidgetStyle {
-            return entries.firstOrNull { it.id == id } ?: WEATHER_EXPRESSIVE
+            return entries.firstOrNull { it.id == id } ?: MATERIAL_YOU
         }
     }
 }
@@ -84,6 +84,10 @@ enum class WidgetSizeTier {
          */
         fun fromSizeDp(widthDp: Float, heightDp: Float, defaultTier: WidgetSizeTier): WidgetSizeTier {
             if (widthDp <= 0f || heightDp <= 0f) return defaultTier
+            // 通常の 2x2 コンパクトウィジェットはタブレットの大セル幅やリサイズ時でも時間別予報を表示しない
+            if (defaultTier == COMPACT || defaultTier == COMPACT_WIDE) {
+                return if (heightDp < 100f) COMPACT_WIDE else COMPACT
+            }
             return when {
                 heightDp >= 210f -> LARGE
                 widthDp >= 210f && (heightDp < 124f || widthDp >= heightDp * 2.85f) -> WIDE_HOURLY
@@ -160,7 +164,7 @@ data class WidgetConfig(
     val appWidgetId: Int,
     val useCurrentLocation: Boolean = true,
     val pinnedCity: City? = null,
-    val style: WidgetStyle = WidgetStyle.WEATHER_EXPRESSIVE,
+    val style: WidgetStyle = WidgetStyle.MATERIAL_YOU,
     val showAlertsAndNowcast: Boolean = false,
     val showRefreshButton: Boolean = false,
     val shapeType: MaterialWidgetShape = MaterialWidgetShape.PILL,
@@ -182,7 +186,7 @@ object WidgetPreferences {
     fun getConfig(
         context: Context,
         appWidgetId: Int,
-        defaultStyle: WidgetStyle = WidgetStyle.WEATHER_EXPRESSIVE
+        defaultStyle: WidgetStyle = WidgetStyle.MATERIAL_YOU
     ): WidgetConfig {
         return getConfigFromPrefs(getPrefs(context), appWidgetId, defaultStyle)
     }
@@ -190,7 +194,7 @@ object WidgetPreferences {
     internal fun getConfigFromPrefs(
         prefs: SharedPreferences,
         appWidgetId: Int,
-        defaultStyle: WidgetStyle = WidgetStyle.WEATHER_EXPRESSIVE
+        defaultStyle: WidgetStyle = WidgetStyle.MATERIAL_YOU
     ): WidgetConfig {
         val raw = prefs.getString("$KEY_PREFIX$appWidgetId", null)
             ?: return WidgetConfig(appWidgetId = appWidgetId, style = defaultStyle)

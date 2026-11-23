@@ -192,14 +192,46 @@ data class GlobalAlertItem(
             return map[event] ?: run {
                 // 部分一致マッチング
                 when {
-                    event.contains("Tornado", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "竜巻警報" else "龙卷风警报"
-                    event.contains("Hurricane", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "ハリケーン警報" else "飓风警报"
-                    event.contains("Thunderstorm", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "激しい雷雨警報" else "强雷暴警报"
-                    event.contains("Flash Flood", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "鉄砲水警報" else "暴洪警报"
-                    event.contains("Flood", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "洪水警報" else "洪水警报"
-                    event.contains("Winter", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "暴風雪警報" else "暴风雪警报"
-                    event.contains("Heat", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "猛暑・高温注意報" else "高温预警"
-                    event.contains("Wind", ignoreCase = true) -> if (language == AppLanguage.JAPANESE) "強風注意報" else "大风预警"
+                    event.contains("Tornado", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "竜巻警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "龍捲風警報"
+                        else -> "龙卷风警报"
+                    }
+                    event.contains("Hurricane", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "ハリケーン警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "颶風警報"
+                        else -> "飓风警报"
+                    }
+                    event.contains("Thunderstorm", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "激しい雷雨警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "強雷暴警報"
+                        else -> "强雷暴警报"
+                    }
+                    event.contains("Flash Flood", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "鉄砲水警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "暴洪警報"
+                        else -> "暴洪警报"
+                    }
+                    event.contains("Flood", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "洪水警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "洪水警報"
+                        else -> "洪水警报"
+                    }
+                    event.contains("Winter", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "暴風雪警報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "暴風雪警報"
+                        else -> "暴风雪警报"
+                    }
+                    event.contains("Heat", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "猛暑・高温注意報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "高溫預警"
+                        else -> "高温预警"
+                    }
+                    event.contains("Wind", ignoreCase = true) -> when (language) {
+                        AppLanguage.JAPANESE -> "強風注意報"
+                        AppLanguage.TRADITIONAL_CHINESE -> "強風預警"
+                        else -> "大风预警"
+                    }
                     else -> event
                 }
             }

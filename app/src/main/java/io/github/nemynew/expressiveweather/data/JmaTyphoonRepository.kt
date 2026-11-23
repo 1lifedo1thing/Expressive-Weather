@@ -7,6 +7,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -34,6 +36,7 @@ object JmaTyphoonRepository {
     private var cachedTyphoons: List<JmaTyphoonItem>? = null
     @Volatile
     private var lastFetchTime: Long = 0L
+    private val fetchMutex = Mutex()
 
     /**
      * 現在発生中の全台風の最新実況・進路予報リストを取得
@@ -45,34 +48,40 @@ object JmaTyphoonRepository {
         }
 
         return withContext(Dispatchers.IO) {
-            try {
-                val targetJsonStr = fetchHttp("$BASE_URL/targetTc.json") ?: return@withContext cachedTyphoons ?: emptyList()
-                val targetArray = JSONArray(targetJsonStr)
-                if (targetArray.length() == 0) {
-                    cachedTyphoons = emptyList()
-                    lastFetchTime = now
-                    return@withContext emptyList()
+            fetchMutex.withLock {
+                val innerNow = System.currentTimeMillis()
+                if (!forceRefresh && cachedTyphoons != null && (innerNow - lastFetchTime) < CACHE_TTL_MS) {
+                    return@withLock cachedTyphoons ?: emptyList()
                 }
+                try {
+                    val targetJsonStr = fetchHttp("$BASE_URL/targetTc.json") ?: return@withLock cachedTyphoons ?: emptyList()
+                    val targetArray = JSONArray(targetJsonStr)
+                    if (targetArray.length() == 0) {
+                        cachedTyphoons = emptyList()
+                        lastFetchTime = System.currentTimeMillis()
+                        return@withLock emptyList()
+                    }
 
-                val results = coroutineScope {
-                    (0 until targetArray.length()).map { i ->
-                        val item = targetArray.getJSONObject(i)
-                        val tcCode = item.optString("tropicalCyclone")
-                        val typhoonNumber = item.optString("typhoonNumber")
-                        async {
-                            fetchSingleTyphoon(tcCode, typhoonNumber)
-                        }
-                    }.awaitAll().filterNotNull()
+                    val results = coroutineScope {
+                        (0 until targetArray.length()).map { i ->
+                            val item = targetArray.getJSONObject(i)
+                            val tcCode = item.optString("tropicalCyclone")
+                            val typhoonNumber = item.optString("typhoonNumber")
+                            async {
+                                fetchSingleTyphoon(tcCode, typhoonNumber)
+                            }
+                        }.awaitAll().filterNotNull()
+                    }
+
+                    cachedTyphoons = results
+                    lastFetchTime = System.currentTimeMillis()
+                    results
+                } catch (e: CancellationException) {
+                    throw e
+                } catch (e: Exception) {
+                    Log.w(TAG, "Failed to fetch active typhoons from JMA", e)
+                    cachedTyphoons ?: emptyList()
                 }
-
-                cachedTyphoons = results
-                lastFetchTime = now
-                results
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.w(TAG, "Failed to fetch active typhoons from JMA", e)
-                cachedTyphoons ?: emptyList()
             }
         }
     }
@@ -132,7 +141,7 @@ object JmaTyphoonRepository {
                 continue
             }
 
-            val isAnalysis = partName.contains("実況") || item.optInt("advancedHours", -1) == 0
+            val isAnalysis = partName.contains("実況") || partName.contains("推定") || item.optInt("advancedHours", -1) == 0
             val advancedHours = item.optInt("advancedHours", 0)
 
             val validTimeObj = item.optJSONObject("validtime")

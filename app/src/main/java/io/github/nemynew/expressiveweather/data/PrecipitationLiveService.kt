@@ -246,7 +246,7 @@ class PrecipitationLiveService : Service() {
                 }
             } else {
                 PrecipitationLiveNotificationManager.onNowcastCleared(this, newCity.name)
-                stopLiveService()
+                stopLiveService(removeNotification = false)
             }
         } catch (e: CancellationException) {
             throw e
@@ -309,7 +309,7 @@ class PrecipitationLiveService : Service() {
                                     this@PrecipitationLiveService,
                                     targetCity.name
                                 )
-                                stopLiveService()
+                                stopLiveService(removeNotification = false)
                                 break
                             }
                         }
@@ -335,7 +335,7 @@ class PrecipitationLiveService : Service() {
                         cityName = cityName
                     )
                     delay(5000L)
-                    stopLiveService()
+                    stopLiveService(removeNotification = false)
                     break
                 } else {
                     val updatedNowcast = nowcast.copy(minutesRemaining = remainingMin)
@@ -361,7 +361,7 @@ class PrecipitationLiveService : Service() {
         }
     }
 
-    private fun stopLiveService() {
+    private fun stopLiveService(removeNotification: Boolean = true) {
         tickerJob?.cancel()
         tickerJob = null
         locationShiftJob?.cancel()
@@ -374,16 +374,20 @@ class PrecipitationLiveService : Service() {
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                stopForeground(STOP_FOREGROUND_DETACH)
+                stopForeground(if (removeNotification) STOP_FOREGROUND_REMOVE else STOP_FOREGROUND_DETACH)
             } else {
                 @Suppress("DEPRECATION")
-                stopForeground(false)
+                stopForeground(removeNotification)
+            }
+            if (removeNotification) {
+                val nm = getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                nm?.cancel(PrecipitationLiveNotificationManager.NOTIFICATION_ID)
             }
         } catch (e: Throwable) {
             Log.w(TAG, "Error in stopForeground: ${e.message}")
         }
         stopSelf()
-        Log.d(TAG, "PrecipitationLiveService stopped.")
+        Log.d(TAG, "PrecipitationLiveService stopped (removeNotification=$removeNotification).")
     }
 
     override fun onDestroy() {

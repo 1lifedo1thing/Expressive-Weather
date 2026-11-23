@@ -295,7 +295,7 @@ object WmoAlertRepository {
      */
     private suspend fun getAllWmoItems(forceFresh: Boolean = false): List<WmoRawItem> = fetchMutex.withLock {
         val now = System.currentTimeMillis()
-        if (!forceFresh && cachedItems.isNotEmpty() && (now - lastFetchTimeMillis) < CACHE_TTL_MS) {
+        if (!forceFresh && lastFetchTimeMillis > 0L && (now - lastFetchTimeMillis) < CACHE_TTL_MS) {
             return cachedItems
         }
 

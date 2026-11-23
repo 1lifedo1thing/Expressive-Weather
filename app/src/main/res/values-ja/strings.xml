@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Expressive Weather</string>
+    <string name="app_name">天気</string>
     <string name="widget_name_compact">天気 (コンパクト)</string>
     <string name="widget_desc_compact">現在の天気・気温・最高/最低気温をシンプルにコンパクト表示します。</string>
     <string name="widget_name_medium">天気 ＆ 時間別予報 (中)</string>
@@ -9,7 +9,7 @@
     <string name="widget_desc_large">現在の天気・時間別予報・7日間の週間予報をまとめたダッシュボードウィジェットです。</string>
     <string name="widget_name_shape">天気 (Material Shape)</string>
     <string name="widget_desc_shape">有機的な Material 3 Expressive シェイプに気温と天気シンボルを表示するミニマルウィジェットです。</string>
-    <string name="widget_name_radar">雨雲レーダー (Material You 2×4)</string>
+    <string name="widget_name_radar">雨雲レーダー (Material You 4×2)</string>
     <string name="widget_desc_radar">壁紙の Material You カラーに調和する雨雲レーダーマップと現在天気・今後の予報を表示します。</string>
     <string name="widget_config_title">ウィジェット設定</string>
     <string name="widget_preview_city">東京</string>

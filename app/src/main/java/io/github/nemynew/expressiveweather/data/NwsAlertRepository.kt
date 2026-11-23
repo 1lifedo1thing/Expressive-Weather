@@ -74,9 +74,11 @@ object NwsAlertRepository {
             return@withContext emptyList()
         }
 
-        // 座標を小数点2桁に正規化してキャッシュキーとする (約1kmメッシュ)
+        // キャッシュキーは小数点2桁 (約1kmメッシュ)、APIクエリは4桁精度 (約11m) で竜巻ポリゴン境界の精度を確保
         val latRound = String.format(Locale.US, "%.2f", city.latitude)
         val lonRound = String.format(Locale.US, "%.2f", city.longitude)
+        val queryLat = String.format(Locale.US, "%.4f", city.latitude)
+        val queryLon = String.format(Locale.US, "%.4f", city.longitude)
         val cacheKey = "$latRound,$lonRound"
         val now = System.currentTimeMillis()
 
@@ -88,7 +90,7 @@ object NwsAlertRepository {
         }
 
         try {
-            val urlString = "$BASE_URL?point=$latRound,$lonRound"
+            val urlString = "$BASE_URL?point=$queryLat,$queryLon"
             val responseBody = AppHttpClient.getText(
                 url = urlString,
                 headers = mapOf(

@@ -54,7 +54,11 @@ fun <T> SingleChoiceDialog(
             )
         },
         text = {
-            Column(modifier = Modifier.selectableGroup()) {
+            Column(
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .selectableGroup()
+            ) {
                 options.forEach { (option, label) ->
                     val isSelected = option == selectedOption
                     Row(
@@ -93,76 +97,6 @@ fun <T> SingleChoiceDialog(
         },
         shape = RoundedCornerShape(28.dp),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-    )
-}
-
-@Composable
-fun DataProviderInfoDialog(
-    title: String,
-    desc: String,
-    futureNotice: String,
-    onDismiss: () -> Unit,
-    closeText: String
-) {
-    val context = LocalContext.current
-    val colorScheme = MaterialTheme.colorScheme
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        icon = {
-            Icon(
-                imageVector = Icons.Rounded.Cloud,
-                contentDescription = null,
-                tint = colorScheme.primary
-            )
-        },
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    text = desc,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSurface
-                )
-                Text(
-                    text = futureNotice,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = colorScheme.onSurfaceVariant
-                )
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    onDismiss()
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://open-meteo.com/"))
-                    context.startActivity(intent)
-                }
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("open-meteo.com")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(closeText)
-            }
-        },
-        shape = RoundedCornerShape(28.dp),
-        containerColor = colorScheme.surfaceContainerHigh
     )
 }
 

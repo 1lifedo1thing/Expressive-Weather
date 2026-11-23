@@ -98,13 +98,16 @@ object JmaPointTileSampler {
         longitude: Double,
         zoom: Int = 10
     ): TilePixelCoord {
-        val clampedLat = latitude.coerceIn(-85.05112878, 85.05112878)
-        val n = (1 shl zoom).toDouble()
-        val xFloat = ((longitude + 180.0) / 360.0) * n
+        val safeZoom = zoom.coerceIn(0, 22)
+        val safeLat = if (latitude.isFinite()) latitude else 35.6895
+        val safeLon = if (longitude.isFinite()) longitude.coerceIn(-180.0, 180.0) else 139.6917
+        val clampedLat = safeLat.coerceIn(-85.05112878, 85.05112878)
+        val n = (1 shl safeZoom).toDouble()
+        val xFloat = ((safeLon + 180.0) / 360.0) * n
         val latRad = Math.toRadians(clampedLat)
         val yFloat = (1.0 - asinh(tan(latRad)) / PI) / 2.0 * n
 
-        val maxTileIdx = (1 shl zoom) - 1
+        val maxTileIdx = (1 shl safeZoom) - 1
         val tileX = floor(xFloat).toInt().coerceIn(0, maxTileIdx)
         val tileY = floor(yFloat).toInt().coerceIn(0, maxTileIdx)
 
@@ -112,7 +115,7 @@ object JmaPointTileSampler {
         val pixelY = floor((yFloat - tileY) * TILE_SIZE).toInt().coerceIn(0, TILE_SIZE - 1)
 
         return TilePixelCoord(
-            zoom = zoom,
+            zoom = safeZoom,
             tileX = tileX,
             tileY = tileY,
             pixelX = pixelX,

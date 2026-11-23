@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Expressive Weather</string>
+    <string name="app_name">天气</string>
     <string name="widget_name_compact">天气（紧凑）</string>
     <string name="widget_desc_compact">紧凑展示当前天气、温度与高低温。</string>
     <string name="widget_name_medium">天气与逐小时预报（中）</string>
@@ -9,7 +9,7 @@
     <string name="widget_desc_large">汇集当前天气、逐小时预报卡片和未来7天每周预报。</string>
     <string name="widget_name_shape">天气（Material Shape）</string>
     <string name="widget_desc_shape">带有当前温度与 Material 3 Expressive 灵动图形的极简微件。</string>
-    <string name="widget_name_radar">降水雷达 (Material You 2×4)</string>
+    <string name="widget_name_radar">降水雷达 (Material You 4×2)</string>
     <string name="widget_desc_radar">融合设备 Material You 配色的实时降水雷达图与当前天气预报微件。</string>
     <string name="widget_config_title">微件设置</string>
     <string name="widget_preview_city">东京</string>

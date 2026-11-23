@@ -68,21 +68,25 @@ import java.net.URL
  */
 private object TileDiskCache {
     private const val MAX_CACHE_BYTES = 64L * 1024L * 1024L
+    @Volatile
     private var cacheDir: java.io.File? = null
+    private val writeLock = Any()
     private var cachedTotalBytes: Long = -1L
 
-    @Synchronized
     fun init(context: Context) {
-        if (cacheDir == null) {
-            try {
-                val dir = java.io.File(context.applicationContext.cacheDir, "radar_tile_cache").apply { mkdirs() }
-                cacheDir = dir
-                cachedTotalBytes = dir.listFiles()
-                    ?.filter { it.isFile && !it.name.endsWith(".tmp") }
-                    ?.sumOf { it.length() }
-                    ?: 0L
-            } catch (e: Exception) {
-                // Ignore
+        if (cacheDir != null) return
+        synchronized(writeLock) {
+            if (cacheDir == null) {
+                try {
+                    val dir = java.io.File(context.applicationContext.cacheDir, "radar_tile_cache").apply { mkdirs() }
+                    cacheDir = dir
+                    cachedTotalBytes = dir.listFiles()
+                        ?.filter { it.isFile && !it.name.endsWith(".tmp") }
+                        ?.sumOf { it.length() }
+                        ?: 0L
+                } catch (_: Exception) {
+                    // Ignore
+                }
             }
         }
     }
@@ -97,46 +101,45 @@ private object TileDiskCache {
         }
     }
 
-    @Synchronized
     fun get(key: String): ByteArray? {
         val dir = cacheDir ?: return null
         return try {
             val file = java.io.File(dir, hashKey(key))
             if (file.exists() && file.length() > 0L) {
-                file.setLastModified(System.currentTimeMillis())
                 file.readBytes()
             } else {
                 if (file.exists()) file.delete()
                 null
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    @Synchronized
     fun put(key: String, bytes: ByteArray) {
         val dir = cacheDir ?: return
         if (bytes.isEmpty()) return
         try {
-            val file = java.io.File(dir, hashKey(key))
-            val previousSize = if (file.exists()) file.length() else 0L
-            val temporaryFile = java.io.File(dir, "${file.name}.tmp")
+            val hashed = hashKey(key)
+            val file = java.io.File(dir, hashed)
+            val temporaryFile = java.io.File(dir, "${hashed}.${System.nanoTime()}.tmp")
             temporaryFile.writeBytes(bytes)
-            file.delete()
-            if (!temporaryFile.renameTo(file)) {
-                temporaryFile.delete()
-                file.writeBytes(bytes)
-            }
-            if (cachedTotalBytes < 0L) {
-                trimToSize(dir)
-            } else {
-                cachedTotalBytes = (cachedTotalBytes - previousSize + bytes.size.toLong()).coerceAtLeast(0L)
-                if (cachedTotalBytes > MAX_CACHE_BYTES) {
+            synchronized(writeLock) {
+                val previousSize = if (file.exists()) file.length() else 0L
+                if (!temporaryFile.renameTo(file)) {
+                    temporaryFile.delete()
+                    file.writeBytes(bytes)
+                }
+                if (cachedTotalBytes < 0L) {
                     trimToSize(dir)
+                } else {
+                    cachedTotalBytes = (cachedTotalBytes - previousSize + bytes.size.toLong()).coerceAtLeast(0L)
+                    if (cachedTotalBytes > MAX_CACHE_BYTES) {
+                        trimToSize(dir)
+                    }
                 }
             }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             // Ignore disk write errors
         }
     }
@@ -155,27 +158,29 @@ private object TileDiskCache {
         cachedTotalBytes = totalBytes
     }
 
-    @Synchronized
     fun remove(key: String) {
         val dir = cacheDir ?: return
-        try {
-            val file = java.io.File(dir, hashKey(key))
-            val len = if (file.exists()) file.length() else 0L
-            if (file.delete() && cachedTotalBytes >= 0L) {
-                cachedTotalBytes = (cachedTotalBytes - len).coerceAtLeast(0L)
+        synchronized(writeLock) {
+            try {
+                val file = java.io.File(dir, hashKey(key))
+                val len = if (file.exists()) file.length() else 0L
+                if (file.delete() && cachedTotalBytes >= 0L) {
+                    cachedTotalBytes = (cachedTotalBytes - len).coerceAtLeast(0L)
+                }
+            } catch (_: Exception) {
+                // Ignore
             }
-        } catch (e: Exception) {
-            // Ignore
         }
     }
 
-    @Synchronized
     fun clearAll() {
         val dir = cacheDir ?: return
-        try {
-            dir.listFiles()?.forEach { it.delete() }
-            cachedTotalBytes = 0L
-        } catch (_: Exception) {}
+        synchronized(writeLock) {
+            try {
+                dir.listFiles()?.forEach { it.delete() }
+                cachedTotalBytes = 0L
+            } catch (_: Exception) {}
+        }
     }
 }
 
@@ -211,14 +216,17 @@ fun RadarMapView(
     onMapClick: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val baseConfiguration = androidx.compose.ui.platform.LocalConfiguration.current
+    val latestBaseConfiguration by rememberUpdatedState(baseConfiguration)
     val lifecycleOwner = LocalLifecycleOwner.current
     val currentLanguage = LocalAppLanguage.current
     val m3ColorScheme = MaterialTheme.colorScheme
 
     // 各言語ロケールを反映した Context を生成（グローバル状態は書き換えない）
+    // baseConfiguration をキーに含めると画面サイズ・テーマ変更等の度に MapView が破棄再生成されるため除外する
     val mapContext = remember(context, currentLanguage) {
         val targetLocale = currentLanguage.locale
-        val config = android.content.res.Configuration(context.resources.configuration)
+        val config = android.content.res.Configuration(latestBaseConfiguration)
         config.setLocale(targetLocale)
         config.setLayoutDirection(targetLocale)
         val localizedContext = context.createConfigurationContext(config)
@@ -240,12 +248,12 @@ fun RadarMapView(
     val currentLongitude by rememberUpdatedState(longitude)
     val currentZoom by rememberUpdatedState(zoom)
 
-    var googleMapRef by remember { mutableStateOf<GoogleMap?>(null) }
-    var markerRef by remember { mutableStateOf<Marker?>(null) }
-    var isMapInitialized by remember { mutableStateOf(false) }
-    // ズーム倍率をStateFlowで管理（カメラ移動中の全画面リコンポーズを完全に防止）
-    val zoomLevelFlow = remember { MutableStateFlow(zoom.toFloat()) }
-    var cameraIdleRevision by remember { androidx.compose.runtime.mutableIntStateOf(0) }
+    // ディスクキャッシュを初回ロード開始前に即座に初期化
+    LaunchedEffect(context) {
+        withContext(Dispatchers.IO) {
+            TileDiskCache.init(context)
+        }
+    }
 
     val activeOverlays = remember(mapContext) { mutableMapOf<Int, TileOverlay>() }
     val activeTyphoonObjects = remember(mapContext) { mutableListOf<Any>() }
@@ -253,33 +261,43 @@ fun RadarMapView(
     val mapView = remember(mapContext) {
         MapView(mapContext).apply {
             onCreate(Bundle())
-            setOnGenericMotionListener { _, event ->
-                if (currentIsInteractive && event.action == android.view.MotionEvent.ACTION_SCROLL) {
-                    val vScroll = event.getAxisValue(android.view.MotionEvent.AXIS_VSCROLL)
-                    if (vScroll != 0f) {
-                        val map = googleMapRef
-                        if (map != null) {
-                            // マウスホイール上回転（奥へスクロール / 正）: ズームイン
-                            // マウスホイール下回転（手前へスクロール / 負）: ズームアウト
-                            val zoomDelta = if (vScroll > 0f) 0.65f else -0.65f
-                            map.animateCamera(CameraUpdateFactory.zoomBy(zoomDelta), 120, null)
-                            return@setOnGenericMotionListener true
-                        }
+        }
+    }
+
+    // 言語切替で mapView が再生成された際に Map 状態を確実にリセットし、破棄後コールバックを遮断
+    var googleMapRef by remember(mapView) { mutableStateOf<GoogleMap?>(null) }
+    var markerRef by remember(mapView) { mutableStateOf<Marker?>(null) }
+    var isMapInitialized by remember(mapView) { mutableStateOf(false) }
+    val isMapDestroyed = remember(mapView) { java.util.concurrent.atomic.AtomicBoolean(false) }
+    // ズーム倍率をStateFlowで管理（カメラ移動中の全画面リコンポーズを完全に防止）
+    val zoomLevelFlow = remember(mapView) { MutableStateFlow(zoom.toFloat()) }
+    var cameraIdleRevision by remember(mapView) { androidx.compose.runtime.mutableIntStateOf(0) }
+
+    LaunchedEffect(mapView) {
+        mapView.setOnGenericMotionListener { _, event ->
+            if (currentIsInteractive && event.action == android.view.MotionEvent.ACTION_SCROLL) {
+                val vScroll = event.getAxisValue(android.view.MotionEvent.AXIS_VSCROLL)
+                if (vScroll != 0f) {
+                    val map = googleMapRef
+                    if (map != null) {
+                        // マウスホイール上回転（奥へスクロール / 正）: ズームイン
+                        // マウスホイール下回転（手前へスクロール / 負）: ズームアウト
+                        val zoomDelta = if (vScroll > 0f) 0.65f else -0.65f
+                        map.animateCamera(CameraUpdateFactory.zoomBy(zoomDelta), 120, null)
+                        return@setOnGenericMotionListener true
                     }
                 }
-                false
             }
+            false
         }
     }
 
     // MapView のライフサイクル管理（onDestroy 二重呼び出し防止 + オーバーレイ/リスナー解放）
     DisposableEffect(lifecycleOwner, mapView) {
-        var isDestroyed = false
         var isStarted = false
         var isResumed = false
         fun destroySafely() {
-            if (isDestroyed) return
-            isDestroyed = true
+            if (!isMapDestroyed.compareAndSet(false, true)) return
             try {
                 if (isResumed) {
                     mapView.onPause()
@@ -299,9 +317,11 @@ fun RadarMapView(
                 markerRef?.remove()
                 markerRef = null
                 RadarTyphoonOverlay.clearTyphoons(activeTyphoonObjects)
+                RadarTyphoonOverlay.clearCache()
                 activeOverlays.values.forEach { try { it.remove() } catch (_: Exception) {} }
                 activeOverlays.clear()
                 googleMapRef = null
+                isMapInitialized = false
                 mapView.onDestroy()
             } catch (_: Exception) {
                 // Ignore lifecycle cleanup errors
@@ -320,19 +340,19 @@ fun RadarMapView(
 
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_START -> if (!isDestroyed && !isStarted) {
+                Lifecycle.Event.ON_START -> if (!isMapDestroyed.get() && !isStarted) {
                     mapView.onStart()
                     isStarted = true
                 }
-                Lifecycle.Event.ON_RESUME -> if (!isDestroyed && !isResumed) {
+                Lifecycle.Event.ON_RESUME -> if (!isMapDestroyed.get() && !isResumed) {
                     mapView.onResume()
                     isResumed = true
                 }
-                Lifecycle.Event.ON_PAUSE -> if (!isDestroyed && isResumed) {
+                Lifecycle.Event.ON_PAUSE -> if (!isMapDestroyed.get() && isResumed) {
                     mapView.onPause()
                     isResumed = false
                 }
-                Lifecycle.Event.ON_STOP -> if (!isDestroyed && isStarted) {
+                Lifecycle.Event.ON_STOP -> if (!isMapDestroyed.get() && isStarted) {
                     mapView.onStop()
                     isStarted = false
                 }
@@ -350,6 +370,7 @@ fun RadarMapView(
     // GoogleMap の非同期初期化
     LaunchedEffect(mapView) {
         mapView.getMapAsync { map ->
+            if (isMapDestroyed.get()) return@getMapAsync
             googleMapRef = map
 
             // 1. スタイリング（ダーク / ライトテーマ適用）
@@ -444,9 +465,12 @@ fun RadarMapView(
     }
 
     // 台風オーバレイ（過去経路・強風域・暴風域・進路予想・予報円・マーカー）の描画
-    // 台風データ初期表示時のみカメラ移動
-    var lastRenderedTyphoonIds by remember { mutableStateOf<List<String>>(emptyList()) }
-    LaunchedEffect(typhoons, isMapInitialized, isDark, currentLanguage, m3ColorScheme) {
+    // 台風データ初期表示時のみカメラ移動（テーマアニメーション中の過剰再描画を防ぐため安定色キーのみ監視）
+    var lastRenderedTyphoonIds by remember(mapView) { mutableStateOf<List<String>>(emptyList()) }
+    val typhoonColorKey = remember(m3ColorScheme.primary, m3ColorScheme.error, m3ColorScheme.tertiary) {
+        Triple(m3ColorScheme.primary.hashCode(), m3ColorScheme.error.hashCode(), m3ColorScheme.tertiary.hashCode())
+    }
+    LaunchedEffect(typhoons, isMapInitialized, isDark, currentLanguage, typhoonColorKey) {
         val map = googleMapRef
         if (isMapInitialized && map != null) {
             RadarTyphoonOverlay.renderTyphoons(
@@ -1026,6 +1050,7 @@ private class RadarTileProvider(
 
         val template = frame.tileUrlTemplate ?: frame.path
         val isJma = template.contains("jma.go.jp")
+        val isGsiHazard = template.contains("disaportaldata.gsi.go.jp") || template.contains("cyberjapandata.gsi.go.jp")
         val isHimawari = template.contains("himawari")
         val isJmaPrecipRadar = template.contains("/hrpns/") || template.contains("/rasrf/")
 
@@ -1040,6 +1065,17 @@ private class RadarTileProvider(
 
         if (isUsRadar) {
             return fetchUsTileWithPyramidFallback(x, y, zoom)
+        } else if (isGsiHazard) {
+            val maxNativeZoom = 12
+            val minNativeZoom = 2
+            if (zoom < minNativeZoom) {
+                return com.google.android.gms.maps.model.Tile(256, 256, TRANSPARENT_256_PNG_BYTES)
+            }
+            return if (zoom <= maxNativeZoom) {
+                fetchDirectTile(x, y, zoom, applyJmaRainAlpha = false)
+            } else {
+                renderFromParent(parentZoom = maxNativeZoom, x = x, y = y, zoom = zoom, applyJmaRainAlpha = false, isRadarSource = false)
+            }
         } else if (isJma && !isHimawari) {
             return fetchJmaTileWithPyramidFallback(x, y, zoom, applyLightRainAlpha = isJmaPrecipRadar)
         } else if (isHimawari) {
@@ -1086,8 +1122,9 @@ private class RadarTileProvider(
         }
         if (sourceBitmaps.isEmpty()) return null
 
-        val combined = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)
+        var combined: Bitmap? = null
         return try {
+            combined = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(combined)
             val paint = Paint().apply {
                 isFilterBitmap = false
@@ -1101,12 +1138,12 @@ private class RadarTileProvider(
             if (bytes.isEmpty()) return null
             synchronized(renderedTileCache) { renderedTileCache.put(cacheKey, bytes) }
             com.google.android.gms.maps.model.Tile(256, 256, bytes)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             android.util.Log.w("RadarMapView", "Failed to combine JMA risk tiles", e)
             null
         } finally {
             sourceBitmaps.forEach { if (!it.isRecycled) it.recycle() }
-            if (!combined.isRecycled) combined.recycle()
+            if (combined != null && !combined.isRecycled) combined.recycle()
         }
     }
 
@@ -1331,13 +1368,20 @@ private class RadarTileProvider(
         val childZoom = 4
         val subTiles = mutableListOf<Pair<Pair<Int, Int>, Bitmap>>()
         var anyData = false
+        var allKnownEmpty = true
 
         for (dy in 0..1) {
             for (dx in 0..1) {
                 val cx = (x shl 1) + dx
                 val cy = (y shl 1) + dy
                 val url = buildUrl(cx, cy, childZoom) ?: continue
-                val rawBytes = getOrDownloadBytes(url) ?: continue
+                val rawBytes = getOrDownloadBytes(url)
+                if (rawBytes == null) {
+                    if (!RadarTileHttpClient.isKnownEmptyTile(url)) {
+                        allKnownEmpty = false
+                    }
+                    continue
+                }
                 if (isValidImageBytes(rawBytes)) {
                     anyData = true
                     val processed = if (applyLightRainAlpha) processJmaTile(url, rawBytes) else rawBytes
@@ -1351,8 +1395,12 @@ private class RadarTileProvider(
 
         if (!anyData || subTiles.isEmpty()) {
             subTiles.forEach { if (!it.second.isRecycled) it.second.recycle() }
-            synchronized(renderedTileCache) { renderedTileCache.put(renderCacheKey, TRANSPARENT_256_PNG_BYTES) }
-            return com.google.android.gms.maps.model.Tile(256, 256, TRANSPARENT_256_PNG_BYTES)
+            if (allKnownEmpty) {
+                synchronized(renderedTileCache) { renderedTileCache.put(renderCacheKey, TRANSPARENT_256_PNG_BYTES) }
+                return com.google.android.gms.maps.model.Tile(256, 256, TRANSPARENT_256_PNG_BYTES)
+            }
+            // 一時的なネットワーク障害時は透明タイルを永続キャッシュせず null を返して再試行を許可
+            return null
         }
 
         val mergedBmp = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)

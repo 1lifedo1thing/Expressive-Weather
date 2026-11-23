@@ -111,8 +111,19 @@ object PrecipitationLiveNotificationManager {
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "雨雲接近・降雨カウントダウン Live Updates"
-            val descriptionText = "雨雲接近時の降り始め予測および雨が止むまでの残り時間のリアルタイム・カウントダウン通知"
+            val language = LocaleUtils.getSavedLanguage(context.applicationContext)
+            val name = when (language) {
+                AppLanguage.ENGLISH -> "Rain Countdown Live Updates"
+                AppLanguage.SIMPLIFIED_CHINESE -> "降雨倒计时实时动态通知"
+                AppLanguage.TRADITIONAL_CHINESE -> "降雨倒數即時動態通知"
+                AppLanguage.JAPANESE -> "雨雲接近・降雨カウントダウン Live Updates"
+            }
+            val descriptionText = when (language) {
+                AppLanguage.ENGLISH -> "Real-time countdown notifications for approaching rain and when rain will stop"
+                AppLanguage.SIMPLIFIED_CHINESE -> "雨云临近及雨停剩余时间的实时倒计时通知"
+                AppLanguage.TRADITIONAL_CHINESE -> "雨雲接近及雨停剩餘時間的即時倒數通知"
+                AppLanguage.JAPANESE -> "雨雲接近時の降り始め予測および雨が止むまでの残り時間のリアルタイム・カウントダウン通知"
+            }
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -551,7 +562,7 @@ object PrecipitationLiveNotificationManager {
         val finishTitle = if (cityName.isNotBlank()) "$finishChip • $cityName" else finishChip
 
         val finishNotif = NotificationCompat.Builder(appContext, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setSmallIcon(io.github.nemynew.expressiveweather.R.drawable.ic_fluent_weather_rain_24)
             .setContentTitle(finishTitle)
             .setContentText(finishChip)
             .setSubText(finishChip)

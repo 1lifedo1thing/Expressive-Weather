@@ -3,6 +3,8 @@ package io.github.nemynew.expressiveweather.data
 import android.util.Log
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -166,7 +168,7 @@ class JmaNowcastRepository {
         val pastFrames = (12 downTo 0).map { i ->
             val frameTimeMs = safeBaseTimeMs - (i * fiveMinMs)
             val timeStr = formatUtcString(frameTimeMs)
-            val tileUrl = layerType.buildTileUrl(timeStr, timeStr, "none")
+            val tileUrl = layerType.buildTileUrl(timeStr, timeStr, null)
             RadarFrame(
                 time = frameTimeMs / 1000L,
                 path = tileUrl,
@@ -179,7 +181,7 @@ class JmaNowcastRepository {
         val forecastFrames = (1..11).map { i ->
             val frameTimeMs = safeBaseTimeMs + (i * fiveMinMs)
             val validTimeStr = formatUtcString(frameTimeMs)
-            val tileUrl = layerType.buildTileUrl(latestBasetimeStr, validTimeStr, "none")
+            val tileUrl = layerType.buildTileUrl(latestBasetimeStr, validTimeStr, null)
             RadarFrame(
                 time = frameTimeMs / 1000L,
                 path = tileUrl,
@@ -220,9 +222,27 @@ class JmaNowcastRepository {
             }
 
             try {
-                // 1. N1（過去実況ナウキャスト）
+                // N1・N2・RASRF の 3 エンドポイントを並列取得してロック保持時間を短縮
                 val n1Url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N1.json"
-                val n1Json = fetchJsonWithRetry(n1Url, maxRetries = 2)
+                val n2Url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json"
+                val rasrfUrl = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/targetTimes.json"
+                val (n1Json, n2Json, rasrfJson) = coroutineScope {
+                    val n1Def = async { fetchJsonWithRetry(n1Url, maxRetries = 2) }
+                    val n2Def = async { fetchJsonWithRetry(n2Url, maxRetries = 2) }
+                    val rasrfDef = async {
+                        try {
+                            fetchJsonWithRetry(rasrfUrl, maxRetries = 2)
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Failed to fetch rasrf short forecast, continuing with nowcast only: ${e.message}")
+                            null
+                        }
+                    }
+                    Triple(n1Def.await(), n2Def.await(), rasrfDef.await())
+                }
+
+                // 1. N1（過去実況ナウキャスト）
                 val rawN1 = json.decodeFromString<List<JmaTargetTime>>(n1Json)
                 val n1Entries = rawN1
                     .filter { it.elements.isEmpty() || it.elements.contains("hrpns") }
@@ -258,8 +278,6 @@ class JmaNowcastRepository {
                 }.distinctBy { it.time }
 
                 // 2. N2（未来60分ナウキャスト、5分刻み：12フレーム）
-                val n2Url = "https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N2.json"
-                val n2Json = fetchJsonWithRetry(n2Url, maxRetries = 2)
                 val rawN2 = json.decodeFromString<List<JmaTargetTime>>(n2Json)
                 val n2Entries = rawN2
                     .filter { it.elements.isEmpty() || it.elements.contains("hrpns") }
@@ -286,46 +304,46 @@ class JmaNowcastRepository {
                     } else null
                 }.distinctBy { it.time }
 
-                // 3. 降水短時間予報（未来60分超〜15時間後、1時間刻み）
-                val rasrfUrl = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/targetTimes.json"
-                val rasrfFrames = try {
-                    val rasrfJson = fetchJsonWithRetry(rasrfUrl, maxRetries = 2)
-                    val rawRasrf = json.decodeFromString<List<JmaTargetTime>>(rasrfJson)
-                    val cutOffSec = latestEpochSec + 3600L - 300L // 60分超
-                    val maxFutureSec = latestEpochSec + 15 * 3600L + 1800L // 最大15時間後
+                // 3. 降水短時間予報（未来60分超〜15時間後、1時間刻み・ナウキャスト末尾との重複を厳密除外）
+                val rasrfFrames = if (rasrfJson != null) {
+                    try {
+                        val rawRasrf = json.decodeFromString<List<JmaTargetTime>>(rasrfJson)
+                        val cutOffSec = maxOf(latestEpochSec + 3600L, nowcastFrames.lastOrNull()?.time ?: (latestEpochSec + 3600L))
+                        val maxFutureSec = latestEpochSec + 15 * 3600L + 1800L // 最大15時間後
 
-                    val filteredRasrf = rawRasrf
-                        .filter { it.elements.contains("rasrf") }
-                        .filter {
-                            val epoch = parseUtcToEpochSeconds(it.validtime)
-                            epoch > cutOffSec && epoch <= maxFutureSec
+                        val filteredRasrf = rawRasrf
+                            .filter { it.elements.contains("rasrf") }
+                            .filter {
+                                val epoch = parseUtcToEpochSeconds(it.validtime)
+                                epoch > cutOffSec && epoch <= maxFutureSec
+                            }
+                            // 同一validtimeに対してbasetimeが最新のものを優先
+                            .groupBy { it.validtime }
+                            .mapValues { (_, list) -> list.maxByOrNull { it.basetime }!! }
+                            .values
+                            .sortedBy { it.validtime }
+
+                        filteredRasrf.map { item ->
+                            val epochSec = parseUtcToEpochSeconds(item.validtime)
+                            val member = if (item.member.isNotBlank()) item.member else "none"
+                            val tileUrl = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/${item.basetime}/$member/${item.validtime}/surf/rasrf/{z}/{x}/{y}.png"
+                            val resInfo = "降水短時間予報"
+                            RadarFrame(
+                                time = epochSec,
+                                path = tileUrl,
+                                isForecast = true,
+                                tileUrlTemplate = tileUrl,
+                                sourceName = "降水短時間予報",
+                                resolutionInfo = resInfo
+                            )
                         }
-                        // 同一validtimeに対してbasetimeが最新のものを優先
-                        .groupBy { it.validtime }
-                        .mapValues { (_, list) -> list.maxByOrNull { it.basetime }!! }
-                        .values
-                        .sortedBy { it.validtime }
-
-                    filteredRasrf.map { item ->
-                        val epochSec = parseUtcToEpochSeconds(item.validtime)
-                        val member = if (item.member.isNotBlank()) item.member else "none"
-                        val tileUrl = "https://www.jma.go.jp/bosai/jmatile/data/rasrf/${item.basetime}/$member/${item.validtime}/surf/rasrf/{z}/{x}/{y}.png"
-                        val resInfo = "降水短時間予報"
-                        RadarFrame(
-                            time = epochSec,
-                            path = tileUrl,
-                            isForecast = true,
-                            tileUrlTemplate = tileUrl,
-                            sourceName = "降水短時間予報",
-                            resolutionInfo = resInfo
-                        )
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to parse rasrf short forecast, continuing with nowcast only: ${e.message}")
+                        emptyList()
                     }
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "Failed to fetch rasrf short forecast, continuing with nowcast only: ${e.message}")
-                    emptyList()
-                }
+                } else emptyList()
 
                 val finalPast = if (pastFrames.isNotEmpty()) pastFrames else listOf(
                     RadarFrame(
@@ -337,7 +355,7 @@ class JmaNowcastRepository {
                         resolutionInfo = "実況"
                     )
                 )
-                val finalForecast = nowcastFrames + rasrfFrames
+                val finalForecast = (nowcastFrames + rasrfFrames).distinctBy { it.time }
 
                 val response = RainViewerResponse(
                     version = "JMA-HRPNS-RASRF-COMBINED",

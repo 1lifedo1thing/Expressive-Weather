@@ -512,18 +512,19 @@ object JmaWeatherParser {
                         }
                         val dDateStrKey = humidityDateFormatter.format(dCal.time)
                         if (dDateStrKey == todayJstStr) continue
-                        val dLabel = if (dDateStrKey == tomorrowJstStr) "明日" else dayOfWeekFormat.format(dCal.time)
+                        val isTomorrow = dDateStrKey == tomorrowJstStr
+                        val dLabel = if (isTomorrow) "明日" else dayOfWeekFormat.format(dCal.time)
                         val dDateStr = monthDayFormat.format(dCal.time)
 
-                        val dCode = wCodes?.optString(i, if (i == 0) tomorrowWeatherCodeStr else "101") ?: "101"
+                        val dCode = wCodes?.optString(i, if (isTomorrow) tomorrowWeatherCodeStr else "101") ?: "101"
                         val dCond = mapJmaWeatherCode(dCode, true)
                         val dPop = pops?.optString(i, "20")?.toIntOrNull() ?: 20
 
                         val dMinRaw = tMins?.optString(i, "")?.toIntOrNull()
                         val dMaxRaw = tMaxs?.optString(i, "")?.toIntOrNull()
 
-                        val dMin = dMinRaw ?: (if (i == 0) expectedTomorrowMin ?: (minTempC) else minTempC)
-                        val dMax = dMaxRaw ?: (if (i == 0) expectedTomorrowMax ?: (maxTempC) else maxTempC)
+                        val dMin = dMinRaw ?: (if (isTomorrow) expectedTomorrowMin ?: (minTempC) else minTempC)
+                        val dMax = dMaxRaw ?: (if (isTomorrow) expectedTomorrowMax ?: (maxTempC) else maxTempC)
 
                         val (dSunrise, dSunset, dDaylight, _) = calculateSunSchedule(
                             city.latitude, city.longitude, dCal
@@ -907,27 +908,34 @@ object JmaWeatherParser {
                 0.006758 * cos(2 * gamma) + 0.000907 * sin(2 * gamma) -
                 0.002697 * cos(3 * gamma) + 0.00148 * sin(3 * gamma)
 
-        val latRad = Math.toRadians(latitude)
-        val cosHa = (cos(Math.toRadians(90.833)) - sin(latRad) * sin(decl)) / (cos(latRad) * cos(decl))
-        val clampedCosHa = cosHa.coerceIn(-1.0, 1.0)
+        val safeLat = if (latitude.isFinite()) latitude.coerceIn(-89.9, 89.9) else 35.6895
+        val safeLon = if (longitude.isFinite()) longitude.coerceIn(-180.0, 180.0) else 139.6917
+        val latRad = Math.toRadians(safeLat)
+        val denom = cos(latRad) * cos(decl)
+        val rawCosHa = if (kotlin.math.abs(denom) < 1e-9) 0.0 else (cos(Math.toRadians(90.833)) - sin(latRad) * sin(decl)) / denom
+        val clampedCosHa = if (rawCosHa.isFinite()) rawCosHa.coerceIn(-1.0, 1.0) else 0.0
         val haDeg = Math.toDegrees(acos(clampedCosHa))
 
-        val sunriseMinUtc = 720 - 4 * longitude - eqtime - 4 * haDeg
-        val sunsetMinUtc = 720 - 4 * longitude - eqtime + 4 * haDeg
+        val sunriseMinUtc = 720 - 4 * safeLon - eqtime - 4 * haDeg
+        val sunsetMinUtc = 720 - 4 * safeLon - eqtime + 4 * haDeg
 
         // JST is UTC + 9 (540 minutes)
-        val sunriseMinJst = (sunriseMinUtc + 540).roundToInt().mod(1440)
-        val sunsetMinJst = (sunsetMinUtc + 540).roundToInt().mod(1440)
+        val sunriseMinJst = (if (sunriseMinUtc.isFinite()) sunriseMinUtc + 540 else 360.0).roundToInt().mod(1440)
+        val sunsetMinJst = (if (sunsetMinUtc.isFinite()) sunsetMinUtc + 540 else 1080.0).roundToInt().mod(1440)
 
         val sunriseStr = String.format(Locale.JAPANESE, "%02d:%02d", sunriseMinJst / 60, sunriseMinJst % 60)
         val sunsetStr = String.format(Locale.JAPANESE, "%02d:%02d", sunsetMinJst / 60, sunsetMinJst % 60)
 
-        val daylightSec = ((sunsetMinJst - sunriseMinJst).coerceAtLeast(0) * 60).toLong()
+        val daylightSpanMin = (sunsetMinJst - sunriseMinJst).coerceAtLeast(0)
+        val daylightSec = (daylightSpanMin * 60).toLong()
 
         val currentMinOfDay = cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE)
-        val progress = if (currentMinOfDay < sunriseMinJst) 0.0f
-        else if (currentMinOfDay > sunsetMinJst) 1.0f
-        else ((currentMinOfDay - sunriseMinJst).toFloat() / (sunsetMinJst - sunriseMinJst).toFloat()).coerceIn(0.0f, 1.0f)
+        val progress = when {
+            daylightSpanMin <= 0 -> 0.5f
+            currentMinOfDay < sunriseMinJst -> 0.0f
+            currentMinOfDay > sunsetMinJst -> 1.0f
+            else -> ((currentMinOfDay - sunriseMinJst).toFloat() / daylightSpanMin.toFloat()).coerceIn(0.0f, 1.0f)
+        }
 
         return Quad(sunriseStr, sunsetStr, daylightSec, progress)
     }

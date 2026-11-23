@@ -104,11 +104,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import io.github.nemynew.expressiveweather.ui.components.BentoCardType
-import io.github.nemynew.expressiveweather.ui.components.CitySearchSheet
-import io.github.nemynew.expressiveweather.ui.components.CompactWeatherHeader
 import io.github.nemynew.expressiveweather.ui.components.ExpressiveFloatingToolbar
 import io.github.nemynew.expressiveweather.ui.components.ToolbarMode
-import io.github.nemynew.expressiveweather.ui.components.HeroWeatherCard
 import io.github.nemynew.expressiveweather.ui.components.HourlyForecastSection
 import io.github.nemynew.expressiveweather.ui.components.LocalSnowScrollOffsetProvider
 import io.github.nemynew.expressiveweather.ui.components.MorphingWeatherHeader
@@ -119,6 +116,10 @@ import io.github.nemynew.expressiveweather.ui.util.rememberDeviceTiltState
 import io.github.nemynew.expressiveweather.ui.components.WeatherBentoGrid
 import io.github.nemynew.expressiveweather.ui.components.WeatherCacheStatusBadge
 import io.github.nemynew.expressiveweather.ui.components.WeatherDashboardSkeleton
+import io.github.nemynew.expressiveweather.BuildConfig
+import io.github.nemynew.expressiveweather.data.BugReportSnapshot
+import io.github.nemynew.expressiveweather.data.RadarRepository
+import io.github.nemynew.expressiveweather.ui.components.BugReportCardSection
 import io.github.nemynew.expressiveweather.ui.components.WeatherFooterStatusSection
 import io.github.nemynew.expressiveweather.ui.components.TabletNavigationRail
 import io.github.nemynew.expressiveweather.ui.components.TabletNavigationDrawer
@@ -221,12 +222,17 @@ fun MainScreen(
         ) == PackageManager.PERMISSION_GRANTED
 
         if (!fine && !coarse) {
-            locationPermissionLauncher.launch(
-                arrayOf(
-                    android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION
+            // セットアップ等で手動都市を選んだ直後に不要な位置情報権限ダイアログを出さない
+            if (viewModel.uiState.value.selectedCity.id == "current") {
+                locationPermissionLauncher.launch(
+                    arrayOf(
+                        android.Manifest.permission.ACCESS_FINE_LOCATION,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
                 )
-            )
+            } else {
+                requestNotificationPermissionIfNeeded()
+            }
         } else {
             viewModel.refreshCurrentLocation()
             requestNotificationPermissionIfNeeded()
@@ -251,6 +257,7 @@ fun MainScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            viewModel.stopContinuousLocationUpdates()
         }
     }
 
@@ -409,27 +416,25 @@ fun MainScreen(
                     }
                 }
 
-                // 雨天時はフォアグラウンド表示中のみ途切れず自然な雨粒の連続タップを再生（雷雨時はRainAtmosphereの落雷と同期）
-                LaunchedEffect(condition, lifecycleOwner) {
+                // 雨天時は表示開始時に短時間のみ雨粒の質感ハプティクスを再生（バッテリー・LRA消耗を防ぐため有限回数で終了）
+                LaunchedEffect(activeWeatherSignatureKey, condition, lifecycleOwner) {
                     if (condition == WeatherCondition.RAIN || condition == WeatherCondition.HEAVY_RAIN) {
                         lifecycleOwner.lifecycle.repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.RESUMED) {
                             val isHeavy = condition == WeatherCondition.HEAVY_RAIN
                             val intervalsMs = if (isHeavy) {
-                                longArrayOf(190L, 280L, 150L, 340L, 220L, 170L, 310L, 240L)
+                                longArrayOf(190L, 280L, 150L, 340L, 220L)
                             } else {
-                                longArrayOf(340L, 520L, 260L, 610L, 420L, 290L, 560L, 380L)
+                                longArrayOf(340L, 520L, 260L, 480L, 380L)
                             }
                             val strengths = if (isHeavy) {
-                                floatArrayOf(0.84f, 0.96f, 0.80f, 0.98f, 0.86f, 0.92f, 0.82f, 0.95f)
+                                floatArrayOf(0.84f, 0.96f, 0.80f, 0.98f, 0.86f)
                             } else {
-                                floatArrayOf(0.76f, 0.88f, 0.72f, 0.92f, 0.78f, 0.84f, 0.74f, 0.90f)
+                                floatArrayOf(0.76f, 0.88f, 0.72f, 0.92f, 0.78f)
                             }
                             kotlinx.coroutines.delay(550L)
-                            var step = 0
-                            while (true) {
-                                expressHaptics.playRaindropPulse(strengths[step % strengths.size])
-                                kotlinx.coroutines.delay(intervalsMs[step % intervalsMs.size])
-                                step++
+                            for (step in strengths.indices) {
+                                expressHaptics.playRaindropPulse(strengths[step])
+                                kotlinx.coroutines.delay(intervalsMs[step])
                             }
                         }
                     }
@@ -835,6 +840,30 @@ fun MainScreen(
                                                 hazeState = backgroundHazeState
                                             )
 
+                                            // Pre-release Bug Report Card (below all tiles)
+                                            if (BuildConfig.ENABLE_PRE_RELEASE_BUG_REPORT) {
+                                                BugReportCardSection(
+                                                    snapshotProvider = {
+                                                        BugReportSnapshot.fromCurrentState(
+                                                            weather = weather,
+                                                            language = uiState.language,
+                                                            themeMode = uiState.themeMode,
+                                                            themePreset = uiState.themePreset,
+                                                            temperatureUnit = uiState.temperatureUnit,
+                                                            windSpeedUnit = uiState.windSpeedUnit,
+                                                            radarSourceMode = RadarRepository.getInstance(context).getSourceMode(),
+                                                            isFrostedGlassEnabled = uiState.isFrostedGlassEnabled,
+                                                            isFromCache = uiState.isFromCache,
+                                                            isStale = uiState.isStale
+                                                        )
+                                                    },
+                                                    condition = condition,
+                                                    isDark = isDark,
+                                                    isFrostedGlassEnabled = uiState.isFrostedGlassEnabled,
+                                                    hazeState = backgroundHazeState
+                                                )
+                                            }
+
                                             Spacer(modifier = Modifier.height(16.dp))
                                         }
                                     }
@@ -1168,6 +1197,30 @@ fun MainScreen(
                                 hazeState = backgroundHazeState
                             )
 
+                            // Panel 6: Pre-release Bug Report Card (below all tiles)
+                            if (BuildConfig.ENABLE_PRE_RELEASE_BUG_REPORT) {
+                                BugReportCardSection(
+                                    snapshotProvider = {
+                                        BugReportSnapshot.fromCurrentState(
+                                            weather = weather,
+                                            language = uiState.language,
+                                            themeMode = uiState.themeMode,
+                                            themePreset = uiState.themePreset,
+                                            temperatureUnit = uiState.temperatureUnit,
+                                            windSpeedUnit = uiState.windSpeedUnit,
+                                            radarSourceMode = RadarRepository.getInstance(context).getSourceMode(),
+                                            isFrostedGlassEnabled = uiState.isFrostedGlassEnabled,
+                                            isFromCache = uiState.isFromCache,
+                                            isStale = uiState.isStale
+                                        )
+                                    },
+                                    condition = condition,
+                                    isDark = isDark,
+                                    isFrostedGlassEnabled = uiState.isFrostedGlassEnabled,
+                                    hazeState = backgroundHazeState
+                                )
+                            }
+
                             Spacer(modifier = Modifier.height(10.dp))
                             }
                         }
@@ -1186,37 +1239,45 @@ fun MainScreen(
                         )
                     }
                 } else if (uiState.errorMessage != null) {
-                    // Error State with Retry button
+                    // Error State with Retry button (light/dark 両対応のテーマコントラストカード)
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 24.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(32.dp)
+                        Surface(
+                            shape = RoundedCornerShape(28.dp),
+                            color = colorScheme.surfaceContainerHigh.copy(alpha = 0.94f),
+                            tonalElevation = 4.dp
                         ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Thunderstorm,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(56.dp)
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = uiState.errorMessage ?: strings.errorOccurred,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Spacer(modifier = Modifier.height(20.dp))
-                            androidx.compose.material3.Button(
-                                onClick = { viewModel.refreshWeather() },
-                                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
-                                    containerColor = Color.White,
-                                    contentColor = Color(0xFF1E1A18)
-                                )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(horizontal = 28.dp, vertical = 28.dp)
                             ) {
-                                Text(strings.retry, fontWeight = FontWeight.Bold)
+                                Icon(
+                                    imageVector = Icons.Rounded.Thunderstorm,
+                                    contentDescription = null,
+                                    tint = colorScheme.primary,
+                                    modifier = Modifier.size(56.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = uiState.errorMessage ?: strings.errorOccurred,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = colorScheme.onSurface,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                                androidx.compose.material3.Button(
+                                    onClick = { viewModel.refreshWeather() },
+                                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                        containerColor = colorScheme.primary,
+                                        contentColor = colorScheme.onPrimary
+                                    )
+                                ) {
+                                    Text(strings.retry, fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
                     }
@@ -1237,8 +1298,8 @@ fun MainScreen(
                     )
                 }
 
-                    // Floating Bottom Toolbar with Morphing Container (Attached to saved cities & search)
-                    if (uiState.weatherData != null || uiState.errorMessage == null) {
+                    // Floating Bottom Toolbar with Morphing Container (エラー時でも都市切替・設定へ遷移可能に常時表示)
+                    run {
                         // 登録地名一覧ポップアップ（SAVED_CITIES）表示中、それ以外の場所をタップしたら閉じるための全画面透明スクリム
                         if (toolbarMode == ToolbarMode.SAVED_CITIES || toolbarMode == ToolbarMode.SEARCH) {
                             if (toolbarMode == ToolbarMode.SAVED_CITIES) {

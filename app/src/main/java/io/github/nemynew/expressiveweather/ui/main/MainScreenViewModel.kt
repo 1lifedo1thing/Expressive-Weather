@@ -163,6 +163,15 @@ class MainScreenViewModel(
                 }
             }
         }
+        viewModelScope.launch {
+            var lastHandledExternalSelection = WeatherRepository.externalCitySelection.value?.first ?: 0L
+            WeatherRepository.externalCitySelection.collect { selection ->
+                if (selection != null && selection.first > lastHandledExternalSelection) {
+                    lastHandledExternalSelection = selection.first
+                    selectCity(selection.second)
+                }
+            }
+        }
     }
 
     private fun syncSettingsFromRepository() {
@@ -898,6 +907,8 @@ class MainScreenViewModel(
         }
     }
 
+    private var continuousLocationHandleJob: Job? = null
+
     /**
      * 移動（GPS/ネットワーク）に連動する継続的な位置情報リスナーを開始
      */
@@ -906,7 +917,8 @@ class MainScreenViewModel(
         if (!provider.hasLocationPermission()) return
         locationUpdatesStop?.invoke()
         locationUpdatesStop = provider.startLocationUpdates { loc ->
-            viewModelScope.launch {
+            continuousLocationHandleJob?.cancel()
+            continuousLocationHandleJob = viewModelScope.launch {
                 handleNewLocation(loc)
             }
         }
@@ -916,6 +928,8 @@ class MainScreenViewModel(
      * バックグラウンド移行時等に位置情報の監視を一時停止
      */
     fun stopContinuousLocationUpdates() {
+        continuousLocationHandleJob?.cancel()
+        continuousLocationHandleJob = null
         locationUpdatesStop?.invoke()
         locationUpdatesStop = null
     }
@@ -1027,6 +1041,11 @@ class MainScreenViewModel(
                 _uiState.update { it.copy(isRefreshing = false) }
                 throw e
             } catch (e: Exception) {
+                io.github.nemynew.expressiveweather.data.BugReportLogBuffer.record(
+                    tag = "WeatherRefresh",
+                    message = "Failed to refresh weather",
+                    throwable = e
+                )
                 _uiState.update { current ->
                     val hasData = current.weatherData != null
                     current.copy(
@@ -1114,6 +1133,10 @@ class MainScreenViewModel(
                         }
                     }
                     is WeatherStreamResult.Error -> {
+                        io.github.nemynew.expressiveweather.data.BugReportLogBuffer.record(
+                            tag = "WeatherStream",
+                            message = result.message
+                        )
                         _uiState.update { current ->
                             val hasCurrentData = current.weatherData != null
                             current.copy(

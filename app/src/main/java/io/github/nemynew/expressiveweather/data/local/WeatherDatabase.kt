@@ -33,8 +33,8 @@ abstract class WeatherDatabase : RoomDatabase() {
                         `name` TEXT NOT NULL,
                         `nameEn` TEXT NOT NULL,
                         `country` TEXT NOT NULL,
-                        `latitude` DOUBLE NOT NULL,
-                        `longitude` DOUBLE NOT NULL,
+                        `latitude` REAL NOT NULL,
+                        `longitude` REAL NOT NULL,
                         `isFavorite` INTEGER NOT NULL,
                         `savedAt` INTEGER NOT NULL,
                         PRIMARY KEY(`id`)

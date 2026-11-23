@@ -15,9 +15,31 @@
     kotlinx.serialization.KSerializer serializer(...);
 }
 
-# Room
--keep class * extends androidx.room.RoomDatabase
+# Room (R8 fullMode strips no-arg constructors unless explicitly kept)
+-keep class * extends androidx.room.RoomDatabase {
+    <init>();
+}
+-keep class * extends androidx.room.RoomDatabase$Callback { *; }
 -dontwarn androidx.room.paging.**
+
+# WorkManager & App Startup (instantiated via reflection)
+-keep class * extends androidx.work.ListenableWorker {
+    public <init>(android.content.Context, androidx.work.WorkerParameters);
+}
+-keep class * extends androidx.work.InputMerger {
+    public <init>();
+}
+-keep class * implements androidx.startup.Initializer {
+    <init>();
+}
+
+# ViewModel reflection instantiation
+-keep class * extends androidx.lifecycle.ViewModel {
+    <init>(...);
+}
+-keep class * extends androidx.lifecycle.AndroidViewModel {
+    <init>(...);
+}
 
 # OkHttp
 -dontwarn okhttp3.**
@@ -27,15 +49,12 @@
 # Google Maps / Play Services
 -keep class com.google.android.gms.maps.** { *; }
 
-# Keep Android 16 notification reflection targets if used via fallback
--keepclassmembers class android.app.Notification$Builder {
-    public android.app.Notification$Builder setShortCriticalText(java.lang.CharSequence);
-    public android.app.Notification$Builder setShortCriticalText(java.lang.String);
-    public android.app.Notification$Builder setRequestPromotedOngoing(boolean);
+# Keep AndroidX NotificationCompat promoted notification reflection targets
+-keepclassmembers class androidx.core.app.NotificationCompat$Builder {
+    public androidx.core.app.NotificationCompat$Builder setShortCriticalText(java.lang.CharSequence);
+    public androidx.core.app.NotificationCompat$Builder setShortCriticalText(java.lang.String);
+    public androidx.core.app.NotificationCompat$Builder setRequestPromotedOngoing(boolean);
 }
--keep class android.app.Notification$ProgressStyle { *; }
--keep class android.app.Notification$ProgressStyle$Point { *; }
--keep class android.app.Notification$ProgressStyle$Segment { *; }
 
 # Strip verbose/debug/info logs in release builds to avoid leaking runtime diagnostics or location metadata
 -assumenosideeffects class android.util.Log {

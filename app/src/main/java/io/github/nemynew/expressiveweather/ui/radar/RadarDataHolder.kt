@@ -13,10 +13,10 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
  */
 object RadarDataHolder {
     var city: City? = null
-    var latitude: Double = 35.6895
-    var longitude: Double = 139.6917
-    var cityName: String = "東京"
-    var country: String? = "日本"
+    var latitude: Double = Double.NaN
+    var longitude: Double = Double.NaN
+    var cityName: String = ""
+    var country: String? = null
     var radarResponse: RainViewerResponse? = null
     var selectedColorScheme: RadarColorScheme = RadarColorScheme.UNIVERSAL_BLUE
     var language: AppLanguage = AppLanguage.JAPANESE

@@ -126,8 +126,8 @@ fun WeatherAtmosphereCanvas(
                 while (true) {
                     withFrameNanos { now ->
                         if (lastFrame != 0L) {
-                            secondsState.floatValue += ((now - lastFrame) / 1_000_000_000f)
-                                .coerceAtMost(0.05f) / motionScale
+                            secondsState.floatValue += (((now - lastFrame) / 1_000_000_000f) / motionScale)
+                                .coerceAtMost(0.05f)
                         }
                         lastFrame = now
                     }

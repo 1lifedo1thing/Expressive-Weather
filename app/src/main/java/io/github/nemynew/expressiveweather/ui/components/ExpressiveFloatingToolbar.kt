@@ -100,6 +100,7 @@ import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.LocalAppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppStrings
+import io.github.nemynew.expressiveweather.data.localizedName as dataLocalizedName
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.ui.haptics.ExpressiveHapticPattern
 import io.github.nemynew.expressiveweather.ui.haptics.LocalExpressiveHaptics
@@ -115,13 +116,7 @@ enum class ToolbarMode {
     SEARCH         // 検索モード（添付画像上の横長入力欄に変形）：[ 📍 ] [ 🔍 aaaa | ]
 }
 
-fun City.localizedName(language: AppLanguage): String {
-    return if (language == AppLanguage.ENGLISH) {
-        nameEn.ifBlank { name }
-    } else {
-        name
-    }
-}
+fun City.localizedName(language: AppLanguage): String = this.dataLocalizedName(language)
 
 /**
  * Material 3 Expressive 洗練された適度なタップモディファイア

@@ -69,6 +69,7 @@
 
         <activity
             android:name=".ui.screens.RadarDetailActivity"
+            android:launchMode="singleTop"
             android:exported="false" />
 
         <activity

@@ -370,11 +370,17 @@ object KikikuruGuidelineContent {
                     AppLanguage.TRADITIONAL_CHINESE -> "強風使行走困難，樹枝折斷，廣告牌等有墜落風險。"
                     AppLanguage.JAPANESE -> "風に向かって歩けなくなるほどの強風。看板やトタンの飛散に注意。"
                 }
-                else -> when (language) {
+                AlertLevel.LEVEL_2, AlertLevel.LEVEL_1 -> when (language) {
                     AppLanguage.ENGLISH -> "Moderate winds. Umbrella may turn inside out."
                     AppLanguage.SIMPLIFIED_CHINESE -> "风力增强，伞具易被吹翻。"
                     AppLanguage.TRADITIONAL_CHINESE -> "風力增強，傘具易被吹翻。"
                     AppLanguage.JAPANESE -> "風が強まり、傘がさしにくくなるおそれがあります。"
+                }
+                else -> when (language) {
+                    AppLanguage.ENGLISH -> "Normal wind conditions. Monitor weather updates."
+                    AppLanguage.SIMPLIFIED_CHINESE -> "风力平稳，关注最新天气变化。"
+                    AppLanguage.TRADITIONAL_CHINESE -> "風力平穩，留意最新天氣變化。"
+                    AppLanguage.JAPANESE -> "普段通りの風況。最新の気象情報に留意してください。"
                 }
             }
         }

@@ -384,42 +384,56 @@ fun AirQualityDetailScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                val (ventTitle, ventDesc) = when (language) {
-                    AppLanguage.JAPANESE -> "室内の換気" to if (aqi <= 50) "窓を開けて積極的に新鮮な外気を取り入れましょう。" else "空気清浄機を活用し、窓の開放は短時間に抑えましょう。"
-                    AppLanguage.SIMPLIFIED_CHINESE -> "室内通风" to if (aqi <= 50) "空气清新，适宜开窗通风换气。" else "建议开启空气净化器，适当减少开窗通风时间。"
-                    AppLanguage.TRADITIONAL_CHINESE -> "室內通風" to if (aqi <= 50) "空氣清新，適宜開窗通風換氣。" else "建議開啟空氣清淨機，適當減少開窗通風時間。"
-                    AppLanguage.ENGLISH -> "Indoor Ventilation" to if (aqi <= 50) "Air is fresh and ideal for opening windows." else "Keep windows closed and use an air purifier if needed."
-                }
+                if (!isAvailable) {
+                    val unavailableAdvice = when (language) {
+                        AppLanguage.JAPANESE -> "現在この地域の大気質データが取得できないため、換気・屋外活動・マスクに関する具体的なガイダンスを表示できません。"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "当前暂未获取到该地区的空气质量数据，无法提供具体的通风、户外活动或口罩防护建议。"
+                        AppLanguage.TRADITIONAL_CHINESE -> "目前暫未取得該地區的空氣品質資料，無法提供具體的通風、戶外活動或口罩防護建議。"
+                        AppLanguage.ENGLISH -> "Air quality data is currently unavailable for this location, so ventilation, outdoor activity, and mask guidance cannot be determined."
+                    }
+                    Text(
+                        text = unavailableAdvice,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                } else {
+                    val (ventTitle, ventDesc) = when (language) {
+                        AppLanguage.JAPANESE -> "室内の換気" to if (aqi <= 50) "窓を開けて積極的に新鮮な外気を取り入れましょう。" else "空気清浄機を活用し、窓の開放は短時間に抑えましょう。"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "室内通风" to if (aqi <= 50) "空气清新，适宜开窗通风换气。" else "建议开启空气净化器，适当减少开窗通风时间。"
+                        AppLanguage.TRADITIONAL_CHINESE -> "室內通風" to if (aqi <= 50) "空氣清新，適宜開窗通風換氣。" else "建議開啟空氣清淨機，適當減少開窗通風時間。"
+                        AppLanguage.ENGLISH -> "Indoor Ventilation" to if (aqi <= 50) "Air is fresh and ideal for opening windows." else "Keep windows closed and use an air purifier if needed."
+                    }
 
-                val (outdoorTitle, outdoorDesc) = when (language) {
-                    AppLanguage.JAPANESE -> "屋外活動" to if (aqi <= 100) "ウォーキングやランニングなど、普段通り快適に行えます。" else "激しい屋外運動は控え、屋内でのトレーニングを推奨します。"
-                    AppLanguage.SIMPLIFIED_CHINESE -> "户外运动" to if (aqi <= 100) "可正常开展户外徒步、跑步等各项体育运动。" else "敏感人群应减少剧烈户外活动，优先选择室内锻炼。"
-                    AppLanguage.TRADITIONAL_CHINESE -> "戶外運動" to if (aqi <= 100) "可正常開展戶外徒步、跑步等各項體育運動。" else "敏感族群應減少劇烈戶外活動，優先選擇室內鍛鍊。"
-                    AppLanguage.ENGLISH -> "Outdoor Activity" to if (aqi <= 100) "Great conditions for outdoor exercise and recreation." else "Reduce prolonged or heavy exertion outdoors."
-                }
+                    val (outdoorTitle, outdoorDesc) = when (language) {
+                        AppLanguage.JAPANESE -> "屋外活動" to if (aqi <= 100) "ウォーキングやランニングなど、普段通り快適に行えます。" else "激しい屋外運動は控え、屋内でのトレーニングを推奨します。"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "户外运动" to if (aqi <= 100) "可正常开展户外徒步、跑步等各项体育运动。" else "敏感人群应减少剧烈户外活动，优先选择室内锻炼。"
+                        AppLanguage.TRADITIONAL_CHINESE -> "戶外運動" to if (aqi <= 100) "可正常開展戶外徒步、跑步等各項體育運動。" else "敏感族群應減少劇烈戶外活動，優先選擇室內鍛鍊。"
+                        AppLanguage.ENGLISH -> "Outdoor Activity" to if (aqi <= 100) "Great conditions for outdoor exercise and recreation." else "Reduce prolonged or heavy exertion outdoors."
+                    }
 
-                val (maskTitle, maskDesc) = when (language) {
-                    AppLanguage.JAPANESE -> "マスクの着用" to if (aqi <= 50) "マスクの着用は不要です。" else "呼吸器疾患をお持ちの方や敏感な方は、微粒子対応マスクの着用が推奨されます。"
-                    AppLanguage.SIMPLIFIED_CHINESE -> "口罩防护" to if (aqi <= 50) "空气纯净，无需佩戴口罩。" else "呼吸道敏感人群出行建议佩戴防颗粒物口罩。"
-                    AppLanguage.TRADITIONAL_CHINESE -> "口罩防護" to if (aqi <= 50) "空氣純淨，無需配戴口罩。" else "呼吸道敏感族群出行建議配戴防微粒口罩。"
-                    AppLanguage.ENGLISH -> "Mask Advisory" to if (aqi <= 50) "No mask required." else "Sensitive individuals should consider wearing particulate masks outdoors."
-                }
+                    val (maskTitle, maskDesc) = when (language) {
+                        AppLanguage.JAPANESE -> "マスクの着用" to if (aqi <= 50) "マスクの着用は不要です。" else "呼吸器疾患をお持ちの方や敏感な方は、微粒子対応マスクの着用が推奨されます。"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "口罩防护" to if (aqi <= 50) "空气纯净，无需佩戴口罩。" else "呼吸道敏感人群出行建议佩戴防颗粒物口罩。"
+                        AppLanguage.TRADITIONAL_CHINESE -> "口罩防護" to if (aqi <= 50) "空氣純淨，無需配戴口罩。" else "呼吸道敏感族群出行建議配戴防微粒口罩。"
+                        AppLanguage.ENGLISH -> "Mask Advisory" to if (aqi <= 50) "No mask required." else "Sensitive individuals should consider wearing particulate masks outdoors."
+                    }
 
-                AqiAdviceRow(
-                    icon = Icons.Rounded.Window,
-                    title = ventTitle,
-                    desc = ventDesc
-                )
-                AqiAdviceRow(
-                    icon = Icons.AutoMirrored.Rounded.DirectionsRun,
-                    title = outdoorTitle,
-                    desc = outdoorDesc
-                )
-                AqiAdviceRow(
-                    icon = Icons.Rounded.Masks,
-                    title = maskTitle,
-                    desc = maskDesc
-                )
+                    AqiAdviceRow(
+                        icon = Icons.Rounded.Window,
+                        title = ventTitle,
+                        desc = ventDesc
+                    )
+                    AqiAdviceRow(
+                        icon = Icons.AutoMirrored.Rounded.DirectionsRun,
+                        title = outdoorTitle,
+                        desc = outdoorDesc
+                    )
+                    AqiAdviceRow(
+                        icon = Icons.Rounded.Masks,
+                        title = maskTitle,
+                        desc = maskDesc
+                    )
+                }
             }
         }
     }

@@ -133,18 +133,20 @@ object RadarTyphoonOverlay {
             val tanStroke = colorScheme.outlineVariant.copy(alpha = if (isDark) 0.65f else 0.50f).toArgb()
 
             for (prob in typhoon.probabilityCircles) {
-                // 予報円
-                val probCircle = map.addCircle(
-                    CircleOptions()
-                        .center(prob.center)
-                        .radius(prob.radiusMeters)
-                        .fillColor(probFill)
-                        .strokeColor(probStroke)
-                        .strokeWidth(2.5f)
-                        .strokePattern(listOf(Dash(16f), Gap(10f)))
-                        .zIndex(64f)
-                )
-                activeObjects.add(probCircle)
+                // 予報円（半径 0 以下の不正値による地図描画例外を防止）
+                if (prob.radiusMeters.isFinite() && prob.radiusMeters > 0.0) {
+                    val probCircle = map.addCircle(
+                        CircleOptions()
+                            .center(prob.center)
+                            .radius(prob.radiusMeters)
+                            .fillColor(probFill)
+                            .strokeColor(probStroke)
+                            .strokeWidth(2.5f)
+                            .strokePattern(listOf(Dash(16f), Gap(10f)))
+                            .zIndex(64f)
+                    )
+                    activeObjects.add(probCircle)
+                }
 
                 // 予報円を結ぶ接線
                 for (tangent in prob.tangents) {
@@ -175,6 +177,47 @@ object RadarTyphoonOverlay {
                         .zIndex(65f)
                 )
                 if (labelMarker != null) activeObjects.add(labelMarker)
+            }
+
+            // 5.5 暴風警戒域 (JMA stormWarningAreas)
+            if (typhoon.stormWarningAreas.isNotEmpty()) {
+                val warnStroke = colorScheme.error.copy(alpha = if (isDark) 0.72f else 0.65f).toArgb()
+                for (area in typhoon.stormWarningAreas) {
+                    for (line in area.lines) {
+                        if (line.size >= 2) {
+                            val warnLine = map.addPolyline(
+                                PolylineOptions()
+                                    .addAll(line)
+                                    .color(warnStroke)
+                                    .width(3f)
+                                    .pattern(listOf(Dash(14f), Gap(8f)))
+                                    .geodesic(true)
+                                    .zIndex(63.5f)
+                            )
+                            activeObjects.add(warnLine)
+                        }
+                    }
+                    for (arc in area.arcs) {
+                        if (arc.size >= 3) {
+                            val lat = arc[0]
+                            val lon = arc[1]
+                            val radiusM = arc[2]
+                            if (lat.isFinite() && lon.isFinite() && radiusM.isFinite() && radiusM > 0.0) {
+                                val warnCircle = map.addCircle(
+                                    CircleOptions()
+                                        .center(LatLng(lat, lon))
+                                        .radius(radiusM)
+                                        .fillColor(android.graphics.Color.TRANSPARENT)
+                                        .strokeColor(warnStroke)
+                                        .strokeWidth(2.5f)
+                                        .strokePattern(listOf(Dash(14f), Gap(8f)))
+                                        .zIndex(63.5f)
+                                )
+                                activeObjects.add(warnCircle)
+                            }
+                        }
+                    }
+                }
             }
 
             // 6. 中心マーカー (アイコン不要・大きめのドット＋半透明の円・波動アニメーションなしの静的表示)

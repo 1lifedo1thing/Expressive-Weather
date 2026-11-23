@@ -32,6 +32,10 @@ class KikikuruLiveAlertService : Service() {
     companion object {
         private const val TAG = "KikikuruLiveService"
 
+        @Volatile
+        var isActivePolling: Boolean = false
+            private set
+
         const val ACTION_START_OR_UPDATE = "io.github.nemynew.expressiveweather.action.START_OR_UPDATE_LIVE_ALERT"
         const val ACTION_STOP = "io.github.nemynew.expressiveweather.action.STOP_LIVE_ALERT"
 
@@ -149,43 +153,50 @@ class KikikuruLiveAlertService : Service() {
     }
 
     override fun onTimeout(startId: Int, fgsType: Int) {
-        Log.w(TAG, "Android 15+ FGS timeout reached (startId=$startId, type=$fgsType). Stopping service cleanly.")
-        stopLiveService()
+        Log.w(TAG, "Android 15+ FGS timeout reached (startId=$startId, type=$fgsType). Detaching notification to preserve active alert.")
+        // 警報発表中のタイムアウトでは通知を消去せず DETACH して継続提示する
+        stopLiveService(removeNotification = false)
     }
 
     private fun startHighFrequencyMonitoring() {
         if (pollJob?.isActive == true) return
+        isActivePolling = true
         pollJob = serviceScope.launch {
             Log.d(TAG, "LiveAlertService high-frequency loop started (3-min interval).")
-            while (isActive) {
-                delay(3 * 60 * 1000L)
-                try {
-                    Log.d(TAG, "LiveAlertService 3-min tick: Refreshing Kikikuru alert data...")
-                    KikikuruBackgroundMonitor.getInstance(applicationContext).checkCurrentAlert(forceFresh = true)
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    Log.w(TAG, "LiveAlertService periodic check error: ${e.message}")
+            try {
+                while (isActive) {
+                    delay(3 * 60 * 1000L)
+                    try {
+                        Log.d(TAG, "LiveAlertService 3-min tick: Refreshing Kikikuru alert data...")
+                        KikikuruBackgroundMonitor.getInstance(applicationContext).checkCurrentAlert(forceFresh = true)
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Log.w(TAG, "LiveAlertService periodic check error: ${e.message}")
+                    }
                 }
+            } finally {
+                isActivePolling = false
             }
         }
     }
 
-    private fun stopLiveService() {
+    private fun stopLiveService(removeNotification: Boolean = true) {
+        isActivePolling = false
         pollJob?.cancel()
         pollJob = null
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopForeground(if (removeNotification) STOP_FOREGROUND_REMOVE else STOP_FOREGROUND_DETACH)
             } else {
                 @Suppress("DEPRECATION")
-                stopForeground(true)
+                stopForeground(removeNotification)
             }
         } catch (e: Throwable) {
             Log.w(TAG, "Error in stopForeground: ${e.message}")
         }
         stopSelf()
-        Log.d(TAG, "KikikuruLiveAlertService stopped and foreground notification removed.")
+        Log.d(TAG, "KikikuruLiveAlertService stopped (removeNotification=$removeNotification).")
     }
 
     override fun onDestroy() {

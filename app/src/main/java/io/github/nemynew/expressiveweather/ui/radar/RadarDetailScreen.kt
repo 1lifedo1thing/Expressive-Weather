@@ -926,17 +926,16 @@ fun RadarDetailScreen(
     // 縦型降水強度凡例ウィジェットの展開状態 (Frame 95 ⇔ Frame 96)
     var isLegendExpanded by remember { mutableStateOf(false) }
 
-    // 気象庁台風情報（台風レイヤー選択時にマップ上に直接重畳描画）
+    // 気象庁台風情報（日本域かつ台風レイヤー選択時、または日本域表示時のみ取得して海外ユーザーの無駄な通信を回避）
     var activeTyphoons by remember { mutableStateOf<List<JmaTyphoonItem>>(emptyList()) }
     var selectedTyphoonForPopup by remember { mutableStateOf<JmaTyphoonItem?>(null) }
 
-    LaunchedEffect(Unit) {
-        activeTyphoons = JmaTyphoonRepository.getActiveTyphoons()
-    }
-
-    LaunchedEffect(selectedJmaLayer) {
+    LaunchedEffect(selectedJmaLayer, dataSource) {
         if (selectedJmaLayer != JmaLayerType.TYPHOON) {
             selectedTyphoonForPopup = null
+        }
+        if (dataSource == RadarDataSource.JMA_NOWCAST && (selectedJmaLayer == JmaLayerType.TYPHOON || activeTyphoons.isEmpty())) {
+            activeTyphoons = JmaTyphoonRepository.getActiveTyphoons()
         }
     }
 
@@ -1130,9 +1129,11 @@ fun RadarDetailScreen(
 
     // 再生ボタン群の押下・弾性伸縮フォーカス (0 = ⏪, 1 = ▶/⏸, 2 = ⏩, null = 通常)
     var activePlaybackPressedIndex by remember { mutableStateOf<Int?>(null) }
+    var playbackStretchJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
 
     fun triggerPlaybackStretch(index: Int) {
-        coroutineScope.launch {
+        playbackStretchJob?.cancel()
+        playbackStretchJob = coroutineScope.launch {
             activePlaybackPressedIndex = index
             delay(200L) // キビキビとした応答時間
             activePlaybackPressedIndex = null
@@ -1732,8 +1733,8 @@ fun RadarDetailScreen(
                                 dataSource == RadarDataSource.RAIN_VIEWER -> null
                                 dataSource == RadarDataSource.US_NEXRAD_HRRR -> {
                                     when {
-                                        currentFrame?.isForecast == true -> "HRRR"
                                         currentFrame?.isExtrapolation == true -> "NEXRAD"
+                                        currentFrame?.isForecast == true -> "HRRR"
                                         else -> "NEXRAD/MRMS"
                                     }
                                 }
@@ -2258,7 +2259,7 @@ fun RadarDetailScreen(
                                             AppLanguage.JAPANESE -> "前のフレーム"
                                             AppLanguage.ENGLISH -> "Previous Frame"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "上一帧"
-                                            AppLanguage.TRADITIONAL_CHINESE -> "上一訊號"
+                                            AppLanguage.TRADITIONAL_CHINESE -> "上一幀"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -2340,7 +2341,7 @@ fun RadarDetailScreen(
                                             AppLanguage.JAPANESE -> "次のフレーム"
                                             AppLanguage.ENGLISH -> "Next Frame"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "下一帧"
-                                            AppLanguage.TRADITIONAL_CHINESE -> "下一訊號"
+                                            AppLanguage.TRADITIONAL_CHINESE -> "下一幀"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -3822,7 +3823,15 @@ private fun TyphoonInfoCard(
                         AppLanguage.TRADITIONAL_CHINESE -> "最大風速"
                     },
                     value = analysis.maxWindMs?.let { "$it m/s" } ?: "---",
-                    subtitle = analysis.maxWindMs?.let { "約 ${(it * 3.6).toInt()} km/h" },
+                    subtitle = analysis.maxWindMs?.let {
+                        val kmh = (it * 3.6).toInt()
+                        when (language) {
+                            AppLanguage.JAPANESE -> "約 $kmh km/h"
+                            AppLanguage.ENGLISH -> "~$kmh km/h"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "约 $kmh km/h"
+                            AppLanguage.TRADITIONAL_CHINESE -> "約 $kmh km/h"
+                        }
+                    },
                     accentColor = colorScheme.tertiary,
                     bgColor = tileBg,
                     modifier = Modifier.weight(1f)
@@ -3837,7 +3846,15 @@ private fun TyphoonInfoCard(
                         AppLanguage.TRADITIONAL_CHINESE -> "最大陣風"
                     },
                     value = analysis.gustWindMs?.let { "$it m/s" } ?: "---",
-                    subtitle = analysis.gustWindMs?.let { "約 ${(it * 3.6).toInt()} km/h" },
+                    subtitle = analysis.gustWindMs?.let {
+                        val kmh = (it * 3.6).toInt()
+                        when (language) {
+                            AppLanguage.JAPANESE -> "約 $kmh km/h"
+                            AppLanguage.ENGLISH -> "~$kmh km/h"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "约 $kmh km/h"
+                            AppLanguage.TRADITIONAL_CHINESE -> "約 $kmh km/h"
+                        }
+                    },
                     accentColor = colorScheme.error,
                     bgColor = tileBg,
                     modifier = Modifier.weight(1f)
@@ -3950,8 +3967,14 @@ private fun TyphoonInfoCard(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
+                val agencyLabel = when (language) {
+                    AppLanguage.JAPANESE -> "気象庁"
+                    AppLanguage.ENGLISH -> "JMA"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "气象厅"
+                    AppLanguage.TRADITIONAL_CHINESE -> "氣象廳"
+                }
                 Text(
-                    text = "${typhoon.formattedIssueTime} (気象庁)",
+                    text = "${typhoon.formattedIssueTime} ($agencyLabel)",
                     style = MaterialTheme.typography.labelSmall,
                     color = colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
                 )

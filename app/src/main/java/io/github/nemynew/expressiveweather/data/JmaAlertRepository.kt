@@ -2,6 +2,7 @@ package io.github.nemynew.expressiveweather.data
 
 import android.content.Context
 import android.util.Log
+import io.github.nemynew.expressiveweather.BuildConfig
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -100,7 +101,11 @@ object JmaAlertRepository {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            Log.w(TAG, "Failed to fetch alerts for ${municipality.name} (${municipality.code}): ${e.message}")
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, "Failed to fetch alerts for ${municipality.name} (${municipality.code}): ${e.message}")
+            } else {
+                Log.w(TAG, "Failed to fetch alerts: ${e.javaClass.simpleName}")
+            }
             MunicipalityAlertInfo(
                 municipalityCode = municipality.code,
                 municipalityName = municipality.name,
@@ -163,6 +168,7 @@ object JmaAlertRepository {
 
         val activeWarnings = mutableListOf<MunicipalityWarningItem>()
         val clearedWarnings = mutableListOf<MunicipalityWarningItem>()
+        val activeAttentions = mutableSetOf<String>()
         var foundMunicipality = false
 
         // 1. 完全一致する市区町村コードを最優先探索
@@ -176,7 +182,7 @@ object JmaAlertRepository {
                     val areaCode = area.optNonNullString("code")
                     if (areaCode == municipality.code) {
                         foundMunicipality = true
-                        extractWarningsInto(area, activeWarnings, clearedWarnings)
+                        extractWarningsInto(area, activeWarnings, clearedWarnings, activeAttentions)
                     }
                 }
             }
@@ -194,26 +200,29 @@ object JmaAlertRepository {
                                 (areaName.isBlank() || areaName.contains(municipality.name) || municipality.name.contains(areaName)))
                         ) {
                             foundMunicipality = true
-                            extractWarningsInto(area, activeWarnings, clearedWarnings)
+                            extractWarningsInto(area, activeWarnings, clearedWarnings, activeAttentions)
                         }
                     }
                 }
             }
         }
 
-        // 2. 自治体単位で見つからない場合のみ、該当オフィス/都道府県に一致する二次細分区域を安全フォールバック
+        // 2. 自治体単位で見つからない場合のみ、該当オフィス/都道府県に一致する一次細分区域を安全フォールバック
         if (!foundMunicipality && areaTypes != null && areaTypes.length() > 0) {
             val at0 = areaTypes.optJSONObject(0)
             val areas0 = at0?.optJSONArray("areas")
             if (areas0 != null) {
                 for (j in 0 until areas0.length()) {
                     val area = areas0.optJSONObject(j) ?: continue
+                    val areaCode = area.optNonNullString("code")
                     val areaName = area.optNonNullString("name")
-                    if (areas0.length() == 1 ||
+                    val matchesCode = areaCode.isNotBlank() && areaCode == municipality.officeCode
+                    val matchesName = areaName.isNotBlank() && (
                         (municipality.officeName.isNotBlank() && (areaName.contains(municipality.officeName) || municipality.officeName.contains(areaName))) ||
-                        (municipality.prefName.isNotBlank() && (areaName.contains(municipality.prefName) || municipality.prefName.contains(areaName)))
-                    ) {
-                        extractWarningsInto(area, activeWarnings, clearedWarnings)
+                            (municipality.prefName.isNotBlank() && (areaName.contains(municipality.prefName) || municipality.prefName.contains(areaName)))
+                        )
+                    if (areas0.length() == 1 || matchesCode || matchesName) {
+                        extractWarningsInto(area, activeWarnings, clearedWarnings, activeAttentions)
                     }
                 }
             }
@@ -228,9 +237,6 @@ object JmaAlertRepository {
             .filter { it.name.isNotBlank() }
             .distinctBy { it.code }
 
-        val warningCodes = distinctActiveWarnings.map { it.code }.toSet()
-        val muniText = distinctActiveWarnings.joinToString { it.name }
-
         // ==========================================
         // 4大キキクル（大雨・土砂・浸水・洪水）個別警戒レベル判定
         // ==========================================
@@ -239,13 +245,50 @@ object JmaAlertRepository {
         val floodTs = extractTimeSeriesMaxRiskLevel(warningJson, municipality.code, listOf("洪水"))
         val rainTs = extractTimeSeriesMaxRiskLevel(warningJson, municipality.code, listOf("雨", "大雨"))
 
+        return evaluateParsedWarnings(
+            municipality = municipality,
+            distinctActiveWarnings = distinctActiveWarnings,
+            distinctClearedWarnings = distinctClearedWarnings,
+            activeAttentions = activeAttentions,
+            headlineText = headlineText,
+            publishingOffice = publishingOffice,
+            reportDatetime = reportDatetime,
+            landslideTs = landslideTs,
+            inundationTs = inundationTs,
+            floodTs = floodTs,
+            rainTs = rainTs
+        )
+    }
+
+    internal fun evaluateParsedWarnings(
+        municipality: JmaMunicipality,
+        distinctActiveWarnings: List<MunicipalityWarningItem>,
+        distinctClearedWarnings: List<MunicipalityWarningItem> = emptyList(),
+        activeAttentions: Set<String> = emptySet(),
+        headlineText: String? = null,
+        publishingOffice: String? = null,
+        reportDatetime: String? = null,
+        landslideTs: AlertLevel = AlertLevel.LEVEL_0,
+        inundationTs: AlertLevel = AlertLevel.LEVEL_0,
+        floodTs: AlertLevel = AlertLevel.LEVEL_0,
+        rainTs: AlertLevel = AlertLevel.LEVEL_0
+    ): MunicipalityAlertInfo {
+        val warningCodes = distinctActiveWarnings.map { it.code }.toSet()
+        val muniText = distinctActiveWarnings.joinToString { it.name }
+        val attentionText = activeAttentions.joinToString(" ")
+
         val hasAnySpecial = distinctActiveWarnings.any { it.isSpecial }
         val hasAnyWarning = distinctActiveWarnings.any { it.isWarning }
         val hasSpecialRain = warningCodes.contains("33")
 
+        val hasInundationAttention = attentionText.contains("浸水")
+        val hasLandslideAttention = attentionText.contains("土砂")
+        val isInundationOnly = hasInundationAttention && !hasLandslideAttention
+
         // 1. 土砂キキクル判定
         val hasLandslideAlert = (headlineText != null && headlineText.contains("土砂災害警戒情報") && headlineText.contains(municipality.name))
-        val hasLandslideWarning = (warningCodes.contains("03") && !muniText.contains("浸水害のみ")) ||
+        val hasLandslideWarning = (warningCodes.contains("03") && !isInundationOnly && !muniText.contains("浸水害のみ")) ||
+                hasLandslideAttention ||
                 (headlineText != null && headlineText.contains("土砂災害") && headlineText.contains(municipality.name))
         val hasRainAdvisory = warningCodes.contains("10")
         val landslideLevelNum = maxOf(
@@ -254,8 +297,10 @@ object JmaAlertRepository {
         )
         val landslideLevel = AlertLevel.fromLevel(landslideLevelNum)
 
-        // 2. 浸水キキクル判定
-        val hasInundationWarning = (warningCodes.contains("03") && muniText.contains("浸水")) || muniText.contains("浸水")
+        // 2. 浸水キキクル判定（attentions/condition の「浸水害」も判定）
+        val hasInundationWarning = hasInundationAttention ||
+                (warningCodes.contains("03") && (muniText.contains("浸水") || (headlineText != null && headlineText.contains("浸水") && headlineText.contains(municipality.name)))) ||
+                muniText.contains("浸水")
         val inundationLevelNum = maxOf(
             inundationTs.level,
             if (hasSpecialRain) 5 else if (hasInundationWarning) 3 else if (hasRainAdvisory) 2 else 0
@@ -284,17 +329,34 @@ object JmaAlertRepository {
         )
         val heavyRainLevel = AlertLevel.fromLevel(heavyRainLevelNum)
 
+        // 5. 暴風・高潮・大雪・波浪など非大雨系警報の警戒レベル判定
+        val nonRainSpecialCodes = setOf("32", "35", "36", "37", "38")
+        val nonRainWarningCodes = setOf("02", "05", "06", "07", "08")
+        val stormAdvisoryCodes = setOf("13", "15")
+        val hasNonRainSpecial = distinctActiveWarnings.any { it.isSpecial && it.code in nonRainSpecialCodes }
+        val hasNonRainWarning = distinctActiveWarnings.any { it.isWarning && it.code in nonRainWarningCodes }
+        val hasStormAdvisory = distinctActiveWarnings.any { it.code in stormAdvisoryCodes }
+        val stormWindLevelNum = when {
+            hasNonRainSpecial -> 5
+            hasNonRainWarning -> 3
+            hasStormAdvisory -> 2
+            else -> 0
+        }
+        val stormWindLevel = AlertLevel.fromLevel(stormWindLevelNum)
+
         // 総合警戒レベル (暴風・大雪・波浪・高潮等の警報/特別警報も含める)
         val overallLevelNum = maxOf(
             heavyRainLevel.level,
             landslideLevel.level,
             inundationLevel.level,
             floodLevel.level,
+            stormWindLevel.level,
             if (hasAnySpecial) 5 else if (hasAnyWarning) 3 else 0
         )
         val overallLevel = AlertLevel.fromLevel(overallLevelNum)
 
-        val flagStormWind = warningCodes.contains("05") ||
+        val flagStormWind = stormWindLevel.level >= 2 ||
+                warningCodes.contains("05") ||
                 warningCodes.contains("02") ||
                 warningCodes.contains("15") ||
                 warningCodes.contains("13") ||
@@ -309,34 +371,59 @@ object JmaAlertRepository {
             stormWind = flagStormWind
         )
 
-        val disasterDetails = listOf(
-            KikikuruDisasterDetail(
-                disasterType = DisasterType.HEAVY_RAIN,
-                alertLevel = heavyRainLevel,
-                activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") },
-                headlineText = headlineText
-            ),
-            KikikuruDisasterDetail(
-                disasterType = DisasterType.LANDSLIDE,
-                alertLevel = landslideLevel,
-                activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") || it.name.contains("土砂") },
-                headlineText = headlineText
-            ),
-            KikikuruDisasterDetail(
-                disasterType = DisasterType.INUNDATION,
-                alertLevel = inundationLevel,
-                activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") || it.name.contains("浸水") },
-                headlineText = headlineText
-            ),
-            KikikuruDisasterDetail(
-                disasterType = DisasterType.FLOOD,
-                alertLevel = floodLevel,
-                activeWarnings = distinctActiveWarnings.filter { it.code in setOf("04", "18") || it.name.contains("洪水") },
-                headlineText = headlineText
-            )
-        )
+        val nonRainWarnings = distinctActiveWarnings.filter {
+            it.code in nonRainSpecialCodes || it.code in nonRainWarningCodes || it.code in stormAdvisoryCodes
+        }
 
-        val primaryType = disasterDetails.maxByOrNull { it.alertLevel.level }?.disasterType ?: DisasterType.HEAVY_RAIN
+        val disasterDetails = buildList {
+            add(
+                KikikuruDisasterDetail(
+                    disasterType = DisasterType.HEAVY_RAIN,
+                    alertLevel = heavyRainLevel,
+                    activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") },
+                    headlineText = headlineText
+                )
+            )
+            add(
+                KikikuruDisasterDetail(
+                    disasterType = DisasterType.LANDSLIDE,
+                    alertLevel = landslideLevel,
+                    activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") || it.name.contains("土砂") },
+                    headlineText = headlineText
+                )
+            )
+            add(
+                KikikuruDisasterDetail(
+                    disasterType = DisasterType.INUNDATION,
+                    alertLevel = inundationLevel,
+                    activeWarnings = distinctActiveWarnings.filter { it.code in setOf("33", "03", "10") || it.name.contains("浸水") },
+                    headlineText = headlineText
+                )
+            )
+            add(
+                KikikuruDisasterDetail(
+                    disasterType = DisasterType.FLOOD,
+                    alertLevel = floodLevel,
+                    activeWarnings = distinctActiveWarnings.filter { it.code in setOf("04", "18") || it.name.contains("洪水") },
+                    headlineText = headlineText
+                )
+            )
+            if (stormWindLevel.level >= 2 || nonRainWarnings.isNotEmpty()) {
+                add(
+                    KikikuruDisasterDetail(
+                        disasterType = DisasterType.STORM_WIND,
+                        alertLevel = stormWindLevel,
+                        activeWarnings = nonRainWarnings,
+                        headlineText = headlineText
+                    )
+                )
+            }
+        }
+
+        val primaryType = disasterDetails
+            .filter { it.alertLevel.level > 0 }
+            .maxByOrNull { it.alertLevel.level }?.disasterType
+            ?: DisasterType.HEAVY_RAIN
 
         return MunicipalityAlertInfo(
             municipalityCode = municipality.code,
@@ -447,7 +534,8 @@ object JmaAlertRepository {
     private fun extractWarningsInto(
         areaObj: JSONObject,
         activeDestination: MutableList<MunicipalityWarningItem>,
-        clearedDestination: MutableList<MunicipalityWarningItem>
+        clearedDestination: MutableList<MunicipalityWarningItem>,
+        activeAttentions: MutableSet<String> = mutableSetOf()
     ) {
         val warningsArr = areaObj.optJSONArray("warnings") ?: return
         for (k in 0 until warningsArr.length()) {
@@ -473,6 +561,15 @@ object JmaAlertRepository {
                 clearedDestination.add(item)
             } else {
                 activeDestination.add(item)
+                val attentions = w.optJSONArray("attentions")
+                if (attentions != null) {
+                    for (aIdx in 0 until attentions.length()) {
+                        val att = attentions.optString(aIdx).trim()
+                        if (att.isNotBlank()) activeAttentions.add(att)
+                    }
+                }
+                val cond = w.optNonNullString("condition").trim()
+                if (cond.isNotBlank()) activeAttentions.add(cond)
             }
         }
     }

@@ -1463,20 +1463,32 @@ internal fun formatWarningDescription(
 
 private fun formatIsoAlertTimestamp(iso: String?): String? {
     val trimmed = iso?.trim()?.takeIf { it.isNotEmpty() } ?: return null
-    return try {
-        val instant = java.time.OffsetDateTime.parse(trimmed).toInstant()
-        val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", java.util.Locale.US)
-            .withZone(java.time.ZoneId.systemDefault())
-        formatter.format(instant)
-    } catch (_: Exception) {
+    val patterns = arrayOf(
+        "yyyy-MM-dd'T'HH:mm:ss.SSSXXX",
+        "yyyy-MM-dd'T'HH:mm:ssXXX",
+        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
+        "yyyy-MM-dd'T'HH:mmXXX",
+        "yyyy-MM-dd'T'HH:mm'Z'"
+    )
+    val parsedDate = patterns.firstNotNullOfOrNull { pattern ->
         try {
-            val instant = java.time.Instant.parse(trimmed)
-            val formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm", java.util.Locale.US)
-                .withZone(java.time.ZoneId.systemDefault())
-            formatter.format(instant)
+            val sdf = java.text.SimpleDateFormat(pattern, java.util.Locale.US).apply {
+                if (pattern.endsWith("'Z'")) {
+                    timeZone = java.util.TimeZone.getTimeZone("UTC")
+                }
+            }
+            sdf.parse(trimmed)
         } catch (_: Exception) {
-            trimmed.take(16).replace("T", " ").ifBlank { null }
+            null
         }
+    }
+    return if (parsedDate != null) {
+        java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.US).apply {
+            timeZone = java.util.TimeZone.getDefault()
+        }.format(parsedDate)
+    } else {
+        trimmed.take(16).replace("T", " ").ifBlank { null }
     }
 }
 

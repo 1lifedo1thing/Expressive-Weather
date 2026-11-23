@@ -121,13 +121,13 @@ object GdacsAlertRepository {
      */
     private suspend fun getAllGdacsEvents(forceFresh: Boolean): List<GdacsRawEvent> {
         val now = System.currentTimeMillis()
-        if (!forceFresh && cachedEvents.isNotEmpty() && (now - lastFetchTimeMillis) < CACHE_TTL_MS) {
+        if (!forceFresh && lastFetchTimeMillis > 0L && (now - lastFetchTimeMillis) < CACHE_TTL_MS) {
             return cachedEvents
         }
 
         return fetchMutex.withLock {
             val innerNow = System.currentTimeMillis()
-            if (!forceFresh && cachedEvents.isNotEmpty() && (innerNow - lastFetchTimeMillis) < CACHE_TTL_MS) {
+            if (!forceFresh && lastFetchTimeMillis > 0L && (innerNow - lastFetchTimeMillis) < CACHE_TTL_MS) {
                 return cachedEvents
             }
 

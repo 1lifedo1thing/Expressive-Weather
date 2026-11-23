@@ -75,12 +75,18 @@ class WidgetUiModelBuilderTest {
 
     @Test
     fun sizeTier_mapsResponsiveBreakpointsCorrectly() {
+        // 通常の 2x2 コンパクトウィジェットはサイズが広がっても時間別予報レイアウトに昇格しない
         assertEquals(WidgetSizeTier.COMPACT_WIDE, WidgetSizeTier.fromSizeDp(140f, 60f, WidgetSizeTier.COMPACT))
-        assertEquals(WidgetSizeTier.WIDE_HOURLY, WidgetSizeTier.fromSizeDp(467f, 89f, WidgetSizeTier.COMPACT))
+        assertEquals(WidgetSizeTier.COMPACT_WIDE, WidgetSizeTier.fromSizeDp(467f, 89f, WidgetSizeTier.COMPACT))
+        assertEquals(WidgetSizeTier.COMPACT, WidgetSizeTier.fromSizeDp(140f, 130f, WidgetSizeTier.COMPACT))
+        assertEquals(WidgetSizeTier.COMPACT, WidgetSizeTier.fromSizeDp(280f, 130f, WidgetSizeTier.COMPACT))
+        assertEquals(WidgetSizeTier.COMPACT, WidgetSizeTier.fromSizeDp(390f, 260f, WidgetSizeTier.COMPACT))
+
+        // 中・大ウィジェットは従来通りレスポンシブにレイアウトを切り替える
         assertEquals(WidgetSizeTier.WIDE_HOURLY, WidgetSizeTier.fromSizeDp(630f, 105f, WidgetSizeTier.MEDIUM))
         assertEquals(WidgetSizeTier.WIDE_HOURLY, WidgetSizeTier.fromSizeDp(520f, 128f, WidgetSizeTier.MEDIUM))
         assertEquals(WidgetSizeTier.COMPACT, WidgetSizeTier.fromSizeDp(140f, 130f, WidgetSizeTier.MEDIUM))
-        assertEquals(WidgetSizeTier.MEDIUM, WidgetSizeTier.fromSizeDp(280f, 130f, WidgetSizeTier.COMPACT))
+        assertEquals(WidgetSizeTier.MEDIUM, WidgetSizeTier.fromSizeDp(280f, 130f, WidgetSizeTier.MEDIUM))
         assertEquals(WidgetSizeTier.LARGE, WidgetSizeTier.fromSizeDp(280f, 240f, WidgetSizeTier.MEDIUM))
         assertEquals(WidgetSizeTier.LARGE, WidgetSizeTier.fromSizeDp(280f, 320f, WidgetSizeTier.LARGE))
         assertEquals(WidgetSizeTier.LARGE, WidgetSizeTier.fromSizeDp(0f, 0f, WidgetSizeTier.LARGE))
@@ -195,6 +201,15 @@ class WidgetUiModelBuilderTest {
             fallbackCity = tokyo
         )
         assertNull(model.alertBanner)
+    }
+
+    @Test
+    fun widgetConfig_defaultsToMaterialYouStyle() {
+        val defaultCfg = WidgetConfig(appWidgetId = 101)
+        assertEquals(WidgetStyle.MATERIAL_YOU, defaultCfg.style)
+        assertEquals(WidgetStyle.MATERIAL_YOU, WidgetStyle.fromId(null))
+        assertEquals(WidgetStyle.MATERIAL_YOU, WidgetStyle.fromId("unknown_style"))
+        assertEquals(WidgetStyle.MATERIAL_YOU, WidgetStyle.entries.first())
     }
 
     @Test

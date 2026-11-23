@@ -40,6 +40,8 @@ import java.util.concurrent.TimeUnit
 class WeatherBackgroundUpdateManager private constructor(private val context: Context) {
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private var periodicJob: Job? = null
+    private val updateMutex = kotlinx.coroutines.sync.Mutex()
+    private val isScheduled = java.util.concurrent.atomic.AtomicBoolean(false)
     private val locationProvider = CurrentLocationProvider(context)
     private val weatherRepository = WeatherRepository(context = context)
 
@@ -67,7 +69,9 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
 
         fun init(context: Context): WeatherBackgroundUpdateManager {
             return getInstance(context).apply {
-                scheduleAll()
+                if (isScheduled.compareAndSet(false, true)) {
+                    scheduleAll()
+                }
             }
         }
     }
@@ -137,6 +141,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
      * すべての自動更新スケジュールをキャンセル
      */
     fun cancelAll() {
+        isScheduled.set(false)
         Log.d(TAG, "Cancelling all weather background updates (Setting: OFF).")
         try {
             WorkManager.getInstance(context).cancelUniqueWork(WeatherUpdateWorker.UNIQUE_WORK_NAME)
@@ -305,6 +310,11 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
      * @return 実行結果（成功: true, 失敗: false）
      */
     suspend fun performBackgroundWeatherUpdate(isForced: Boolean = false): Boolean = withContext(Dispatchers.IO) {
+        if (!updateMutex.tryLock()) {
+            Log.d(TAG, "Background weather update already in progress; skipping concurrent invocation.")
+            return@withContext true
+        }
+        try {
         val interval = weatherRepository.getWeatherUpdateInterval()
         if (interval == WeatherUpdateInterval.OFF) {
             Log.d(TAG, "performBackgroundWeatherUpdate called, but interval is OFF. Skipping.")
@@ -412,6 +422,9 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
             Log.e(TAG, "Background weather update failed: ${e.message}", e)
             saveUpdateFailure(e.message ?: "Unknown error")
             false
+        }
+        } finally {
+            updateMutex.unlock()
         }
     }
 

@@ -127,8 +127,9 @@ class RadarRepository(
     }
 
     fun getSourceMode(): RadarSourceMode {
-        val prefs = appContext?.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
-        val saved = prefs?.getString(PREF_KEY_RADAR_SOURCE, null)
+        val ctx = appContext ?: return _sourceModeFlow.value
+        val prefs = ctx.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
+        val saved = prefs.getString(PREF_KEY_RADAR_SOURCE, null)
         val mode = RadarSourceMode.fromId(saved)
         _sourceModeFlow.value = mode
         return mode
