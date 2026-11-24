@@ -53,7 +53,19 @@ class RainViewerRepository {
                     headers = mapOf("User-Agent" to "ExpressiveWeather/1.0 (Android)"),
                     timeoutMs = 8_000L
                 )
-                val response = json.decodeFromString<RainViewerResponse>(body)
+                val decoded = json.decodeFromString<RainViewerResponse>(body)
+                val safeHost = if (RadarUrlValidator.isValidRainViewerHost(decoded.host)) {
+                    decoded.host.trim().trimEnd('/')
+                } else {
+                    Log.w(TAG, "Rejected unexpected RainViewer host: ${decoded.host}")
+                    "https://tilecache.rainviewer.com"
+                }
+                val safePast = decoded.radar.past.filter { RadarUrlValidator.isValidRainViewerPath(it.path) }
+                val safeNowcast = decoded.radar.nowcast.filter { RadarUrlValidator.isValidRainViewerPath(it.path) }
+                val response = decoded.copy(
+                    host = safeHost,
+                    radar = decoded.radar.copy(past = safePast, nowcast = safeNowcast)
+                )
                 cachedResponse = response
                 lastFetchTime = System.currentTimeMillis()
                 Log.d(TAG, "Fetched RainViewer data: ${response.radar.past.size} past frames")

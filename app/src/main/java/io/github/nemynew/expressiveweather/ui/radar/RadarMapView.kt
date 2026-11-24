@@ -41,6 +41,7 @@ import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppLanguage
 import io.github.nemynew.expressiveweather.data.RadarColorScheme
 import io.github.nemynew.expressiveweather.data.RadarFrame
+import io.github.nemynew.expressiveweather.data.RadarUrlValidator
 import io.github.nemynew.expressiveweather.theme.LocalDarkTheme
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -105,7 +106,7 @@ private object TileDiskCache {
         val dir = cacheDir ?: return null
         return try {
             val file = java.io.File(dir, hashKey(key))
-            if (file.exists() && file.length() > 0L) {
+            if (file.exists() && file.length() in 1L..RadarTileHttpClient.MAX_TILE_BYTES) {
                 file.readBytes()
             } else {
                 if (file.exists()) file.delete()
@@ -588,11 +589,10 @@ fun RadarMapView(
             return it
         }
         val frame = frames[index]
-        val isJma = (frame.tileUrlTemplate?.contains("jma.go.jp") == true) ||
-                (frame.path.startsWith("http") && frame.path.contains("jma.go.jp"))
-        val isUs = (frame.tileUrlTemplate?.contains("mesonet.agron.iastate.edu") == true) ||
-                (frame.tileUrlTemplate?.contains("mrms") == true) ||
-                (frame.tileUrlTemplate?.contains("hrrr") == true)
+        val isJma = RadarUrlValidator.hostMatchesDomain(frame.tileUrlTemplate, "jma.go.jp") ||
+                RadarUrlValidator.hostMatchesDomain(frame.path, "jma.go.jp")
+        val isUs = RadarUrlValidator.hostMatchesDomain(frame.tileUrlTemplate, "mesonet.agron.iastate.edu") ||
+                RadarUrlValidator.hostMatchesDomain(frame.path, "mesonet.agron.iastate.edu")
         val transparency = if (isJma) 0.32f else if (isUs) 0.28f else 0.42f
 
         val provider = RadarTileProvider(frame, host, colorScheme)
@@ -1441,7 +1441,7 @@ private class RadarTileProvider(
     }
 
     private fun buildUrl(x: Int, y: Int, z: Int): String? {
-        return if (!frame.tileUrlTemplate.isNullOrBlank()) {
+        val candidate = if (!frame.tileUrlTemplate.isNullOrBlank()) {
             val nowSec = System.currentTimeMillis() / 1000L
             val diffMin = ((frame.time - nowSec) / 60.0).coerceAtLeast(0.0)
             val snappedMin = (Math.round(diffMin / 15.0) * 15).toInt().coerceIn(0, 1080)
@@ -1460,7 +1460,7 @@ private class RadarTileProvider(
                 .replace("{z}", z.toString())
                 .replace("{x}", x.toString())
                 .replace("{y}", y.toString())
-        } else if (frame.path.startsWith("http")) {
+        } else if (frame.path.startsWith("https://", ignoreCase = true)) {
             val nowSec = System.currentTimeMillis() / 1000L
             val diffMin = ((frame.time - nowSec) / 60.0).coerceAtLeast(0.0)
             val snappedMin = (Math.round(diffMin / 15.0) * 15).toInt().coerceIn(0, 1080)
@@ -1484,6 +1484,7 @@ private class RadarTileProvider(
             val cleanPath = if (frame.path.startsWith('/')) frame.path else "/${frame.path}"
             "$cleanHost$cleanPath/256/$z/$x/$y/${colorScheme.id}/1_1.png"
         }
+        return if (RadarUrlValidator.isAllowedRadarUrl(candidate)) candidate else null
     }
 
     private fun getOrDownloadBytes(urlString: String): ByteArray? {

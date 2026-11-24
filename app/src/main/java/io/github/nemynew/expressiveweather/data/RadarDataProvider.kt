@@ -233,8 +233,15 @@ class RainViewerRadarProvider(
             val frames = mutableListOf<RadarTimelineFrame>()
             val timeFmt = timeFormatLocal.get()!!
 
+            val safeHost = if (RadarUrlValidator.isValidRainViewerHost(response.host)) {
+                response.host.trim().trimEnd('/')
+            } else {
+                "https://tilecache.rainviewer.com"
+            }
+
             response.radar.past.forEach { f ->
-                val template = "${response.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png"
+                if (!RadarUrlValidator.isValidRainViewerPath(f.path)) return@forEach
+                val template = "$safeHost${f.path}/256/{z}/{x}/{y}/2/1_1.png"
                 val timeStr = timeFmt.format(Date(f.time * 1000L))
                 frames.add(
                     RadarTimelineFrame(
@@ -250,7 +257,8 @@ class RainViewerRadarProvider(
                 )
             }
             response.radar.nowcast.forEach { f ->
-                val template = "${response.host}${f.path}/256/{z}/{x}/{y}/2/1_1.png"
+                if (!RadarUrlValidator.isValidRainViewerPath(f.path)) return@forEach
+                val template = "$safeHost${f.path}/256/{z}/{x}/{y}/2/1_1.png"
                 val timeStr = timeFmt.format(Date(f.time * 1000L))
                 frames.add(
                     RadarTimelineFrame(

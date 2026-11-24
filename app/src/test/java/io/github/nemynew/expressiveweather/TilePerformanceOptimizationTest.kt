@@ -112,9 +112,17 @@ class TilePerformanceOptimizationTest {
         val tagToCancel = "frame_outdated_1000"
         val tagToKeep = "frame_latest_2000"
 
-        // バックグラウンドプリフェッチを発注
-        val job1 = tileRepository.prefetchTile("key1", "http://example.com/slow1.png", tagToCancel)
-        val job2 = tileRepository.prefetchTile("key2", "http://example.com/slow2.png", tagToKeep)
+        // バックグラウンドプリフェッチを発注（許可済み HTTPS レーダー URL を使用）
+        val job1 = tileRepository.prefetchTile(
+            "key1",
+            "https://www.jma.go.jp/bosai/jmatile/data/nowc/20260926000000/none/20260926000000/surf/hrpns/8/227/100.png",
+            tagToCancel
+        )
+        val job2 = tileRepository.prefetchTile(
+            "key2",
+            "https://www.jma.go.jp/bosai/jmatile/data/nowc/20260926000000/none/20260926000000/surf/hrpns/8/227/101.png",
+            tagToKeep
+        )
 
         assertFalse("Job 1 should start active", job1.isCancelled)
         assertFalse("Job 2 should start active", job2.isCancelled)

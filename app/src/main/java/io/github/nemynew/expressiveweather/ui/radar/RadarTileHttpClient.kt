@@ -1,6 +1,8 @@
 package io.github.nemynew.expressiveweather.ui.radar
 
 import android.util.Log
+import io.github.nemynew.expressiveweather.data.AppHttpClient
+import io.github.nemynew.expressiveweather.data.RadarUrlValidator
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -8,6 +10,7 @@ import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.ConnectionPool
 import okhttp3.Dispatcher
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -28,6 +31,9 @@ object RadarTileHttpClient {
     private const val USER_AGENT =
         "ExpressiveWeather/1.0 (Android; +https://github.com/nemy-new/Expressive-Weather)"
 
+    /** タイル 1 枚あたりの最大許可レスポンスサイズ (2 MiB) */
+    const val MAX_TILE_BYTES: Long = AppHttpClient.DEFAULT_MAX_BINARY_BYTES
+
     // 公共タイルサーバーへの負荷に配慮した適度な並列ディスパッチャ
     private val dispatcher = Dispatcher().apply {
         maxRequests = 24
@@ -41,11 +47,23 @@ object RadarTileHttpClient {
         timeUnit = TimeUnit.MINUTES
     )
 
+    // リダイレクト先を含め、すべての実通信直前に許可された HTTPS レーダー URL であることを強制検証
+    private val radarUrlEnforcementInterceptor = Interceptor { chain ->
+        val req = chain.request()
+        if (!RadarUrlValidator.validateRadarHttpUrl(req.url)) {
+            throw IOException("Blocked disallowed radar URL: host=${req.url.host}")
+        }
+        chain.proceed(req)
+    }
+
     val client: OkHttpClient = OkHttpClient.Builder()
         .dispatcher(dispatcher)
         .connectionPool(connectionPool)
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(5, TimeUnit.SECONDS)
+        .callTimeout(10, TimeUnit.SECONDS)
+        .followSslRedirects(false)
+        .addNetworkInterceptor(radarUrlEnforcementInterceptor)
         .retryOnConnectionFailure(true)
         .build()
 
@@ -94,11 +112,11 @@ object RadarTileHttpClient {
 
     internal fun getRefererForUrl(url: String): String {
         return try {
-            val host = URI(url).host ?: return "https://www.jma.go.jp/bosai/nowc/"
+            val host = URI(url).host?.lowercase() ?: return "https://www.jma.go.jp/bosai/nowc/"
             when {
-                host.contains("jma.go.jp") -> "https://www.jma.go.jp/bosai/nowc/"
-                host.contains("rainviewer.com") -> "https://www.rainviewer.com/"
-                host.contains("iastate.edu") -> "https://mesonet.agron.iastate.edu/"
+                RadarUrlValidator.hostMatchesDomain(host, "jma.go.jp") -> "https://www.jma.go.jp/bosai/nowc/"
+                RadarUrlValidator.hostMatchesDomain(host, "rainviewer.com") -> "https://www.rainviewer.com/"
+                RadarUrlValidator.hostMatchesDomain(host, "iastate.edu") -> "https://mesonet.agron.iastate.edu/"
                 else -> "https://$host/"
             }
         } catch (_: Exception) {
@@ -117,11 +135,8 @@ object RadarTileHttpClient {
      * 画面表示時に既存接続が利用できる可能性を高めます。
      */
     fun prewarm(url: String) {
-        val host = try {
-            URI(url).host ?: return
-        } catch (_: Exception) {
-            return
-        }
+        val validatedUrl = RadarUrlValidator.validateRadarUrl(url) ?: return
+        val host = validatedUrl.host
         val now = System.currentTimeMillis()
         val nextPrewarmAt = now + 4 * 60 * 1000L
         while (true) {
@@ -137,7 +152,7 @@ object RadarTileHttpClient {
 
         val request = try {
             Request.Builder()
-                .url(url)
+                .url(validatedUrl)
                 .head()
                 .header("User-Agent", USER_AGENT)
                 .header("Accept", "*/*")
@@ -166,9 +181,10 @@ object RadarTileHttpClient {
      */
     fun getTileBytes(urlString: String): ByteArray? {
         if (urlString.isBlank() || isTemporarilyKnownEmpty(urlString)) return null
+        val validatedUrl = RadarUrlValidator.validateRadarUrl(urlString) ?: return null
         val request = try {
             Request.Builder()
-                .url(urlString)
+                .url(validatedUrl)
                 .header("User-Agent", USER_AGENT)
                 .header("Accept", "image/png,image/jpeg,image/webp,image/*;q=0.8,*/*;q=0.5")
                 .build()
@@ -185,7 +201,7 @@ object RadarTileHttpClient {
                     recordNegotiatedProtocol(urlString, res.protocol.toString())
                     val elapsedMs = (System.nanoTime() - startedAtNanos) / 1_000_000L
                     if (elapsedMs >= 750L) {
-                        val host = try { URI(urlString).host ?: "unknown" } catch (_: Exception) { "unknown" }
+                        val host = validatedUrl.host
                         Log.d(TAG, "Slow radar tile response: ${elapsedMs}ms, ${res.protocol}, HTTP ${res.code}, host=$host")
                     }
                     if (res.code == 404 || res.code == 204) {
@@ -193,8 +209,8 @@ object RadarTileHttpClient {
                         rememberNoTile(urlString)
                         return null
                     } else if (res.isSuccessful) {
-                        val bytes = res.body?.bytes()
-                        if (bytes != null && isValidImageBytes(bytes)) {
+                        val bytes = AppHttpClient.readBytesBounded(res.body, MAX_TILE_BYTES)
+                        if (isValidImageBytes(bytes)) {
                             noTileUntilMillis.remove(urlString)
                             downloaded = bytes
                             return@use
@@ -227,9 +243,10 @@ object RadarTileHttpClient {
      */
     suspend fun getTileBytesCancellable(urlString: String): ByteArray? {
         if (urlString.isBlank() || isTemporarilyKnownEmpty(urlString)) return null
+        val validatedUrl = RadarUrlValidator.validateRadarUrl(urlString) ?: return null
         val request = try {
             Request.Builder()
-                .url(urlString)
+                .url(validatedUrl)
                 .header("User-Agent", USER_AGENT)
                 .header("Accept", "image/png,image/jpeg,image/webp,image/*;q=0.8,*/*;q=0.5")
                 .build()
@@ -254,10 +271,12 @@ object RadarTileHttpClient {
                                     recordNegotiatedProtocol(urlString, res.protocol.toString())
                                     val elapsedMs = (System.nanoTime() - startedAtNanos) / 1_000_000L
                                     if (elapsedMs >= 750L) {
-                                        val host = try { URI(urlString).host ?: "unknown" } catch (_: Exception) { "unknown" }
+                                        val host = validatedUrl.host
                                         Log.d(TAG, "Slow radar tile response: ${elapsedMs}ms, ${res.protocol}, HTTP ${res.code}, host=$host")
                                     }
-                                    val bodyBytes = if (res.isSuccessful && res.code != 204) res.body?.bytes() else null
+                                    val bodyBytes = if (res.isSuccessful && res.code != 204) {
+                                        AppHttpClient.readBytesBounded(res.body, MAX_TILE_BYTES)
+                                    } else null
                                     if (cont.isActive) cont.resume(res.code to bodyBytes)
                                 }
                             } catch (e: Throwable) {
@@ -291,9 +310,10 @@ object RadarTileHttpClient {
     fun prefetchTiles(urls: List<String>, onTileDownloaded: (url: String, bytes: ByteArray) -> Unit) {
         for (url in urls) {
             if (url.isBlank() || isTemporarilyKnownEmpty(url)) continue
+            val validatedUrl = RadarUrlValidator.validateRadarUrl(url) ?: continue
             val request = try {
                 Request.Builder()
-                    .url(url)
+                    .url(validatedUrl)
                     .header("User-Agent", USER_AGENT)
                     .header("Accept", "image/png,image/jpeg,image/webp,image/*;q=0.8,*/*;q=0.5")
                     .build()
@@ -312,8 +332,8 @@ object RadarTileHttpClient {
                             if (res.code == 404 || res.code == 204) {
                                 rememberNoTile(url)
                             } else if (res.isSuccessful) {
-                                val bytes = res.body?.bytes()
-                                if (bytes != null && isValidImageBytes(bytes)) {
+                                val bytes = AppHttpClient.readBytesBounded(res.body, MAX_TILE_BYTES)
+                                if (isValidImageBytes(bytes)) {
                                     noTileUntilMillis.remove(url)
                                     onTileDownloaded(url, bytes)
                                 }

@@ -137,7 +137,7 @@ data class CachedTile(
      */
     fun getDiskCachedBytes(cacheKey: String, url: String): ByteArray? {
         val file = getDiskCacheFile(cacheKey, url)
-        return if (file != null && file.exists() && file.length() > 0) {
+        return if (file != null && file.exists() && file.length() in 1L..AppHttpClient.DEFAULT_MAX_BINARY_BYTES) {
             try {
                 file.readBytes()
             } catch (_: Exception) {
@@ -175,7 +175,7 @@ data class CachedTile(
 
         // 2. ディスクキャッシュチェック
         val diskFile = getDiskCacheFile(cacheKey, url)
-        if (diskFile != null && diskFile.exists() && diskFile.length() > 0) {
+        if (diskFile != null && diskFile.exists() && diskFile.length() in 1L..AppHttpClient.DEFAULT_MAX_BINARY_BYTES) {
             try {
                 val bytes = diskFile.readBytes()
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)

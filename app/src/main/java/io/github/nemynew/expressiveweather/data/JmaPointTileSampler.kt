@@ -412,6 +412,7 @@ object JmaPointTileSampler {
     }
 
     private suspend fun fetchAndDecodeTilePixels(tileUrl: String): CachedTilePixels? {
+        if (!RadarUrlValidator.isAllowedRadarUrl(tileUrl)) return null
         val now = System.currentTimeMillis()
         val cached = tilePixelCache[tileUrl]
         if (cached != null && (now - cached.fetchedAtMillis) < TILE_CACHE_TTL_MS) {
@@ -423,6 +424,12 @@ object JmaPointTileSampler {
             headers = mapOf("Referer" to "https://www.jma.go.jp/"),
             timeoutMs = 4_500L
         ) ?: return null
+
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        runCatching { BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds) }
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0 || bounds.outWidth > 2048 || bounds.outHeight > 2048) {
+            return null
+        }
 
         val bitmap: Bitmap? = try {
             BitmapFactory.decodeByteArray(bytes, 0, bytes.size)

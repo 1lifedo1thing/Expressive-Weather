@@ -62,6 +62,13 @@ class JmaNowcastRepository {
         }
     }
 
+    private fun isValidTargetTime(entry: JmaTargetTime): Boolean {
+        val member = if (entry.member.isNotBlank()) entry.member else "none"
+        return RadarUrlValidator.isValidJmaTimeToken(entry.basetime) &&
+            RadarUrlValidator.isValidJmaTimeToken(entry.validtime) &&
+            RadarUrlValidator.isValidJmaMemberToken(member)
+    }
+
     private fun parseUtcToEpochSeconds(timeStr: String): Long {
         return try {
             val date = utcDateFormatLocal.get()?.parse(timeStr)
@@ -245,7 +252,7 @@ class JmaNowcastRepository {
                 // 1. N1（過去実況ナウキャスト）
                 val rawN1 = json.decodeFromString<List<JmaTargetTime>>(n1Json)
                 val n1Entries = rawN1
-                    .filter { it.elements.isEmpty() || it.elements.contains("hrpns") }
+                    .filter { isValidTargetTime(it) && (it.elements.isEmpty() || it.elements.contains("hrpns")) }
                     .groupBy { it.validtime }
                     .mapValues { (_, list) -> list.maxByOrNull { it.basetime }!! }
                     .values
@@ -280,7 +287,7 @@ class JmaNowcastRepository {
                 // 2. N2（未来60分ナウキャスト、5分刻み：12フレーム）
                 val rawN2 = json.decodeFromString<List<JmaTargetTime>>(n2Json)
                 val n2Entries = rawN2
-                    .filter { it.elements.isEmpty() || it.elements.contains("hrpns") }
+                    .filter { isValidTargetTime(it) && (it.elements.isEmpty() || it.elements.contains("hrpns")) }
                     .groupBy { it.validtime }
                     .mapValues { (_, list) -> list.maxByOrNull { it.basetime }!! }
                     .values
@@ -312,7 +319,7 @@ class JmaNowcastRepository {
                         val maxFutureSec = latestEpochSec + 15 * 3600L + 1800L // 最大15時間後
 
                         val filteredRasrf = rawRasrf
-                            .filter { it.elements.contains("rasrf") }
+                            .filter { isValidTargetTime(it) && it.elements.contains("rasrf") }
                             .filter {
                                 val epoch = parseUtcToEpochSeconds(it.validtime)
                                 epoch > cutOffSec && epoch <= maxFutureSec
@@ -455,7 +462,7 @@ class JmaNowcastRepository {
                     try {
                         val jsonStr = fetchJsonWithRetry(targetUrl, maxRetries = 2)
                         val list = json.decodeFromString<List<JmaTargetTime>>(jsonStr)
-                        rawEntries.addAll(list)
+                        rawEntries.addAll(list.filter { isValidTargetTime(it) })
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Exception) {
