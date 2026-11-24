@@ -58,7 +58,7 @@ Requires **Android 7.0 (API 24)** or later.
 - **Obtainium (Recommended for automatic updates)**: Tap the **Get it on Obtainium** badge above to add Expressive Weather directly to [Obtainium](https://github.com/ImranR98/Obtainium) (pre-releases enabled).
 - **Direct APK Download**: Download the latest `app-github-release.apk` from [**GitHub Releases**](https://github.com/nemy-new/Expressive-Weather/releases).
 
-> **Google Play Store**: Distribution on the [Google Play Store](https://play.google.com/store) is also being considered for the future. Please check [GitHub Releases](https://github.com/nemy-new/Expressive-Weather/releases) for the latest availability and updates.
+> **Google Play Store**: Distribution on Google Play Store is also being considered for the future.
 
 ---
 

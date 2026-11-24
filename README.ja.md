@@ -58,7 +58,7 @@
 - **Obtainium（自動アップデート対応・推奨）**: 上の **GET IT ON Obtainium** バッジをタップすると、[Obtainium](https://github.com/ImranR98/Obtainium) に本アプリをワンタップで追加できます（プレリリース購読設定済み）。
 - **APK を直接ダウンロード**: [**GitHub Releases**](https://github.com/nemy-new/Expressive-Weather/releases) から最新の `app-github-release.apk` をダウンロードしてインストールできます。
 
-> **Google Play ストアでの配布について**: 今後は [Google Play ストア](https://play.google.com/store) での配布も検討しています。公開状況や最新リリースは [GitHub Releases](https://github.com/nemy-new/Expressive-Weather/releases) をご確認ください。
+> **Google Play ストアでの配布について**: 今後は Google Play ストアでの配布も検討しています。
 
 ---
 
