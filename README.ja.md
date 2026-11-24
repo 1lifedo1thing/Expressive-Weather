@@ -27,14 +27,14 @@
     <a href="LICENSE">
       <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License Apache-2.0" />
     </a>
+    <a href="https://github.com/nemy-new/Expressive-Weather/releases">
+      <img src="https://img.shields.io/badge/Download-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases からダウンロード" />
+    </a>
   </p>
 
   <p>
     <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22io.github.nemynew.expressiveweather%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fnemy-new%2FExpressive-Weather%22%2C%22author%22%3A%22nemy-new%22%2C%22name%22%3A%22Expressive%20Weather%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%7D">
-      <img src="https://img.shields.io/badge/Get_it_on-Obtainium-8E44AD?style=for-the-badge&logo=android&logoColor=white" alt="Obtainium に追加" />
-    </a>
-    <a href="https://github.com/nemy-new/Expressive-Weather/releases">
-      <img src="https://img.shields.io/badge/Download-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases からダウンロード" />
+      <img src="docs/images/badge_obtainium.png" alt="Get it on Obtainium" height="48" />
     </a>
   </p>
 </div>
