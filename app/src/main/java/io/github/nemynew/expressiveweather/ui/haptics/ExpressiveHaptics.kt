@@ -35,27 +35,89 @@ import kotlin.math.roundToInt
 enum class HapticDeviceProfile(
     val id: String,
     val labelJa: String,
+    val labelKo: String,
+    val labelZhCn: String,
+    val labelZhTw: String,
+    val labelEs: String,
+    val labelFr: String,
+    val labelPt: String,
     val labelEn: String
 ) {
     /** Google Pixel 等のプリミティブ完全対応 LRA (線形共振アクチュエータ) */
-    HIGH_DEF_LRA("high_def_lra", "高精細 LRA (プリミティブ合成)", "High-Def LRA (Composition Primitives)"),
+    HIGH_DEF_LRA(
+        "high_def_lra",
+        "高精細 LRA (プリミティブ合成)",
+        "고정밀 LRA (프리미티브 합성)",
+        "高精度 LRA（基元合成）",
+        "高精細 LRA（基元合成）",
+        "LRA de alta definición (primitivas)",
+        "LRA haute définition (primitives)",
+        "LRA de alta definição (primitivas)",
+        "High-Def LRA (Composition Primitives)"
+    ),
 
     /** Samsung Galaxy 系 X軸リニアモーター最適化 (タイトなトランジェント・サチュレーション抑制) */
-    SAMSUNG_HD_LRA("samsung_hd_lra", "Galaxy HD リニアモーター最適化", "Samsung Galaxy HD LRA"),
+    SAMSUNG_HD_LRA(
+        "samsung_hd_lra",
+        "Galaxy HD リニアモーター最適化",
+        "Galaxy HD 리니어 모터 최적화",
+        "Galaxy HD 线性马达优化",
+        "Galaxy HD 線性馬達最佳化",
+        "LRA HD Samsung Galaxy",
+        "LRA HD Samsung Galaxy",
+        "LRA HD Samsung Galaxy",
+        "Samsung Galaxy HD LRA"
+    ),
 
     /** 振幅制御対応モーター (API 26+ Waveform Envelope) */
-    AMPLITUDE_WAVEFORM("amplitude_waveform", "振幅制御ウェーブフォーム", "Amplitude-Controlled Waveform"),
+    AMPLITUDE_WAVEFORM(
+        "amplitude_waveform",
+        "振幅制御ウェーブフォーム",
+        "진폭 제어 웨이브폼",
+        "振幅控制波形",
+        "振幅控制波形",
+        "Onda con control de amplitud",
+        "Forme d'onde à amplitude contrôlée",
+        "Forma de onda com controle de amplitude",
+        "Amplitude-Controlled Waveform"
+    ),
 
     /** 従来型 ERM / 時間制御モーター (スピンアップ補正付き) */
-    LEGACY_TIMED_ERM("legacy_timed_erm", "標準タイミング制御 (ERM)", "Timed Pulse (ERM)"),
+    LEGACY_TIMED_ERM(
+        "legacy_timed_erm",
+        "標準タイミング制御 (ERM)",
+        "표준 타이밍 제어 (ERM)",
+        "标准时序控制 (ERM)",
+        "標準時序控制 (ERM)",
+        "Pulso temporizado (ERM)",
+        "Impulsion temporisée (ERM)",
+        "Pulso temporizado (ERM)",
+        "Timed Pulse (ERM)"
+    ),
 
     /** バイブレータ非搭載 (タブレット等) */
-    NONE("none", "ハードウェア非搭載 (システム委譲)", "No Vibrator Hardware")
+    NONE(
+        "none",
+        "ハードウェア非搭載 (システム委譲)",
+        "진동 하드웨어 없음 (시스템 위임)",
+        "无振动硬件（系统托管）",
+        "無震動硬體（系統委派）",
+        "Sin hardware de vibración",
+        "Aucun matériel de vibration",
+        "Sem hardware de vibração",
+        "No Vibrator Hardware"
+    )
     ;
 
     fun getLabel(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
-        else -> labelEn
+        AppLanguage.KOREAN -> labelKo
+        AppLanguage.SIMPLIFIED_CHINESE -> labelZhCn
+        AppLanguage.TRADITIONAL_CHINESE -> labelZhTw
+        AppLanguage.SPANISH -> labelEs
+        AppLanguage.FRENCH -> labelFr
+        AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.ENGLISH -> labelEn
     }
 }
 

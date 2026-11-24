@@ -228,39 +228,39 @@ object WmoAlertRepository {
     private fun isCountryMatching(urlLower: String, mid: String, countryLower: String): Boolean {
         if (countryLower.isBlank()) return false
         val prefixMap = mapOf(
-            "de-dwd" to listOf("germany", "deutschland", "ドイツ"),
-            "ca-msc" to listOf("canada", "カナダ"),
-            "au-bom" to listOf("australia", "オーストラリア"),
-            "cn-cma" to listOf("china", "中国"),
-            "gb-met" to listOf("united kingdom", "uk", "great britain", "england", "scotland", "wales", "イギリス", "英国"),
-            "uk-met" to listOf("united kingdom", "uk", "great britain", "england", "scotland", "wales", "イギリス", "英国"),
-            "fr-met" to listOf("france", "フランス"),
-            "it-met" to listOf("italy", "italia", "イタリア"),
-            "es-aem" to listOf("spain", "españa", "スペイン"),
-            "kr-kma" to listOf("south korea", "korea", "韓国"),
-            "in-imd" to listOf("india", "インド"),
-            "br-inm" to listOf("brazil", "brasil", "ブラジル"),
-            "za-saw" to listOf("south africa", "南アフリカ"),
-            "ph-pag" to listOf("philippines", "フィリピン"),
-            "th-tmd" to listOf("thailand", "タイ"),
-            "id-bmk" to listOf("indonesia", "インドネシア"),
-            "id-ina" to listOf("indonesia", "インドネシア"),
-            "nz-met" to listOf("new zealand", "ニュージーランド"),
-            "ch-met" to listOf("switzerland", "schweiz", "suisse", "スイス"),
-            "at-zam" to listOf("austria", "österreich", "オーストリア"),
-            "nl-knm" to listOf("netherlands", "holland", "オランダ"),
-            "be-rmi" to listOf("belgium", "belgique", "ベルギー"),
-            "se-smh" to listOf("sweden", "sverige", "スウェーデン"),
-            "no-met" to listOf("norway", "norge", "ノルウェー"),
-            "fi-fmi" to listOf("finland", "suomi", "フィンランド"),
-            "dk-dmi" to listOf("denmark", "danmark", "デンマーク"),
-            "ie-met" to listOf("ireland", "アイルランド"),
-            "pl-img" to listOf("poland", "polska", "ポーランド"),
-            "pt-ipm" to listOf("portugal", "ポルトガル"),
-            "gr-hnm" to listOf("greece", "ギリシャ"),
-            "kg-met" to listOf("kyrgyzstan", "キルギス"),
-            "us-noa" to listOf("united states", "usa", "us", "america", "アメリカ", "米国"),
-            "jp-jma" to listOf("japan", "日本")
+            "de-dwd" to listOf("germany", "deutschland", "alemania", "allemagne", "alemanha", "ドイツ", "독일"),
+            "ca-msc" to listOf("canada", "canadá", "カナダ", "캐나다"),
+            "au-bom" to listOf("australia", "australie", "austrália", "オーストラリア", "호주"),
+            "cn-cma" to listOf("china", "chine", "中国", "중국"),
+            "gb-met" to listOf("united kingdom", "uk", "great britain", "england", "scotland", "wales", "reino unido", "royaume-uni", "royaume uni", "gran bretaña", "grande-bretagne", "grã-bretanha", "inglaterra", "angleterre", "イギリス", "英国", "영국"),
+            "uk-met" to listOf("united kingdom", "uk", "great britain", "england", "scotland", "wales", "reino unido", "royaume-uni", "royaume uni", "gran bretaña", "grande-bretagne", "grã-bretanha", "inglaterra", "angleterre", "イギリス", "英国", "영국"),
+            "fr-met" to listOf("france", "francia", "frança", "franca", "フランス", "프랑스"),
+            "it-met" to listOf("italy", "italia", "italie", "itália", "イタリア", "이탈리아"),
+            "es-aem" to listOf("spain", "españa", "espana", "espagne", "espanha", "スペイン", "스페인"),
+            "kr-kma" to listOf("south korea", "korea", "corea del sur", "corea", "corée du sud", "coree du sud", "corée", "coreia do sul", "coréia do sul", "coreia", "韓国", "大韓民国", "대한민국", "한국"),
+            "in-imd" to listOf("india", "inde", "índia", "インド", "인도"),
+            "br-inm" to listOf("brazil", "brasil", "brésil", "bresil", "ブラジル", "브라질"),
+            "za-saw" to listOf("south africa", "sudáfrica", "sudafrica", "afrique du sud", "áfrica do sul", "africa do sul", "南アフリカ", "남아프리카"),
+            "ph-pag" to listOf("philippines", "filipinas", "フィリピン", "필리핀"),
+            "th-tmd" to listOf("thailand", "tailandia", "thaïlande", "thailande", "tailândia", "タイ", "태국"),
+            "id-bmk" to listOf("indonesia", "indonésie", "indonesie", "indonésia", "インドネシア", "인도네시아"),
+            "id-ina" to listOf("indonesia", "indonésie", "indonesie", "indonésia", "インドネシア", "인도네시아"),
+            "nz-met" to listOf("new zealand", "nueva zelanda", "nouvelle-zélande", "nouvelle-zelande", "nova zelândia", "nova zelandia", "ニュージーランド", "뉴질랜드"),
+            "ch-met" to listOf("switzerland", "schweiz", "suisse", "suiza", "suíça", "suica", "スイス", "스위스"),
+            "at-zam" to listOf("austria", "österreich", "autriche", "áustria", "オーストリア", "오스트리아"),
+            "nl-knm" to listOf("netherlands", "holland", "países bajos", "paises bajos", "holanda", "pays-bas", "pays bas", "países baixos", "paises baixos", "オランダ", "네덜란드"),
+            "be-rmi" to listOf("belgium", "belgique", "bélgica", "belgica", "ベルギー", "벨기에"),
+            "se-smh" to listOf("sweden", "sverige", "suecia", "suède", "suede", "suécia", "スウェーデン", "스웨덴"),
+            "no-met" to listOf("norway", "norge", "noruega", "norvège", "norvege", "ノルウェー", "노르웨이"),
+            "fi-fmi" to listOf("finland", "suomi", "finlandia", "finlande", "finlândia", "フィンランド", "핀란드"),
+            "dk-dmi" to listOf("denmark", "danmark", "dinamarca", "danemark", "デンマーク", "덴마크"),
+            "ie-met" to listOf("ireland", "irlanda", "irlande", "アイルランド", "아일랜드"),
+            "pl-img" to listOf("poland", "polska", "polonia", "pologne", "polônia", "polónia", "ポーランド", "폴란드"),
+            "pt-ipm" to listOf("portugal", "ポルトガル", "포르투갈"),
+            "gr-hnm" to listOf("greece", "grecia", "grèce", "grece", "grécia", "ギリシャ", "그리스"),
+            "kg-met" to listOf("kyrgyzstan", "kirguistán", "kirguistan", "kirghizistan", "quirguistão", "quirguistao", "キルギス", "키르기스스탄"),
+            "us-noa" to listOf("united states", "usa", "us", "america", "estados unidos", "états-unis", "etats-unis", "ee. uu.", "ee.uu.", "eua", "アメリカ", "米国", "미국"),
+            "jp-jma" to listOf("japan", "japón", "japon", "japão", "japao", "日本", "일본")
         )
 
         for ((prefix, countryKeywords) in prefixMap) {
@@ -279,13 +279,13 @@ object WmoAlertRepository {
         }
 
         // mid (WMO国コード) による判定
-        if (mid == "001" && (countryLower.contains("china") || countryLower.contains("中国"))) return true
-        if (mid == "016" && (countryLower.contains("germany") || countryLower.contains("ドイツ"))) return true
-        if (mid == "056" && (countryLower.contains("canada") || countryLower.contains("カナダ"))) return true
-        if (mid == "185" && (countryLower.contains("australia") || countryLower.contains("オーストラリア"))) return true
-        if (mid == "043" && (countryLower.contains("indonesia") || countryLower.contains("インドネシア"))) return true
-        if (mid == "177" && (countryLower.contains("kyrgyz") || countryLower.contains("キルギス"))) return true
-        if (mid == "093" && (countryLower.contains("united states") || countryLower.contains("usa") || countryLower.contains("米国"))) return true
+        if (mid == "001" && (countryLower.contains("china") || countryLower.contains("chine") || countryLower.contains("中国"))) return true
+        if (mid == "016" && (countryLower.contains("germany") || countryLower.contains("alemania") || countryLower.contains("allemagne") || countryLower.contains("alemanha") || countryLower.contains("ドイツ"))) return true
+        if (mid == "056" && (countryLower.contains("canada") || countryLower.contains("canadá") || countryLower.contains("カナダ"))) return true
+        if (mid == "185" && (countryLower.contains("australia") || countryLower.contains("australie") || countryLower.contains("austrália") || countryLower.contains("オーストラリア"))) return true
+        if (mid == "043" && (countryLower.contains("indonesia") || countryLower.contains("indonésie") || countryLower.contains("indonesie") || countryLower.contains("indonésia") || countryLower.contains("インドネシア"))) return true
+        if (mid == "177" && (countryLower.contains("kyrgyz") || countryLower.contains("kirguis") || countryLower.contains("kirghiz") || countryLower.contains("quirguis") || countryLower.contains("キルギス"))) return true
+        if (mid == "093" && (countryLower.contains("united states") || countryLower.contains("usa") || countryLower.contains("estados unidos") || countryLower.contains("états-unis") || countryLower.contains("etats-unis") || countryLower == "eua" || countryLower.contains("米国"))) return true
 
         return false
     }

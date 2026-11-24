@@ -61,98 +61,115 @@ object MeteoAlarmRepository {
      */
     private val COUNTRY_SLUG_MAP = mapOf(
         // 1. Andorra
-        "andorra" to "andorra", "ad" to "andorra", "and" to "andorra", "アンドラ" to "andorra",
+        "andorra" to "andorra", "andorre" to "andorra", "ad" to "andorra", "and" to "andorra", "アンドラ" to "andorra", "안도라" to "andorra",
         // 2. Austria
-        "austria" to "austria", "at" to "austria", "aut" to "austria", "österreich" to "austria", "oesterreich" to "austria", "オーストリア" to "austria",
+        "austria" to "austria", "autriche" to "austria", "áustria" to "austria", "at" to "austria", "aut" to "austria", "österreich" to "austria", "oesterreich" to "austria", "オーストリア" to "austria", "오스트리아" to "austria",
         // 3. Belgium
-        "belgium" to "belgium", "be" to "belgium", "bel" to "belgium", "belgique" to "belgium", "belgië" to "belgium", "belgie" to "belgium", "ベルギー" to "belgium",
+        "belgium" to "belgium", "bélgica" to "belgium", "belgica" to "belgium", "be" to "belgium", "bel" to "belgium", "belgique" to "belgium", "belgië" to "belgium", "belgie" to "belgium", "ベルギー" to "belgium", "벨기에" to "belgium",
         // 4. Bosnia and Herzegovina
         "bosnia and herzegovina" to "bosnia-herzegovina", "bosnia-herzegovina" to "bosnia-herzegovina", "bosnia" to "bosnia-herzegovina",
-        "ba" to "bosnia-herzegovina", "bih" to "bosnia-herzegovina", "ボスニア" to "bosnia-herzegovina", "ボスニア・ヘルツェゴビナ" to "bosnia-herzegovina",
+        "bosnia y herzegovina" to "bosnia-herzegovina", "bosnie-herzégovine" to "bosnia-herzegovina", "bosnie-herzegovine" to "bosnia-herzegovina", "bosnie" to "bosnia-herzegovina",
+        "bósnia e herzegovina" to "bosnia-herzegovina", "bosnia e herzegovina" to "bosnia-herzegovina", "bósnia" to "bosnia-herzegovina",
+        "ba" to "bosnia-herzegovina", "bih" to "bosnia-herzegovina", "ボスニア" to "bosnia-herzegovina", "ボスニア・ヘルツェゴビナ" to "bosnia-herzegovina", "보스니아" to "bosnia-herzegovina",
         // 5. Bulgaria
-        "bulgaria" to "bulgaria", "bg" to "bulgaria", "bgr" to "bulgaria", "ブルガリア" to "bulgaria",
+        "bulgaria" to "bulgaria", "bulgarie" to "bulgaria", "bulgária" to "bulgaria", "bg" to "bulgaria", "bgr" to "bulgaria", "ブルガリア" to "bulgaria", "불가리아" to "bulgaria",
         // 6. Croatia
-        "croatia" to "croatia", "hr" to "croatia", "hrv" to "croatia", "hrvatska" to "croatia", "クロアチア" to "croatia",
+        "croatia" to "croatia", "croacia" to "croatia", "croatie" to "croatia", "croácia" to "croatia", "hr" to "croatia", "hrv" to "croatia", "hrvatska" to "croatia", "クロアチア" to "croatia", "크로아티아" to "croatia",
         // 7. Cyprus
-        "cyprus" to "cyprus", "cy" to "cyprus", "cyp" to "cyprus", "キプロス" to "cyprus",
+        "cyprus" to "cyprus", "chipre" to "cyprus", "chypre" to "cyprus", "cy" to "cyprus", "cyp" to "cyprus", "キプロス" to "cyprus", "키프로스" to "cyprus",
         // 8. Czechia
-        "czechia" to "czechia", "czech republic" to "czechia", "cz" to "czechia", "cze" to "czechia", "česko" to "czechia", "cesko" to "czechia", "チェコ" to "czechia", "チェコ共和国" to "czechia",
+        "czechia" to "czechia", "czech republic" to "czechia", "chequia" to "czechia", "república checa" to "czechia", "republica checa" to "czechia",
+        "tchéquie" to "czechia", "tchequie" to "czechia", "république tchèque" to "czechia", "republique tcheque" to "czechia",
+        "chéquia" to "czechia", "tchéquia" to "czechia", "república tcheca" to "czechia", "republica tcheca" to "czechia",
+        "cz" to "czechia", "cze" to "czechia", "česko" to "czechia", "cesko" to "czechia", "チェコ" to "czechia", "チェコ共和国" to "czechia", "체코" to "czechia",
         // 9. Denmark
-        "denmark" to "denmark", "dk" to "denmark", "dnk" to "denmark", "danmark" to "denmark", "デンマーク" to "denmark",
+        "denmark" to "denmark", "dinamarca" to "denmark", "danemark" to "denmark", "dk" to "denmark", "dnk" to "denmark", "danmark" to "denmark", "デンマーク" to "denmark", "덴마크" to "denmark",
         // 10. Estonia
-        "estonia" to "estonia", "ee" to "estonia", "est" to "estonia", "eesti" to "estonia", "エストニア" to "estonia",
+        "estonia" to "estonia", "estonie" to "estonia", "estônia" to "estonia", "estónia" to "estonia", "ee" to "estonia", "est" to "estonia", "eesti" to "estonia", "エストニア" to "estonia", "에스토니아" to "estonia",
         // 11. Finland
-        "finland" to "finland", "fi" to "finland", "fin" to "finland", "suomi" to "finland", "フィンランド" to "finland",
+        "finland" to "finland", "finlandia" to "finland", "finlande" to "finland", "finlândia" to "finland", "fi" to "finland", "fin" to "finland", "suomi" to "finland", "フィンランド" to "finland", "핀란드" to "finland",
         // 12. France (+ Monaco)
-        "france" to "france", "fr" to "france", "fra" to "france", "フランス" to "france",
-        "monaco" to "france", "mc" to "france", "mco" to "france", "モナコ" to "france",
+        "france" to "france", "francia" to "france", "frança" to "france", "franca" to "france", "fr" to "france", "fra" to "france", "フランス" to "france", "프랑스" to "france",
+        "monaco" to "france", "mónaco" to "france", "mônaco" to "france", "mc" to "france", "mco" to "france", "モナコ" to "france", "모나코" to "france",
         // 13. Germany
-        "germany" to "germany", "de" to "germany", "deu" to "germany", "deutschland" to "germany", "ドイツ" to "germany",
+        "germany" to "germany", "alemania" to "germany", "allemagne" to "germany", "alemanha" to "germany", "de" to "germany", "deu" to "germany", "deutschland" to "germany", "ドイツ" to "germany", "독일" to "germany",
         // 14. Greece
-        "greece" to "greece", "gr" to "greece", "grc" to "greece", "ギリシャ" to "greece", "ギリシア" to "greece",
+        "greece" to "greece", "grecia" to "greece", "grèce" to "greece", "grece" to "greece", "grécia" to "greece", "gr" to "greece", "grc" to "greece", "ギリシャ" to "greece", "ギリシア" to "greece", "그리스" to "greece",
         // 15. Hungary
-        "hungary" to "hungary", "hu" to "hungary", "hun" to "hungary", "magyarország" to "hungary", "magyarorszag" to "hungary", "ハンガリー" to "hungary",
+        "hungary" to "hungary", "hungría" to "hungary", "hungria" to "hungary", "hongrie" to "hungary", "hu" to "hungary", "hun" to "hungary", "magyarország" to "hungary", "magyarorszag" to "hungary", "ハンガリー" to "hungary", "헝가리" to "hungary",
         // 16. Iceland
-        "iceland" to "iceland", "is" to "iceland", "isl" to "iceland", "ísland" to "iceland", "アイスランド" to "iceland",
+        "iceland" to "iceland", "islandia" to "iceland", "islande" to "iceland", "islândia" to "iceland", "is" to "iceland", "isl" to "iceland", "ísland" to "iceland", "アイスランド" to "iceland", "아이슬란드" to "iceland",
         // 17. Ireland
-        "ireland" to "ireland", "ie" to "ireland", "irl" to "ireland", "éire" to "ireland", "eire" to "ireland", "アイルランド" to "ireland",
+        "ireland" to "ireland", "irlanda" to "ireland", "irlande" to "ireland", "ie" to "ireland", "irl" to "ireland", "éire" to "ireland", "eire" to "ireland", "アイルランド" to "ireland", "아일랜드" to "ireland",
         // 18. Israel
-        "israel" to "israel", "il" to "israel", "isr" to "israel", "イスラエル" to "israel",
+        "israel" to "israel", "israël" to "israel", "il" to "israel", "isr" to "israel", "イスラエル" to "israel", "이스라엘" to "israel",
         // 19. Italy (+ San Marino, Vatican)
-        "italy" to "italy", "it" to "italy", "ita" to "italy", "italia" to "italy", "イタリア" to "italy",
-        "san marino" to "italy", "sm" to "italy", "smr" to "italy", "サンマリノ" to "italy",
-        "vatican" to "italy", "va" to "italy", "vat" to "italy", "バチカン" to "italy", "ヴァチカン" to "italy",
+        "italy" to "italy", "italie" to "italy", "itália" to "italy", "it" to "italy", "ita" to "italy", "italia" to "italy", "イタリア" to "italy", "이탈리아" to "italy",
+        "san marino" to "italy", "saint-marin" to "italy", "são marinho" to "italy", "sao marinho" to "italy", "sm" to "italy", "smr" to "italy", "サンマリノ" to "italy", "산마리노" to "italy",
+        "vatican" to "italy", "vaticano" to "italy", "ciudad del vaticano" to "italy", "cidade do vaticano" to "italy", "va" to "italy", "vat" to "italy", "バチカン" to "italy", "ヴァチカン" to "italy", "바티칸" to "italy",
         // 20. Latvia
-        "latvia" to "latvia", "lv" to "latvia", "lva" to "latvia", "latvija" to "latvia", "ラトビア" to "latvia",
+        "latvia" to "latvia", "letonia" to "latvia", "lettonie" to "latvia", "letônia" to "latvia", "letónia" to "latvia", "lv" to "latvia", "lva" to "latvia", "latvija" to "latvia", "ラトビア" to "latvia", "라트비아" to "latvia",
         // 21. Lithuania
-        "lithuania" to "lithuania", "lt" to "lithuania", "ltu" to "lithuania", "lietuva" to "lithuania", "リトアニア" to "lithuania",
+        "lithuania" to "lithuania", "lituania" to "lithuania", "lituanie" to "lithuania", "lituânia" to "lithuania", "lt" to "lithuania", "ltu" to "lithuania", "lietuva" to "lithuania", "リトアニア" to "lithuania", "리투아니아" to "lithuania",
         // 22. Luxembourg
-        "luxembourg" to "luxembourg", "lu" to "luxembourg", "lux" to "luxembourg", "ルクセンブルク" to "luxembourg",
+        "luxembourg" to "luxembourg", "luxemburgo" to "luxembourg", "lu" to "luxembourg", "lux" to "luxembourg", "ルクセンブルク" to "luxembourg", "룩셈부르크" to "luxembourg",
         // 23. Malta
-        "malta" to "malta", "mt" to "malta", "mlt" to "malta", "マルタ" to "malta",
+        "malta" to "malta", "malte" to "malta", "mt" to "malta", "mlt" to "malta", "マルタ" to "malta", "몰타" to "malta",
         // 24. Moldova
-        "moldova" to "moldova", "md" to "moldova", "mda" to "moldova", "モルドバ" to "moldova",
+        "moldova" to "moldova", "moldavia" to "moldova", "moldavie" to "moldova", "moldávia" to "moldova", "md" to "moldova", "mda" to "moldova", "モルドバ" to "moldova", "몰도바" to "moldova",
         // 25. Montenegro
-        "montenegro" to "montenegro", "me" to "montenegro", "mne" to "montenegro", "crna gora" to "montenegro", "モンテネグロ" to "montenegro",
+        "montenegro" to "montenegro", "monténégro" to "montenegro", "me" to "montenegro", "mne" to "montenegro", "crna gora" to "montenegro", "モンテネグロ" to "montenegro", "몬테네그로" to "montenegro",
         // 26. Netherlands
-        "netherlands" to "netherlands", "nl" to "netherlands", "nld" to "netherlands", "nederland" to "netherlands", "holland" to "netherlands", "the netherlands" to "netherlands", "オランダ" to "netherlands",
+        "netherlands" to "netherlands", "nl" to "netherlands", "nld" to "netherlands", "nederland" to "netherlands", "holland" to "netherlands", "the netherlands" to "netherlands",
+        "países bajos" to "netherlands", "paises bajos" to "netherlands", "holanda" to "netherlands",
+        "pays-bas" to "netherlands", "pays bas" to "netherlands", "hollande" to "netherlands",
+        "países baixos" to "netherlands", "paises baixos" to "netherlands",
+        "オランダ" to "netherlands", "네덜란드" to "netherlands",
         // 27. Norway
-        "norway" to "norway", "no" to "norway", "nor" to "norway", "norge" to "norway", "ノルウェー" to "norway",
+        "norway" to "norway", "noruega" to "norway", "norvège" to "norway", "norvege" to "norway", "no" to "norway", "nor" to "norway", "norge" to "norway", "ノルウェー" to "norway", "노르웨이" to "norway",
         // 28. Poland
-        "poland" to "poland", "pl" to "poland", "pol" to "poland", "polska" to "poland", "ポーランド" to "poland",
+        "poland" to "poland", "polonia" to "poland", "pologne" to "poland", "polônia" to "poland", "polónia" to "poland", "pl" to "poland", "pol" to "poland", "polska" to "poland", "ポーランド" to "poland", "폴란드" to "poland",
         // 29. Portugal
-        "portugal" to "portugal", "pt" to "portugal", "prt" to "portugal", "ポルトガル" to "portugal",
+        "portugal" to "portugal", "pt" to "portugal", "prt" to "portugal", "ポルトガル" to "portugal", "포르투갈" to "portugal",
         // 30. North Macedonia (公式スラッグ: republic-of-north-macedonia)
         "republic-of-north-macedonia" to "republic-of-north-macedonia",
         "republic of north macedonia" to "republic-of-north-macedonia",
         "north macedonia" to "republic-of-north-macedonia",
         "north-macedonia" to "republic-of-north-macedonia",
         "macedonia" to "republic-of-north-macedonia",
+        "macedonia del norte" to "republic-of-north-macedonia",
+        "macédoine du nord" to "republic-of-north-macedonia", "macedoine du nord" to "republic-of-north-macedonia", "macédoine" to "republic-of-north-macedonia",
+        "macedônia do norte" to "republic-of-north-macedonia", "macedónia do norte" to "republic-of-north-macedonia", "macedônia" to "republic-of-north-macedonia", "macedónia" to "republic-of-north-macedonia",
         "mk" to "republic-of-north-macedonia", "mkd" to "republic-of-north-macedonia",
-        "北マケドニア" to "republic-of-north-macedonia", "マケドニア" to "republic-of-north-macedonia",
+        "北マケドニア" to "republic-of-north-macedonia", "マケドニア" to "republic-of-north-macedonia", "북마케도니아" to "republic-of-north-macedonia",
         // 31. Romania
-        "romania" to "romania", "ro" to "romania", "rou" to "romania", "românia" to "romania", "ルーマニア" to "romania",
+        "romania" to "romania", "rumanía" to "romania", "rumania" to "romania", "roumanie" to "romania", "romênia" to "romania", "roménia" to "romania", "romenia" to "romania", "ro" to "romania", "rou" to "romania", "românia" to "romania", "ルーマニア" to "romania", "루마니아" to "romania",
         // 32. Serbia (+ Kosovo)
-        "serbia" to "serbia", "rs" to "serbia", "srb" to "serbia", "srbija" to "serbia", "セルビア" to "serbia",
-        "kosovo" to "serbia", "xk" to "serbia", "xks" to "serbia", "コソボ" to "serbia",
+        "serbia" to "serbia", "serbie" to "serbia", "sérvia" to "serbia", "servia" to "serbia", "rs" to "serbia", "srb" to "serbia", "srbija" to "serbia", "セルビア" to "serbia", "세르비아" to "serbia",
+        "kosovo" to "serbia", "xk" to "serbia", "xks" to "serbia", "コソボ" to "serbia", "코소보" to "serbia",
         // 33. Slovakia
-        "slovakia" to "slovakia", "sk" to "slovakia", "svk" to "slovakia", "slovensko" to "slovakia", "スロバキア" to "slovakia", "スロヴァキア" to "slovakia",
+        "slovakia" to "slovakia", "eslovaquia" to "slovakia", "slovaquie" to "slovakia", "eslováquia" to "slovakia", "sk" to "slovakia", "svk" to "slovakia", "slovensko" to "slovakia", "スロバキア" to "slovakia", "スロヴァキア" to "slovakia", "슬로바키아" to "slovakia",
         // 34. Slovenia
-        "slovenia" to "slovenia", "si" to "slovenia", "svn" to "slovenia", "slovenija" to "slovenia", "スロベニア" to "slovenia",
+        "slovenia" to "slovenia", "eslovenia" to "slovenia", "slovénie" to "slovenia", "slovenie" to "slovenia", "eslovênia" to "slovenia", "eslovénia" to "slovenia", "si" to "slovenia", "svn" to "slovenia", "slovenija" to "slovenia", "スロベニア" to "slovenia", "슬로베니아" to "slovenia",
         // 35. Spain
-        "spain" to "spain", "es" to "spain", "esp" to "spain", "españa" to "spain", "espana" to "spain", "スペイン" to "spain",
+        "spain" to "spain", "espagne" to "spain", "espanha" to "spain", "es" to "spain", "esp" to "spain", "españa" to "spain", "espana" to "spain", "スペイン" to "spain", "스페인" to "spain",
         // 36. Sweden
-        "sweden" to "sweden", "se" to "sweden", "swe" to "sweden", "sverige" to "sweden", "スウェーデン" to "sweden",
+        "sweden" to "sweden", "suecia" to "sweden", "suède" to "sweden", "suede" to "sweden", "suécia" to "sweden", "se" to "sweden", "swe" to "sweden", "sverige" to "sweden", "スウェーデン" to "sweden", "스웨덴" to "sweden",
         // 37. Switzerland (+ Liechtenstein)
-        "switzerland" to "switzerland", "ch" to "switzerland", "che" to "switzerland", "schweiz" to "switzerland", "suisse" to "switzerland", "svizzera" to "switzerland", "スイス" to "switzerland",
-        "liechtenstein" to "switzerland", "li" to "switzerland", "lie" to "switzerland", "リヒテンシュタイン" to "switzerland",
+        "switzerland" to "switzerland", "suiza" to "switzerland", "suíça" to "switzerland", "suica" to "switzerland", "ch" to "switzerland", "che" to "switzerland", "schweiz" to "switzerland", "suisse" to "switzerland", "svizzera" to "switzerland", "スイス" to "switzerland", "스위스" to "switzerland",
+        "liechtenstein" to "switzerland", "li" to "switzerland", "lie" to "switzerland", "リヒテンシュタイン" to "switzerland", "리히텐슈타인" to "switzerland",
         // 38. Ukraine
-        "ukraine" to "ukraine", "ua" to "ukraine", "ukr" to "ukraine", "україна" to "ukraine", "ウクライナ" to "ukraine",
+        "ukraine" to "ukraine", "ucrania" to "ukraine", "ucrânia" to "ukraine", "ua" to "ukraine", "ukr" to "ukraine", "україна" to "ukraine", "ウクライナ" to "ukraine", "우크라이나" to "ukraine",
         // 39. United Kingdom (+ Gibraltar, Crown dependencies)
         "united kingdom" to "united-kingdom", "united-kingdom" to "united-kingdom", "uk" to "united-kingdom",
+        "reino unido" to "united-kingdom", "royaume-uni" to "united-kingdom", "royaume uni" to "united-kingdom",
+        "gran bretaña" to "united-kingdom", "gran bretana" to "united-kingdom", "grande-bretagne" to "united-kingdom", "grã-bretanha" to "united-kingdom",
+        "inglaterra" to "united-kingdom", "angleterre" to "united-kingdom", "escocia" to "united-kingdom", "écosse" to "united-kingdom", "escócia" to "united-kingdom",
+        "gales" to "united-kingdom", "pays de galles" to "united-kingdom", "país de gales" to "united-kingdom",
+        "irlanda del norte" to "united-kingdom", "irlande du nord" to "united-kingdom", "irlanda do norte" to "united-kingdom",
         "gb" to "united-kingdom", "gbr" to "united-kingdom", "great britain" to "united-kingdom",
         "england" to "united-kingdom", "scotland" to "united-kingdom", "wales" to "united-kingdom", "northern ireland" to "united-kingdom",
-        "イギリス" to "united-kingdom", "英国" to "united-kingdom",
+        "イギリス" to "united-kingdom", "英国" to "united-kingdom", "영국" to "united-kingdom",
         "gibraltar" to "united-kingdom", "gi" to "united-kingdom", "gib" to "united-kingdom", "ジブラルタル" to "united-kingdom",
         "isle of man" to "united-kingdom", "im" to "united-kingdom", "imn" to "united-kingdom", "マン島" to "united-kingdom",
         "jersey" to "united-kingdom", "je" to "united-kingdom", "jey" to "united-kingdom",
@@ -273,15 +290,24 @@ object MeteoAlarmRepository {
         // 4. 座標近傍判定フォールバック (ヨーロッパ・イスラエルの対象領域内)
         // ただし明示的に非加盟国名が指定されている場合は乗っ取らず WMO へ委譲する
         val nonMemberCountries = listOf(
-            "russia", "ロシア", "俄罗斯", "俄羅斯",
-            "turkey", "türkiye", "トルコ", "土耳其",
-            "belarus", "ベラルーシ", "白俄罗斯", "白俄羅斯",
-            "georgia", "ジョージア", "格鲁吉亚", "喬治亞",
-            "armenia", "アルメニア", "azerbaijan", "アゼルバイジャン",
-            "egypt", "エジプト", "morocco", "モロッコ", "algeria", "アルジェリア",
-            "tunisia", "チュニジア", "libya", "リビア", "syria", "シリア",
-            "lebanon", "レバノン", "jordan", "ヨルダン", "iraq", "イラク",
-            "saudi", "サウジアラビア", "iran", "イラン", "kazakhstan", "カザフスタン"
+            "russia", "rusia", "russie", "rússia", "ロシア", "俄罗斯", "俄羅斯",
+            "turkey", "türkiye", "turquía", "turquia", "turquie", "トルコ", "土耳其",
+            "belarus", "bielorrusia", "biélorussie", "bielorrússia", "bielorrussia", "ベラルーシ", "白俄罗斯", "白俄羅斯",
+            "georgia", "géorgie", "geórgia", "ジョージア", "格鲁吉亚", "喬治亞",
+            "armenia", "arménie", "armênia", "arménia", "アルメニア",
+            "azerbaijan", "azerbaiyán", "azerbaïdjan", "azerbaijão", "アゼルバイジャン",
+            "egypt", "egipto", "égypte", "egito", "エジプト",
+            "morocco", "marruecos", "maroc", "marrocos", "モロッコ",
+            "algeria", "argelia", "algérie", "argélia", "アルジェリア",
+            "tunisia", "túnez", "tunisie", "tunísia", "チュニジア",
+            "libya", "libia", "libye", "líbia", "リビア",
+            "syria", "siria", "syrie", "síria", "シリア",
+            "lebanon", "líbano", "liban", "libano", "レバノン",
+            "jordan", "jordania", "jordanie", "jordânia", "ヨルダン",
+            "iraq", "irak", "iraque", "イラク",
+            "saudi", "arabia saudita", "arabia saudí", "arabie saoudite", "arábia saudita", "サウジアラビア",
+            "iran", "irán", "irã", "イラン",
+            "kazakhstan", "kazajistán", "kazajstán", "cazaquistão", "カザフスタン"
         )
         if (country.isNotBlank() && nonMemberCountries.any { country.contains(it) }) {
             return null
@@ -398,6 +424,7 @@ object MeteoAlarmRepository {
                 text.contains("aufhebung") ||
                 text.contains("annulation") ||
                 text.contains("cancelación") ||
+                text.contains("cancelamento") ||
                 text.contains("iptali") ||
                 text.contains("anulowanie")
     }

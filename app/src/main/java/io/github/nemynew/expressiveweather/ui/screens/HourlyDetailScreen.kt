@@ -113,19 +113,27 @@ import java.util.Locale
  */
 enum class HourlyChartMetric(
     val labelJa: String,
+    val labelKo: String,
     val labelEn: String,
     val labelZhHans: String,
-    val labelZhHant: String
+    val labelZhHant: String,
+    val labelEs: String,
+    val labelFr: String,
+    val labelPt: String
 ) {
-    TEMPERATURE("気温", "Temperature", "气温", "氣溫"),
-    PRECIPITATION("降水", "Precipitation", "降水", "降水"),
-    WIND("風速", "Wind Speed", "风速", "風速");
+    TEMPERATURE("気温", "기온", "Temperature", "气温", "氣溫", "Temperatura", "Température", "Temperatura"),
+    PRECIPITATION("降水", "강수", "Precipitation", "降水", "降水", "Precipitación", "Précipitations", "Precipitação"),
+    WIND("風速", "풍속", "Wind Speed", "风速", "風速", "Viento", "Vent", "Vento");
 
     fun getLabel(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
+        AppLanguage.KOREAN -> labelKo
         AppLanguage.SIMPLIFIED_CHINESE -> labelZhHans
         AppLanguage.TRADITIONAL_CHINESE -> labelZhHant
         AppLanguage.ENGLISH -> labelEn
+        AppLanguage.SPANISH -> labelEs
+        AppLanguage.FRENCH -> labelFr
+        AppLanguage.PORTUGUESE -> labelPt
     }
 }
 
@@ -162,9 +170,13 @@ fun HourlyDetailScreen(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "天気データを読み込み中..."
+                        AppLanguage.KOREAN -> "날씨 데이터를 불러오는 중..."
                         AppLanguage.SIMPLIFIED_CHINESE -> "正在加载天气数据..."
                         AppLanguage.TRADITIONAL_CHINESE -> "正在載入天氣資料..."
                         AppLanguage.ENGLISH -> "Loading weather data..."
+                        AppLanguage.SPANISH -> "Cargando datos del tiempo..."
+                        AppLanguage.FRENCH -> "Chargement des données météo..."
+                        AppLanguage.PORTUGUESE -> "Carregando dados do tempo..."
                     },
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -172,9 +184,13 @@ fun HourlyDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "戻る"
+                            AppLanguage.KOREAN -> "뒤로"
                             AppLanguage.SIMPLIFIED_CHINESE -> "返回"
                             AppLanguage.TRADITIONAL_CHINESE -> "返回"
                             AppLanguage.ENGLISH -> "Back"
+                            AppLanguage.SPANISH -> "Atrás"
+                            AppLanguage.FRENCH -> "Retour"
+                            AppLanguage.PORTUGUESE -> "Voltar"
                         }
                     )
                 }
@@ -453,8 +469,12 @@ private fun HourlyTopBar(
                     imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = when (language) {
                         AppLanguage.JAPANESE -> "戻る"
+                        AppLanguage.KOREAN -> "뒤로"
                         AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "返回"
                         AppLanguage.ENGLISH -> "Back"
+                        AppLanguage.SPANISH -> "Atrás"
+                        AppLanguage.FRENCH -> "Retour"
+                        AppLanguage.PORTUGUESE -> "Voltar"
                     },
                     tint = colorScheme.onSurface,
                     modifier = Modifier.size(24.dp)
@@ -469,9 +489,13 @@ private fun HourlyTopBar(
             Text(
                 text = when (language) {
                     AppLanguage.JAPANESE -> "24時間の天気"
+                    AppLanguage.KOREAN -> "24시간 날씨"
                     AppLanguage.SIMPLIFIED_CHINESE -> "24小时天气预报"
                     AppLanguage.TRADITIONAL_CHINESE -> "24小時天氣預報"
                     AppLanguage.ENGLISH -> "24-Hour Forecast"
+                    AppLanguage.SPANISH -> "Pronóstico de 24 horas"
+                    AppLanguage.FRENCH -> "Prévisions sur 24 h"
+                    AppLanguage.PORTUGUESE -> "Previsão de 24 horas"
                 },
                 fontFamily = GoogleSansFlex,
                 fontWeight = FontWeight.Bold,
@@ -566,15 +590,23 @@ private fun SelectedHourHeroCard(
                             text = if (item.isDay) {
                                 when (language) {
                                     AppLanguage.JAPANESE -> "昼間"
+                                    AppLanguage.KOREAN -> "주간"
                                     AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "白天"
                                     AppLanguage.ENGLISH -> "Day"
+                                    AppLanguage.SPANISH -> "Día"
+                                    AppLanguage.FRENCH -> "Jour"
+                                    AppLanguage.PORTUGUESE -> "Dia"
                                 }
                             } else {
                                 when (language) {
                                     AppLanguage.JAPANESE -> "夜間"
+                                    AppLanguage.KOREAN -> "야간"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "夜间"
                                     AppLanguage.TRADITIONAL_CHINESE -> "夜間"
                                     AppLanguage.ENGLISH -> "Night"
+                                    AppLanguage.SPANISH -> "Noche"
+                                    AppLanguage.FRENCH -> "Nuit"
+                                    AppLanguage.PORTUGUESE -> "Noite"
                                 }
                             },
                             fontFamily = GoogleSansFlex,
@@ -622,9 +654,13 @@ private fun SelectedHourHeroCard(
                     icon = Icons.Rounded.Opacity,
                     label = when (language) {
                         AppLanguage.JAPANESE -> "湿度"
+                        AppLanguage.KOREAN -> "습도"
                         AppLanguage.SIMPLIFIED_CHINESE -> "湿度"
                         AppLanguage.TRADITIONAL_CHINESE -> "濕度"
                         AppLanguage.ENGLISH -> "Humidity"
+                        AppLanguage.SPANISH -> "Humedad"
+                        AppLanguage.FRENCH -> "Humidité"
+                        AppLanguage.PORTUGUESE -> "Umidade"
                     },
                     value = "${item.humidity}%",
                     modifier = Modifier.weight(1f)
@@ -633,9 +669,13 @@ private fun SelectedHourHeroCard(
                     icon = Icons.Rounded.Air,
                     label = when (language) {
                         AppLanguage.JAPANESE -> "風速"
+                        AppLanguage.KOREAN -> "풍속"
                         AppLanguage.SIMPLIFIED_CHINESE -> "风速"
                         AppLanguage.TRADITIONAL_CHINESE -> "風速"
                         AppLanguage.ENGLISH -> "Wind"
+                        AppLanguage.SPANISH -> "Viento"
+                        AppLanguage.FRENCH -> "Vent"
+                        AppLanguage.PORTUGUESE -> "Vento"
                     },
                     value = windSpeedUnit.formatCompact(item.windSpeedKmH, language),
                     modifier = Modifier.weight(1f)
@@ -644,9 +684,13 @@ private fun SelectedHourHeroCard(
                     icon = Icons.Rounded.WaterDrop,
                     label = when (language) {
                         AppLanguage.JAPANESE -> "降水確率"
+                        AppLanguage.KOREAN -> "강수확률"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降水概率"
                         AppLanguage.TRADITIONAL_CHINESE -> "降水機率"
                         AppLanguage.ENGLISH -> "Precip"
+                        AppLanguage.SPANISH -> "Lluvia"
+                        AppLanguage.FRENCH -> "Pluie"
+                        AppLanguage.PORTUGUESE -> "Chuva"
                     },
                     value = "${item.precipProb}%",
                     modifier = Modifier.weight(1f)
@@ -743,9 +787,13 @@ private fun HourlyInteractiveTimelineCard(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "タイムライン"
+                        AppLanguage.KOREAN -> "시간별 타임라인"
                         AppLanguage.SIMPLIFIED_CHINESE -> "逐小时时间线"
                         AppLanguage.TRADITIONAL_CHINESE -> "逐小時時間軸"
                         AppLanguage.ENGLISH -> "Timeline"
+                        AppLanguage.SPANISH -> "Línea temporal"
+                        AppLanguage.FRENCH -> "Chronologie"
+                        AppLanguage.PORTUGUESE -> "Linha do tempo"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 17.sp,
@@ -1047,27 +1095,43 @@ private fun HourlyInteractiveTimelineCard(
                                         val windStrengthLabel = when {
                                             windSpeed < 10.0 -> when (language) {
                                                 AppLanguage.JAPANESE -> "穏やか"
+                                                AppLanguage.KOREAN -> "잔잔함"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "微风"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "微風"
                                                 AppLanguage.ENGLISH -> "Calm"
+                                                AppLanguage.SPANISH -> "Calma"
+                                                AppLanguage.FRENCH -> "Calme"
+                                                AppLanguage.PORTUGUESE -> "Calmo"
                                             }
                                             windSpeed < 20.0 -> when (language) {
                                                 AppLanguage.JAPANESE -> "微風"
+                                                AppLanguage.KOREAN -> "약한 바람"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "软风"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "軟風"
                                                 AppLanguage.ENGLISH -> "Light"
+                                                AppLanguage.SPANISH -> "Suave"
+                                                AppLanguage.FRENCH -> "Léger"
+                                                AppLanguage.PORTUGUESE -> "Fraco"
                                             }
                                             windSpeed < 32.0 -> when (language) {
                                                 AppLanguage.JAPANESE -> "和風"
+                                                AppLanguage.KOREAN -> "산들바람"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "清风"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "清風"
                                                 AppLanguage.ENGLISH -> "Breeze"
+                                                AppLanguage.SPANISH -> "Brisa"
+                                                AppLanguage.FRENCH -> "Brise"
+                                                AppLanguage.PORTUGUESE -> "Brisa"
                                             }
                                             else -> when (language) {
                                                 AppLanguage.JAPANESE -> "強風"
+                                                AppLanguage.KOREAN -> "강풍"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "强风"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "強風"
                                                 AppLanguage.ENGLISH -> "Strong"
+                                                AppLanguage.SPANISH -> "Fuerte"
+                                                AppLanguage.FRENCH -> "Fort"
+                                                AppLanguage.PORTUGUESE -> "Forte"
                                             }
                                         }
                                         Text(
@@ -1117,9 +1181,13 @@ private fun HourlyInsightsSection(
         Text(
             text = when (language) {
                 AppLanguage.JAPANESE -> "24時間の要約インサイト"
+                AppLanguage.KOREAN -> "24시간 핵심 요약"
                 AppLanguage.SIMPLIFIED_CHINESE -> "24小时精选看点"
                 AppLanguage.TRADITIONAL_CHINESE -> "24小時精選摘要"
                 AppLanguage.ENGLISH -> "24-Hour Highlights"
+                AppLanguage.SPANISH -> "Resumen de 24 horas"
+                AppLanguage.FRENCH -> "Points clés sur 24 h"
+                AppLanguage.PORTUGUESE -> "Destaques de 24 horas"
             },
             fontFamily = GoogleSansFlex,
             fontSize = 17.sp,
@@ -1136,7 +1204,11 @@ private fun HourlyInsightsSection(
             InsightCard(
                 title = when (language) {
                     AppLanguage.JAPANESE, AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "最高 / 最低"
+                    AppLanguage.KOREAN -> "최고 / 최저"
                     AppLanguage.ENGLISH -> "High / Low"
+                    AppLanguage.SPANISH -> "Máx. / Mín."
+                    AppLanguage.FRENCH -> "Max / Min"
+                    AppLanguage.PORTUGUESE -> "Máx. / Mín."
                 },
                 mainText = if (maxTempItem != null && minTempItem != null) {
                     "${temperatureUnit.convert(maxTempItem.tempC)}° / ${temperatureUnit.convert(minTempItem.tempC)}°"
@@ -1144,9 +1216,13 @@ private fun HourlyInsightsSection(
                 subText = if (maxTempItem != null) {
                     when (language) {
                         AppLanguage.JAPANESE -> "最高 ${maxTempItem.timeLabel}"
+                        AppLanguage.KOREAN -> "최고 기온 ${maxTempItem.timeLabel}"
                         AppLanguage.SIMPLIFIED_CHINESE -> "最高温出现在 ${maxTempItem.timeLabel}"
                         AppLanguage.TRADITIONAL_CHINESE -> "最高溫出現在 ${maxTempItem.timeLabel}"
                         AppLanguage.ENGLISH -> "Peak at ${maxTempItem.timeLabel}"
+                        AppLanguage.SPANISH -> "Máxima a las ${maxTempItem.timeLabel}"
+                        AppLanguage.FRENCH -> "Pic à ${maxTempItem.timeLabel}"
+                        AppLanguage.PORTUGUESE -> "Máxima às ${maxTempItem.timeLabel}"
                     }
                 } else "",
                 modifier = Modifier.weight(1f)
@@ -1156,24 +1232,36 @@ private fun HourlyInsightsSection(
             InsightCard(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "降水ピーク"
+                    AppLanguage.KOREAN -> "강수 피크"
                     AppLanguage.SIMPLIFIED_CHINESE -> "降水高峰"
                     AppLanguage.TRADITIONAL_CHINESE -> "降雨高峰"
                     AppLanguage.ENGLISH -> "Peak Rain"
+                    AppLanguage.SPANISH -> "Pico de lluvia"
+                    AppLanguage.FRENCH -> "Pic de pluie"
+                    AppLanguage.PORTUGUESE -> "Pico de chuva"
                 },
                 mainText = if (maxPrecipItem != null) "${maxPrecipItem.precipProb}%" else "0%",
                 subText = if (maxPrecipItem != null && maxPrecipItem.precipProb > 0) {
                     when (language) {
                         AppLanguage.JAPANESE -> "${maxPrecipItem.timeLabel} 前後"
+                        AppLanguage.KOREAN -> "${maxPrecipItem.timeLabel} 전후"
                         AppLanguage.SIMPLIFIED_CHINESE -> "${maxPrecipItem.timeLabel} 前后"
                         AppLanguage.TRADITIONAL_CHINESE -> "${maxPrecipItem.timeLabel} 前後"
                         AppLanguage.ENGLISH -> "Around ${maxPrecipItem.timeLabel}"
+                        AppLanguage.SPANISH -> "Hacia las ${maxPrecipItem.timeLabel}"
+                        AppLanguage.FRENCH -> "Vers ${maxPrecipItem.timeLabel}"
+                        AppLanguage.PORTUGUESE -> "Por volta das ${maxPrecipItem.timeLabel}"
                     }
                 } else {
                     when (language) {
                         AppLanguage.JAPANESE -> "雨の心配なし"
+                        AppLanguage.KOREAN -> "비 소식 없음"
                         AppLanguage.SIMPLIFIED_CHINESE -> "无需担心降雨"
                         AppLanguage.TRADITIONAL_CHINESE -> "無需擔心降雨"
                         AppLanguage.ENGLISH -> "No rain expected"
+                        AppLanguage.SPANISH -> "Sin lluvia prevista"
+                        AppLanguage.FRENCH -> "Aucune pluie prévue"
+                        AppLanguage.PORTUGUESE -> "Sem previsão de chuva"
                     }
                 },
                 modifier = Modifier.weight(1f)
@@ -1188,9 +1276,13 @@ private fun HourlyInsightsSection(
             InsightCard(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "最大風速"
+                    AppLanguage.KOREAN -> "최대 풍속"
                     AppLanguage.SIMPLIFIED_CHINESE -> "最大阵风"
                     AppLanguage.TRADITIONAL_CHINESE -> "最大陣風"
                     AppLanguage.ENGLISH -> "Max Wind"
+                    AppLanguage.SPANISH -> "Viento máx."
+                    AppLanguage.FRENCH -> "Vent max"
+                    AppLanguage.PORTUGUESE -> "Vento máx."
                 },
                 mainText = if (maxWindItem != null) {
                     windSpeedUnit.format(maxWindItem.windSpeedKmH, language)
@@ -1198,9 +1290,13 @@ private fun HourlyInsightsSection(
                 subText = if (maxWindItem != null) {
                     when (language) {
                         AppLanguage.JAPANESE -> "${maxWindItem.timeLabel} に最大"
+                        AppLanguage.KOREAN -> "${maxWindItem.timeLabel}경 최대"
                         AppLanguage.SIMPLIFIED_CHINESE -> "${maxWindItem.timeLabel} 达最大"
                         AppLanguage.TRADITIONAL_CHINESE -> "${maxWindItem.timeLabel} 達最大"
                         AppLanguage.ENGLISH -> "Peak at ${maxWindItem.timeLabel}"
+                        AppLanguage.SPANISH -> "Máximo a las ${maxWindItem.timeLabel}"
+                        AppLanguage.FRENCH -> "Pic à ${maxWindItem.timeLabel}"
+                        AppLanguage.PORTUGUESE -> "Pico às ${maxWindItem.timeLabel}"
                     }
                 } else "",
                 modifier = Modifier.weight(1f)
@@ -1210,16 +1306,24 @@ private fun HourlyInsightsSection(
             InsightCard(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "太陽の運行"
+                    AppLanguage.KOREAN -> "일출·일몰"
                     AppLanguage.SIMPLIFIED_CHINESE -> "日出与日落"
                     AppLanguage.TRADITIONAL_CHINESE -> "日出與日落"
                     AppLanguage.ENGLISH -> "Sun Schedule"
+                    AppLanguage.SPANISH -> "Ciclo solar"
+                    AppLanguage.FRENCH -> "Soleil"
+                    AppLanguage.PORTUGUESE -> "Ciclo solar"
                 },
                 mainText = "$sunrise / $sunset",
                 subText = when (language) {
                     AppLanguage.JAPANESE -> "日照時間 $daylightHours"
+                    AppLanguage.KOREAN -> "일조 시간 $daylightHours"
                     AppLanguage.SIMPLIFIED_CHINESE -> "日照时长 $daylightHours"
                     AppLanguage.TRADITIONAL_CHINESE -> "日照時長 $daylightHours"
                     AppLanguage.ENGLISH -> "$daylightHours daylight"
+                    AppLanguage.SPANISH -> "$daylightHours de luz"
+                    AppLanguage.FRENCH -> "$daylightHours de jour"
+                    AppLanguage.PORTUGUESE -> "$daylightHours de luz"
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -1312,9 +1416,13 @@ private fun HourlyBreakdownListCard(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "時間別の全詳細リスト"
+                        AppLanguage.KOREAN -> "시간별 상세 목록"
                         AppLanguage.SIMPLIFIED_CHINESE -> "逐小时详细预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "逐小時詳細預報"
                         AppLanguage.ENGLISH -> "Hourly Breakdown"
+                        AppLanguage.SPANISH -> "Detalle por hora"
+                        AppLanguage.FRENCH -> "Détail heure par heure"
+                        AppLanguage.PORTUGUESE -> "Detalhes por hora"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 17.sp,
@@ -1324,9 +1432,13 @@ private fun HourlyBreakdownListCard(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "24時間分"
+                        AppLanguage.KOREAN -> "24시간 예보"
                         AppLanguage.SIMPLIFIED_CHINESE -> "未来24小时"
                         AppLanguage.TRADITIONAL_CHINESE -> "未來24小時"
                         AppLanguage.ENGLISH -> "24 Hours"
+                        AppLanguage.SPANISH -> "24 horas"
+                        AppLanguage.FRENCH -> "24 heures"
+                        AppLanguage.PORTUGUESE -> "24 horas"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 12.sp,

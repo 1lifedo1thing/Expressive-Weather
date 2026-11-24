@@ -16,6 +16,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import io.github.nemynew.expressiveweather.BuildConfig
 import io.github.nemynew.expressiveweather.data.local.LocationKeyNormalizer
+import io.github.nemynew.expressiveweather.data.local.WeatherDatabase
 import io.github.nemynew.expressiveweather.ui.widget.WeatherWidgetUpdater
 import io.github.nemynew.expressiveweather.ui.widget.WidgetPreferences
 import kotlinx.coroutines.CancellationException
@@ -43,7 +44,11 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
     private val updateMutex = kotlinx.coroutines.sync.Mutex()
     private val isScheduled = java.util.concurrent.atomic.AtomicBoolean(false)
     private val locationProvider = CurrentLocationProvider(context)
-    private val weatherRepository = WeatherRepository(context = context)
+    private val weatherRepository = WeatherRepository(
+        weatherDao = WeatherDatabase.getInstance(context).weatherDao(),
+        savedCityDao = WeatherDatabase.getInstance(context).savedCityDao(),
+        context = context
+    )
 
     companion object {
         private const val TAG = "WeatherBgUpdateMgr"
@@ -334,30 +339,35 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
 
         try {
             var currentGpsLocation: android.location.Location? = null
-            val fallbackCity = weatherRepository.resolveFallbackCurrentCityOrNull()
+            var resolvedLiveGpsCity: City? = null
+            val hasLocPerm = locationProvider.hasLocationPermission()
 
-            // 1. 対象の主都市（現在地、または直近で確定した位置・選択都市）を特定
-            val primaryCity: City = if (locationProvider.hasLocationPermission()) {
+            // 1. 通知適格な主都市（実測GPS現在地、または登録済み都市のみ）を特定
+            if (hasLocPerm) {
                 val loc = locationProvider.getCurrentLocation(forceFresh = true)
                 currentGpsLocation = loc
                 if (loc != null) {
                     val resolved = locationProvider.resolveCity(loc)
+                    resolvedLiveGpsCity = resolved
+                    weatherRepository.setLastResolvedLocationCity(resolved)
                     if (BuildConfig.DEBUG) {
                         Log.d(TAG, "Primary target resolved from current GPS: ${resolved.name}")
                     }
-                    resolved
-                } else {
-                    fallbackCity ?: weatherRepository.defaultCity
                 }
-            } else {
-                fallbackCity ?: weatherRepository.defaultCity
             }
-            val hasResolvedLocationOrUserCity = currentGpsLocation != null || fallbackCity != null
+
+            val notificationTargetCity = weatherRepository.resolveNotificationTargetCityOrNull(
+                hasLocationPermission = hasLocPerm,
+                liveGpsCity = resolvedLiveGpsCity
+            )
+            val fallbackCity = weatherRepository.resolveFallbackCurrentCityOrNull()
+            val primaryCity: City = notificationTargetCity ?: fallbackCity ?: weatherRepository.defaultCity
+            val isEligibleForNotification = notificationTargetCity != null
 
             // 2. 主都市の天気予報および降雨ナウキャストを取得・Room DBへ保存
             val weatherData = weatherRepository.refresh(primaryCity)
 
-            // 3. 降雨ナウキャストの評価とステータスバー・ライブ通知の更新（現在位置座標を伝達）
+            // 3. 降雨ナウキャストの評価とステータスバー・ライブ通知の更新（登録済み都市またはGPS現在地のみ）
             val nowcast = weatherData.precipitationNowcast
             val isLiveNotifEnabled = WeatherRepository.isLiveAlertNotificationEnabled(context)
             if (!isLiveNotifEnabled) {
@@ -365,7 +375,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                     PrecipitationLiveNotificationManager.cancel(context)
                 }
             } else if (!PrecipitationLiveNotificationManager.isTestActive) {
-                if (hasResolvedLocationOrUserCity && nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining == null || nowcast.minutesRemaining > 0)) {
+                if (isEligibleForNotification && nowcast != null && nowcast.isLiveActive && (nowcast.minutesRemaining == null || nowcast.minutesRemaining > 0)) {
                     PrecipitationLiveNotificationManager.updateRainLiveNotification(
                         context,
                         nowcast,

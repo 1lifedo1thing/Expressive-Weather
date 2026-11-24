@@ -114,8 +114,12 @@ fun BugReportCardSection(
     val cardTitle = remember(language) {
         when (language) {
             AppLanguage.JAPANESE -> "フィードバック"
+            AppLanguage.KOREAN -> "피드백"
             AppLanguage.SIMPLIFIED_CHINESE -> "反馈与建议"
             AppLanguage.TRADITIONAL_CHINESE -> "回饋與建議"
+            AppLanguage.SPANISH -> "Comentarios"
+            AppLanguage.FRENCH -> "Retours"
+            AppLanguage.PORTUGUESE -> "Feedback"
             AppLanguage.ENGLISH -> "Feedback"
         }
     }
@@ -123,8 +127,12 @@ fun BugReportCardSection(
     val badgeText = remember(language) {
         when (language) {
             AppLanguage.JAPANESE -> "プレリリース"
+            AppLanguage.KOREAN -> "프리릴리스"
             AppLanguage.SIMPLIFIED_CHINESE -> "测试版"
             AppLanguage.TRADITIONAL_CHINESE -> "測試版"
+            AppLanguage.SPANISH -> "Prelanzamiento"
+            AppLanguage.FRENCH -> "Préversion"
+            AppLanguage.PORTUGUESE -> "Pré-lançamento"
             AppLanguage.ENGLISH -> "Pre-release"
         }
     }
@@ -132,8 +140,12 @@ fun BugReportCardSection(
     val subtitleText = remember(language) {
         when (language) {
             AppLanguage.JAPANESE -> "不具合の報告や機能のご要望をお知らせください"
+            AppLanguage.KOREAN -> "버그 제보나 기능 제안을 남겨주세요"
             AppLanguage.SIMPLIFIED_CHINESE -> "欢迎随时反馈异常问题或功能建议"
             AppLanguage.TRADITIONAL_CHINESE -> "歡迎隨時回報異常問題或功能建議"
+            AppLanguage.SPANISH -> "Envía reportes de errores o ideas de nuevas funciones"
+            AppLanguage.FRENCH -> "Signalez des bugs ou partagez vos idées de fonctionnalités"
+            AppLanguage.PORTUGUESE -> "Envie relatórios de bugs ou sugestões de recursos"
             AppLanguage.ENGLISH -> "Share bug reports or ideas for new features"
         }
     }
@@ -141,8 +153,12 @@ fun BugReportCardSection(
     val bugButtonText = remember(language) {
         when (language) {
             AppLanguage.JAPANESE -> "不具合を報告"
+            AppLanguage.KOREAN -> "버그 제보"
             AppLanguage.SIMPLIFIED_CHINESE -> "报告问题"
             AppLanguage.TRADITIONAL_CHINESE -> "回報問題"
+            AppLanguage.SPANISH -> "Reportar error"
+            AppLanguage.FRENCH -> "Signaler un bug"
+            AppLanguage.PORTUGUESE -> "Reportar bug"
             AppLanguage.ENGLISH -> "Report Bug"
         }
     }
@@ -150,8 +166,12 @@ fun BugReportCardSection(
     val featureButtonText = remember(language) {
         when (language) {
             AppLanguage.JAPANESE -> "要望を送る"
+            AppLanguage.KOREAN -> "기능 제안"
             AppLanguage.SIMPLIFIED_CHINESE -> "提交建议"
             AppLanguage.TRADITIONAL_CHINESE -> "提出建議"
+            AppLanguage.SPANISH -> "Sugerir función"
+            AppLanguage.FRENCH -> "Suggérer"
+            AppLanguage.PORTUGUESE -> "Sugerir recurso"
             AppLanguage.ENGLISH -> "Request Feature"
         }
     }
@@ -349,161 +369,261 @@ private fun FeedbackBottomSheet(
 
     val bugTabLabel = when (language) {
         AppLanguage.JAPANESE -> "不具合を報告"
+        AppLanguage.KOREAN -> "버그 제보"
         AppLanguage.SIMPLIFIED_CHINESE -> "报告问题"
         AppLanguage.TRADITIONAL_CHINESE -> "回報問題"
+        AppLanguage.SPANISH -> "Reportar error"
+        AppLanguage.FRENCH -> "Signaler un bug"
+        AppLanguage.PORTUGUESE -> "Reportar bug"
         AppLanguage.ENGLISH -> "Bug Report"
     }
     val featureTabLabel = when (language) {
         AppLanguage.JAPANESE -> "要望を送る"
+        AppLanguage.KOREAN -> "기능 제안"
         AppLanguage.SIMPLIFIED_CHINESE -> "功能建议"
         AppLanguage.TRADITIONAL_CHINESE -> "功能建議"
+        AppLanguage.SPANISH -> "Sugerir función"
+        AppLanguage.FRENCH -> "Suggestion"
+        AppLanguage.PORTUGUESE -> "Sugerir recurso"
         AppLanguage.ENGLISH -> "Feature Request"
     }
     val sheetSubtitle = if (isBugMode) {
         when (language) {
             AppLanguage.JAPANESE -> "入力内容と診断情報をまとめて GitHub・コピー・共有から送信できます。正確な現在地や個人情報は含まれません。"
+            AppLanguage.KOREAN -> "입력한 내용과 진단 정보를 모아 GitHub, 복사 또는 공유로 전송할 수 있습니다. 정확한 위치 정보나 개인정보는 포함되지 않습니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "可将描述与诊断信息整理后通过 GitHub、复制或分享提交，不会包含精确位置或个人信息。"
             AppLanguage.TRADITIONAL_CHINESE -> "可將描述與診斷資訊整理後透過 GitHub、複製或分享提交，不會包含精確位置或個人資訊。"
+            AppLanguage.SPANISH -> "Envíalo por GitHub Issues, cópialo o compártelo. Nunca se incluyen tu ubicación exacta ni datos personales."
+            AppLanguage.FRENCH -> "Envoyez via GitHub Issues, copiez ou partagez. Votre position exacte et vos données personnelles ne sont jamais incluses."
+            AppLanguage.PORTUGUESE -> "Envie pelo GitHub Issues, copie ou compartilhe. Localização exata e dados pessoais nunca são incluídos."
             AppLanguage.ENGLISH -> "Submit via GitHub Issues, copy, or share. Exact location and personal data are never included."
         }
     } else {
         when (language) {
             AppLanguage.JAPANESE -> "追加してほしい機能や改善アイデアを GitHub・コピー・共有から送れます。"
+            AppLanguage.KOREAN -> "원하는 기능이나 UI·데이터 개선 아이디어를 GitHub, 복사 또는 공유로 보낼 수 있습니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "可通过 GitHub、复制或分享提交新功能想法或改进建议。"
             AppLanguage.TRADITIONAL_CHINESE -> "可透過 GitHub、複製或分享提交新功能構想或改進建議。"
+            AppLanguage.SPANISH -> "Envía ideas de nuevas funciones o mejoras de interfaz y datos por GitHub Issues, copia o compartir."
+            AppLanguage.FRENCH -> "Envoyez vos idées de fonctionnalités ou améliorations via GitHub Issues, copier ou partager."
+            AppLanguage.PORTUGUESE -> "Envie ideias de novos recursos ou melhorias de interface e dados pelo GitHub Issues, copiar ou compartilhar."
             AppLanguage.ENGLISH -> "Send new feature ideas or UI/data improvements via GitHub Issues, copy, or share."
         }
     }
     val categoryHeading = when (language) {
         AppLanguage.JAPANESE -> "カテゴリ"
+        AppLanguage.KOREAN -> "카테고리"
         AppLanguage.SIMPLIFIED_CHINESE -> "分类"
         AppLanguage.TRADITIONAL_CHINESE -> "分類"
+        AppLanguage.SPANISH -> "Categoría"
+        AppLanguage.FRENCH -> "Catégorie"
+        AppLanguage.PORTUGUESE -> "Categoria"
         AppLanguage.ENGLISH -> "Category"
     }
     val bugDescriptionLabel = when (language) {
         AppLanguage.JAPANESE -> "起きたこと・再現手順"
+        AppLanguage.KOREAN -> "발생한 문제 및 재현 방법"
         AppLanguage.SIMPLIFIED_CHINESE -> "问题描述与复现步骤"
         AppLanguage.TRADITIONAL_CHINESE -> "問題描述與重現步驟"
+        AppLanguage.SPANISH -> "Qué ocurrió y pasos para reproducirlo"
+        AppLanguage.FRENCH -> "Problème rencontré et étapes pour le reproduire"
+        AppLanguage.PORTUGUESE -> "O que aconteceu e passos para reproduzir"
         AppLanguage.ENGLISH -> "What happened & steps to reproduce"
     }
     val bugDescriptionPlaceholder = when (language) {
         AppLanguage.JAPANESE -> "例: レーダー画面を開いたときに〜が起きる"
+        AppLanguage.KOREAN -> "예: 레이더 화면을 열면 ... 현상이 발생합니다"
         AppLanguage.SIMPLIFIED_CHINESE -> "例：打开雷达页面时出现..."
         AppLanguage.TRADITIONAL_CHINESE -> "例：開啟雷達頁面時出現..."
+        AppLanguage.SPANISH -> "Ej.: Al abrir la pantalla del radar ocurre..."
+        AppLanguage.FRENCH -> "Ex. : Ouvrir l'écran radar provoque..."
+        AppLanguage.PORTUGUESE -> "Ex.: Ao abrir a tela do radar acontece..."
         AppLanguage.ENGLISH -> "e.g. Opening the radar screen causes..."
     }
     val bugExpectedLabel = when (language) {
         AppLanguage.JAPANESE -> "期待していた動作（任意）"
+        AppLanguage.KOREAN -> "기대했던 동작 (선택)"
         AppLanguage.SIMPLIFIED_CHINESE -> "预期行为（选填）"
         AppLanguage.TRADITIONAL_CHINESE -> "預期行為（選填）"
+        AppLanguage.SPANISH -> "Comportamiento esperado (opcional)"
+        AppLanguage.FRENCH -> "Comportement attendu (facultatif)"
+        AppLanguage.PORTUGUESE -> "Comportamento esperado (opcional)"
         AppLanguage.ENGLISH -> "Expected behavior (optional)"
     }
     val featureProposalLabel = when (language) {
         AppLanguage.JAPANESE -> "ほしい機能・改善案"
+        AppLanguage.KOREAN -> "원하는 기능 또는 개선 사항"
         AppLanguage.SIMPLIFIED_CHINESE -> "期望的新功能或改进方案"
         AppLanguage.TRADITIONAL_CHINESE -> "期望的新功能或改進方案"
+        AppLanguage.SPANISH -> "Función o mejora propuesta"
+        AppLanguage.FRENCH -> "Fonctionnalité ou amélioration proposée"
+        AppLanguage.PORTUGUESE -> "Recurso ou melhoria proposta"
         AppLanguage.ENGLISH -> "Proposed feature or improvement"
     }
     val featureProposalPlaceholder = when (language) {
         AppLanguage.JAPANESE -> "例: ウィジェットに降水確率グラフも表示したい"
+        AppLanguage.KOREAN -> "예: 위젯에도 강수 확률 그래프를 표시해 주세요"
         AppLanguage.SIMPLIFIED_CHINESE -> "例：希望微件也能显示降水概率趋势"
         AppLanguage.TRADITIONAL_CHINESE -> "例：希望小工具也能顯示降雨機率趨勢"
+        AppLanguage.SPANISH -> "Ej.: Añadir un gráfico de probabilidad de lluvia a los widgets"
+        AppLanguage.FRENCH -> "Ex. : Ajouter un graphique de probabilité de pluie aux widgets"
+        AppLanguage.PORTUGUESE -> "Ex.: Adicionar um gráfico de probabilidade de chuva aos widgets"
         AppLanguage.ENGLISH -> "e.g. Add a precipitation probability chart to widgets"
     }
     val featureProblemLabel = when (language) {
         AppLanguage.JAPANESE -> "背景・困っていること（任意）"
+        AppLanguage.KOREAN -> "배경 또는 불편한 점 (선택)"
         AppLanguage.SIMPLIFIED_CHINESE -> "使用场景或痛点（选填）"
         AppLanguage.TRADITIONAL_CHINESE -> "使用情境或痛點（選填）"
+        AppLanguage.SPANISH -> "Problema o motivación (opcional)"
+        AppLanguage.FRENCH -> "Problème ou motivation (facultatif)"
+        AppLanguage.PORTUGUESE -> "Problema ou motivação (opcional)"
         AppLanguage.ENGLISH -> "Problem or motivation (optional)"
     }
     val featureAlternativesLabel = when (language) {
         AppLanguage.JAPANESE -> "補足・参考データソースなど（任意）"
+        AppLanguage.KOREAN -> "추가 설명 또는 참고 데이터 소스 (선택)"
         AppLanguage.SIMPLIFIED_CHINESE -> "补充说明或参考数据源（选填）"
         AppLanguage.TRADITIONAL_CHINESE -> "補充說明或參考資料來源（選填）"
+        AppLanguage.SPANISH -> "Contexto adicional o fuentes de datos (opcional)"
+        AppLanguage.FRENCH -> "Contexte supplémentaire ou sources de données (facultatif)"
+        AppLanguage.PORTUGUESE -> "Contexto adicional ou fontes de dados (opcional)"
         AppLanguage.ENGLISH -> "Additional context or data sources (optional)"
     }
     val diagnosticsHeading = when (language) {
         AppLanguage.JAPANESE -> "添付する診断情報"
+        AppLanguage.KOREAN -> "첨부할 진단 정보"
         AppLanguage.SIMPLIFIED_CHINESE -> "附带的诊断信息"
         AppLanguage.TRADITIONAL_CHINESE -> "附帶的診斷資訊"
+        AppLanguage.SPANISH -> "Diagnóstico adjunto"
+        AppLanguage.FRENCH -> "Diagnostics joints"
+        AppLanguage.PORTUGUESE -> "Diagnósticos anexados"
         AppLanguage.ENGLISH -> "Attached Diagnostics"
     }
     val includeDeviceLabel = when (language) {
         AppLanguage.JAPANESE -> "端末・アプリバージョン（${snapshot.versionName}）"
+        AppLanguage.KOREAN -> "기기 및 앱 버전 (${snapshot.versionName})"
         AppLanguage.SIMPLIFIED_CHINESE -> "设备与应用版本（${snapshot.versionName}）"
         AppLanguage.TRADITIONAL_CHINESE -> "裝置與應用程式版本（${snapshot.versionName}）"
+        AppLanguage.SPANISH -> "Dispositivo y versión de la app (${snapshot.versionName})"
+        AppLanguage.FRENCH -> "Appareil et version de l'application (${snapshot.versionName})"
+        AppLanguage.PORTUGUESE -> "Dispositivo e versão do app (${snapshot.versionName})"
         AppLanguage.ENGLISH -> "Device & app version (${snapshot.versionName})"
     }
     val includeStateLabel = when (language) {
         AppLanguage.JAPANESE -> "気象ソース・設定状態（現在地座標は除外）"
+        AppLanguage.KOREAN -> "기상 소스 및 앱 설정 (정확한 좌표 제외)"
         AppLanguage.SIMPLIFIED_CHINESE -> "数据源与设置状态（不含精确坐标）"
         AppLanguage.TRADITIONAL_CHINESE -> "資料來源與設定狀態（不含精確座標）"
+        AppLanguage.SPANISH -> "Proveedor y ajustes de la app (sin coordenadas)"
+        AppLanguage.FRENCH -> "Fournisseur et paramètres de l'app (sans coordonnées)"
+        AppLanguage.PORTUGUESE -> "Provedor e configurações do app (sem coordenadas)"
         AppLanguage.ENGLISH -> "Provider & app settings (no coordinates)"
     }
     val includeLogsLabel = when (language) {
         AppLanguage.JAPANESE -> "直近のアプリ内エラーログ（${snapshot.recentLogs.size}件）"
+        AppLanguage.KOREAN -> "최근 앱 내 오류 로그 (${snapshot.recentLogs.size}건)"
         AppLanguage.SIMPLIFIED_CHINESE -> "近期应用内错误日志（${snapshot.recentLogs.size}条）"
         AppLanguage.TRADITIONAL_CHINESE -> "近期應用程式內錯誤記錄（${snapshot.recentLogs.size}筆）"
+        AppLanguage.SPANISH -> "Registros recientes de errores (${snapshot.recentLogs.size})"
+        AppLanguage.FRENCH -> "Journaux d'erreurs récents (${snapshot.recentLogs.size})"
+        AppLanguage.PORTUGUESE -> "Logs de erros recentes do app (${snapshot.recentLogs.size})"
         AppLanguage.ENGLISH -> "Recent in-app error logs (${snapshot.recentLogs.size})"
     }
     val includeFeatureAppInfoLabel = when (language) {
         AppLanguage.JAPANESE -> "アプリ基本情報を添付（Ver ${snapshot.versionName}・言語）"
+        AppLanguage.KOREAN -> "기본 앱 정보 첨부 (Ver ${snapshot.versionName} · 언어)"
         AppLanguage.SIMPLIFIED_CHINESE -> "附带应用基本信息（Ver ${snapshot.versionName}・语言）"
         AppLanguage.TRADITIONAL_CHINESE -> "附帶應用程式基本資訊（Ver ${snapshot.versionName}・語言）"
+        AppLanguage.SPANISH -> "Incluir info básica de la app (Ver ${snapshot.versionName}, idioma)"
+        AppLanguage.FRENCH -> "Inclure les infos de base (Ver ${snapshot.versionName}, langue)"
+        AppLanguage.PORTUGUESE -> "Incluir info básica do app (Ver ${snapshot.versionName}, idioma)"
         AppLanguage.ENGLISH -> "Include basic app info (Ver ${snapshot.versionName}, language)"
     }
     val previewToggleLabel = when (language) {
         AppLanguage.JAPANESE -> "送信される診断テキストを確認"
+        AppLanguage.KOREAN -> "전송될 진단 텍스트 미리보기"
         AppLanguage.SIMPLIFIED_CHINESE -> "预览附带的诊断文本"
         AppLanguage.TRADITIONAL_CHINESE -> "預覽附帶的診斷文字"
+        AppLanguage.SPANISH -> "Vista previa del texto de diagnóstico"
+        AppLanguage.FRENCH -> "Aperçu du texte de diagnostic"
+        AppLanguage.PORTUGUESE -> "Pré-visualizar texto de diagnóstico"
         AppLanguage.ENGLISH -> "Preview diagnostic text"
     }
     val openGitHubLabel = if (isBugMode) {
         when (language) {
             AppLanguage.JAPANESE -> "GitHub で報告（自動入力）"
+            AppLanguage.KOREAN -> "GitHub에 제보 (자동 입력)"
             AppLanguage.SIMPLIFIED_CHINESE -> "通过 GitHub 提交（自动填充）"
             AppLanguage.TRADITIONAL_CHINESE -> "透過 GitHub 回報（自動填入）"
+            AppLanguage.SPANISH -> "Reportar en GitHub (prellenado)"
+            AppLanguage.FRENCH -> "Signaler sur GitHub (prérempli)"
+            AppLanguage.PORTUGUESE -> "Reportar no GitHub (pré-preenchido)"
             AppLanguage.ENGLISH -> "Report on GitHub (Pre-filled)"
         }
     } else {
         when (language) {
             AppLanguage.JAPANESE -> "GitHub で要望を送る（自動入力）"
+            AppLanguage.KOREAN -> "GitHub에 기능 제안 (자동 입력)"
             AppLanguage.SIMPLIFIED_CHINESE -> "通过 GitHub 提交建议（自动填充）"
             AppLanguage.TRADITIONAL_CHINESE -> "透過 GitHub 提出建議（自動填入）"
+            AppLanguage.SPANISH -> "Enviar sugerencia en GitHub"
+            AppLanguage.FRENCH -> "Envoyer la suggestion sur GitHub"
+            AppLanguage.PORTUGUESE -> "Enviar sugestão no GitHub"
             AppLanguage.ENGLISH -> "Submit Feature Request on GitHub"
         }
     }
     val copyLabel = when (language) {
         AppLanguage.JAPANESE -> "コピー"
+        AppLanguage.KOREAN -> "복사"
         AppLanguage.SIMPLIFIED_CHINESE -> "复制"
         AppLanguage.TRADITIONAL_CHINESE -> "複製"
+        AppLanguage.SPANISH -> "Copiar"
+        AppLanguage.FRENCH -> "Copier"
+        AppLanguage.PORTUGUESE -> "Copiar"
         AppLanguage.ENGLISH -> "Copy"
     }
     val shareLabel = when (language) {
         AppLanguage.JAPANESE -> "共有"
+        AppLanguage.KOREAN -> "공유"
         AppLanguage.SIMPLIFIED_CHINESE -> "分享"
         AppLanguage.TRADITIONAL_CHINESE -> "分享"
+        AppLanguage.SPANISH -> "Compartir"
+        AppLanguage.FRENCH -> "Partager"
+        AppLanguage.PORTUGUESE -> "Compartilhar"
         AppLanguage.ENGLISH -> "Share"
     }
     val copiedToast = if (isBugMode) {
         when (language) {
             AppLanguage.JAPANESE -> "バグレポートをコピーしました"
+            AppLanguage.KOREAN -> "버그 리포트를 복사했습니다"
             AppLanguage.SIMPLIFIED_CHINESE -> "已复制问题报告"
             AppLanguage.TRADITIONAL_CHINESE -> "已複製問題回報"
+            AppLanguage.SPANISH -> "Reporte de error copiado al portapapeles"
+            AppLanguage.FRENCH -> "Rapport de bug copié dans le presse-papiers"
+            AppLanguage.PORTUGUESE -> "Relatório de bug copiado para a área de transferência"
             AppLanguage.ENGLISH -> "Bug report copied to clipboard"
         }
     } else {
         when (language) {
             AppLanguage.JAPANESE -> "要望テキストをコピーしました"
+            AppLanguage.KOREAN -> "기능 제안을 복사했습니다"
             AppLanguage.SIMPLIFIED_CHINESE -> "已复制功能建议"
             AppLanguage.TRADITIONAL_CHINESE -> "已複製功能建議"
+            AppLanguage.SPANISH -> "Sugerencia copiada al portapapeles"
+            AppLanguage.FRENCH -> "Suggestion copiée dans le presse-papiers"
+            AppLanguage.PORTUGUESE -> "Sugestão de recurso copiada para a área de transferência"
             AppLanguage.ENGLISH -> "Feature request copied to clipboard"
         }
     }
     val openBrowserFailedToast = when (language) {
         AppLanguage.JAPANESE -> "ブラウザを開けませんでした。「コピー」をご利用ください。"
+        AppLanguage.KOREAN -> "브라우저를 열 수 없습니다. '복사'를 이용해 주세요."
         AppLanguage.SIMPLIFIED_CHINESE -> "无法打开浏览器，请使用复制功能。"
         AppLanguage.TRADITIONAL_CHINESE -> "無法開啟瀏覽器，請使用複製功能。"
+        AppLanguage.SPANISH -> "No se pudo abrir el navegador. Usa Copiar en su lugar."
+        AppLanguage.FRENCH -> "Impossible d'ouvrir le navigateur. Veuillez utiliser Copier."
+        AppLanguage.PORTUGUESE -> "Não foi possível abrir o navegador. Use Copiar."
         AppLanguage.ENGLISH -> "Could not open browser. Please use Copy instead."
     }
 

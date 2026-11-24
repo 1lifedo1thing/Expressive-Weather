@@ -160,6 +160,14 @@ internal fun getPopularSetupCities(language: AppLanguage): List<City> {
             City(id = "sapporo", name = "札幌", nameEn = "Sapporo", country = "日本", latitude = 43.0618, longitude = 141.3545),
             City(id = "fukuoka", name = "福岡", nameEn = "Fukuoka", country = "日本", latitude = 33.5902, longitude = 130.4017)
         )
+        AppLanguage.KOREAN -> listOf(
+            City(id = "seoul", name = "서울", nameEn = "Seoul", country = "대한민국", latitude = 37.5665, longitude = 126.9780),
+            City(id = "busan", name = "부산", nameEn = "Busan", country = "대한민국", latitude = 35.1796, longitude = 129.0756),
+            City(id = "jeju", name = "제주", nameEn = "Jeju", country = "대한민국", latitude = 33.4996, longitude = 126.5312),
+            City(id = "tokyo", name = "도쿄", nameEn = "Tokyo", country = "일본", latitude = 35.6762, longitude = 139.6503),
+            City(id = "osaka", name = "오사카", nameEn = "Osaka", country = "일본", latitude = 34.6937, longitude = 135.5023),
+            City(id = "new_york", name = "뉴욕", nameEn = "New York", country = "미국", latitude = 40.7128, longitude = -74.0060)
+        )
         AppLanguage.SIMPLIFIED_CHINESE -> listOf(
             City(id = "beijing", name = "北京", nameEn = "Beijing", country = "中国", latitude = 39.9042, longitude = 116.4074),
             City(id = "shanghai", name = "上海", nameEn = "Shanghai", country = "中国", latitude = 31.2304, longitude = 121.4737),
@@ -180,6 +188,30 @@ internal fun getPopularSetupCities(language: AppLanguage): List<City> {
             City(id = "tokyo", name = "東京", nameEn = "Tokyo", country = "Japan", latitude = 35.6762, longitude = 139.6503),
             City(id = "los_angeles", name = "Los Angeles", nameEn = "Los Angeles", country = "United States", latitude = 34.0522, longitude = -118.2437),
             City(id = "sydney", name = "Sydney", nameEn = "Sydney", country = "Australia", latitude = -33.8688, longitude = 151.2093)
+        )
+        AppLanguage.SPANISH -> listOf(
+            City(id = "madrid", name = "Madrid", nameEn = "Madrid", country = "España", latitude = 40.4168, longitude = -3.7038),
+            City(id = "barcelona", name = "Barcelona", nameEn = "Barcelona", country = "España", latitude = 41.3874, longitude = 2.1686),
+            City(id = "mexico_city", name = "Ciudad de México", nameEn = "Mexico City", country = "México", latitude = 19.4326, longitude = -99.1332),
+            City(id = "buenos_aires", name = "Buenos Aires", nameEn = "Buenos Aires", country = "Argentina", latitude = -34.6037, longitude = -58.3816),
+            City(id = "tokyo", name = "Tokio", nameEn = "Tokyo", country = "Japón", latitude = 35.6762, longitude = 139.6503),
+            City(id = "new_york", name = "Nueva York", nameEn = "New York", country = "Estados Unidos", latitude = 40.7128, longitude = -74.0060)
+        )
+        AppLanguage.FRENCH -> listOf(
+            City(id = "paris", name = "Paris", nameEn = "Paris", country = "France", latitude = 48.8566, longitude = 2.3522),
+            City(id = "lyon", name = "Lyon", nameEn = "Lyon", country = "France", latitude = 45.7640, longitude = 4.8357),
+            City(id = "marseille", name = "Marseille", nameEn = "Marseille", country = "France", latitude = 43.2965, longitude = 5.3698),
+            City(id = "montreal", name = "Montréal", nameEn = "Montreal", country = "Canada", latitude = 45.5017, longitude = -73.5673),
+            City(id = "tokyo", name = "Tokyo", nameEn = "Tokyo", country = "Japon", latitude = 35.6762, longitude = 139.6503),
+            City(id = "new_york", name = "New York", nameEn = "New York", country = "États-Unis", latitude = 40.7128, longitude = -74.0060)
+        )
+        AppLanguage.PORTUGUESE -> listOf(
+            City(id = "sao_paulo", name = "São Paulo", nameEn = "São Paulo", country = "Brasil", latitude = -23.5505, longitude = -46.6333),
+            City(id = "rio_de_janeiro", name = "Rio de Janeiro", nameEn = "Rio de Janeiro", country = "Brasil", latitude = -22.9068, longitude = -43.1729),
+            City(id = "lisbon", name = "Lisboa", nameEn = "Lisbon", country = "Portugal", latitude = 38.7223, longitude = -9.1393),
+            City(id = "porto", name = "Porto", nameEn = "Porto", country = "Portugal", latitude = 41.1579, longitude = -8.6291),
+            City(id = "tokyo", name = "Tóquio", nameEn = "Tokyo", country = "Japão", latitude = 35.6762, longitude = 139.6503),
+            City(id = "new_york", name = "Nova York", nameEn = "New York", country = "Estados Unidos", latitude = 40.7128, longitude = -74.0060)
         )
     }
 }
@@ -273,9 +305,13 @@ fun SetupScreen(
     val saveFailedText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "都市の保存に失敗しました。もう一度お試しください。"
+            AppLanguage.KOREAN -> "도시 저장에 실패했습니다. 다시 시도해 주세요."
             AppLanguage.SIMPLIFIED_CHINESE -> "保存城市失败，请重试。"
             AppLanguage.TRADITIONAL_CHINESE -> "儲存城市失敗，請重試。"
             AppLanguage.ENGLISH -> "Failed to save city. Please try again."
+            AppLanguage.SPANISH -> "No se pudo guardar la ciudad. Inténtalo de nuevo."
+            AppLanguage.FRENCH -> "Impossible d'enregistrer la ville. Veuillez réessayer."
+            AppLanguage.PORTUGUESE -> "Não foi possível salvar a cidade. Tente novamente."
         }
     }
 
@@ -381,175 +417,251 @@ fun SetupScreen(
         isSearching = false
     }
 
-    // UI文言（4言語対応）
+    // UI文言（8言語対応）
     val welcomeText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "ようこそ"
+            AppLanguage.KOREAN -> "환영합니다"
             AppLanguage.SIMPLIFIED_CHINESE -> "欢迎"
             AppLanguage.TRADITIONAL_CHINESE -> "歡迎"
             AppLanguage.ENGLISH -> "Welcome"
+            AppLanguage.SPANISH -> "Bienvenido"
+            AppLanguage.FRENCH -> "Bienvenue"
+            AppLanguage.PORTUGUESE -> "Bem-vindo"
         }
     }
 
     val subtitleText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "現在地の天気・雨雲レーダー・警報をひと目で"
+            AppLanguage.KOREAN -> "현재 위치의 날씨·강수 레이더·기상특보를 한눈에"
             AppLanguage.SIMPLIFIED_CHINESE -> "一目了然查看实时天气、降水雷达与预警"
             AppLanguage.TRADITIONAL_CHINESE -> "一目瞭然掌握即時天氣、降雨雷達與警報"
             AppLanguage.ENGLISH -> "Live weather, rain radar, and alerts at a glance"
+            AppLanguage.SPANISH -> "Clima en vivo, radar de lluvia y alertas de un vistazo"
+            AppLanguage.FRENCH -> "Météo en direct, radar de pluie et alertes en un coup d'œil"
+            AppLanguage.PORTUGUESE -> "Clima ao vivo, radar de chuva e alertas num relance"
         }
     }
 
     val useLocationText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "現在地を使用"
+            AppLanguage.KOREAN -> "현재 위치 사용"
             AppLanguage.SIMPLIFIED_CHINESE -> "使用当前位置"
             AppLanguage.TRADITIONAL_CHINESE -> "使用目前位置"
             AppLanguage.ENGLISH -> "Use Current Location"
+            AppLanguage.SPANISH -> "Usar ubicación actual"
+            AppLanguage.FRENCH -> "Utiliser la position actuelle"
+            AppLanguage.PORTUGUESE -> "Usar localização atual"
         }
     }
 
     val searchCityText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "地名を検索して登録"
+            AppLanguage.KOREAN -> "지역 검색으로 등록"
             AppLanguage.SIMPLIFIED_CHINESE -> "搜索并注册城市"
             AppLanguage.TRADITIONAL_CHINESE -> "搜尋並註冊城市"
             AppLanguage.ENGLISH -> "Search & Register City"
+            AppLanguage.SPANISH -> "Buscar y añadir ciudad"
+            AppLanguage.FRENCH -> "Rechercher et ajouter une ville"
+            AppLanguage.PORTUGUESE -> "Buscar e adicionar cidade"
         }
     }
 
     val searchPlaceholderText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "市区町村名・都市名を入力 (例: 渋谷区, 大阪)"
+            AppLanguage.KOREAN -> "도시·지역명을 입력하세요 (예: 서울, 부산, 도쿄)"
             AppLanguage.SIMPLIFIED_CHINESE -> "输入城市名称 (例: 北京, 上海, 东京)"
             AppLanguage.TRADITIONAL_CHINESE -> "輸入城市名稱 (例: 臺北, 高雄, 東京)"
             AppLanguage.ENGLISH -> "Enter city name (e.g. Tokyo, London)"
+            AppLanguage.SPANISH -> "Escribe una ciudad (ej. Madrid, Ciudad de México)"
+            AppLanguage.FRENCH -> "Saisir une ville (ex. Paris, Lyon, Montréal)"
+            AppLanguage.PORTUGUESE -> "Digite uma cidade (ex. São Paulo, Lisboa)"
         }
     }
 
     val recentSearchesText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "最近検索した項目"
+            AppLanguage.KOREAN -> "최근 검색"
             AppLanguage.SIMPLIFIED_CHINESE -> "最近搜索"
             AppLanguage.TRADITIONAL_CHINESE -> "最近搜尋"
             AppLanguage.ENGLISH -> "Recent Searches"
+            AppLanguage.SPANISH -> "Búsquedas recientes"
+            AppLanguage.FRENCH -> "Recherches récentes"
+            AppLanguage.PORTUGUESE -> "Buscas recentes"
         }
     }
 
     val popularCitiesText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "おすすめの主要都市"
+            AppLanguage.KOREAN -> "주요 추천 도시"
             AppLanguage.SIMPLIFIED_CHINESE -> "热门城市"
             AppLanguage.TRADITIONAL_CHINESE -> "熱門城市"
             AppLanguage.ENGLISH -> "Popular Cities"
+            AppLanguage.SPANISH -> "Ciudades populares"
+            AppLanguage.FRENCH -> "Villes populaires"
+            AppLanguage.PORTUGUESE -> "Cidades populares"
         }
     }
 
     val locatingPrompt = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "現在地を取得しています..."
+            AppLanguage.KOREAN -> "현재 위치를 확인하는 중..."
             AppLanguage.SIMPLIFIED_CHINESE -> "正在获取当前位置..."
             AppLanguage.TRADITIONAL_CHINESE -> "正在獲取目前位置..."
             AppLanguage.ENGLISH -> "Getting current location..."
+            AppLanguage.SPANISH -> "Obteniendo ubicación actual..."
+            AppLanguage.FRENCH -> "Localisation en cours..."
+            AppLanguage.PORTUGUESE -> "Obtendo localização atual..."
         }
     }
 
     val noResultsText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "該当する都市が見つかりません"
+            AppLanguage.KOREAN -> "일치하는 도시를 찾을 수 없습니다"
             AppLanguage.SIMPLIFIED_CHINESE -> "未找到匹配的城市"
             AppLanguage.TRADITIONAL_CHINESE -> "未找到匹配的城市"
             AppLanguage.ENGLISH -> "No cities found"
+            AppLanguage.SPANISH -> "No se encontraron ciudades"
+            AppLanguage.FRENCH -> "Aucune ville trouvée"
+            AppLanguage.PORTUGUESE -> "Nenhuma cidade encontrada"
         }
     }
 
     val searchingText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "検索中..."
+            AppLanguage.KOREAN -> "검색 중..."
             AppLanguage.SIMPLIFIED_CHINESE -> "正在搜索..."
             AppLanguage.TRADITIONAL_CHINESE -> "正在搜尋..."
             AppLanguage.ENGLISH -> "Searching..."
+            AppLanguage.SPANISH -> "Buscando..."
+            AppLanguage.FRENCH -> "Recherche en cours..."
+            AppLanguage.PORTUGUESE -> "Buscando..."
         }
     }
 
     val locationPrivacyHint = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "位置情報は天気・レーダー取得にのみ使用します"
+            AppLanguage.KOREAN -> "위치 정보는 날씨와 레이더 데이터를 불러오는 데만 사용됩니다"
             AppLanguage.SIMPLIFIED_CHINESE -> "位置信息仅用于获取天气与雷达数据"
             AppLanguage.TRADITIONAL_CHINESE -> "位置資訊僅用於取得天氣與雷達資料"
             AppLanguage.ENGLISH -> "Location is only used to fetch weather and radar"
+            AppLanguage.SPANISH -> "La ubicación solo se usa para obtener el clima y el radar"
+            AppLanguage.FRENCH -> "Votre position sert uniquement à récupérer la météo et le radar"
+            AppLanguage.PORTUGUESE -> "A localização é usada apenas para obter o clima e o radar"
         }
     }
 
     val privacyPolicyLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "プライバシーポリシーを確認"
+            AppLanguage.KOREAN -> "개인정보 처리방침 확인"
             AppLanguage.SIMPLIFIED_CHINESE -> "查看隐私政策"
             AppLanguage.TRADITIONAL_CHINESE -> "查看隱私權政策"
             AppLanguage.ENGLISH -> "Privacy Policy"
+            AppLanguage.SPANISH -> "Política de privacidad"
+            AppLanguage.FRENCH -> "Politique de confidentialité"
+            AppLanguage.PORTUGUESE -> "Política de privacidade"
         }
     }
 
     val closeLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "閉じる"
+            AppLanguage.KOREAN -> "닫기"
             AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
             AppLanguage.TRADITIONAL_CHINESE -> "關閉"
             AppLanguage.ENGLISH -> "Close"
+            AppLanguage.SPANISH -> "Cerrar"
+            AppLanguage.FRENCH -> "Fermer"
+            AppLanguage.PORTUGUESE -> "Fechar"
         }
     }
 
     val clearSearchLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "入力をクリア"
+            AppLanguage.KOREAN -> "검색어 지우기"
             AppLanguage.SIMPLIFIED_CHINESE -> "清除输入"
             AppLanguage.TRADITIONAL_CHINESE -> "清除輸入"
             AppLanguage.ENGLISH -> "Clear search"
+            AppLanguage.SPANISH -> "Borrar búsqueda"
+            AppLanguage.FRENCH -> "Effacer la recherche"
+            AppLanguage.PORTUGUESE -> "Limpar busca"
         }
     }
 
     val closeSearchLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "検索を閉じる"
+            AppLanguage.KOREAN -> "검색 닫기"
             AppLanguage.SIMPLIFIED_CHINESE -> "关闭搜索"
             AppLanguage.TRADITIONAL_CHINESE -> "關閉搜尋"
             AppLanguage.ENGLISH -> "Close search"
+            AppLanguage.SPANISH -> "Cerrar búsqueda"
+            AppLanguage.FRENCH -> "Fermer la recherche"
+            AppLanguage.PORTUGUESE -> "Fechar busca"
         }
     }
 
     val languageSelectorLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "言語を切り替え"
+            AppLanguage.KOREAN -> "언어 변경"
             AppLanguage.SIMPLIFIED_CHINESE -> "切换语言"
             AppLanguage.TRADITIONAL_CHINESE -> "切換語言"
             AppLanguage.ENGLISH -> "Change language"
+            AppLanguage.SPANISH -> "Cambiar idioma"
+            AppLanguage.FRENCH -> "Changer de langue"
+            AppLanguage.PORTUGUESE -> "Alterar idioma"
         }
     }
 
     val retryLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "再試行"
+            AppLanguage.KOREAN -> "다시 시도"
             AppLanguage.SIMPLIFIED_CHINESE -> "重试"
             AppLanguage.TRADITIONAL_CHINESE -> "重試"
             AppLanguage.ENGLISH -> "Retry"
+            AppLanguage.SPANISH -> "Reintentar"
+            AppLanguage.FRENCH -> "Réessayer"
+            AppLanguage.PORTUGUESE -> "Tentar novamente"
         }
     }
 
     val useSearchInsteadLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "地名検索を使う"
+            AppLanguage.KOREAN -> "지역 검색 이용"
             AppLanguage.SIMPLIFIED_CHINESE -> "使用城市搜索"
             AppLanguage.TRADITIONAL_CHINESE -> "使用城市搜尋"
             AppLanguage.ENGLISH -> "Search City"
+            AppLanguage.SPANISH -> "Buscar ciudad"
+            AppLanguage.FRENCH -> "Rechercher une ville"
+            AppLanguage.PORTUGUESE -> "Buscar cidade"
         }
     }
 
     val openSettingsLabel = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "アプリ設定を開く"
+            AppLanguage.KOREAN -> "앱 설정 열기"
             AppLanguage.SIMPLIFIED_CHINESE -> "打开应用设置"
             AppLanguage.TRADITIONAL_CHINESE -> "開啟應用程式設定"
             AppLanguage.ENGLISH -> "Open App Settings"
+            AppLanguage.SPANISH -> "Abrir ajustes de la app"
+            AppLanguage.FRENCH -> "Ouvrir les paramètres"
+            AppLanguage.PORTUGUESE -> "Abrir configurações do app"
         }
     }
 
@@ -918,28 +1030,44 @@ fun SetupScreen(
                         val feedbackMessage = when (locationFeedback) {
                             SetupLocationFeedback.PERMISSION_DENIED -> when (currentLanguage) {
                                 AppLanguage.JAPANESE -> "位置情報の許可がありません。地名検索から都市を登録できます。"
+                                AppLanguage.KOREAN -> "위치 권한이 허용되지 않았습니다. 지역 검색으로 도시를 등록할 수 있습니다."
                                 AppLanguage.SIMPLIFIED_CHINESE -> "未授予位置权限，您可以通过搜索城市完成设置。"
                                 AppLanguage.TRADITIONAL_CHINESE -> "未授予位置權限，您可以透過搜尋城市完成設定。"
                                 AppLanguage.ENGLISH -> "Location permission was denied. You can search for a city instead."
+                                AppLanguage.SPANISH -> "Se denegó el permiso de ubicación. Puedes buscar una ciudad en su lugar."
+                                AppLanguage.FRENCH -> "L'autorisation de localisation a été refusée. Vous pouvez rechercher une ville à la place."
+                                AppLanguage.PORTUGUESE -> "A permissão de localização foi negada. Você pode buscar uma cidade."
                             }
                             SetupLocationFeedback.PERMISSION_PERMANENTLY_DENIED -> when (currentLanguage) {
                                 AppLanguage.JAPANESE -> "位置情報が端末設定でオフになっています。アプリ設定から許可するか、地名検索をご利用ください。"
+                                AppLanguage.KOREAN -> "기기 설정에서 위치 권한이 꺼져 있습니다. 앱 설정에서 허용하거나 지역 검색을 이용해 주세요."
                                 AppLanguage.SIMPLIFIED_CHINESE -> "位置权限已在系统设置中关闭。请在应用设置中开启，或使用城市搜索。"
                                 AppLanguage.TRADITIONAL_CHINESE -> "位置權限已在系統設定中關閉。請在應用程式設定中開啟，或使用城市搜尋。"
                                 AppLanguage.ENGLISH -> "Location access is turned off in system settings. Enable it in App Settings or search for a city."
+                                AppLanguage.SPANISH -> "El acceso a la ubicación está desactivado en los ajustes del sistema. Actívalo en los ajustes de la app o busca una ciudad."
+                                AppLanguage.FRENCH -> "L'accès à la localisation est désactivé dans les paramètres système. Activez-le dans les paramètres ou recherchez une ville."
+                                AppLanguage.PORTUGUESE -> "O acesso à localização está desativado nas configurações do sistema. Ative nas configurações do app ou busque uma cidade."
                             }
                             SetupLocationFeedback.LOCATION_UNAVAILABLE -> when (currentLanguage) {
                                 AppLanguage.JAPANESE -> "現在地を取得できませんでした。位置情報サービスを確認して再試行するか、地名検索をご利用ください。"
+                                AppLanguage.KOREAN -> "현재 위치를 확인할 수 없습니다. 위치 서비스를 확인한 뒤 다시 시도하거나 지역 검색을 이용해 주세요."
                                 AppLanguage.SIMPLIFIED_CHINESE -> "未能获取当前位置。请检查定位服务后重试，或使用城市搜索。"
                                 AppLanguage.TRADITIONAL_CHINESE -> "未能取得目前位置。請檢查定位服務後重試，或使用城市搜尋。"
                                 AppLanguage.ENGLISH -> "Couldn't get your current location. Check location services and retry, or search for a city."
+                                AppLanguage.SPANISH -> "No se pudo obtener tu ubicación actual. Comprueba los servicios de ubicación y reintenta, o busca una ciudad."
+                                AppLanguage.FRENCH -> "Impossible d'obtenir votre position actuelle. Vérifiez les services de localisation et réessayez, ou recherchez une ville."
+                                AppLanguage.PORTUGUESE -> "Não foi possível obter sua localização atual. Verifique os serviços de localização e tente novamente, ou busque uma cidade."
                             }
                             SetupLocationFeedback.LOCATION_ERROR -> locationErrorDetail?.takeIf { it.isNotBlank() }
                                 ?: when (currentLanguage) {
                                     AppLanguage.JAPANESE -> "現在地の取得中にエラーが発生しました。再試行するか地名検索をご利用ください。"
+                                    AppLanguage.KOREAN -> "현재 위치를 불러오는 중 오류가 발생했습니다. 다시 시도하거나 지역 검색을 이용해 주세요."
                                     AppLanguage.SIMPLIFIED_CHINESE -> "获取位置时出错，请重试或使用城市搜索。"
                                     AppLanguage.TRADITIONAL_CHINESE -> "取得位置時發生錯誤，請重試或使用城市搜尋。"
                                     AppLanguage.ENGLISH -> "An error occurred while getting your location. Please retry or search for a city."
+                                    AppLanguage.SPANISH -> "Ocurrió un error al obtener tu ubicación. Reintenta o busca una ciudad."
+                                    AppLanguage.FRENCH -> "Une erreur s'est produite lors de la localisation. Réessayez ou recherchez une ville."
+                                    AppLanguage.PORTUGUESE -> "Ocorreu um erro ao obter sua localização. Tente novamente ou busque uma cidade."
                                 }
                             SetupLocationFeedback.NONE -> ""
                         }

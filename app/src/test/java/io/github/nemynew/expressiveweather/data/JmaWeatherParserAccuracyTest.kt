@@ -207,4 +207,180 @@ class JmaWeatherParserAccuracyTest {
             (frame70m?.precipMm ?: 0.0) >= 2.0
         )
     }
+
+    @Test
+    fun testCurrentConditionDoesNotShowRainWhenLiveObservationsAreDry() {
+        // 東京の実例: 11時台、予報「くもり 昼過ぎ から 夕方 雨」(code=203)、12時以降PoP=70%、実測0.0mm
+        val dryTokyo = JmaWeatherParser.resolveCondition(
+            codeStr = "203",
+            weatherText = "くもり 昼過ぎ から 夕方 雨",
+            hourOfDay = 11,
+            pop = 70,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 0.0,
+            nowcastPrecipMm = 0.0,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.CLOUDY, dryTokyo)
+
+        // ナウキャスト < 1mm/h (0.5mm/h の薄い水色/霧雨未満) かつ AMeDAS 0.0mm でも雨にしない
+        val dryMist = JmaWeatherParser.resolveCondition(
+            codeStr = "203",
+            weatherText = "くもり 昼過ぎ から 夕方 雨",
+            hourOfDay = 13,
+            pop = 70,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 0.0,
+            nowcastPrecipMm = 0.5,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.CLOUDY, dryMist)
+
+        // 300系 (雨ベース) でも現在実測が完全に乾いていれば曇りとする
+        val dryBeforeRainOn313 = JmaWeatherParser.resolveCondition(
+            codeStr = "313",
+            weatherText = "雨 夕方 から くもり",
+            hourOfDay = 11,
+            pop = 80,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 0.0,
+            nowcastPrecipMm = 0.0,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.CLOUDY, dryBeforeRainOn313)
+    }
+
+    @Test
+    fun testCurrentConditionShowsRainWhenLiveRadarOrAmedasDetectsRain() {
+        // 離れたAMeDASが 0.0mm でも、現在地ナウキャストが 2.5mm/h なら雨
+        val radarRain = JmaWeatherParser.resolveCondition(
+            codeStr = "203",
+            weatherText = "くもり 昼過ぎ から 夕方 雨",
+            hourOfDay = 13,
+            pop = 70,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 0.0,
+            nowcastPrecipMm = 2.5,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.RAIN, radarRain)
+
+        // AMeDAS 10分値で降水あり (0.5mm/10分 -> 3.0mm/h) ならレーダー未取得でも雨
+        val amedasRain = JmaWeatherParser.resolveCondition(
+            codeStr = "203",
+            weatherText = "くもり 昼過ぎ から 夕方 雨",
+            hourOfDay = 13,
+            pop = 70,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 3.0,
+            nowcastPrecipMm = null,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.RAIN, amedasRain)
+
+        // 10mm/h 以上なら強い雨
+        val heavyRain = JmaWeatherParser.resolveCondition(
+            codeStr = "300",
+            weatherText = "雨",
+            hourOfDay = 14,
+            pop = 90,
+            isDay = true,
+            isCurrent = true,
+            observedPrecipMm = 0.0,
+            nowcastPrecipMm = 15.0,
+            hasObservedPrecipData = true
+        )
+        assertEquals(WeatherCondition.HEAVY_RAIN, heavyRain)
+    }
+
+    @Test
+    fun testForecastOnlyFallbackRespectsSpacedJmaTimeKeywords() {
+        // 実況未取得時でも「昼過ぎ から 夕方 雨」「夕方 から 雨」「夕方 一時 雨」の11時台は雨にしない
+        assertEquals(
+            WeatherCondition.CLOUDY,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "203",
+                weatherText = "くもり 昼過ぎ から 夕方 雨",
+                hourOfDay = 11,
+                pop = 70,
+                isDay = true,
+                isCurrent = false
+            )
+        )
+        assertEquals(
+            WeatherCondition.RAIN,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "203",
+                weatherText = "くもり 昼過ぎ から 夕方 雨",
+                hourOfDay = 14,
+                pop = 70,
+                isDay = true,
+                isCurrent = false
+            )
+        )
+        assertEquals(
+            WeatherCondition.CLOUDY,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "214",
+                weatherText = "くもり 夕方 から 雨",
+                hourOfDay = 11,
+                pop = 80,
+                isDay = true,
+                isCurrent = false
+            )
+        )
+        assertEquals(
+            WeatherCondition.RAIN,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "214",
+                weatherText = "くもり 夕方 から 雨",
+                hourOfDay = 16,
+                pop = 80,
+                isDay = true,
+                isCurrent = false
+            )
+        )
+        assertEquals(
+            WeatherCondition.FEW_CLOUDS,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "202",
+                weatherText = "くもり 後 晴れ 夕方 一時 雨",
+                hourOfDay = 11,
+                pop = 50,
+                isDay = true,
+                isCurrent = false
+            )
+        )
+
+        // 未来時間帯でも短時間予報 (nowcastPrecipMm) がある場合はそちらと整合させる
+        assertEquals(
+            WeatherCondition.CLOUDY,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "203",
+                weatherText = "くもり 昼過ぎ から 夕方 雨",
+                hourOfDay = 13,
+                pop = 70,
+                isDay = true,
+                isCurrent = false,
+                nowcastPrecipMm = 0.0
+            )
+        )
+        assertEquals(
+            WeatherCondition.RAIN,
+            JmaWeatherParser.resolveCondition(
+                codeStr = "203",
+                weatherText = "くもり 昼過ぎ から 夕方 雨",
+                hourOfDay = 13,
+                pop = 70,
+                isDay = true,
+                isCurrent = false,
+                nowcastPrecipMm = 2.5
+            )
+        )
+    }
 }

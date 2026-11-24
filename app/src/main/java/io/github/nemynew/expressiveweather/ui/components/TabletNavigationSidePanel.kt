@@ -263,8 +263,12 @@ fun TabletNavigationDrawer(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "都市"
+                            AppLanguage.KOREAN -> "도시"
                             AppLanguage.SIMPLIFIED_CHINESE -> "城市"
                             AppLanguage.TRADITIONAL_CHINESE -> "城市"
+                            AppLanguage.SPANISH -> "Ciudades"
+                            AppLanguage.FRENCH -> "Villes"
+                            AppLanguage.PORTUGUESE -> "Cidades"
                             AppLanguage.ENGLISH -> "Cities"
                         },
                         style = MaterialTheme.typography.titleLarge,
@@ -365,8 +369,12 @@ fun TabletNavigationDrawer(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "検索結果"
+                            AppLanguage.KOREAN -> "검색 결과"
                             AppLanguage.SIMPLIFIED_CHINESE -> "搜索结果"
                             AppLanguage.TRADITIONAL_CHINESE -> "搜尋結果"
+                            AppLanguage.SPANISH -> "Resultados"
+                            AppLanguage.FRENCH -> "Résultats"
+                            AppLanguage.PORTUGUESE -> "Resultados"
                             AppLanguage.ENGLISH -> "Search Results"
                         },
                         style = MaterialTheme.typography.labelLarge,

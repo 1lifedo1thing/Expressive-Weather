@@ -585,7 +585,7 @@ fun ExpressiveFloatingToolbar(
                                     ) {
                                         Icon(
                                             imageVector = Icons.Rounded.MyLocation,
-                                            contentDescription = "現在地",
+                                            contentDescription = strings.currentLocation,
                                             tint = defaultCardContent,
                                             modifier = Modifier.size(22.dp)
                                         )
@@ -616,7 +616,7 @@ fun ExpressiveFloatingToolbar(
                                     if (isDefaultSelected) {
                                         Icon(
                                             imageVector = Icons.Rounded.Check,
-                                            contentDescription = "選択中",
+                                            contentDescription = strings.selected,
                                             tint = pillContentColor,
                                             modifier = Modifier.size(22.dp)
                                         )
@@ -779,7 +779,7 @@ fun ExpressiveFloatingToolbar(
                                             ) {
                                                 Icon(
                                                     imageVector = Icons.Rounded.History,
-                                                    contentDescription = "履歴",
+                                                    contentDescription = strings.recentSearches,
                                                     tint = recentContent.copy(alpha = 0.8f),
                                                     modifier = Modifier.size(20.dp)
                                                 )

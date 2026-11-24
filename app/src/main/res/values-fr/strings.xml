@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Météo</string>
+    <string name="widget_name_compact">Météo (Compact)</string>
+    <string name="widget_desc_compact">Météo actuelle, température et min/max dans une vignette compacte.</string>
+    <string name="widget_name_medium">Météo et heure par heure (Moyen)</string>
+    <string name="widget_desc_medium">Conditions actuelles et prévisions des 5 prochaines heures en un coup d\'œil.</string>
+    <string name="widget_name_large">Tableau de bord météo (Grand)</string>
+    <string name="widget_desc_large">Tableau de bord expressif avec météo actuelle, prévisions horaires et sur 7 jours.</string>
+    <string name="widget_name_shape">Météo (Material Shape)</string>
+    <string name="widget_desc_shape">Forme organique minimaliste Material 3 Expressive avec température actuelle et icône météo.</string>
+    <string name="widget_name_radar">Radar de pluie (Material You 4×2)</string>
+    <string name="widget_desc_radar">Carte radar des précipitations en direct style Material You avec température actuelle et tendance horaire.</string>
+    <string name="widget_config_title">Paramètres du widget</string>
+    <string name="widget_preview_city">Tokyo</string>
+    <string name="widget_preview_sunny">Dégagé</string>
+    <string name="widget_preview_now">Maintenant</string>
+    <string name="widget_preview_radar_live">17:10 En direct</string>
+    <string name="widget_preview_d0">Aujourd\'hui</string>
+    <string name="widget_preview_d1">Demain</string>
+    <string name="widget_preview_d2">Lun</string>
+    <string name="widget_preview_d3">Mar</string>
+    <string name="widget_preview_d4">Mer</string>
+    <string name="widget_preview_d5">Jeu</string>
+    <string name="widget_preview_d6">Ven</string>
+</resources>

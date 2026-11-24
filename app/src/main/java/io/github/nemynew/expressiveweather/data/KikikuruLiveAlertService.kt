@@ -38,8 +38,9 @@ class KikikuruLiveAlertService : Service() {
 
         const val ACTION_START_OR_UPDATE = "io.github.nemynew.expressiveweather.action.START_OR_UPDATE_LIVE_ALERT"
         const val ACTION_STOP = "io.github.nemynew.expressiveweather.action.STOP_LIVE_ALERT"
+        const val EXTRA_SILENT_UPDATE = "extra_silent_update"
 
-        fun startOrUpdate(context: Context) {
+        fun startOrUpdate(context: Context, isSilentUpdate: Boolean = false) {
             val appContext = context.applicationContext
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(appContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -49,22 +50,28 @@ class KikikuruLiveAlertService : Service() {
 
             val intent = Intent(appContext, KikikuruLiveAlertService::class.java).apply {
                 action = ACTION_START_OR_UPDATE
+                putExtra(EXTRA_SILENT_UPDATE, isSilentUpdate)
             }
             try {
                 ContextCompat.startForegroundService(appContext, intent)
-                Log.d(TAG, "Requested startForegroundService for Live Updates.")
+                Log.d(TAG, "Requested startForegroundService for Live Updates (silent=$isSilentUpdate).")
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to startForegroundService (${e.javaClass.simpleName}): ${e.message}")
                 try {
                     val alertInfo = KikikuruNotificationManager.currentActiveAlertInfo
-                    if (alertInfo != null && alertInfo.alertLevel.level >= 2) {
+                    if (alertInfo != null && alertInfo.alertLevel.level >= 2 &&
+                        (KikikuruNotificationManager.isTestModeActive ||
+                            !KikikuruNotificationManager.isSuppressedByUserDismissal(appContext, alertInfo))
+                    ) {
                         val notification = KikikuruNotificationManager.buildLiveNotification(
                             context = appContext,
                             alertInfo = alertInfo,
-                            cityName = KikikuruNotificationManager.currentActiveCityName
+                            cityName = KikikuruNotificationManager.currentActiveCityName,
+                            isSilentUpdate = isSilentUpdate
                         )
                         val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                         nm.notify(KikikuruNotificationManager.NOTIFICATION_ID, notification)
+                        KikikuruNotificationManager.markNotificationPosted()
                     }
                 } catch (fallbackEx: Throwable) {
                     Log.w(TAG, "Notification fallback failed: ${fallbackEx.message}")
@@ -125,11 +132,21 @@ class KikikuruLiveAlertService : Service() {
             return START_NOT_STICKY
         }
 
+        if (!KikikuruNotificationManager.isTestModeActive &&
+            KikikuruNotificationManager.isSuppressedByUserDismissal(this, alertInfo)
+        ) {
+            Log.d(TAG, "Alert suppressed by user dismissal. Stopping foreground service.")
+            stopLiveService()
+            return START_NOT_STICKY
+        }
+
+        val isSilentUpdate = intent?.getBooleanExtra(EXTRA_SILENT_UPDATE, false) == true
         try {
             val notification = KikikuruNotificationManager.buildLiveNotification(
                 context = this,
                 alertInfo = alertInfo,
-                cityName = cityName
+                cityName = cityName,
+                isSilentUpdate = isSilentUpdate
             )
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -141,7 +158,8 @@ class KikikuruLiveAlertService : Service() {
             } else {
                 startForeground(KikikuruNotificationManager.NOTIFICATION_ID, notification)
             }
-            Log.d(TAG, "Foreground service updated with Live Notification (Lv.${alertInfo.alertLevel.level})")
+            KikikuruNotificationManager.markNotificationPosted()
+            Log.d(TAG, "Foreground service updated with Live Notification (Lv.${alertInfo.alertLevel.level}, silent=$isSilentUpdate)")
         } catch (e: Throwable) {
             Log.e(TAG, "Error updating startForeground: ${e.message}", e)
             stopLiveService()
@@ -149,7 +167,7 @@ class KikikuruLiveAlertService : Service() {
         }
 
         startHighFrequencyMonitoring()
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onTimeout(startId: Int, fgsType: Int) {
@@ -166,6 +184,25 @@ class KikikuruLiveAlertService : Service() {
             try {
                 while (isActive) {
                     delay(3 * 60 * 1000L)
+                    if (!WeatherRepository.isLiveAlertNotificationEnabled(applicationContext)) {
+                        KikikuruNotificationManager.cancelAll(applicationContext)
+                        stopLiveService()
+                        break
+                    }
+                    val currentAlert = KikikuruNotificationManager.currentActiveAlertInfo
+                    if (currentAlert != null &&
+                        KikikuruNotificationManager.hasUserDismissedActiveNotification(applicationContext)
+                    ) {
+                        Log.d(TAG, "Detected swipe-dismissed Kikikuru notification in polling loop; suppressing & stopping.")
+                        KikikuruNotificationManager.dismissByUser(
+                            context = applicationContext,
+                            municipalityCode = currentAlert.municipalityCode.ifBlank { currentAlert.municipalityName },
+                            dismissedLevel = currentAlert.alertLevel.level,
+                            signature = KikikuruNotificationManager.buildAlertSignature(currentAlert)
+                        )
+                        stopLiveService()
+                        break
+                    }
                     try {
                         Log.d(TAG, "LiveAlertService 3-min tick: Refreshing Kikikuru alert data...")
                         KikikuruBackgroundMonitor.getInstance(applicationContext).checkCurrentAlert(forceFresh = true)

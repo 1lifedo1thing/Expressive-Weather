@@ -29,12 +29,12 @@ val appVersionCode: Int = (project.findProperty("VERSION_CODE")?.toString()
     ?: System.getenv("VERSION_CODE"))
     ?.toIntOrNull()
     ?.coerceAtLeast(1)
-    ?: 1
+    ?: 2
 
 val appVersionName: String = (project.findProperty("VERSION_NAME")?.toString()
     ?: System.getenv("VERSION_NAME"))
     ?.takeIf { it.isNotBlank() }
-    ?: "0.1.0"
+    ?: "0.1.1"
 
 val explicitBugReportFlag: String? = project.findProperty("ENABLE_BUG_REPORT")?.toString()
     ?: System.getenv("ENABLE_BUG_REPORT")

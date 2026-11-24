@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">날씨</string>
+    <string name="widget_name_compact">날씨 (컴팩트)</string>
+    <string name="widget_desc_compact">현재 날씨, 기온, 최고/최저 기온을 깔끔하게 표시합니다.</string>
+    <string name="widget_name_medium">날씨 및 시간별 예보 (중)</string>
+    <string name="widget_desc_medium">현재 날씨와 향후 5시간 예보를 한눈에 확인합니다.</string>
+    <string name="widget_name_large">날씨 대시보드 (대)</string>
+    <string name="widget_desc_large">현재 날씨, 시간별 예보, 7일 주간 예보를 한곳에 모은 대시보드 위젯입니다.</string>
+    <string name="widget_name_shape">날씨 (Material Shape)</string>
+    <string name="widget_desc_shape">Material 3 Expressive 도형 안에 현재 기온과 날씨 아이콘을 표시하는 미니멀 위젯입니다.</string>
+    <string name="widget_name_radar">강수 레이더 (Material You 4×2)</string>
+    <string name="widget_desc_radar">배경화면의 Material You 색상에 어우러지는 실시간 강수 레이더 지도와 현재 날씨를 표시합니다.</string>
+    <string name="widget_config_title">위젯 설정</string>
+    <string name="widget_preview_city">서울</string>
+    <string name="widget_preview_sunny">맑음</string>
+    <string name="widget_preview_now">현재</string>
+    <string name="widget_preview_radar_live">17:10 실시간</string>
+    <string name="widget_preview_d0">오늘</string>
+    <string name="widget_preview_d1">내일</string>
+    <string name="widget_preview_d2">월</string>
+    <string name="widget_preview_d3">화</string>
+    <string name="widget_preview_d4">수</string>
+    <string name="widget_preview_d5">목</string>
+    <string name="widget_preview_d6">금</string>
+</resources>

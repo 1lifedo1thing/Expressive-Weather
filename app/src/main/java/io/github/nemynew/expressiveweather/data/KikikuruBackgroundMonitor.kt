@@ -153,12 +153,25 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
      */
     suspend fun checkCurrentAlert(forceFresh: Boolean = false) {
         val locationProvider = CurrentLocationProvider(context)
-        val location = locationProvider.getCurrentLocation(forceFresh = false)
-        val repo = WeatherRepository(context = context)
-        val fallbackCity = if (location == null) repo.resolveFallbackCurrentCityOrNull() else null
+        val hasLocPerm = locationProvider.hasLocationPermission()
+        val location = if (hasLocPerm) locationProvider.getCurrentLocation(forceFresh = false) else null
+        val db = io.github.nemynew.expressiveweather.data.local.WeatherDatabase.getInstance(context)
+        val repo = WeatherRepository(
+            weatherDao = db.weatherDao(),
+            savedCityDao = db.savedCityDao(),
+            context = context
+        )
+        val liveGpsCity = location?.let { loc ->
+            locationProvider.resolveCity(loc).also { repo.setLastResolvedLocationCity(it) }
+        }
+        val notificationTargetCity = repo.resolveNotificationTargetCityOrNull(
+            hasLocationPermission = hasLocPerm,
+            liveGpsCity = liveGpsCity
+        )
+        val fallbackCity = if (notificationTargetCity == null) repo.resolveFallbackCurrentCityOrNull() else null
 
         val city = when {
-            location != null -> locationProvider.resolveCity(location)
+            notificationTargetCity != null -> notificationTargetCity
             fallbackCity != null -> fallbackCity
             else -> City(
                 id = "current_default",
@@ -170,12 +183,12 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
                 isFavorite = false
             )
         }
-        val hasResolvedLocationOrUserCity = location != null || fallbackCity != null
+        val hasEligibleNotificationCity = notificationTargetCity != null
 
         val inJapan = isLocationOrCountryInJapan(city.country, city.latitude, city.longitude)
 
         if (inJapan) {
-            val muni = if (location != null || fallbackCity != null) {
+            val muni = if (notificationTargetCity != null || fallbackCity != null) {
                 JmaMunicipalityResolver.resolveFromLocation(
                     city.latitude,
                     city.longitude,
@@ -191,9 +204,9 @@ class KikikuruBackgroundMonitor private constructor(private val context: Context
             evaluateAlertForMunicipality(
                 muni = muni,
                 forceFresh = forceFresh,
-                notifyUser = hasResolvedLocationOrUserCity,
-                latitude = if (hasResolvedLocationOrUserCity) city.latitude else null,
-                longitude = if (hasResolvedLocationOrUserCity) city.longitude else null
+                notifyUser = hasEligibleNotificationCity,
+                latitude = if (hasEligibleNotificationCity) city.latitude else null,
+                longitude = if (hasEligibleNotificationCity) city.longitude else null
             )
         } else {
             // 海外現在地: 米国NWS, 世界WMO, GDACSの警報を並行取得

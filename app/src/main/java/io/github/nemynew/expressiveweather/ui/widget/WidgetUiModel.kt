@@ -100,9 +100,13 @@ object WidgetUiModelBuilder {
         if (weather == null) {
             val loadingText = when (language) {
                 AppLanguage.JAPANESE -> if (isRefreshing) "更新中…" else "タップして天気を取得"
+                AppLanguage.KOREAN -> if (isRefreshing) "업데이트 중…" else "탭하여 날씨 불러오기"
                 AppLanguage.ENGLISH -> if (isRefreshing) "Updating…" else "Tap to load weather"
                 AppLanguage.SIMPLIFIED_CHINESE -> if (isRefreshing) "正在更新…" else "点击获取天气"
                 AppLanguage.TRADITIONAL_CHINESE -> if (isRefreshing) "更新中…" else "點擊取得天氣"
+                AppLanguage.SPANISH -> if (isRefreshing) "Actualizando…" else "Toca para cargar el clima"
+                AppLanguage.FRENCH -> if (isRefreshing) "Mise à jour…" else "Appuyer pour charger la météo"
+                AppLanguage.PORTUGUESE -> if (isRefreshing) "Atualizando…" else "Toque para carregar o clima"
             }
             return WidgetUiModel(
                 targetCity = targetCity,
@@ -135,34 +139,59 @@ object WidgetUiModelBuilder {
 
         val feelsPrefix = when (language) {
             AppLanguage.JAPANESE -> "体感"
+            AppLanguage.KOREAN -> "체감"
             AppLanguage.ENGLISH -> "Feels"
             AppLanguage.SIMPLIFIED_CHINESE -> "体感"
             AppLanguage.TRADITIONAL_CHINESE -> "體感"
+            AppLanguage.SPANISH -> "Sensación"
+            AppLanguage.FRENCH -> "Ressenti"
+            AppLanguage.PORTUGUESE -> "Sensação"
         }
         val feelsLikeText = "$feelsPrefix ${feelsLikeTemp}°"
         val highLowText = "↑${maxTemp}° ↓${minTemp}°"
 
         val humidityLabel = when (language) {
             AppLanguage.JAPANESE -> "湿度"
+            AppLanguage.KOREAN -> "습도"
             AppLanguage.ENGLISH -> "Humidity"
             AppLanguage.SIMPLIFIED_CHINESE -> "湿度"
             AppLanguage.TRADITIONAL_CHINESE -> "濕度"
+            AppLanguage.SPANISH -> "Humedad"
+            AppLanguage.FRENCH -> "Humidité"
+            AppLanguage.PORTUGUESE -> "Umidade"
         }
         val windLabel = when (language) {
             AppLanguage.JAPANESE -> "風"
+            AppLanguage.KOREAN -> "바람"
             AppLanguage.ENGLISH -> "Wind"
             AppLanguage.SIMPLIFIED_CHINESE -> "风速"
             AppLanguage.TRADITIONAL_CHINESE -> "風速"
+            AppLanguage.SPANISH -> "Viento"
+            AppLanguage.FRENCH -> "Vent"
+            AppLanguage.PORTUGUESE -> "Vento"
         }
         val windFormatted = windSpeedUnit.formatCompact(weather.windSpeedKmH, language)
-        val dotSep = if (language == AppLanguage.ENGLISH) " • " else " ・ "
+        val dotSep = when (language) {
+            AppLanguage.ENGLISH,
+            AppLanguage.SPANISH,
+            AppLanguage.FRENCH,
+            AppLanguage.PORTUGUESE -> " • "
+            AppLanguage.KOREAN -> " · "
+            AppLanguage.JAPANESE,
+            AppLanguage.SIMPLIFIED_CHINESE,
+            AppLanguage.TRADITIONAL_CHINESE -> " ・ "
+        }
         val humidityWindText = "$humidityLabel ${weather.humidity}%$dotSep$windLabel $windFormatted"
 
         val updatingSuffix = when (language) {
             AppLanguage.JAPANESE -> "更新中…"
+            AppLanguage.KOREAN -> "업데이트 중…"
             AppLanguage.ENGLISH -> "Updating…"
             AppLanguage.SIMPLIFIED_CHINESE -> "更新中…"
             AppLanguage.TRADITIONAL_CHINESE -> "更新中…"
+            AppLanguage.SPANISH -> "Actualizando…"
+            AppLanguage.FRENCH -> "Mise à jour…"
+            AppLanguage.PORTUGUESE -> "Atualizando…"
         }
         val updatedTimeText = if (isRefreshing) {
             updatingSuffix

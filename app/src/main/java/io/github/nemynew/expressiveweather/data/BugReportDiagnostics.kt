@@ -26,64 +26,100 @@ enum class FeatureRequestCategory(
     val issueTag: String,
     val labelJa: String,
     val labelEn: String,
+    val labelKo: String,
     val labelZhHans: String,
-    val labelZhHant: String
+    val labelZhHant: String,
+    val labelEs: String,
+    val labelFr: String,
+    val labelPt: String
 ) {
     UI_DESIGN(
         issueTag = "UI / Design",
         labelJa = "UI・デザイン",
         labelEn = "UI & Design",
+        labelKo = "UI·디자인",
         labelZhHans = "界面与设计",
-        labelZhHant = "介面與設計"
+        labelZhHant = "介面與設計",
+        labelEs = "UI y diseño",
+        labelFr = "UI et design",
+        labelPt = "UI e design"
     ),
     RADAR(
         issueTag = "Radar",
         labelJa = "雨雲レーダー",
         labelEn = "Rain Radar",
+        labelKo = "강수 레이더",
         labelZhHans = "降水雷达",
-        labelZhHant = "降雨雷達"
+        labelZhHant = "降雨雷達",
+        labelEs = "Radar de lluvia",
+        labelFr = "Radar de pluie",
+        labelPt = "Radar de chuva"
     ),
     WIDGET(
         issueTag = "Widget",
         labelJa = "ウィジェット",
         labelEn = "Widget",
+        labelKo = "위젯",
         labelZhHans = "桌面微件",
-        labelZhHant = "桌面小工具"
+        labelZhHant = "桌面小工具",
+        labelEs = "Widget",
+        labelFr = "Widget",
+        labelPt = "Widget"
     ),
     ALERTS_NOTIFICATIONS(
         issueTag = "Alerts / Notifications",
         labelJa = "警報・通知",
         labelEn = "Alerts & Notifications",
+        labelKo = "특보·알림",
         labelZhHans = "预警与通知",
-        labelZhHant = "警報與通知"
+        labelZhHant = "警報與通知",
+        labelEs = "Alertas y notificaciones",
+        labelFr = "Alertes et notifications",
+        labelPt = "Alertas e notificações"
     ),
     WEATHER_DATA_REGION(
         issueTag = "Weather Data / Region",
         labelJa = "天気データ・新地域",
         labelEn = "Data & Regions",
+        labelKo = "날씨 데이터·지역",
         labelZhHans = "气象数据与地区",
-        labelZhHant = "氣象資料與地區"
+        labelZhHant = "氣象資料與地區",
+        labelEs = "Datos y regiones",
+        labelFr = "Données et régions",
+        labelPt = "Dados e regiões"
     ),
     SETTINGS_USABILITY(
         issueTag = "Settings / UX",
         labelJa = "設定・操作性",
         labelEn = "Settings & UX",
+        labelKo = "설정·사용성",
         labelZhHans = "设置与体验",
-        labelZhHant = "設定與體驗"
+        labelZhHant = "設定與體驗",
+        labelEs = "Ajustes y experiencia",
+        labelFr = "Paramètres et UX",
+        labelPt = "Configurações e UX"
     ),
     OTHER(
         issueTag = "Feature",
         labelJa = "その他",
         labelEn = "Other",
+        labelKo = "기타",
         labelZhHans = "其他",
-        labelZhHant = "其他"
+        labelZhHant = "其他",
+        labelEs = "Otro",
+        labelFr = "Autre",
+        labelPt = "Outro"
     );
 
     fun label(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
+        AppLanguage.KOREAN -> labelKo
         AppLanguage.SIMPLIFIED_CHINESE -> labelZhHans
         AppLanguage.TRADITIONAL_CHINESE -> labelZhHant
         AppLanguage.ENGLISH -> labelEn
+        AppLanguage.SPANISH -> labelEs
+        AppLanguage.FRENCH -> labelFr
+        AppLanguage.PORTUGUESE -> labelPt
     }
 }
 
@@ -94,64 +130,100 @@ enum class BugReportCategory(
     val issueTag: String,
     val labelJa: String,
     val labelEn: String,
+    val labelKo: String,
     val labelZhHans: String,
-    val labelZhHant: String
+    val labelZhHant: String,
+    val labelEs: String,
+    val labelFr: String,
+    val labelPt: String
 ) {
     WEATHER_DATA(
         issueTag = "Weather Data",
         labelJa = "天気データ・数値",
         labelEn = "Weather Data",
+        labelKo = "날씨 데이터·수치",
         labelZhHans = "天气数据",
-        labelZhHant = "天氣資料"
+        labelZhHant = "天氣資料",
+        labelEs = "Datos meteorológicos",
+        labelFr = "Données météo",
+        labelPt = "Dados meteorológicos"
     ),
     RADAR(
         issueTag = "Radar",
         labelJa = "雨雲レーダー",
         labelEn = "Rain Radar",
+        labelKo = "강수 레이더",
         labelZhHans = "降水雷达",
-        labelZhHant = "降雨雷達"
+        labelZhHant = "降雨雷達",
+        labelEs = "Radar de lluvia",
+        labelFr = "Radar de pluie",
+        labelPt = "Radar de chuva"
     ),
     ALERTS_NOTIFICATIONS(
         issueTag = "Alerts / Notifications",
         labelJa = "警報・通知",
         labelEn = "Alerts & Notifications",
+        labelKo = "특보·알림",
         labelZhHans = "预警与通知",
-        labelZhHant = "警報與通知"
+        labelZhHant = "警報與通知",
+        labelEs = "Alertas y notificaciones",
+        labelFr = "Alertes et notifications",
+        labelPt = "Alertas e notificações"
     ),
     WIDGET(
         issueTag = "Widget",
         labelJa = "ウィジェット",
         labelEn = "Widget",
+        labelKo = "위젯",
         labelZhHans = "桌面微件",
-        labelZhHant = "桌面小工具"
+        labelZhHant = "桌面小工具",
+        labelEs = "Widget",
+        labelFr = "Widget",
+        labelPt = "Widget"
     ),
     UI_LAYOUT(
         issueTag = "UI / Layout",
         labelJa = "UI・表示崩れ",
         labelEn = "UI & Layout",
+        labelKo = "UI·화면 깨짐",
         labelZhHans = "界面显示",
-        labelZhHant = "介面顯示"
+        labelZhHant = "介面顯示",
+        labelEs = "UI y diseño",
+        labelFr = "UI et mise en page",
+        labelPt = "UI e layout"
     ),
     CRASH_PERFORMANCE(
         issueTag = "Crash / Freeze",
         labelJa = "クラッシュ・重い",
         labelEn = "Crash / Slow",
+        labelKo = "강제 종료·느림",
         labelZhHans = "崩溃 / 卡顿",
-        labelZhHant = "當機 / 卡頓"
+        labelZhHant = "當機 / 卡頓",
+        labelEs = "Cierre / Lentitud",
+        labelFr = "Plantage / Lenteur",
+        labelPt = "Travamento / Lentidão"
     ),
     OTHER(
         issueTag = "Other",
         labelJa = "その他",
         labelEn = "Other",
+        labelKo = "기타",
         labelZhHans = "其他",
-        labelZhHant = "其他"
+        labelZhHant = "其他",
+        labelEs = "Otro",
+        labelFr = "Autre",
+        labelPt = "Outro"
     );
 
     fun label(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
+        AppLanguage.KOREAN -> labelKo
         AppLanguage.SIMPLIFIED_CHINESE -> labelZhHans
         AppLanguage.TRADITIONAL_CHINESE -> labelZhHant
         AppLanguage.ENGLISH -> labelEn
+        AppLanguage.SPANISH -> labelEs
+        AppLanguage.FRENCH -> labelFr
+        AppLanguage.PORTUGUESE -> labelPt
     }
 }
 
@@ -197,10 +269,8 @@ data class BugReportSnapshot(
         fun resolveCoarseRegionBucket(weather: WeatherData?): String {
             if (weather == null) return "Unknown"
             val city = weather.city
-            val isJapan = city.country.contains("日本") ||
-                city.country.equals("Japan", ignoreCase = true) ||
-                weather.jmaOverviewText != null ||
-                (city.latitude in 20.0..46.0 && city.longitude in 122.0..154.0)
+            val isJapan = weather.jmaOverviewText != null ||
+                isLocationOrCountryInJapan(city.country, city.latitude, city.longitude)
             if (isJapan) return "Japan (JMA)"
             if (NwsAlertRepository.isUnitedStates(city)) return "United States (NWS / Open-Meteo)"
             return "Global (Open-Meteo)"

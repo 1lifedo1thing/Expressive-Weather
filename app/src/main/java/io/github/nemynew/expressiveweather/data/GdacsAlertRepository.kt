@@ -250,8 +250,27 @@ object GdacsAlertRepository {
                 val cLower = code.trim().lowercase(Locale.ROOT)
                 cLower.isNotBlank() && (
                     countryTokens.contains(cLower) ||
-                    (cityCountry.contains("japan") || cityCountry.contains("日本")) && (cLower == "jp" || cLower == "jpn") ||
-                    (cityCountry.contains("united states") || cityCountry.contains("アメリカ") || cityCountry.contains("米国")) && (cLower == "us" || cLower == "usa")
+                    (cityCountry.contains("japan") || cityCountry.contains("日本") || cityCountry.contains("일본") || cityCountry.contains("japón") || cityCountry.contains("japon") || cityCountry.contains("japão") || cityCountry.contains("japao")) && (cLower == "jp" || cLower == "jpn") ||
+                    (cityCountry.contains("korea") || cityCountry.contains("韓国") || cityCountry.contains("大韓民国") || cityCountry.contains("대한민국") || cityCountry.contains("한국") || cityCountry.contains("corea") || cityCountry.contains("corée") || cityCountry.contains("coree") || cityCountry.contains("coreia") || cityCountry.contains("coréia")) && (cLower == "kr" || cLower == "kor") ||
+                    (cityCountry.contains("united states") || cityCountry.contains("アメリカ") || cityCountry.contains("米国") || cityCountry.contains("미국") || cityCountry.contains("estados unidos") || cityCountry.contains("états-unis") || cityCountry.contains("etats-unis") || cityCountry.contains("ee. uu.") || cityCountry.contains("ee.uu.") || countryTokens.contains("eua")) && (cLower == "us" || cLower == "usa") ||
+                    (cityCountry.contains("spain") || cityCountry.contains("españa") || cityCountry.contains("espana") || cityCountry.contains("espagne") || cityCountry.contains("espanha")) && (cLower == "es" || cLower == "esp") ||
+                    (cityCountry.contains("france") || cityCountry.contains("francia") || cityCountry.contains("frança") || cityCountry.contains("franca")) && (cLower == "fr" || cLower == "fra") ||
+                    cityCountry.contains("portugal") && (cLower == "pt" || cLower == "prt") ||
+                    (cityCountry.contains("brazil") || cityCountry.contains("brasil") || cityCountry.contains("brésil") || cityCountry.contains("bresil")) && (cLower == "br" || cLower == "bra") ||
+                    (cityCountry.contains("mexico") || cityCountry.contains("méxico") || cityCountry.contains("mexique")) && (cLower == "mx" || cLower == "mex") ||
+                    (cityCountry.contains("argentina") || cityCountry.contains("argentine")) && (cLower == "ar" || cLower == "arg") ||
+                    (cityCountry.contains("chile") || cityCountry.contains("chili")) && (cLower == "cl" || cLower == "chl") ||
+                    (cityCountry.contains("colombia") || cityCountry.contains("colombie") || cityCountry.contains("colômbia")) && (cLower == "co" || cLower == "col") ||
+                    (cityCountry.contains("peru") || cityCountry.contains("perú") || cityCountry.contains("pérou")) && (cLower == "pe" || cLower == "per") ||
+                    (cityCountry.contains("germany") || cityCountry.contains("alemania") || cityCountry.contains("allemagne") || cityCountry.contains("alemanha")) && (cLower == "de" || cLower == "deu") ||
+                    (cityCountry.contains("italy") || cityCountry.contains("italia") || cityCountry.contains("italie") || cityCountry.contains("itália")) && (cLower == "it" || cLower == "ita") ||
+                    (cityCountry.contains("united kingdom") || cityCountry.contains("reino unido") || cityCountry.contains("royaume-uni") || cityCountry.contains("royaume uni")) && (cLower == "gb" || cLower == "gbr") ||
+                    (cityCountry.contains("china") || cityCountry.contains("chine")) && (cLower == "cn" || cLower == "chn") ||
+                    (cityCountry.contains("philippines") || cityCountry.contains("filipinas")) && (cLower == "ph" || cLower == "phl") ||
+                    (cityCountry.contains("indonesia") || cityCountry.contains("indonésie") || cityCountry.contains("indonesie") || cityCountry.contains("indonésia")) && (cLower == "id" || cLower == "idn") ||
+                    (cityCountry.contains("india") || cityCountry.contains("inde") || cityCountry.contains("índia")) && (cLower == "in" || cLower == "ind") ||
+                    (cityCountry.contains("australia") || cityCountry.contains("australie") || cityCountry.contains("austrália")) && (cLower == "au" || cLower == "aus") ||
+                    (cityCountry.contains("canada") || cityCountry.contains("canadá")) && (cLower == "ca" || cLower == "can")
                 )
             }
         } else {

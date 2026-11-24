@@ -747,9 +747,13 @@ private fun ZoomLevelBadge(
         ) {
             val zoomFormat = when (currentLanguage) {
                 AppLanguage.JAPANESE -> "🔍 ズーム: %.2f (Lv %d)"
+                AppLanguage.KOREAN -> "🔍 줌: %.2f (Lv %d)"
                 AppLanguage.ENGLISH -> "🔍 Zoom: %.2f (Lv %d)"
                 AppLanguage.SIMPLIFIED_CHINESE -> "🔍 缩放: %.2f (Lv %d)"
                 AppLanguage.TRADITIONAL_CHINESE -> "🔍 縮放: %.2f (Lv %d)"
+                AppLanguage.SPANISH -> "🔍 Zoom: %.2f (Nv %d)"
+                AppLanguage.FRENCH -> "🔍 Zoom : %.2f (Niv. %d)"
+                AppLanguage.PORTUGUESE -> "🔍 Zoom: %.2f (Nv %d)"
             }
             Text(
                 text = zoomFormat.format(currentZoom, currentZoom.toInt()),

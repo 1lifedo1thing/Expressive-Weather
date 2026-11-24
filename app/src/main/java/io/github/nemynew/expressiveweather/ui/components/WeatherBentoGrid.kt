@@ -530,7 +530,7 @@ private fun WindCard(
                 ) {
                     Row(verticalAlignment = Alignment.Bottom) {
                         val speedText = when (windSpeedUnit) {
-                            WindSpeedUnit.MS, WindSpeedUnit.FOLLOW_LANGUAGE -> if (language == AppLanguage.JAPANESE) String.format(Locale.US, "%.1f", convertedSpeed) else String.format(Locale.US, "%.0f", convertedSpeed)
+                            WindSpeedUnit.MS, WindSpeedUnit.FOLLOW_LANGUAGE -> if (language == AppLanguage.JAPANESE || (language == AppLanguage.KOREAN && displayUnit == "m/s")) String.format(Locale.US, "%.1f", convertedSpeed) else String.format(Locale.US, "%.0f", convertedSpeed)
                             else -> String.format(Locale.US, "%.0f", convertedSpeed)
                         }
                         Text(
@@ -562,9 +562,13 @@ private fun WindCard(
             // 突風フッター
             val gustLabel = when (language) {
                 AppLanguage.JAPANESE -> "突風"
+                AppLanguage.KOREAN -> "돌풍"
                 AppLanguage.ENGLISH -> "Gusts"
                 AppLanguage.SIMPLIFIED_CHINESE -> "阵风"
                 AppLanguage.TRADITIONAL_CHINESE -> "陣風"
+                AppLanguage.SPANISH -> "Rachas"
+                AppLanguage.FRENCH -> "Rafales"
+                AppLanguage.PORTUGUESE -> "Rajadas"
             }
             val gustFormatted = windSpeedUnit.formatFromMs(gustsMs, language)
             Text(
@@ -1928,9 +1932,13 @@ private fun PrecipitationCard(
                         val mmStr = String.format(Locale.US, "%.1f", weather.precipitationMm)
                         when (language) {
                             AppLanguage.JAPANESE -> "現在 $mmStr mm/h"
+                            AppLanguage.KOREAN -> "현재 $mmStr mm/h"
                             AppLanguage.ENGLISH -> "Now $mmStr mm/h"
                             AppLanguage.SIMPLIFIED_CHINESE -> "当前 $mmStr mm/h"
                             AppLanguage.TRADITIONAL_CHINESE -> "目前 $mmStr mm/h"
+                            AppLanguage.SPANISH -> "Ahora $mmStr mm/h"
+                            AppLanguage.FRENCH -> "Actuel $mmStr mm/h"
+                            AppLanguage.PORTUGUESE -> "Agora $mmStr mm/h"
                         }
                     } else {
                         strings.todayTotalPrecip

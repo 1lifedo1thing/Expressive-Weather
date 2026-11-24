@@ -59,38 +59,62 @@ enum class AlertLevel(
     fun getTitle(language: AppLanguage): String = when (this) {
         LEVEL_5 -> when (language) {
             AppLanguage.ENGLISH -> "Emergency Safety"
+            AppLanguage.KOREAN -> "재난 임박"
             AppLanguage.SIMPLIFIED_CHINESE -> "灾害切迫"
             AppLanguage.TRADITIONAL_CHINESE -> "災害切迫"
+            AppLanguage.SPANISH -> "Peligro inminente"
+            AppLanguage.FRENCH -> "Danger imminent"
+            AppLanguage.PORTUGUESE -> "Perigo iminente"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_4 -> when (language) {
             AppLanguage.ENGLISH -> "Danger"
+            AppLanguage.KOREAN -> "위험"
             AppLanguage.SIMPLIFIED_CHINESE -> "危险"
             AppLanguage.TRADITIONAL_CHINESE -> "危險"
+            AppLanguage.SPANISH -> "Peligro"
+            AppLanguage.FRENCH -> "Danger"
+            AppLanguage.PORTUGUESE -> "Perigo"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_3 -> when (language) {
             AppLanguage.ENGLISH -> "Warning"
+            AppLanguage.KOREAN -> "경계"
             AppLanguage.SIMPLIFIED_CHINESE -> "警戒"
             AppLanguage.TRADITIONAL_CHINESE -> "警戒"
+            AppLanguage.SPANISH -> "Alerta"
+            AppLanguage.FRENCH -> "Alerte"
+            AppLanguage.PORTUGUESE -> "Alerta"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_2 -> when (language) {
             AppLanguage.ENGLISH -> "Advisory"
+            AppLanguage.KOREAN -> "주의"
             AppLanguage.SIMPLIFIED_CHINESE -> "注意"
             AppLanguage.TRADITIONAL_CHINESE -> "注意"
+            AppLanguage.SPANISH -> "Aviso"
+            AppLanguage.FRENCH -> "Vigilance"
+            AppLanguage.PORTUGUESE -> "Aviso"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_1 -> when (language) {
             AppLanguage.ENGLISH -> "Early Caution"
+            AppLanguage.KOREAN -> "조기 주의"
             AppLanguage.SIMPLIFIED_CHINESE -> "早期注意"
             AppLanguage.TRADITIONAL_CHINESE -> "早期注意"
+            AppLanguage.SPANISH -> "Precaución temprana"
+            AppLanguage.FRENCH -> "Attention précoce"
+            AppLanguage.PORTUGUESE -> "Atenção inicial"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_0 -> when (language) {
             AppLanguage.ENGLISH -> "Normal"
+            AppLanguage.KOREAN -> "평상"
             AppLanguage.SIMPLIFIED_CHINESE -> "正常"
             AppLanguage.TRADITIONAL_CHINESE -> "正常"
+            AppLanguage.SPANISH -> "Normal"
+            AppLanguage.FRENCH -> "Normal"
+            AppLanguage.PORTUGUESE -> "Normal"
             AppLanguage.JAPANESE -> title
         }
     }
@@ -110,12 +134,20 @@ enum class DisasterType(
     val id: String,
     val labelJa: String,
     val labelEn: String,
+    val labelKo: String,
     val labelZhHans: String,
     val labelZhHant: String,
+    val labelEs: String,
+    val labelFr: String,
+    val labelPt: String,
     val shortLabelJa: String,
     val shortLabelEn: String,
+    val shortLabelKo: String,
     val shortLabelZhHans: String,
     val shortLabelZhHant: String,
+    val shortLabelEs: String,
+    val shortLabelFr: String,
+    val shortLabelPt: String,
     val radarLayerId: String,
     val priority: Int
 ) {
@@ -123,12 +155,20 @@ enum class DisasterType(
         id = "heavy_rain",
         labelJa = "大雨キキクル",
         labelEn = "Heavy Rain",
+        labelKo = "호우 위험도",
         labelZhHans = "大雨危险度",
         labelZhHant = "大雨危險度",
+        labelEs = "Lluvia intensa",
+        labelFr = "Fortes pluies",
+        labelPt = "Chuva intensa",
         shortLabelJa = "大雨",
         shortLabelEn = "Rain",
+        shortLabelKo = "호우",
         shortLabelZhHans = "大雨",
         shortLabelZhHant = "大雨",
+        shortLabelEs = "Lluvia",
+        shortLabelFr = "Pluie",
+        shortLabelPt = "Chuva",
         radarLayerId = "hrpns",
         priority = 1
     ),
@@ -136,12 +176,20 @@ enum class DisasterType(
         id = "landslide",
         labelJa = "土砂キキクル",
         labelEn = "Landslide",
+        labelKo = "산사태 위험도",
         labelZhHans = "土砂灾害",
         labelZhHant = "土砂災害",
+        labelEs = "Deslizamiento",
+        labelFr = "Glissement de terrain",
+        labelPt = "Deslizamento",
         shortLabelJa = "土砂",
         shortLabelEn = "Landslide",
+        shortLabelKo = "산사태",
         shortLabelZhHans = "土砂",
         shortLabelZhHant = "土砂",
+        shortLabelEs = "Deslave",
+        shortLabelFr = "Glissement",
+        shortLabelPt = "Deslizamento",
         radarLayerId = "landslide",
         priority = 2
     ),
@@ -149,12 +197,20 @@ enum class DisasterType(
         id = "inundation",
         labelJa = "浸水キキクル",
         labelEn = "Inundation",
+        labelKo = "침수 위험도",
         labelZhHans = "浸水害",
         labelZhHant = "浸水害",
+        labelEs = "Anegamiento",
+        labelFr = "Inondation",
+        labelPt = "Alagamento",
         shortLabelJa = "浸水",
         shortLabelEn = "Inundation",
+        shortLabelKo = "침수",
         shortLabelZhHans = "浸水",
         shortLabelZhHant = "浸水",
+        shortLabelEs = "Anegamiento",
+        shortLabelFr = "Inondation",
+        shortLabelPt = "Alagamento",
         radarLayerId = "inundation",
         priority = 3
     ),
@@ -162,12 +218,20 @@ enum class DisasterType(
         id = "flood",
         labelJa = "洪水キキクル",
         labelEn = "Flood",
+        labelKo = "홍수 위험도",
         labelZhHans = "洪水灾害",
         labelZhHant = "洪水災害",
+        labelEs = "Inundación",
+        labelFr = "Crue",
+        labelPt = "Inundação",
         shortLabelJa = "洪水",
         shortLabelEn = "Flood",
+        shortLabelKo = "홍수",
         shortLabelZhHans = "洪水",
         shortLabelZhHant = "洪水",
+        shortLabelEs = "Inundación",
+        shortLabelFr = "Crue",
+        shortLabelPt = "Inundação",
         radarLayerId = "flood",
         priority = 4
     ),
@@ -175,28 +239,44 @@ enum class DisasterType(
         id = "storm_wind",
         labelJa = "暴風・強風",
         labelEn = "Storm Winds",
+        labelKo = "폭풍·강풍",
         labelZhHans = "大风灾害",
         labelZhHant = "大風災害",
+        labelEs = "Vientos fuertes",
+        labelFr = "Vents violents",
+        labelPt = "Ventos fortes",
         shortLabelJa = "暴風",
         shortLabelEn = "Wind",
+        shortLabelKo = "강풍",
         shortLabelZhHans = "暴风",
         shortLabelZhHant = "暴風",
+        shortLabelEs = "Viento",
+        shortLabelFr = "Vent",
+        shortLabelPt = "Vento",
         radarLayerId = "hrpns",
         priority = 5
     );
 
     fun getLabel(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
+        AppLanguage.KOREAN -> labelKo
         AppLanguage.ENGLISH -> labelEn
         AppLanguage.SIMPLIFIED_CHINESE -> labelZhHans
         AppLanguage.TRADITIONAL_CHINESE -> labelZhHant
+        AppLanguage.SPANISH -> labelEs
+        AppLanguage.FRENCH -> labelFr
+        AppLanguage.PORTUGUESE -> labelPt
     }
 
     fun getShortLabel(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> shortLabelJa
+        AppLanguage.KOREAN -> shortLabelKo
         AppLanguage.ENGLISH -> shortLabelEn
         AppLanguage.SIMPLIFIED_CHINESE -> shortLabelZhHans
         AppLanguage.TRADITIONAL_CHINESE -> shortLabelZhHant
+        AppLanguage.SPANISH -> shortLabelEs
+        AppLanguage.FRENCH -> shortLabelFr
+        AppLanguage.PORTUGUESE -> shortLabelPt
     }
 }
 
@@ -216,8 +296,12 @@ data class KikikuruDisasterDetail(
         val typeLabel = disasterType.getLabel(language)
         val prefix = when (language) {
             AppLanguage.ENGLISH -> "Alert Level $levelNum: $levelTitle"
+            AppLanguage.KOREAN -> "경계 레벨 $levelNum $levelTitle"
             AppLanguage.SIMPLIFIED_CHINESE -> "警戒等级$levelNum $levelTitle"
             AppLanguage.TRADITIONAL_CHINESE -> "警戒等級$levelNum $levelTitle"
+            AppLanguage.SPANISH -> "Nivel de alerta $levelNum: $levelTitle"
+            AppLanguage.FRENCH -> "Niveau d'alerte $levelNum : $levelTitle"
+            AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum: $levelTitle"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle"
         }
         return "$prefix ($typeLabel)"

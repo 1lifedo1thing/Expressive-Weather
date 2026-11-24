@@ -153,6 +153,9 @@ data class RainIntensityLevel(
     val onColor: Color,
     val impactJa: String,
     val warningJa: String,
+    val nameKo: String,
+    val impactKo: String,
+    val warningKo: String,
     val nameEn: String,
     val impactEn: String,
     val warningEn: String,
@@ -161,25 +164,46 @@ data class RainIntensityLevel(
     val warningZhCn: String,
     val nameZhTw: String,
     val impactZhTw: String,
-    val warningZhTw: String
+    val warningZhTw: String,
+    val nameEs: String,
+    val impactEs: String,
+    val warningEs: String,
+    val nameFr: String,
+    val impactFr: String,
+    val warningFr: String,
+    val namePt: String,
+    val impactPt: String,
+    val warningPt: String
 ) {
     fun name(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> nameJa
+        AppLanguage.KOREAN -> nameKo
         AppLanguage.ENGLISH -> nameEn
         AppLanguage.SIMPLIFIED_CHINESE -> nameZhCn
         AppLanguage.TRADITIONAL_CHINESE -> nameZhTw
+        AppLanguage.SPANISH -> nameEs
+        AppLanguage.FRENCH -> nameFr
+        AppLanguage.PORTUGUESE -> namePt
     }
     fun impact(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> impactJa
+        AppLanguage.KOREAN -> impactKo
         AppLanguage.ENGLISH -> impactEn
         AppLanguage.SIMPLIFIED_CHINESE -> impactZhCn
         AppLanguage.TRADITIONAL_CHINESE -> impactZhTw
+        AppLanguage.SPANISH -> impactEs
+        AppLanguage.FRENCH -> impactFr
+        AppLanguage.PORTUGUESE -> impactPt
     }
     fun warning(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> warningJa
+        AppLanguage.KOREAN -> warningKo
         AppLanguage.ENGLISH -> warningEn
         AppLanguage.SIMPLIFIED_CHINESE -> warningZhCn
         AppLanguage.TRADITIONAL_CHINESE -> warningZhTw
+        AppLanguage.SPANISH -> warningEs
+        AppLanguage.FRENCH -> warningFr
+        AppLanguage.PORTUGUESE -> warningPt
     }
 }
 
@@ -191,6 +215,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "息苦しくなるような圧迫感。水しぶきで前方が見えなくなる。",
         warningJa = "重大な災害発生の危険性が極めて高い。河川氾濫・土砂崩れに最大級警戒。",
+        nameKo = "극한 호우",
+        impactKo = "숨쉬기 어려울 정도의 압박감. 빗물 보라로 앞이 보이지 않음.",
+        warningKo = "중대한 재해 발생 위험이 매우 높음. 하천 범람 및 산사태에 최고 수준 경계.",
         nameEn = "Torrential Rain",
         impactEn = "Oppressive sensation making breathing difficult; front view blocked by spray.",
         warningEn = "Extreme disaster hazard. Maximum alert for river flooding and landslides.",
@@ -199,7 +226,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "发生重大灾害的危险性极高。对河流泛滥及山体滑坡泥石流保持最高级别警戒。",
         nameZhTw = "特大暴雨",
         impactZhTw = "壓迫感極強呼吸困難，漫天水花導致前方視線完全受阻。",
-        warningZhTw = "發生重大災害的危險性極高。對河流氾濫及土石流保持最高級別警戒。"
+        warningZhTw = "發生重大災害的危險性極高。對河流氾濫及土石流保持最高級別警戒。",
+        nameEs = "Lluvia torrencial",
+        impactEs = "Sensación opresiva que dificulta respirar; la visibilidad queda bloqueada por la lluvia.",
+        warningEs = "Riesgo extremo de desastre. Alerta máxima por desbordamiento de ríos y deslizamientos.",
+        nameFr = "Pluie torrentielle",
+        impactFr = "Sensation oppressante rendant la respiration difficile ; visibilité nulle à cause des projections.",
+        warningFr = "Risque extrême de catastrophe. Alerte maximale aux crues et glissements de terrain.",
+        namePt = "Chuva torrencial",
+        impactPt = "Sensação opressiva que dificulta respirar; visibilidade bloqueada pela cortina de água.",
+        warningPt = "Risco extremo de desastre. Alerta máximo para enchentes e deslizamentos de terra."
     ),
     RainIntensityLevel(
         rangeLabel = "50〜80",
@@ -208,6 +244,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "滝のように降る。傘は全く役に立たない。",
         warningJa = "地下街や低地への浸水・土砂崩れ・中小河川の急な増水に警戒。",
+        nameKo = "매우 강한 폭우",
+        impactKo = "폭포처럼 쏟아지는 비. 우산이 전혀 소용없음.",
+        warningKo = "지하 공간·저지대 침수, 산사태, 중소 하천의 급격한 범람에 경계.",
         nameEn = "Extremely Heavy Rain",
         impactEn = "Pours like a waterfall; umbrellas are completely useless.",
         warningEn = "Alert for low-lying inundation, basement flooding, landslides, and river surges.",
@@ -216,7 +255,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "警惕地下商城、低洼地淹水积水、山体滑坡及中小河流突发暴涨。",
         nameZhTw = "大暴雨",
         impactZhTw = "暴雨如瀑布傾瀉，雨傘完全失去遮擋作用。",
-        warningZhTw = "警惕地下商城、低窪地淹水積水、土石流及中小河流突發暴漲。"
+        warningZhTw = "警惕地下商城、低窪地淹水積水、土石流及中小河流突發暴漲。",
+        nameEs = "Lluvia muy intensa",
+        impactEs = "Cae como una cascada; el paraguas no sirve de nada.",
+        warningEs = "Alerta por inundaciones en zonas bajas y sótanos, deslizamientos y crecidas repentinas.",
+        nameFr = "Pluie très violente",
+        impactFr = "Tombe comme une cascade ; un parapluie est totalement inutile.",
+        warningFr = "Vigilance face aux inondations de zones basses et sous-sols, glissements et crues rapides.",
+        namePt = "Chuva muito forte",
+        impactPt = "Cai como uma cachoeira; o guarda-chuva não tem utilidade alguma.",
+        warningPt = "Alerta para alagamentos em áreas baixas e subsolos, deslizamentos e cheias rápidas."
     ),
     RainIntensityLevel(
         rangeLabel = "30〜50",
@@ -225,6 +273,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "バケツをひっくり返したように降る。",
         warningJa = "道路が川のようになり、高速走行の車はハイドロプレーニングを起こす。",
+        nameKo = "매우 강한 비",
+        impactKo = "양동이로 물을 붓듯 쏟아지는 비.",
+        warningKo = "도로가 물에 잠기며, 고속 주행 차량은 수막현상 위험이 높음.",
         nameEn = "Heavy Rain",
         impactEn = "Pours as if buckets of water were dumped.",
         warningEn = "Roads become rivers; fast-moving vehicles risk hydroplaning.",
@@ -233,7 +284,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "道路易成水流河流，高速行驶车辆极易发生水漂打滑失控。",
         nameZhTw = "暴雨",
         impactZhTw = "傾盆大雨，猶如打翻水桶般猛烈傾瀉。",
-        warningZhTw = "道路易成水流河流，高速行駛車輛極易發生水漂打滑失控。"
+        warningZhTw = "道路易成水流河流，高速行駛車輛極易發生水漂打滑失控。",
+        nameEs = "Lluvia intensa",
+        impactEs = "Llueve a cántaros, como si volcaran cubos de agua.",
+        warningEs = "Las calles parecen ríos; los vehículos a alta velocidad corren riesgo de aquaplaning.",
+        nameFr = "Pluie forte",
+        impactFr = "Il pleut à seaux, comme des trombes d'eau.",
+        warningFr = "Les routes se transforment en ruisseaux ; risque d'aquaplaning à vive allure.",
+        namePt = "Chuva forte",
+        impactPt = "Chove torrencialmente, como se despejassem baldes de água.",
+        warningPt = "As vias ficam alagadas; veículos em alta velocidade correm risco de aquaplanagem."
     ),
     RainIntensityLevel(
         rangeLabel = "20〜30",
@@ -242,6 +302,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color(0xFF1C1B1F),
         impactJa = "土砂降りの雨。傘をさしていても濡れる。",
         warningJa = "側溝や下水、小さな川から水があふれ出すことがある。",
+        nameKo = "강한 비",
+        impactKo = "장대비 수준으로, 우산을 써도 옷이 젖음.",
+        warningKo = "배수로, 하수구 및 작은 하천이 넘칠 수 있음.",
         nameEn = "Strong Rain",
         impactEn = "Pouring rain; clothes get wet even holding an umbrella.",
         warningEn = "Street gutters, drains, and small creeks may overflow.",
@@ -250,7 +313,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "排水沟、城市下水道及小溪沟可能会溢水泛滥。",
         nameZhTw = "大雨",
         impactZhTw = "大雨傾盆，即使撐傘身體依然容易被淋濕。",
-        warningZhTw = "排水溝、城市下水道及小溪溝可能會溢水氾濫。"
+        warningZhTw = "排水溝、城市下水道及小溪溝可能會溢水氾濫。",
+        nameEs = "Lluvia fuerte",
+        impactEs = "Aguacero intenso; la ropa se moja incluso con paraguas.",
+        warningEs = "Las alcantarillas, cunetas y arroyos pequeños pueden desbordarse.",
+        nameFr = "Forte averse",
+        impactFr = "Pluie battante ; les vêtements sont mouillés même avec un parapluie.",
+        warningFr = "Les caniveaux, égouts et petits cours d'eau peuvent déborder.",
+        namePt = "Chuva intensa",
+        impactPt = "Aguaceiro forte; a roupa molha mesmo usando guarda-chuva.",
+        warningPt = "Bueiros, sarjetas e pequenos córregos podem transbordar."
     ),
     RainIntensityLevel(
         rangeLabel = "10〜20",
@@ -259,6 +331,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "ザーザーと音を立てて降る。足元が濡れる。",
         warningJa = "地面一面に水たまりができる。長く屋外にいると服にしみ込む。",
+        nameKo = "다소 강한 비",
+        impactKo = "빗소리가 크게 들리며 신발과 발밑이 젖음.",
+        warningKo = "노면 곳곳에 물웅덩이가 생기고 오래 야외에 있으면 옷이 젖음.",
         nameEn = "Moderate Rain",
         impactEn = "Rustling rainfall with loud sound; shoes and feet get wet.",
         warningEn = "Puddles form across surfaces; moisture penetrates clothes over time.",
@@ -267,7 +342,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "路面到处形成水洼，长时间停留户外衣物会逐渐渗透湿透。",
         nameZhTw = "中到大雨",
         impactZhTw = "嘩嘩作響的雨聲清晰可聞，地面濺水打濕鞋襪。",
-        warningZhTw = "路面到處形成水窪，長時間停留戶外衣物會逐漸滲透濕透。"
+        warningZhTw = "路面到處形成水窪，長時間停留戶外衣物會逐漸滲透濕透。",
+        nameEs = "Lluvia moderada",
+        impactEs = "Lluvia con sonido constante; el calzado y los pies se mojan fácilmente.",
+        warningEs = "Se forman charcos por todo el suelo; la humedad cala si permanece mucho tiempo fuera.",
+        nameFr = "Pluie modérée",
+        impactFr = "Pluie bruyante et soutenue ; les chaussures et les pieds sont vite mouillés.",
+        warningFr = "Des flaques se forment partout ; l'humidité traverse les vêtements à la longue.",
+        namePt = "Chuva moderada",
+        impactPt = "Chuva com barulho constante; calçados e pés se molham com facilidade.",
+        warningPt = "Formam-se poças por todo o chão; a umidade encharca a roupa com o tempo."
     ),
     RainIntensityLevel(
         rangeLabel = "5〜10",
@@ -276,6 +360,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "雨の音が周囲にはっきり聞こえるまとまった雨。",
         warningJa = "傘をさして歩く必要がある。水たまりが広くできる。",
+        nameKo = "보통 비",
+        impactKo = "주변에서 빗소리가 뚜렷하게 들리는 꾸준한 비.",
+        warningKo = "외출 시 우산이 필요하며 곳곳에 물웅덩이가 생김.",
         nameEn = "Steady Rain",
         impactEn = "Continuous steady rain with clear sound.",
         warningEn = "Umbrellas required for walking outside; widespread small puddles.",
@@ -284,7 +371,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "外出必须撑伞步行，低洼地面开始形成明显积水。",
         nameZhTw = "中雨",
         impactZhTw = "周圍能清楚聽到雨聲的整場連綿降雨。",
-        warningZhTw = "外出必須撐傘步行，低窪地面開始形成明顯積水。"
+        warningZhTw = "外出必須撐傘步行，低窪地面開始形成明顯積水。",
+        nameEs = "Lluvia constante",
+        impactEs = "Lluvia continua cuyo sonido se oye con claridad alrededor.",
+        warningEs = "Se necesita paraguas para caminar afuera; se forman numerosos charcos.",
+        nameFr = "Pluie régulière",
+        impactFr = "Pluie continue dont le bruit est nettement audible.",
+        warningFr = "Parapluie nécessaire pour marcher dehors ; nombreuses petites flaques.",
+        namePt = "Chuva contínua",
+        impactPt = "Chuva constante com som bem audível ao redor.",
+        warningPt = "É necessário guarda-chuva para sair; formam-se várias poças."
     ),
     RainIntensityLevel(
         rangeLabel = "1〜5",
@@ -293,6 +389,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color(0xFF003258),
         impactJa = "しとしとと降る雨。傘をささないと濡れる。",
         warningJa = "外出時は折りたたみ傘などの携帯が推奨される。",
+        nameKo = "약한 비",
+        impactKo = "부슬부슬 내리는 비. 우산이 없으면 젖음.",
+        warningKo = "외출 시 접이식 우산 등을 챙기는 것이 좋음.",
         nameEn = "Light Rain",
         impactEn = "Gentle pattering rain; you will get wet without cover.",
         warningEn = "Carrying a compact folding umbrella is recommended outdoors.",
@@ -301,7 +400,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "出门建议随身携带便携折叠雨伞。",
         nameZhTw = "小雨",
         impactZhTw = "淅淅瀝瀝的細雨，不撐傘會被打濕。",
-        warningZhTw = "出門建議隨身攜帶便攜折疊雨傘。"
+        warningZhTw = "出門建議隨身攜帶便攜折疊雨傘。",
+        nameEs = "Lluvia ligera",
+        impactEs = "Lluvia suave; te mojarás si no llevas protección.",
+        warningEs = "Se recomienda llevar un paraguas plegable al salir.",
+        nameFr = "Pluie faible",
+        impactFr = "Pluie fine et douce ; vous serez mouillé sans protection.",
+        warningFr = "Un parapluie pliant est recommandé pour sortir.",
+        namePt = "Chuva fraca",
+        impactPt = "Chuva leve e suave; você se molhará sem proteção.",
+        warningPt = "Recomenda-se levar um guarda-chuva dobrável ao sair."
     ),
     RainIntensityLevel(
         rangeLabel = "0.1〜1",
@@ -310,6 +418,9 @@ val RAIN_INTENSITY_LEVELS = listOf(
         onColor = Color(0xFF1E293B),
         impactJa = "傘がなくても何とか耐えられる程度の微弱な雨。",
         warningJa = "地面がうっすら湿る程度。長時間の歩行は傘があると安心。",
+        nameKo = "가랑비·이슬비",
+        impactKo = "우산 없이도 잠시 견딜 수 있는 아주 약한 비.",
+        warningKo = "지면이 살짝 젖는 정도이며 장시간 보행 시 우산이 있으면 안심.",
         nameEn = "Drizzle",
         impactEn = "Faint mist or drizzle barely bearable without an umbrella.",
         warningEn = "Ground is slightly dampened; having an umbrella is helpful for long walks.",
@@ -318,7 +429,16 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningZhCn = "路面微微湿润，长时间室外行走备伞更加安心。",
         nameZhTw = "微雨・毛毛雨",
         impactZhTw = "極微弱的霏霏細雨，即便不撐傘也能短時間耐受。",
-        warningZhTw = "路面微微濕潤，長時間室外行走備傘更加安心。"
+        warningZhTw = "路面微微濕潤，長時間室外行走備傘更加安心。",
+        nameEs = "Llovizna",
+        impactEs = "Llovizna muy débil, soportable brevemente sin paraguas.",
+        warningEs = "El suelo apenas se humedece; conviene llevar paraguas en caminatas largas.",
+        nameFr = "Bruine",
+        impactFr = "Fine bruine supportable brièvement sans parapluie.",
+        warningFr = "Le sol est légèrement humide ; un parapluie est utile pour marcher longtemps.",
+        namePt = "Garoa",
+        impactPt = "Garoa muito leve, suportável por pouco tempo sem guarda-chuva.",
+        warningPt = "O chão fica levemente úmido; um guarda-chuva ajuda em caminhadas longas."
     )
 )
 
@@ -346,6 +466,9 @@ data class RadarLegendLevelItem(
     val onColor: Color = Color.White,
     val impactJa: String,
     val warningJa: String,
+    val nameKo: String,
+    val impactKo: String,
+    val warningKo: String,
     val nameEn: String,
     val impactEn: String,
     val warningEn: String,
@@ -354,25 +477,46 @@ data class RadarLegendLevelItem(
     val warningZhCn: String,
     val nameZhTw: String,
     val impactZhTw: String,
-    val warningZhTw: String
+    val warningZhTw: String,
+    val nameEs: String,
+    val impactEs: String,
+    val warningEs: String,
+    val nameFr: String,
+    val impactFr: String,
+    val warningFr: String,
+    val namePt: String,
+    val impactPt: String,
+    val warningPt: String
 ) {
     fun name(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> nameJa
+        AppLanguage.KOREAN -> nameKo
         AppLanguage.ENGLISH -> nameEn
         AppLanguage.SIMPLIFIED_CHINESE -> nameZhCn
         AppLanguage.TRADITIONAL_CHINESE -> nameZhTw
+        AppLanguage.SPANISH -> nameEs
+        AppLanguage.FRENCH -> nameFr
+        AppLanguage.PORTUGUESE -> namePt
     }
     fun impact(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> impactJa
+        AppLanguage.KOREAN -> impactKo
         AppLanguage.ENGLISH -> impactEn
         AppLanguage.SIMPLIFIED_CHINESE -> impactZhCn
         AppLanguage.TRADITIONAL_CHINESE -> impactZhTw
+        AppLanguage.SPANISH -> impactEs
+        AppLanguage.FRENCH -> impactFr
+        AppLanguage.PORTUGUESE -> impactPt
     }
     fun warning(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> warningJa
+        AppLanguage.KOREAN -> warningKo
         AppLanguage.ENGLISH -> warningEn
         AppLanguage.SIMPLIFIED_CHINESE -> warningZhCn
         AppLanguage.TRADITIONAL_CHINESE -> warningZhTw
+        AppLanguage.SPANISH -> warningEs
+        AppLanguage.FRENCH -> warningFr
+        AppLanguage.PORTUGUESE -> warningPt
     }
 }
 
@@ -384,6 +528,9 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "猛烈な発雷。激しい雷雨・突風・降雹の危険が極めて高い。",
         warningJa = "重大な落雷事故のおそれ。直ちに頑丈な建物や車内など安全な場所へ避難。",
+        nameKo = "매우 강한 번개",
+        impactKo = "맹렬한 낙뢰 발생. 격렬한 뇌우·돌풍·우박 위험이 매우 높음.",
+        warningKo = "중대한 낙뢰 사고 우려. 즉시 튼튼한 건물이나 차량 내부 등 안전한 곳으로 대피.",
         nameEn = "Violent Lightning",
         impactEn = "Intense lightning activity; severe squalls and hail very likely.",
         warningEn = "Extreme lightning hazard. Immediately seek shelter inside sturdy buildings or vehicles.",
@@ -392,7 +539,16 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningZhCn = "雷击风险极高，请立即前往坚固建筑物或密闭车厢内避险。",
         nameZhTw = "劇烈雷電",
         impactZhTw = "雷電活動極為猛烈，極易伴隨短時雷暴大風與冰雹災害。",
-        warningZhTw = "雷擊風險極高，請立即前往堅固建築物或密閉車廂內避險。"
+        warningZhTw = "雷擊風險極高，請立即前往堅固建築物或密閉車廂內避險。",
+        nameEs = "Rayos violentos",
+        impactEs = "Actividad eléctrica intensa; muy probable tormenta severa, rachas y granizo.",
+        warningEs = "Peligro extremo de rayos. Refúgiese de inmediato en un edificio sólido o vehículo.",
+        nameFr = "Foudre violente",
+        impactFr = "Activité électrique intense ; rafales violentes et grêle très probables.",
+        warningFr = "Danger extrême de foudre. Abritez-vous immédiatement dans un bâtiment solide ou un véhicule.",
+        namePt = "Raios intensos",
+        impactPt = "Atividade elétrica intensa; alta probabilidade de tempestade severa, rajadas e granizo.",
+        warningPt = "Risco extremo de raios. Abrigue-se imediatamente em um prédio resistente ou veículo."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 3",
@@ -401,6 +557,9 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "落雷が多数発生している。発雷の危険性が高い。",
         warningJa = "落雷の危険あり。周囲の天候急変に警戒し、速やかに屋内へ退避。",
+        nameKo = "번개",
+        impactKo = "낙뢰가 다수 발생 중이며 추가 낙뢰 위험이 높음.",
+        warningKo = "낙뢰 위험이 있음. 주변 기상 급변에 경계하고 신속히 실내로 대피.",
         nameEn = "Active Lightning",
         impactEn = "Frequent lightning strikes observed; high risk of lightning hazard.",
         warningEn = "High risk of lightning strikes. Move indoors promptly.",
@@ -409,7 +568,16 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningZhCn = "有雷击危险，请警惕周围天气突变并尽快退避室内。",
         nameZhTw = "強雷電",
         impactZhTw = "已監測到多起落雷，雷電發生頻率高。",
-        warningZhTw = "有雷擊危險，請警惕周圍天氣突變並儘快退避室內。"
+        warningZhTw = "有雷擊危險，請警惕周圍天氣突變並儘快退避室內。",
+        nameEs = "Rayos activos",
+        impactEs = "Se registran numerosos rayos; alto riesgo de descargas eléctricas.",
+        warningEs = "Alto riesgo de impacto de rayo. Busque refugio en interiores cuanto antes.",
+        nameFr = "Foudre active",
+        impactFr = "Nombreux impacts de foudre observés ; risque élevé d'orage électrique.",
+        warningFr = "Risque élevé de foudroiement. Mettez-vous rapidement à l'abri à l'intérieur.",
+        namePt = "Raios ativos",
+        impactPt = "Vários raios registrados; alto risco de descargas elétricas.",
+        warningPt = "Alto risco de queda de raios. Procure abrigo em local fechado rapidamente."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 2",
@@ -418,6 +586,9 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         onColor = Color(0xFF1C1B1F),
         impactJa = "1時間以内に落雷の可能性が高い。雷雲が活発に発達中。",
         warningJa = "屋外活動時は空の様子に注意し、いつでも避難できる態勢を準備。",
+        nameKo = "번개 가능성",
+        impactKo = "1시간 이내 낙뢰 가능성이 높으며 뇌운이 활발히 발달 중.",
+        warningKo = "야외 활동 시 하늘 상태를 살피고 언제든 대피할 수 있도록 준비.",
         nameEn = "Lightning Likely",
         impactEn = "High probability of lightning within 1 hour; thunderclouds actively developing.",
         warningEn = "Monitor sky conditions during outdoor activities; prepare to shelter.",
@@ -426,7 +597,16 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningZhCn = "户外活动需密切注意云层变化，做好随时避雷准备。",
         nameZhTw = "有雷電可能",
         impactZhTw = "未來1小時內發生落雷機率高，雷暴雲正在持續發展。",
-        warningZhTw = "戶外活動需密切注意雲層變化，做好隨時避雷準備。"
+        warningZhTw = "戶外活動需密切注意雲層變化，做好隨時避雷準備。",
+        nameEs = "Rayos probables",
+        impactEs = "Alta probabilidad de rayos en menos de 1 hora; nubes de tormenta en desarrollo.",
+        warningEs = "Vigile el cielo en actividades al aire libre y prepárese para refugiarse.",
+        nameFr = "Foudre probable",
+        impactFr = "Forte probabilité de foudre sous 1 heure ; nuages orageux en plein développement.",
+        warningFr = "Surveillez le ciel lors d'activités en extérieur et préparez-vous à vous abriter.",
+        namePt = "Raios prováveis",
+        impactPt = "Alta probabilidade de raios em até 1 hora; nuvens de tempestade em desenvolvimento.",
+        warningPt = "Observe o céu em atividades ao ar livre e prepare-se para buscar abrigo."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 1",
@@ -435,6 +615,9 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "1時間以内に発雷の可能性がある（雷雲の兆候）。",
         warningJa = "急な強い雨や突風など、天候の急変に留意。",
+        nameKo = "번개 징후",
+        impactKo = "1시간 이내 번개 발생 가능성 있음(뇌운 징후).",
+        warningKo = "갑작스러운 강한 비나 돌풍 등 날씨 급변에 유의.",
         nameEn = "Signs of Lightning",
         impactEn = "Potential for lightning development within 1 hour.",
         warningEn = "Be aware of sudden showers or gusts associated with developing clouds.",
@@ -443,7 +626,16 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningZhCn = "防范局地突发阵雨、雷阵雨及短时阵风。",
         nameZhTw = "雷電徵兆",
         impactZhTw = "未來1小時內可能伴隨雷電發生（初生雷雲）。",
-        warningZhTw = "防範局地突發陣雨、雷陣雨及短時陣風。"
+        warningZhTw = "防範局地突發陣雨、雷陣雨及短時陣風。",
+        nameEs = "Indicios de rayos",
+        impactEs = "Posibilidad de formación de rayos en la próxima hora.",
+        warningEs = "Esté atento a chubascos repentinos o rachas de viento.",
+        nameFr = "Signes d'orage",
+        impactFr = "Risque d'apparition de foudre dans l'heure qui vient.",
+        warningFr = "Méfiez-vous des averses soudaines ou rafales liées aux nuages en formation.",
+        namePt = "Indícios de raios",
+        impactPt = "Possibilidade de formação de raios na próxima hora.",
+        warningPt = "Fique atento a pancadas súbitas de chuva ou rajadas de vento."
     )
 )
 
@@ -455,6 +647,9 @@ val KIKIKURU_RISK_LEVELS = listOf(
         onColor = Color(0xFFFFD700),
         impactJa = "すでに災害が発生または切迫している極めて危険な状況。",
         warningJa = "命の危険。ただちに身の安全を確保してください（命を守る最善の行動）。",
+        nameKo = "재해 임박 (5단계)",
+        impactKo = "이미 재해가 발생했거나 임박한 극도로 위험한 상황.",
+        warningKo = "생명의 위험. 즉시 신변 안전을 확보하세요(생명을 지키기 위한 최선의 행동).",
         nameEn = "Emergency (Level 5)",
         impactEn = "Disaster has already occurred or is imminent; extreme life-threatening risk.",
         warningEn = "Take immediate life-saving action; secure personal safety without delay.",
@@ -463,7 +658,16 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningZhCn = "生命危在旦夕！请立即采取最有利于保全生命的避险行动。",
         nameZhTw = "災害切迫 (5級)",
         impactZhTw = "災害已經發生或迫在眉睫，面臨嚴重生命威脅。",
-        warningZhTw = "生命危在旦夕！請立即採取最有利於保全生命的避險行動。"
+        warningZhTw = "生命危在旦夕！請立即採取最有利於保全生命的避險行動。",
+        nameEs = "Emergencia (Nivel 5)",
+        impactEs = "El desastre ya ocurrió o es inminente; peligro extremo para la vida.",
+        warningEs = "Tome medidas inmediatas para salvar su vida y póngase a salvo sin demora.",
+        nameFr = "Urgence (Niveau 5)",
+        impactFr = "Catastrophe déjà en cours ou imminente ; danger vital extrême.",
+        warningFr = "Prenez immédiatement les mesures pour sauver votre vie et vous mettre en sécurité.",
+        namePt = "Emergência (Nível 5)",
+        impactPt = "Desastre já ocorrido ou iminente; risco extremo à vida.",
+        warningPt = "Tome medidas imediatas para preservar sua vida e garanta sua segurança sem demora."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 4",
@@ -472,6 +676,9 @@ val KIKIKURU_RISK_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "重大な災害が発生する可能性が非常に高く、全員避難が必要。",
         warningJa = "警戒レベル4相当。危険な場所から全員速やかに避難してください。",
+        nameKo = "위험 (4단계)",
+        impactKo = "중대한 재해 발생 가능성이 매우 높아 전원 대피가 필요.",
+        warningKo = "경계 레벨 4 상당. 위험 지역에서 모두 신속히 대피하세요.",
         nameEn = "Danger (Level 4)",
         impactEn = "Very high probability of severe disaster; all residents must evacuate.",
         warningEn = "Equivalent to Alert Level 4. Evacuate dangerous zones immediately.",
@@ -480,7 +687,16 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningZhCn = "相当于警戒级别4。危险地带所有人员请迅速撤离避难。",
         nameZhTw = "危險 (4級)",
         impactZhTw = "極可能發生重大災害，危險區域內所有人員必須緊急撤離。",
-        warningZhTw = "相當於警戒級別4。危險地帶所有人員請迅速撤離避難。"
+        warningZhTw = "相當於警戒級別4。危險地帶所有人員請迅速撤離避難。",
+        nameEs = "Peligro (Nivel 4)",
+        impactEs = "Probabilidad muy alta de desastre grave; todos los residentes deben evacuar.",
+        warningEs = "Equivalente al Nivel de Alerta 4. Evacúe las zonas peligrosas de inmediato.",
+        nameFr = "Danger (Niveau 4)",
+        impactFr = "Probabilité très élevée de catastrophe grave ; évacuation générale requise.",
+        warningFr = "Équivalent au niveau d'alerte 4. Évacuez immédiatement les zones à risque.",
+        namePt = "Perigo (Nível 4)",
+        impactPt = "Probabilidade muito alta de desastre grave; evacuação geral necessária.",
+        warningPt = "Equivalente ao Nível de Alerta 4. Evacue imediatamente as áreas de risco."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 3",
@@ -489,6 +705,9 @@ val KIKIKURU_RISK_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "警報基準を超過。高齢者等の避難行動が必要とされる状況。",
         warningJa = "警戒レベル3相当。高齢者や避難に時間を要する方は避難を開始。",
+        nameKo = "경계 (3단계)",
+        impactKo = "경보 기준 초과. 고령자 등 대피 취약 계층의 대피가 필요한 상황.",
+        warningKo = "경계 레벨 3 상당. 고령자 및 대피에 시간이 걸리는 분은 대피를 시작하세요.",
         nameEn = "Warning (Level 3)",
         impactEn = "Exceeds warning criteria; evacuation of vulnerable individuals required.",
         warningEn = "Equivalent to Alert Level 3. Seniors and vulnerable people should evacuate.",
@@ -497,7 +716,16 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningZhCn = "相当于警戒级别3。老年人及行动不便者应尽早从危险地带避难。",
         nameZhTw = "警戒 (3級)",
         impactZhTw = "超過災害警報標準，易受災群體需要提前開始轉移撤離。",
-        warningZhTw = "相當於警戒級別3。老年人及行動不便者應儘早從危險地帶避難。"
+        warningZhTw = "相當於警戒級別3。老年人及行動不便者應儘早從危險地帶避難。",
+        nameEs = "Alerta (Nivel 3)",
+        impactEs = "Supera los criterios de alerta; las personas vulnerables deben evacuar.",
+        warningEs = "Equivalente al Nivel de Alerta 3. Personas mayores y vulnerables deben iniciar la evacuación.",
+        nameFr = "Alerte (Niveau 3)",
+        impactFr = "Seuils d'alerte dépassés ; évacuation requise pour les personnes vulnérables.",
+        warningFr = "Équivalent au niveau d'alerte 3. Les personnes âgées et vulnérables doivent évacuer.",
+        namePt = "Alerta (Nível 3)",
+        impactPt = "Supera os critérios de alerta; pessoas vulneráveis devem evacuar.",
+        warningPt = "Equivalente ao Nível de Alerta 3. Idosos e pessoas vulneráveis devem iniciar a evacuação."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 2",
@@ -506,6 +734,9 @@ val KIKIKURU_RISK_LEVELS = listOf(
         onColor = Color(0xFF212121),
         impactJa = "注意報基準を超過。今後の気象推移に警戒が必要。",
         warningJa = "警戒レベル2相当。ハザードマップで避難経路や避難先を確認。",
+        nameKo = "주의 (2단계)",
+        impactKo = "주의보 기준 초과. 향후 기상 변화에 주의가 필요.",
+        warningKo = "경계 레벨 2 상당. 재해 위험 지도로 대피 경로와 대피소를 확인하세요.",
         nameEn = "Advisory (Level 2)",
         impactEn = "Exceeds advisory criteria; preparedness checks recommended.",
         warningEn = "Equivalent to Alert Level 2. Check hazard maps and evacuation routes.",
@@ -514,7 +745,16 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningZhCn = "相当于警戒级别2。确认防灾避险路线及应急避难场所。",
         nameZhTw = "注意 (2級)",
         impactZhTw = "達到氣象注意報標準，需要提高警惕注意後續變化。",
-        warningZhTw = "相當於警戒級別2。確認防災避險路線及應急避難場所。"
+        warningZhTw = "相當於警戒級別2。確認防災避險路線及應急避難場所。",
+        nameEs = "Aviso (Nivel 2)",
+        impactEs = "Supera los criterios de aviso; se recomienda comprobar la preparación.",
+        warningEs = "Equivalente al Nivel de Alerta 2. Revise los mapas de riesgo y rutas de evacuación.",
+        nameFr = "Vigilance (Niveau 2)",
+        impactFr = "Seuils de vigilance dépassés ; vérifiez vos préparatifs.",
+        warningFr = "Équivalent au niveau d'alerte 2. Consultez les cartes de risque et itinéraires d'évacuation.",
+        namePt = "Atenção (Nível 2)",
+        impactPt = "Supera os critérios de aviso; recomenda-se verificar a preparação.",
+        warningPt = "Equivalente ao Nível de Alerta 2. Verifique mapas de risco e rotas de evacuação."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 1",
@@ -523,6 +763,9 @@ val KIKIKURU_RISK_LEVELS = listOf(
         onColor = Color(0xFF212121),
         impactJa = "現時点で災害発生の危険度は低いが、今後の雨に留意。",
         warningJa = "最新の防災気象情報や今後の推移を確認してください。",
+        nameKo = "향후 기상 정보 유의 (1단계)",
+        impactKo = "현재 재해 발생 위험도는 낮으나 향후 강수 변화에 유의.",
+        warningKo = "최신 방재 기상 정보와 향후 추이를 확인하세요.",
         nameEn = "Caution (Level 1)",
         impactEn = "Currently low danger, but monitor evolving weather conditions.",
         warningEn = "Stay tuned to the latest weather bulletins and updates.",
@@ -531,7 +774,16 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningZhCn = "请持续留意最新发布的气象灾害防范预报信息。",
         nameZhTw = "早期注意 (1級)",
         impactZhTw = "當前危險度處於低位，但需關注未來降水發展。",
-        warningZhTw = "請持續留意最新發布的氣象災害防範預報資訊。"
+        warningZhTw = "請持續留意最新發布的氣象災害防範預報資訊。",
+        nameEs = "Precaución (Nivel 1)",
+        impactEs = "Riesgo actualmente bajo, pero vigile la evolución del tiempo.",
+        warningEs = "Manténgase atento a los últimos boletines y avisos meteorológicos.",
+        nameFr = "Prudence (Niveau 1)",
+        impactFr = "Risque actuellement faible, mais surveillez l'évolution météorologique.",
+        warningFr = "Restez attentif aux derniers bulletins et mises à jour météo.",
+        namePt = "Precaução (Nível 1)",
+        impactPt = "Risco atualmente baixo, mas acompanhe a evolução do tempo.",
+        warningPt = "Acompanhe os últimos boletins e atualizações meteorológicas."
     )
 )
 
@@ -543,6 +795,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "記録的豪雪。建物の倒壊や集落の孤立、交通完全麻痺の危機。",
         warningJa = "大規模雪崩・屋根の倒壊に厳重警戒。不要不急の外出は厳禁。",
+        nameKo = "200cm 이상",
+        impactKo = "기록적 폭설. 건물 붕괴, 지역 고립, 교통 완전 마비 위험.",
+        warningKo = "대규모 눈사태 및 지붕 붕괴에 엄중 경계. 불필요한 외출을 삼가세요.",
         nameEn = "200cm or more",
         impactEn = "Record catastrophic snowfall; threat of structural collapse and isolation.",
         warningEn = "Extreme avalanche danger. Avoid all unnecessary travel.",
@@ -551,7 +806,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "严密防范大型雪崩与房屋倒塌，切勿盲目外出。",
         nameZhTw = "200cm以上",
         impactZhTw = "歷史罕見特大暴雪，建築物壓塌風險極高，交通全線癱瘓。",
-        warningZhTw = "嚴密防範大型雪崩與房屋倒塌，切勿盲目外出。"
+        warningZhTw = "嚴密防範大型雪崩與房屋倒塌，切勿盲目外出。",
+        nameEs = "200 cm o más",
+        impactEs = "Nevada histórica catastrófica; riesgo de colapso estructural y aislamiento.",
+        warningEs = "Peligro extremo de avalanchas. Evite cualquier desplazamiento innecesario.",
+        nameFr = "200 cm ou plus",
+        impactFr = "Enneigement record catastrophique ; risque d'effondrement et d'isolement.",
+        warningFr = "Danger extrême d'avalanche. Évitez tout déplacement non essentiel.",
+        namePt = "200 cm ou mais",
+        impactPt = "Nevasca recorde catastrófica; risco de desabamento e isolamento.",
+        warningPt = "Perigo extremo de avalanches. Evite qualquer deslocamento desnecessário."
     ),
     RadarLegendLevelItem(
         rangeLabel = "100〜200",
@@ -560,6 +824,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "極めて深い積雪。屋根雪下ろしの危険や大規模な通行止めが発生。",
         warningJa = "雪崩や落雪事故、車の立ち往生に厳重警戒。",
+        nameKo = "100~200cm",
+        impactKo = "매우 깊은 적설. 지붕 제설 위험 및 대규모 도로 통제 발생.",
+        warningKo = "눈사태, 낙설 사고, 차량 고립에 엄중 경계.",
         nameEn = "100 to 200cm",
         impactEn = "Very heavy snowpack; widespread road closures and roof-clearing hazards.",
         warningEn = "Alert for avalanches, roof snow shed, and vehicle entrapment.",
@@ -568,7 +835,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "高度警惕雪崩滑雪、屋顶坠雪伤人及车辆严重滞留搁浅。",
         nameZhTw = "100至200cm",
         impactZhTw = "極深積雪，多條主幹道路封閉受阻，房頂除雪作業風險大。",
-        warningZhTw = "高度警惕雪崩滑雪、屋頂墜雪傷人及車輛嚴重滯留擱淺。"
+        warningZhTw = "高度警惕雪崩滑雪、屋頂墜雪傷人及車輛嚴重滯留擱淺。",
+        nameEs = "100 a 200 cm",
+        impactEs = "Manto nivoso muy profundo; cierres generalizados de vías y riesgo al despejar tejados.",
+        warningEs = "Alerta por avalanchas, caída de nieve de tejados y vehículos atrapados.",
+        nameFr = "100 à 200 cm",
+        impactFr = "Manteau neigeux très épais ; fermetures de routes et risques liés au déneigement des toits.",
+        warningFr = "Vigilance face aux avalanches, chutes de neige des toits et véhicules bloqués.",
+        namePt = "100 a 200 cm",
+        impactPt = "Acúmulo muito profundo; interdições de vias e riscos ao remover neve de telhados.",
+        warningPt = "Alerta para avalanches, queda de neve de telhados e veículos presos."
     ),
     RadarLegendLevelItem(
         rangeLabel = "50〜100",
@@ -577,6 +853,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "まとまった大雪。車の立ち往生や路面凍結によるスリップが多発。",
         warningJa = "チェーンや冬用タイヤ等の冬装備必須。歩行中の転倒に注意。",
+        nameKo = "50~100cm",
+        impactKo = "많은 대설. 차량 고립 및 도로 결빙으로 인한 미끄럼 사고 다발.",
+        warningKo = "스노우 체인·겨울용 타이어 필수. 보행 중 낙상 사고에 주의.",
         nameEn = "50 to 100cm",
         impactEn = "Substantial heavy snow; frequent vehicle stalling and severe icy conditions.",
         warningEn = "Winter tires/chains required. Watch for falls on slick surfaces.",
@@ -585,7 +864,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "机动车必须装配雪地胎或防滑链，行人谨防路面湿滑摔倒。",
         nameZhTw = "50至100cm",
         impactZhTw = "成片大雪積雪，車輛極易受困打滑，路面積雪嚴重。",
-        warningZhTw = "機動車必須裝配雪地胎或防滑鏈，行人謹防路面濕滑摔倒。"
+        warningZhTw = "機動車必須裝配雪地胎或防滑鏈，行人謹防路面濕滑摔倒。",
+        nameEs = "50 a 100 cm",
+        impactEs = "Nieve abundante; frecuentes vehículos atascados y fuerte congelación en vías.",
+        warningEs = "Neumáticos de invierno o cadenas obligatorios. Cuidado con caídas en suelo resbaladizo.",
+        nameFr = "50 à 100 cm",
+        impactFr = "Neige abondante ; nombreux véhicules immobilisés et chaussées très verglacées.",
+        warningFr = "Pneus hiver ou chaînes obligatoires. Attention aux chutes sur sols glissants.",
+        namePt = "50 a 100 cm",
+        impactPt = "Neve intensa; veículos presos com frequência e vias muito escorregadias.",
+        warningPt = "Pneus de inverno ou correntes obrigatórios. Cuidado com quedas em pisos lisos."
     ),
     RadarLegendLevelItem(
         rangeLabel = "20〜50",
@@ -594,6 +882,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color(0xFF1C1B1F),
         impactJa = "足元がすっぽり埋まる積雪。交通ダイヤの乱れや除雪が必要。",
         warningJa = "スリップ事故や歩行困難に注意。時間に余裕をもった行動を。",
+        nameKo = "20~50cm",
+        impactKo = "발목까지 푹 빠지는 적설. 대중교통 지연 및 제설 작업 필요.",
+        warningKo = "미끄럼 사고 및 보행 불편에 주의하고 여유 있게 이동하세요.",
         nameEn = "20 to 50cm",
         impactEn = "Deep snow covering feet; transit delays and snow clearing needed.",
         warningEn = "Drive cautiously to prevent skidding. Allow extra commute time.",
@@ -602,7 +893,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "谨防车辆打滑失控，出行预留充足时间。",
         nameZhTw = "20至50cm",
         impactZhTw = "積雪可沒過腳踝至小腿，公共交通出現延誤，需要進行除雪。",
-        warningZhTw = "謹防車輛打滑失控，出行預留充足時間。"
+        warningZhTw = "謹防車輛打滑失控，出行預留充足時間。",
+        nameEs = "20 a 50 cm",
+        impactEs = "Nieve profunda que cubre los pies; retrasos en el transporte y necesidad de despeje.",
+        warningEs = "Conduzca con precaución para evitar derrapes y salga con tiempo extra.",
+        nameFr = "20 à 50 cm",
+        impactFr = "Neige épaisse couvrant les pieds ; retards de transport et déneigement nécessaires.",
+        warningFr = "Conduisez prudemment contre le dérapage et prévoyez un temps de trajet supplémentaire.",
+        namePt = "20 a 50 cm",
+        impactPt = "Neve profunda cobrindo os pés; atrasos no transporte e necessidade de limpeza.",
+        warningPt = "Dirija com cautela para evitar derrapagens e saia com antecedência."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜20",
@@ -611,6 +911,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "道路一面に積雪。靴が埋まり、冬用タイヤ未装着車の走行不能。",
         warningJa = "ノーマルタイヤでの走行は極めて危険。凍結路面に注意。",
+        nameKo = "5~20cm",
+        impactKo = "도로 전체에 눈이 쌓여 겨울용 타이어 미장착 차량은 주행 곤란.",
+        warningKo = "일반 타이어 주행은 매우 위험. 결빙 도로에 주의하세요.",
         nameEn = "5 to 20cm",
         impactEn = "Full ground coverage; non-winter equipped vehicles will get stuck.",
         warningEn = "Do not drive on summer tires. Beware of hidden black ice.",
@@ -619,7 +922,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "严禁使用普通四季胎在雪道行驶，注意桥面冻结。",
         nameZhTw = "5至20cm",
         impactZhTw = "路面全面覆雪，未更換雪地胎的車輛極易受阻拋錨。",
-        warningZhTw = "嚴禁使用普通四季胎在雪道行駛，注意橋面凍結。"
+        warningZhTw = "嚴禁使用普通四季胎在雪道行駛，注意橋面凍結。",
+        nameEs = "5 a 20 cm",
+        impactEs = "Suelo cubierto por completo; los vehículos sin equipo de invierno quedan atascados.",
+        warningEs = "No conduzca con neumáticos de verano. Cuidado con el hielo negro.",
+        nameFr = "5 à 20 cm",
+        impactFr = "Sol entièrement recouvert ; les véhicules non équipés pour l'hiver risquent de rester bloqués.",
+        warningFr = "Ne roulez pas en pneus été. Attention au verglas noir.",
+        namePt = "5 a 20 cm",
+        impactPt = "Solo totalmente coberto; veículos sem pneus de inverno podem ficar presos.",
+        warningPt = "Não dirija com pneus comuns. Cuidado com gelo invisível na pista."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜5",
@@ -628,6 +940,9 @@ val SNOW_DEPTH_LEVELS = listOf(
         onColor = Color(0xFF003258),
         impactJa = "うっすらと白く積もる程度。路面凍結によるスリップに注意。",
         warningJa = "日陰や橋の上の路面凍結（ブラックアイスバーン）に注意。",
+        nameKo = "1~5cm",
+        impactKo = "하얗게 살짝 쌓이는 정도. 노면 결빙으로 인한 미끄럼 주의.",
+        warningKo = "그늘진 곳이나 교량 위 도로 살얼음(블랙 아이스)에 주의.",
         nameEn = "1 to 5cm",
         impactEn = "Light white snow dusting; slick spots and black ice hazard.",
         warningEn = "Watch for black ice on bridges and shaded pavement.",
@@ -636,7 +951,16 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningZhCn = "注意高架桥梁、背阴路段暗冰防滑。",
         nameZhTw = "1至5cm",
         impactZhTw = "薄薄一層白雪覆蓋，局部路面結冰濕滑。",
-        warningZhTw = "注意高架橋樑、背陰路段暗冰防滑。"
+        warningZhTw = "注意高架橋樑、背陰路段暗冰防滑。",
+        nameEs = "1 a 5 cm",
+        impactEs = "Ligera capa blanca de nieve; zonas resbaladizas y riesgo de hielo negro.",
+        warningEs = "Cuidado con el hielo negro en puentes y tramos sombríos.",
+        nameFr = "1 à 5 cm",
+        impactFr = "Légère couche blanche ; zones glissantes et risque de verglas.",
+        warningFr = "Méfiez-vous du verglas sur les ponts et les zones ombragées.",
+        namePt = "1 a 5 cm",
+        impactPt = "Leve camada de neve; pontos escorregadios e risco de gelo na pista.",
+        warningPt = "Atenção ao gelo em pontes e trechos sombreados."
     )
 )
 
@@ -648,6 +972,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "3時間で20cm以上の猛烈な降雪。一気に積雪が急増。",
         warningJa = "急速な交通障害・車両滞留に最大級警戒。",
+        nameKo = "20cm 이상",
+        impactKo = "3시간 동안 20cm 이상의 맹렬한 폭설. 적설량이 급격히 증가.",
+        warningKo = "급격한 교통 마비 및 차량 고립에 최고 수준 경계.",
         nameEn = "20cm or more",
         impactEn = "Intense rapid snowfall exceeding 20cm in 3h; drastic accumulation.",
         warningEn = "Maximum alert for rapid traffic paralysis and vehicle stranding.",
@@ -656,7 +983,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "对交通瘫痪及车辆大面积抛锚受困保持最高级别戒备。",
         nameZhTw = "20cm以上",
         impactZhTw = "3小時強降雪超過20cm，積雪瞬間暴漲。",
-        warningZhTw = "對交通癱瘓及車輛大面積拋錨受困保持最高級別戒備。"
+        warningZhTw = "對交通癱瘓及車輛大面積拋錨受困保持最高級別戒備。",
+        nameEs = "20 cm o más",
+        impactEs = "Nevada intensa superior a 20 cm en 3 h; acumulación drástica.",
+        warningEs = "Alerta máxima por parálisis rápida del tráfico y vehículos varados.",
+        nameFr = "20 cm ou plus",
+        impactFr = "Chutes de neige intenses dépassant 20 cm en 3 h ; accumulation brutale.",
+        warningFr = "Alerte maximale face à la paralysie du trafic et aux véhicules bloqués.",
+        namePt = "20 cm ou mais",
+        impactPt = "Nevasca intensa acima de 20 cm em 3 h; acúmulo muito rápido.",
+        warningPt = "Alerta máximo para paralisação do trânsito e veículos retidos."
     ),
     RadarLegendLevelItem(
         rangeLabel = "10〜20",
@@ -665,6 +1001,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "3時間で10〜20cmの非常に激しい降雪。除雪が追いつかない恐れ。",
         warningJa = "急な積雪増とホワイトアウト（視界不良）に厳重警戒。",
+        nameKo = "10~20cm",
+        impactKo = "3시간 동안 10~20cm의 매우 강한 폭설. 제설이 따라가기 어려운 수준.",
+        warningKo = "급격한 적설 증가와 화이트아웃(시야 불량)에 엄중 경계.",
         nameEn = "10 to 20cm",
         impactEn = "Extremely heavy snow of 10-20cm in 3h; clearing cannot keep pace.",
         warningEn = "High danger of whiteouts and rapidly worsening roads.",
@@ -673,7 +1012,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "严密戒备白化能见度骤降及路况急剧恶化。",
         nameZhTw = "10至20cm",
         impactZhTw = "3小時降雪達10至20cm，積雪速度快除雪困難。",
-        warningZhTw = "嚴密戒備白化能見度驟降及路況急劇惡化。"
+        warningZhTw = "嚴密戒備白化能見度驟降及路況急劇惡化。",
+        nameEs = "10 a 20 cm",
+        impactEs = "Nieve muy intensa de 10 a 20 cm en 3 h; el despeje no da abasto.",
+        warningEs = "Alto peligro de ventisca blanca y rápido deterioro de las vías.",
+        nameFr = "10 à 20 cm",
+        impactFr = "Neige très forte de 10 à 20 cm en 3 h ; le déneigement peine à suivre.",
+        warningFr = "Fort risque de voile blanc et de dégradation rapide des routes.",
+        namePt = "10 a 20 cm",
+        impactPt = "Neve muito forte de 10 a 20 cm em 3 h; a limpeza não acompanha.",
+        warningPt = "Alto risco de visibilidade nula e piora rápida das estradas."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜10",
@@ -682,6 +1030,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "まとまった激しい雪。短時間で道路状況が悪化。",
         warningJa = "車の走行は冬用タイヤを装着し速度を落として走行。",
+        nameKo = "5~10cm",
+        impactKo = "짧은 시간에 도로 사정이 급격히 악화되는 강한 눈.",
+        warningKo = "겨울용 타이어를 장착하고 충분히 감속하여 운행하세요.",
         nameEn = "5 to 10cm",
         impactEn = "Heavy snow band; road conditions deteriorate rapidly.",
         warningEn = "Use winter tires and drive at significantly reduced speed.",
@@ -690,7 +1041,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "驾车请务必减速慢行，确保冬季轮胎防滑。",
         nameZhTw = "5至10cm",
         impactZhTw = "短時較強降雪，道路狀況迅速變差。",
-        warningZhTw = "駕車請務必減速慢行，確保冬季輪胎防滑。"
+        warningZhTw = "駕車請務必減速慢行，確保冬季輪胎防滑。",
+        nameEs = "5 a 10 cm",
+        impactEs = "Nevada fuerte; el estado de las carreteras empeora con rapidez.",
+        warningEs = "Use neumáticos de invierno y reduzca considerablemente la velocidad.",
+        nameFr = "5 à 10 cm",
+        impactFr = "Forte bande neigeuse ; les conditions de route se dégradent vite.",
+        warningFr = "Utilisez des pneus hiver et réduisez nettement votre vitesse.",
+        namePt = "5 a 10 cm",
+        impactPt = "Faixa de neve forte; as condições da via pioram rapidamente.",
+        warningPt = "Use pneus de inverno e reduza bastante a velocidade."
     ),
     RadarLegendLevelItem(
         rangeLabel = "3〜5",
@@ -699,6 +1059,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color(0xFF1C1B1F),
         impactJa = "しっかりとした降雪。道路にうっすら積雪。",
         warningJa = "路面の凍結やシャーベット状の雪に注意。",
+        nameKo = "3~5cm",
+        impactKo = "꾸준히 내리는 눈으로 도로에 눈이 쌓이기 시작.",
+        warningKo = "노면 결빙이나 진눈깨비·슬러시 상태의 미끄러운 도로에 주의.",
         nameEn = "3 to 5cm",
         impactEn = "Continuous steady snowfall covering pavement.",
         warningEn = "Caution on icy or slushy road surfaces.",
@@ -707,7 +1070,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "注意湿滑暗冰及泥雪路面行车安全。",
         nameZhTw = "3至5cm",
         impactZhTw = "持續穩定降雪，路面形成明顯薄積雪或泥雪混合。",
-        warningZhTw = "注意濕滑暗冰及泥雪路面行車安全。"
+        warningZhTw = "注意濕滑暗冰及泥雪路面行車安全。",
+        nameEs = "3 a 5 cm",
+        impactEs = "Nevada continua y constante que cubre la calzada.",
+        warningEs = "Precaución en superficies heladas o con aguanieve.",
+        nameFr = "3 à 5 cm",
+        impactFr = "Chutes de neige régulières recouvrant la chaussée.",
+        warningFr = "Prudence sur les routes verglacées ou boueuses.",
+        namePt = "3 a 5 cm",
+        impactPt = "Neve contínua cobrindo o pavimento.",
+        warningPt = "Cuidado com pistas congeladas ou com neve derretida."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜3",
@@ -716,6 +1088,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "並の降雪。周囲が白くなり始める。",
         warningJa = "滑りやすい靴を避け、歩行時足元に注意。",
+        nameKo = "1~3cm",
+        impactKo = "보통 수준의 눈. 주변이 하얗게 덮이기 시작.",
+        warningKo = "미끄러운 신발을 피하고 보행 시 발밑에 주의.",
         nameEn = "1 to 3cm",
         impactEn = "Moderate snowfall whitening the scenery.",
         warningEn = "Wear non-slip footwear and watch your step.",
@@ -724,7 +1099,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "外出注意防滑，避免穿底面光滑鞋子。",
         nameZhTw = "1至3cm",
         impactZhTw = "普通降雪，四周景物開始泛白。",
-        warningZhTw = "外出注意防滑，避免穿底面光滑鞋子。"
+        warningZhTw = "外出注意防滑，避免穿底面光滑鞋子。",
+        nameEs = "1 a 3 cm",
+        impactEs = "Nevada moderada que empieza a blanquear el paisaje.",
+        warningEs = "Use calzado antideslizante y tenga cuidado al caminar.",
+        nameFr = "1 à 3 cm",
+        impactFr = "Neige modérée blanchissant le paysage.",
+        warningFr = "Portez des chaussures antidérapantes et surveillez vos pas.",
+        namePt = "1 a 3 cm",
+        impactPt = "Neve moderada cobrindo a paisagem de branco.",
+        warningPt = "Use calçados antiderrapantes e tenha atenção ao caminhar."
     ),
     RadarLegendLevelItem(
         rangeLabel = "0.5〜1",
@@ -733,6 +1117,9 @@ val SNOWFALL_3H_LEVELS = listOf(
         onColor = Color(0xFF003258),
         impactJa = "ちらつく雪・弱い降雪。",
         warningJa = "気温が低い場合は路面凍結に注意。",
+        nameKo = "0.5~1cm",
+        impactKo = "흩날리는 눈 또는 약한 강설.",
+        warningKo = "기온이 낮을 경우 노면 결빙에 주의.",
         nameEn = "0.5 to 1cm",
         impactEn = "Flurries or light falling snow.",
         warningEn = "Watch for freeze conditions when temperatures are low.",
@@ -741,7 +1128,16 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningZhCn = "气温偏低时注意路面轻微结冰。",
         nameZhTw = "0.5至1cm",
         impactZhTw = "零星飄雪或微弱降雪。",
-        warningZhTw = "氣溫偏低時注意路面輕微結冰。"
+        warningZhTw = "氣溫偏低時注意路面輕微結冰。",
+        nameEs = "0,5 a 1 cm",
+        impactEs = "Copos dispersos o nevada ligera.",
+        warningEs = "Cuidado con heladas si las temperaturas son bajas.",
+        nameFr = "0,5 à 1 cm",
+        impactFr = "Quelques flocons ou faible neige.",
+        warningFr = "Attention au gel lorsque les températures sont basses.",
+        namePt = "0,5 a 1 cm",
+        impactPt = "Flocos isolados ou neve fraca.",
+        warningPt = "Atenção ao congelamento da pista com temperaturas baixas."
     )
 )
 
@@ -753,6 +1149,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "24時間で50cm以上の豪雪。大雪警報・特別警報級。",
         warningJa = "交通機関の計画運休や倒木・停電に厳重警戒。",
+        nameKo = "50cm 이상",
+        impactKo = "24시간 동안 50cm 이상의 폭설. 대설경보·특보급.",
+        warningKo = "대중교통 운행 중단, 수목 전도, 정전에 엄중 경계.",
         nameEn = "50cm or more",
         impactEn = "Severe accumulation over 50cm in 24h; heavy snow warning level.",
         warningEn = "Prepare for transit suspensions, power outages, and tree damage.",
@@ -761,7 +1160,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "严密戒备公共交通大面积停运、电网断电及倒木灾害。",
         nameZhTw = "50cm以上",
         impactZhTw = "24小時累計降雪達50cm以上，屬於特大暴雪警報級別。",
-        warningZhTw = "嚴密戒備公共交通大面積停運、電網斷電及倒木災害。"
+        warningZhTw = "嚴密戒備公共交通大面積停運、電網斷電及倒木災害。",
+        nameEs = "50 cm o más",
+        impactEs = "Acumulación severa superior a 50 cm en 24 h; nivel de alerta por nevada intensa.",
+        warningEs = "Prepárese para suspensiones de transporte, cortes de luz y caída de árboles.",
+        nameFr = "50 cm ou plus",
+        impactFr = "Cumul sévère de plus de 50 cm en 24 h ; niveau d'alerte neige forte.",
+        warningFr = "Préparez-vous aux arrêts de transport, coupures de courant et chutes d'arbres.",
+        namePt = "50 cm ou mais",
+        impactPt = "Acúmulo severo acima de 50 cm em 24 h; nível de alerta de nevasca.",
+        warningPt = "Prepare-se para suspensões no transporte, quedas de energia e de árvores."
     ),
     RadarLegendLevelItem(
         rangeLabel = "30〜50",
@@ -770,6 +1178,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "大雪警報基準の大雪。車の立ち往生リスク増大。",
         warningJa = "大雪警報発表のおそれ。不要不急の外出を控えてください。",
+        nameKo = "30~50cm",
+        impactKo = "대설경보 기준의 많은 눈. 차량 고립 위험 증대.",
+        warningKo = "대설경보 발효 우려. 불필요한 외출을 자제하세요.",
         nameEn = "30 to 50cm",
         impactEn = "Heavy snow warning criteria met; high stranding hazard.",
         warningEn = "Refrain from non-essential outings.",
@@ -778,7 +1189,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "可能发布暴雪警报，请尽量避免非必要出行。",
         nameZhTw = "30至50cm",
         impactZhTw = "達到大雪警報標準的大雪，車輛受困風險激增。",
-        warningZhTw = "可能發布暴雪警報，請儘量避免非必要出行。"
+        warningZhTw = "可能發布暴雪警報，請儘量避免非必要出行。",
+        nameEs = "30 a 50 cm",
+        impactEs = "Criterio de alerta por nevada intensa; alto riesgo de quedar atrapado.",
+        warningEs = "Evite salidas que no sean esenciales.",
+        nameFr = "30 à 50 cm",
+        impactFr = "Seuils d'alerte neige forte atteints ; risque élevé de blocage.",
+        warningFr = "Évitez les sorties non indispensables.",
+        namePt = "30 a 50 cm",
+        impactPt = "Critério de alerta de neve forte; alto risco de veículos presos.",
+        warningPt = "Evite saídas não essenciais."
     ),
     RadarLegendLevelItem(
         rangeLabel = "20〜30",
@@ -787,6 +1207,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "まとまった降雪。生活道路や峠道で通行障害。",
         warningJa = "雪道運転に不慣れな場合は運転を自粛してください。",
+        nameKo = "20~30cm",
+        impactKo = "많은 강설로 이면도로 및 고갯길 통행 장애 발생.",
+        warningKo = "눈길 운전에 익숙하지 않다면 운전을 자제하세요.",
         nameEn = "20 to 30cm",
         impactEn = "Substantial snowfall causing traffic snarls on passes and local roads.",
         warningEn = "Avoid driving if unaccustomed to winter conditions.",
@@ -795,7 +1218,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "不熟悉雪地驾驶者请切勿冒险自驾出行。",
         nameZhTw = "20至30cm",
         impactZhTw = "大範圍強降雪，山道與一般生活道路出現通行障礙。",
-        warningZhTw = "不熟悉雪地駕駛者請切勿冒險自駕出行。"
+        warningZhTw = "不熟悉雪地駕駛者請切勿冒險自駕出行。",
+        nameEs = "20 a 30 cm",
+        impactEs = "Nevada considerable con atascos en puertos y vías locales.",
+        warningEs = "Evite conducir si no tiene experiencia en nieve.",
+        nameFr = "20 à 30 cm",
+        impactFr = "Chutes de neige importantes perturbant les cols et routes locales.",
+        warningFr = "Évitez de conduire si vous n'êtes pas habitué aux conditions hivernales.",
+        namePt = "20 a 30 cm",
+        impactPt = "Neve considerável causando transtornos em serras e vias locais.",
+        warningPt = "Evite dirigir se não tiver prática em pistas com neve."
     ),
     RadarLegendLevelItem(
         rangeLabel = "10〜20",
@@ -804,6 +1236,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color(0xFF1C1B1F),
         impactJa = "大雪注意報基準のまとまった雪。除雪が必要。",
         warningJa = "通勤通学の交通機関の遅延に留意。",
+        nameKo = "10~20cm",
+        impactKo = "대설주의보 기준의 많은 눈. 제설 작업이 필요.",
+        warningKo = "출퇴근·등하교 시 대중교통 지연에 유의하세요.",
         nameEn = "10 to 20cm",
         impactEn = "Moderate snow meeting advisory levels; snow shoveling required.",
         warningEn = "Expect transit delays during morning/evening commutes.",
@@ -812,7 +1247,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "请预留通勤出行时间，关注公共交通晚点情况。",
         nameZhTw = "10至20cm",
         impactZhTw = "達到大雪注意報標準，需要進行除雪作業。",
-        warningZhTw = "請預留通勤出行時間，關注公共交通晚點情況。"
+        warningZhTw = "請預留通勤出行時間，關注公共交通晚點情況。",
+        nameEs = "10 a 20 cm",
+        impactEs = "Nieve moderada de nivel de aviso; será necesario retirar nieve.",
+        warningEs = "Prevea retrasos en el transporte durante los desplazamientos diarios.",
+        nameFr = "10 à 20 cm",
+        impactFr = "Neige modérée de niveau vigilance ; déneigement nécessaire.",
+        warningFr = "Prévoyez des retards dans les transports aux heures de pointe.",
+        namePt = "10 a 20 cm",
+        impactPt = "Neve moderada em nível de aviso; será necessário remover neve.",
+        warningPt = "Espere atrasos no transporte nos horários de pico."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜10",
@@ -821,6 +1265,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color.White,
         impactJa = "雪景色となる降雪。路面の凍結・スリップに注意。",
         warningJa = "滑り止め措置を講じて歩行・走行してください。",
+        nameKo = "5~10cm",
+        impactKo = "눈이 수북이 쌓이는 강설. 노면 결빙 및 미끄럼 주의.",
+        warningKo = "미끄럼 방지 대비를 철저히 하고 보행·운행하세요.",
         nameEn = "5 to 10cm",
         impactEn = "Noticeable snowfall landscape; slippery frozen roads.",
         warningEn = "Ensure anti-skid preparations before heading out.",
@@ -829,7 +1276,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "出行前请做好防滑防冻准备措施。",
         nameZhTw = "5至10cm",
         impactZhTw = "地表面顯積雪，道路容易結冰打滑。",
-        warningZhTw = "出行前請做好防滑防凍準備措施。"
+        warningZhTw = "出行前請做好防滑防凍準備措施。",
+        nameEs = "5 a 10 cm",
+        impactEs = "Nevada apreciable que cubre el entorno; carreteras heladas y resbaladizas.",
+        warningEs = "Tome medidas antideslizantes antes de salir.",
+        nameFr = "5 à 10 cm",
+        impactFr = "Enneigement marqué ; routes gelées et glissantes.",
+        warningFr = "Prévoyez des équipements antidérapants avant de sortir.",
+        namePt = "5 a 10 cm",
+        impactPt = "Acúmulo visível de neve; vias congeladas e escorregadias.",
+        warningPt = "Garanta medidas antiderrapantes antes de sair."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜5",
@@ -838,6 +1294,9 @@ val SNOWFALL_24H_LEVELS = listOf(
         onColor = Color(0xFF003258),
         impactJa = "うっすらとした降雪。日陰の路面凍結に注意。",
         warningJa = "朝晩の冷え込みによる凍結路面に注意。",
+        nameKo = "1~5cm",
+        impactKo = "약한 강설. 그늘진 구간의 노면 결빙에 주의.",
+        warningKo = "아침·저녁 기온 하강에 따른 빙판길에 주의하세요.",
         nameEn = "1 to 5cm",
         impactEn = "Light snow cover; frozen patches in shaded zones.",
         warningEn = "Watch for morning and nighttime icy road spots.",
@@ -846,7 +1305,16 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningZhCn = "注意早晚降温时段的道路暗冰湿滑。",
         nameZhTw = "1至5cm",
         impactZhTw = "淺淺薄雪覆蓋，背陰路段易結薄冰。",
-        warningZhTw = "注意早晚降溫時段的道路暗冰濕滑。"
+        warningZhTw = "注意早晚降溫時段的道路暗冰濕滑。",
+        nameEs = "1 a 5 cm",
+        impactEs = "Ligera capa de nieve; placas de hielo en zonas sombrías.",
+        warningEs = "Cuidado con el hielo en la calzada por la mañana y por la noche.",
+        nameFr = "1 à 5 cm",
+        impactFr = "Fine couche de neige ; plaques de verglas à l'ombre.",
+        warningFr = "Attention aux zones verglacées le matin et la nuit.",
+        namePt = "1 a 5 cm",
+        impactPt = "Leve camada de neve; trechos congelados na sombra.",
+        warningPt = "Atenção ao gelo na pista de manhã e à noite."
     )
 )
 
@@ -1066,9 +1534,13 @@ fun RadarDetailScreen(
             when {
                 diffMin in -4..4 -> when (language) {
                     AppLanguage.JAPANESE -> "実況"
+                    AppLanguage.KOREAN -> "실황"
                     AppLanguage.ENGLISH -> "Now"
                     AppLanguage.SIMPLIFIED_CHINESE -> "实况"
                     AppLanguage.TRADITIONAL_CHINESE -> "實況"
+                    AppLanguage.SPANISH -> "Ahora"
+                    AppLanguage.FRENCH -> "Direct"
+                    AppLanguage.PORTUGUESE -> "Agora"
                 }
                 diffMin < 0 -> {
                     val absMin = -diffMin
@@ -1077,16 +1549,24 @@ fun RadarDetailScreen(
                         val mins = absMin % 60
                         when (language) {
                             AppLanguage.JAPANESE -> if (mins == 0) "${hours}時間前" else "${hours}時間${mins}分前"
+                            AppLanguage.KOREAN -> if (mins == 0) "${hours}시간 전" else "${hours}시간 ${mins}분 전"
                             AppLanguage.ENGLISH -> if (mins == 0) "${hours}h ago" else "${hours}h ${mins}m ago"
                             AppLanguage.SIMPLIFIED_CHINESE -> if (mins == 0) "${hours}小时前" else "${hours}小时${mins}分前"
                             AppLanguage.TRADITIONAL_CHINESE -> if (mins == 0) "${hours}小時前" else "${hours}小時${mins}分前"
+                            AppLanguage.SPANISH -> if (mins == 0) "Hace ${hours}h" else "Hace ${hours}h ${mins}m"
+                            AppLanguage.FRENCH -> if (mins == 0) "Il y a ${hours}h" else "Il y a ${hours}h ${mins}m"
+                            AppLanguage.PORTUGUESE -> if (mins == 0) "Há ${hours}h" else "Há ${hours}h ${mins}m"
                         }
                     } else {
                         when (language) {
                             AppLanguage.JAPANESE -> "${absMin}分前"
+                            AppLanguage.KOREAN -> "${absMin}분 전"
                             AppLanguage.ENGLISH -> "${absMin}m ago"
                             AppLanguage.SIMPLIFIED_CHINESE -> "${absMin}分钟前"
                             AppLanguage.TRADITIONAL_CHINESE -> "${absMin}分鐘前"
+                            AppLanguage.SPANISH -> "Hace ${absMin}m"
+                            AppLanguage.FRENCH -> "Il y a ${absMin}m"
+                            AppLanguage.PORTUGUESE -> "Há ${absMin}m"
                         }
                     }
                 }
@@ -1096,16 +1576,24 @@ fun RadarDetailScreen(
                         val mins = diffMin % 60
                         when (language) {
                             AppLanguage.JAPANESE -> if (mins == 0) "+${hours}時間後" else "+${hours}時間${mins}分後"
+                            AppLanguage.KOREAN -> if (mins == 0) "+${hours}시간 후" else "+${hours}시간 ${mins}분 후"
                             AppLanguage.ENGLISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.SIMPLIFIED_CHINESE -> if (mins == 0) "+${hours}小时后" else "+${hours}小时${mins}分后"
                             AppLanguage.TRADITIONAL_CHINESE -> if (mins == 0) "+${hours}小時後" else "+${hours}小時${mins}分後"
+                            AppLanguage.SPANISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.FRENCH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.PORTUGUESE -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                         }
                     } else {
                         when (language) {
                             AppLanguage.JAPANESE -> "+${diffMin}分後"
+                            AppLanguage.KOREAN -> "+${diffMin}분 후"
                             AppLanguage.ENGLISH -> "+${diffMin}m"
                             AppLanguage.SIMPLIFIED_CHINESE -> "+${diffMin}分钟后"
                             AppLanguage.TRADITIONAL_CHINESE -> "+${diffMin}分鐘後"
+                            AppLanguage.SPANISH -> "+${diffMin}m"
+                            AppLanguage.FRENCH -> "+${diffMin}m"
+                            AppLanguage.PORTUGUESE -> "+${diffMin}m"
                         }
                     }
                 }
@@ -1203,9 +1691,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雨雲ナウキャスト"
+                        AppLanguage.KOREAN -> "강수 나우캐스트"
                         AppLanguage.ENGLISH -> "Precipitation Nowcast"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降雨即时预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "降雨即時預報"
+                        AppLanguage.SPANISH -> "Nowcast de precipitación"
+                        AppLanguage.FRENCH -> "Nowcast des précipitations"
+                        AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
                     },
                     icon = Icons.Rounded.WaterDrop,
                     isSelected = selectedJmaLayer == JmaLayerType.HRPNS,
@@ -1215,9 +1707,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雷ナウキャスト"
+                        AppLanguage.KOREAN -> "낙뢰 나우캐스트"
                         AppLanguage.ENGLISH -> "Lightning Nowcast"
                         AppLanguage.SIMPLIFIED_CHINESE -> "雷电即时预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "雷電即時預報"
+                        AppLanguage.SPANISH -> "Nowcast de rayos"
+                        AppLanguage.FRENCH -> "Nowcast de la foudre"
+                        AppLanguage.PORTUGUESE -> "Nowcast de raios"
                     },
                     icon = Icons.Rounded.Thunderstorm,
                     isSelected = selectedJmaLayer == JmaLayerType.THNS,
@@ -1227,9 +1723,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "キキクル危険度"
+                        AppLanguage.KOREAN -> "키키쿠루 위험도"
                         AppLanguage.ENGLISH -> "Kikikuru Hazard Risk"
                         AppLanguage.SIMPLIFIED_CHINESE -> "Kikikuru危险度"
                         AppLanguage.TRADITIONAL_CHINESE -> "Kikikuru危險度"
+                        AppLanguage.SPANISH -> "Riesgo Kikikuru"
+                        AppLanguage.FRENCH -> "Risque Kikikuru"
+                        AppLanguage.PORTUGUESE -> "Risco Kikikuru"
                     },
                     icon = Icons.Rounded.Warning,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.RISK,
@@ -1251,9 +1751,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雪・降雪量情報"
+                        AppLanguage.KOREAN -> "눈·강설량 정보"
                         AppLanguage.ENGLISH -> "Snow & Snowfall"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降雪・积雪量信息"
                         AppLanguage.TRADITIONAL_CHINESE -> "降雪・積雪量資訊"
+                        AppLanguage.SPANISH -> "Nieve y nevadas"
+                        AppLanguage.FRENCH -> "Neige et chutes de neige"
+                        AppLanguage.PORTUGUESE -> "Neve e precipitação de neve"
                     },
                     icon = Icons.Rounded.AcUnit,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.SNOW,
@@ -1274,9 +1778,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "台風情報 (進路・暴風域)"
+                        AppLanguage.KOREAN -> "태풍 정보 (경로·폭풍역)"
                         AppLanguage.ENGLISH -> "Typhoon Track & Warning"
                         AppLanguage.SIMPLIFIED_CHINESE -> "台风情报 (路径・暴风区)"
                         AppLanguage.TRADITIONAL_CHINESE -> "颱風情報 (路徑・暴風區)"
+                        AppLanguage.SPANISH -> "Trayectoria y alertas de tifón"
+                        AppLanguage.FRENCH -> "Trajectoire et alertes typhon"
+                        AppLanguage.PORTUGUESE -> "Trajetória e alertas de tufão"
                     },
                     icon = Icons.Rounded.Air,
                     iconRes = R.drawable.ic_storm,
@@ -1290,9 +1798,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雨雲ナウキャスト"
+                        AppLanguage.KOREAN -> "강수 나우캐스트"
                         AppLanguage.ENGLISH -> "Precipitation Nowcast"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降雨即时预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "降雨即時預報"
+                        AppLanguage.SPANISH -> "Nowcast de precipitación"
+                        AppLanguage.FRENCH -> "Nowcast des précipitations"
+                        AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
                     },
                     icon = Icons.Rounded.WaterDrop,
                     isSelected = selectedJmaLayer == JmaLayerType.HRPNS,
@@ -1302,9 +1814,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雷・竜巻ナウキャスト"
+                        AppLanguage.KOREAN -> "낙뢰·토네이도 나우캐스트"
                         AppLanguage.ENGLISH -> "Thunder / Tornado"
                         AppLanguage.SIMPLIFIED_CHINESE -> "雷电・龙卷风即时预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "雷電・龍捲風即時預報"
+                        AppLanguage.SPANISH -> "Rayos / Tornado"
+                        AppLanguage.FRENCH -> "Orage / Tornade"
+                        AppLanguage.PORTUGUESE -> "Raios / Tornado"
                     },
                     icon = Icons.Rounded.Thunderstorm,
                     isSelected = selectedJmaLayer == JmaLayerType.THNS || selectedJmaLayer == JmaLayerType.TRNS,
@@ -1314,9 +1830,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "キキクル危険度"
+                        AppLanguage.KOREAN -> "키키쿠루 위험도"
                         AppLanguage.ENGLISH -> "Kikikuru Hazard Risk"
                         AppLanguage.SIMPLIFIED_CHINESE -> "Kikikuru危险度"
                         AppLanguage.TRADITIONAL_CHINESE -> "Kikikuru危險度"
+                        AppLanguage.SPANISH -> "Riesgo Kikikuru"
+                        AppLanguage.FRENCH -> "Risque Kikikuru"
+                        AppLanguage.PORTUGUESE -> "Risco Kikikuru"
                     },
                     icon = Icons.Rounded.Warning,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.RISK,
@@ -1338,9 +1858,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "気象衛星ひまわり"
+                        AppLanguage.KOREAN -> "히마와리 기상위성"
                         AppLanguage.ENGLISH -> "Himawari Satellite"
                         AppLanguage.SIMPLIFIED_CHINESE -> "向日葵气象卫星"
                         AppLanguage.TRADITIONAL_CHINESE -> "向日葵氣象衛星"
+                        AppLanguage.SPANISH -> "Satélite Himawari"
+                        AppLanguage.FRENCH -> "Satellite Himawari"
+                        AppLanguage.PORTUGUESE -> "Satélite Himawari"
                     },
                     icon = Icons.Rounded.Public,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.HIMAWARI,
@@ -1350,9 +1874,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "天気・予想気温"
+                        AppLanguage.KOREAN -> "날씨·예상 기온"
                         AppLanguage.ENGLISH -> "Weather & Temp Fcst"
                         AppLanguage.SIMPLIFIED_CHINESE -> "天气・预测气温"
                         AppLanguage.TRADITIONAL_CHINESE -> "天氣・預測氣溫"
+                        AppLanguage.SPANISH -> "Tiempo y temp. prevista"
+                        AppLanguage.FRENCH -> "Météo et temp. prévues"
+                        AppLanguage.PORTUGUESE -> "Clima e temp. prevista"
                     },
                     icon = Icons.Rounded.Thermostat,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.WEATHER_DIST,
@@ -1362,9 +1890,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "雪・降雪量情報"
+                        AppLanguage.KOREAN -> "눈·강설량 정보"
                         AppLanguage.ENGLISH -> "Snow & Snowfall"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降雪・积雪量信息"
                         AppLanguage.TRADITIONAL_CHINESE -> "降雪・積雪量資訊"
+                        AppLanguage.SPANISH -> "Nieve y nevadas"
+                        AppLanguage.FRENCH -> "Neige et chutes de neige"
+                        AppLanguage.PORTUGUESE -> "Neve e precipitação de neve"
                     },
                     icon = Icons.Rounded.AcUnit,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.SNOW,
@@ -1374,9 +1906,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "台風情報 (進路・暴風域)"
+                        AppLanguage.KOREAN -> "태풍 정보 (경로·폭풍역)"
                         AppLanguage.ENGLISH -> "Typhoon Track & Warning"
                         AppLanguage.SIMPLIFIED_CHINESE -> "台风情报 (路径・暴风区)"
                         AppLanguage.TRADITIONAL_CHINESE -> "颱風情報 (路徑・暴風區)"
+                        AppLanguage.SPANISH -> "Trayectoria y alertas de tifón"
+                        AppLanguage.FRENCH -> "Trajectoire et alertes typhon"
+                        AppLanguage.PORTUGUESE -> "Trajetória e alertas de tufão"
                     },
                     icon = Icons.Rounded.Air,
                     iconRes = R.drawable.ic_storm,
@@ -1387,9 +1923,13 @@ fun RadarDetailScreen(
                 SpeedDialItemData(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "すべてのレイヤー (${JmaLayerType.entries.size}種)"
+                        AppLanguage.KOREAN -> "모든 레이어 (${JmaLayerType.entries.size}종)"
                         AppLanguage.ENGLISH -> "All Layers (${JmaLayerType.entries.size})"
                         AppLanguage.SIMPLIFIED_CHINESE -> "所有图层 (${JmaLayerType.entries.size}种)"
                         AppLanguage.TRADITIONAL_CHINESE -> "所有圖層 (${JmaLayerType.entries.size}種)"
+                        AppLanguage.SPANISH -> "Todas las capas (${JmaLayerType.entries.size})"
+                        AppLanguage.FRENCH -> "Toutes les couches (${JmaLayerType.entries.size})"
+                        AppLanguage.PORTUGUESE -> "Todas as camadas (${JmaLayerType.entries.size})"
                     },
                     icon = Icons.Rounded.Layers,
                     isSelected = false,
@@ -1408,9 +1948,13 @@ fun RadarDetailScreen(
             SpeedDialItemData(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR"
+                    AppLanguage.KOREAN -> "미국 NEXRAD / HRRR"
                     AppLanguage.ENGLISH -> "US NEXRAD / HRRR"
                     AppLanguage.SIMPLIFIED_CHINESE -> "全美 NEXRAD / HRRR"
                     AppLanguage.TRADITIONAL_CHINESE -> "全美 NEXRAD / HRRR"
+                    AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR"
+                    AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR"
+                    AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR"
                 },
                 icon = Icons.Rounded.WaterDrop,
                 isSelected = selectedUsLayer == UsRadarLayerType.UNIFIED_ALL,
@@ -1422,9 +1966,13 @@ fun RadarDetailScreen(
             SpeedDialItemData(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "すべての全米レイヤー (${UsRadarLayerType.entries.size}種)"
+                    AppLanguage.KOREAN -> "모든 미국 레이어 (${UsRadarLayerType.entries.size}종)"
                     AppLanguage.ENGLISH -> "All US Layers (${UsRadarLayerType.entries.size})"
                     AppLanguage.SIMPLIFIED_CHINESE -> "所有全美图层 (${UsRadarLayerType.entries.size}种)"
                     AppLanguage.TRADITIONAL_CHINESE -> "所有全美圖層 (${UsRadarLayerType.entries.size}種)"
+                    AppLanguage.SPANISH -> "Todas las capas de EE. UU. (${UsRadarLayerType.entries.size})"
+                    AppLanguage.FRENCH -> "Toutes les couches É.-U. (${UsRadarLayerType.entries.size})"
+                    AppLanguage.PORTUGUESE -> "Todas as camadas dos EUA (${UsRadarLayerType.entries.size})"
                 },
                 icon = Icons.Rounded.Layers,
                 isSelected = selectedUsLayer != UsRadarLayerType.UNIFIED_ALL,
@@ -1437,9 +1985,13 @@ fun RadarDetailScreen(
             SpeedDialItemData(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "レーダー提供元切替"
+                    AppLanguage.KOREAN -> "레이더 제공처 전환"
                     AppLanguage.ENGLISH -> "Switch Radar Source"
                     AppLanguage.SIMPLIFIED_CHINESE -> "切换雷达源"
                     AppLanguage.TRADITIONAL_CHINESE -> "切換雷達來源"
+                    AppLanguage.SPANISH -> "Cambiar fuente de radar"
+                    AppLanguage.FRENCH -> "Changer de source radar"
+                    AppLanguage.PORTUGUESE -> "Trocar fonte do radar"
                 },
                 icon = Icons.Rounded.Map,
                 isSelected = false,
@@ -1456,9 +2008,13 @@ fun RadarDetailScreen(
             SpeedDialItemData(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
+                    AppLanguage.KOREAN -> "글로벌 레이더 (RainViewer)"
                     AppLanguage.ENGLISH -> "Global Radar (RainViewer)"
                     AppLanguage.SIMPLIFIED_CHINESE -> "全球雷达 (RainViewer)"
                     AppLanguage.TRADITIONAL_CHINESE -> "全球雷達 (RainViewer)"
+                    AppLanguage.SPANISH -> "Radar global (RainViewer)"
+                    AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
+                    AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
                 },
                 icon = Icons.Rounded.Public,
                 isSelected = true,
@@ -1467,9 +2023,13 @@ fun RadarDetailScreen(
             SpeedDialItemData(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "レーダー提供元切替"
+                    AppLanguage.KOREAN -> "레이더 제공처 전환"
                     AppLanguage.ENGLISH -> "Switch Radar Source"
                     AppLanguage.SIMPLIFIED_CHINESE -> "切换雷达源"
                     AppLanguage.TRADITIONAL_CHINESE -> "切換雷達來源"
+                    AppLanguage.SPANISH -> "Cambiar fuente de radar"
+                    AppLanguage.FRENCH -> "Changer de source radar"
+                    AppLanguage.PORTUGUESE -> "Trocar fonte do radar"
                 },
                 icon = Icons.Rounded.Map,
                 isSelected = false,
@@ -1551,9 +2111,13 @@ fun RadarDetailScreen(
                     imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = when (language) {
                         AppLanguage.JAPANESE -> "戻る"
+                        AppLanguage.KOREAN -> "뒤로"
                         AppLanguage.ENGLISH -> "Back"
                         AppLanguage.SIMPLIFIED_CHINESE -> "返回"
                         AppLanguage.TRADITIONAL_CHINESE -> "返回"
+                        AppLanguage.SPANISH -> "Atrás"
+                        AppLanguage.FRENCH -> "Retour"
+                        AppLanguage.PORTUGUESE -> "Voltar"
                     },
                     tint = colorScheme.onSurface,
                     modifier = Modifier.size(20.dp)
@@ -1565,16 +2129,24 @@ fun RadarDetailScreen(
                             if (selectedJmaLayer == JmaLayerType.HRPNS) {
                                 when (language) {
                                     AppLanguage.JAPANESE -> "気象庁 雨雲・短時間予報"
+                                    AppLanguage.KOREAN -> "일본 기상청 강수·단기 예보"
                                     AppLanguage.ENGLISH -> "JMA Radar & Short-range Fcst"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅 降雨短时预报"
                                     AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳 降雨短時預報"
+                                    AppLanguage.SPANISH -> "JMA Radar y prev. a corto plazo"
+                                    AppLanguage.FRENCH -> "JMA Radar et prév. à court terme"
+                                    AppLanguage.PORTUGUESE -> "JMA Radar e prev. de curto prazo"
                                 }
                             } else {
                                 val jmaPrefix = when (language) {
                                     AppLanguage.JAPANESE -> "気象庁"
+                                    AppLanguage.KOREAN -> "기상청"
                                     AppLanguage.ENGLISH -> "JMA"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "气象厅"
                                     AppLanguage.TRADITIONAL_CHINESE -> "氣象廳"
+                                    AppLanguage.SPANISH -> "JMA"
+                                    AppLanguage.FRENCH -> "JMA"
+                                    AppLanguage.PORTUGUESE -> "JMA"
                                 }
                                 "$jmaPrefix ${selectedJmaLayer.shortName(language)}"
                             }
@@ -1583,9 +2155,13 @@ fun RadarDetailScreen(
                             if (selectedUsLayer == UsRadarLayerType.UNIFIED_ALL) {
                                 when (language) {
                                     AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR (実況・外挿・予報)"
+                                    AppLanguage.KOREAN -> "미국 NEXRAD / HRRR (실황·외삽·예보)"
                                     AppLanguage.ENGLISH -> "US NEXRAD / HRRR (Obs, Extrap, Fcst)"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "全美 NEXRAD / HRRR (实况・外推・预报)"
                                     AppLanguage.TRADITIONAL_CHINESE -> "全美 NEXRAD / HRRR (實況・外推・預報)"
+                                    AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Extrap., Prev.)"
+                                    AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Extrap., Prév.)"
+                                    AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Extrap., Prev.)"
                                 }
                             } else {
                                 selectedUsLayer.displayName(language)
@@ -1594,9 +2170,13 @@ fun RadarDetailScreen(
                         RadarDataSource.RAIN_VIEWER -> {
                             when (language) {
                                 AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
+                                AppLanguage.KOREAN -> "글로벌 레이더 (RainViewer)"
                                 AppLanguage.ENGLISH -> "Global Radar (RainViewer)"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "全球雷达 (RainViewer)"
                                 AppLanguage.TRADITIONAL_CHINESE -> "全球雷達 (RainViewer)"
+                                AppLanguage.SPANISH -> "Radar global (RainViewer)"
+                                AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
+                                AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
                             }
                         }
                     },
@@ -1660,9 +2240,13 @@ fun RadarDetailScreen(
                                 imageVector = if (dataSource == RadarDataSource.US_NEXRAD_HRRR) Icons.Rounded.Layers else Icons.Rounded.Add,
                                 contentDescription = when (language) {
                                     AppLanguage.JAPANESE -> "地図レイヤー選択"
+                                    AppLanguage.KOREAN -> "지도 레이어 선택"
                                     AppLanguage.ENGLISH -> "Select Map Layer"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "选择地图图层"
                                     AppLanguage.TRADITIONAL_CHINESE -> "選擇地圖圖層"
+                                    AppLanguage.SPANISH -> "Seleccionar capa del mapa"
+                                    AppLanguage.FRENCH -> "Sélectionner une couche"
+                                    AppLanguage.PORTUGUESE -> "Selecionar camada do mapa"
                                 },
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier
@@ -1741,34 +2325,50 @@ fun RadarDetailScreen(
                                 dataSource == RadarDataSource.JMA_NOWCAST && selectedJmaLayer == JmaLayerType.TYPHOON -> {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "台風実況・進路予報"
+                                        AppLanguage.KOREAN -> "태풍 실황·경로 예보"
                                         AppLanguage.ENGLISH -> "Track & Warnings"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "台风实况・路径预报"
                                         AppLanguage.TRADITIONAL_CHINESE -> "颱風實況・路徑預報"
+                                        AppLanguage.SPANISH -> "Trayectoria y alertas"
+                                        AppLanguage.FRENCH -> "Trajectoire et alertes"
+                                        AppLanguage.PORTUGUESE -> "Trajetória e alertas"
                                     }
                                 }
                                 currentFrame?.isExtrapolation == true -> {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "外挿予測 (0〜60分)"
+                                        AppLanguage.KOREAN -> "외삽 예측 (0~60분)"
                                         AppLanguage.ENGLISH -> "Nowcast (0-60m)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "外推预测 (0-60分)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "外推預測 (0-60分)"
+                                        AppLanguage.SPANISH -> "Nowcast (0-60 min)"
+                                        AppLanguage.FRENCH -> "Nowcast (0-60 min)"
+                                        AppLanguage.PORTUGUESE -> "Nowcast (0-60 min)"
                                     }
                                 }
                                 currentFrame?.isForecast == true -> {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "予報モデル"
+                                        AppLanguage.KOREAN -> "예보 모델"
                                         AppLanguage.ENGLISH -> "Forecast Model"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "预报模型"
                                         AppLanguage.TRADITIONAL_CHINESE -> "預報模型"
+                                        AppLanguage.SPANISH -> "Modelo de previsión"
+                                        AppLanguage.FRENCH -> "Modèle de prévision"
+                                        AppLanguage.PORTUGUESE -> "Modelo de previsão"
                                     }
                                 }
                                 else -> currentFrame?.resolutionInfo?.takeIf { it.isNotBlank() }
                             }
                             val nowPrefix = when (language) {
                                 AppLanguage.JAPANESE -> "現在"
+                                AppLanguage.KOREAN -> "현재"
                                 AppLanguage.ENGLISH -> "Now"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                                 AppLanguage.TRADITIONAL_CHINESE -> "當前"
+                                AppLanguage.SPANISH -> "Ahora"
+                                AppLanguage.FRENCH -> "Maintenant"
+                                AppLanguage.PORTUGUESE -> "Agora"
                             }
                             RadarNowClockText(
                                 nowPrefix = nowPrefix,
@@ -1796,9 +2396,13 @@ fun RadarDetailScreen(
                                 imageVector = Icons.Rounded.MyLocation,
                                 contentDescription = when (language) {
                                     AppLanguage.JAPANESE -> "現在地へ戻る"
+                                    AppLanguage.KOREAN -> "현재 위치로 이동"
                                     AppLanguage.ENGLISH -> "Current Location"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "回到当前位置"
                                     AppLanguage.TRADITIONAL_CHINESE -> "回到當前位置"
+                                    AppLanguage.SPANISH -> "Ubicación actual"
+                                    AppLanguage.FRENCH -> "Position actuelle"
+                                    AppLanguage.PORTUGUESE -> "Localização atual"
                                 },
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(26.dp)
@@ -1918,9 +2522,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "実況 -2h"
+                                        AppLanguage.KOREAN -> "실황 -2시간"
                                         AppLanguage.ENGLISH -> "Obs -2h"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "实况 -2h"
                                         AppLanguage.TRADITIONAL_CHINESE -> "實況 -2h"
+                                        AppLanguage.SPANISH -> "Obs. -2h"
+                                        AppLanguage.FRENCH -> "Obs. -2h"
+                                        AppLanguage.PORTUGUESE -> "Obs. -2h"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -1930,9 +2538,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "現在 0m"
+                                        AppLanguage.KOREAN -> "현재 0분"
                                         AppLanguage.ENGLISH -> "Now 0m"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "当前 0m"
                                         AppLanguage.TRADITIONAL_CHINESE -> "當前 0m"
+                                        AppLanguage.SPANISH -> "Ahora 0m"
+                                        AppLanguage.FRENCH -> "Direct 0m"
+                                        AppLanguage.PORTUGUESE -> "Agora 0m"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -1942,9 +2554,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "外挿 +60m"
+                                        AppLanguage.KOREAN -> "외삽 +60분"
                                         AppLanguage.ENGLISH -> "Nowcast +60m"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "外推 +60m"
                                         AppLanguage.TRADITIONAL_CHINESE -> "外推 +60m"
+                                        AppLanguage.SPANISH -> "Nowcast +60m"
+                                        AppLanguage.FRENCH -> "Nowcast +60m"
+                                        AppLanguage.PORTUGUESE -> "Nowcast +60m"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -1970,9 +2586,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "2時間前"
+                                        AppLanguage.KOREAN -> "2시간 전"
                                         AppLanguage.ENGLISH -> "2h ago"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "2小时前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "2小時前"
+                                        AppLanguage.SPANISH -> "Hace 2h"
+                                        AppLanguage.FRENCH -> "Il y a 2h"
+                                        AppLanguage.PORTUGUESE -> "Há 2h"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -1982,9 +2602,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "現在"
+                                        AppLanguage.KOREAN -> "현재"
                                         AppLanguage.ENGLISH -> "Now"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "當前"
+                                        AppLanguage.SPANISH -> "Ahora"
+                                        AppLanguage.FRENCH -> "Maintenant"
+                                        AppLanguage.PORTUGUESE -> "Agora"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -1994,9 +2618,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "+15時間後"
+                                        AppLanguage.KOREAN -> "+15시간 후"
                                         AppLanguage.ENGLISH -> "+15h"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "+15小时后"
                                         AppLanguage.TRADITIONAL_CHINESE -> "+15小時後"
+                                        AppLanguage.SPANISH -> "+15h"
+                                        AppLanguage.FRENCH -> "+15h"
+                                        AppLanguage.PORTUGUESE -> "+15h"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2017,9 +2645,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "2時間前"
+                                        AppLanguage.KOREAN -> "2시간 전"
                                         AppLanguage.ENGLISH -> "2h ago"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "2小时前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "2小時前"
+                                        AppLanguage.SPANISH -> "Hace 2h"
+                                        AppLanguage.FRENCH -> "Il y a 2h"
+                                        AppLanguage.PORTUGUESE -> "Há 2h"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2030,9 +2662,13 @@ fun RadarDetailScreen(
                                     Text(
                                         text = when (language) {
                                             AppLanguage.JAPANESE -> "現在"
+                                            AppLanguage.KOREAN -> "현재"
                                             AppLanguage.ENGLISH -> "Now"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                                             AppLanguage.TRADITIONAL_CHINESE -> "當前"
+                                            AppLanguage.SPANISH -> "Ahora"
+                                            AppLanguage.FRENCH -> "Maintenant"
+                                            AppLanguage.PORTUGUESE -> "Agora"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Black,
@@ -2043,9 +2679,13 @@ fun RadarDetailScreen(
                                     Text(
                                         text = when (language) {
                                             AppLanguage.JAPANESE -> "+${nowcastMin}分予測"
+                                            AppLanguage.KOREAN -> "+${nowcastMin}분 예측"
                                             AppLanguage.ENGLISH -> "+${nowcastMin}m"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "+${nowcastMin}分预测"
                                             AppLanguage.TRADITIONAL_CHINESE -> "+${nowcastMin}分預測"
+                                            AppLanguage.SPANISH -> "+${nowcastMin}m"
+                                            AppLanguage.FRENCH -> "+${nowcastMin}m"
+                                            AppLanguage.PORTUGUESE -> "+${nowcastMin}m"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
@@ -2056,9 +2696,13 @@ fun RadarDetailScreen(
                                     Text(
                                         text = when (language) {
                                             AppLanguage.JAPANESE -> "1時間前"
+                                            AppLanguage.KOREAN -> "1시간 전"
                                             AppLanguage.ENGLISH -> "1h ago"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "1小时前"
                                             AppLanguage.TRADITIONAL_CHINESE -> "1小時前"
+                                            AppLanguage.SPANISH -> "Hace 1h"
+                                            AppLanguage.FRENCH -> "Il y a 1h"
+                                            AppLanguage.PORTUGUESE -> "Há 1h"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Normal,
@@ -2068,9 +2712,13 @@ fun RadarDetailScreen(
                                     Text(
                                         text = when (language) {
                                             AppLanguage.JAPANESE -> "現在 (最新実況)"
+                                            AppLanguage.KOREAN -> "현재 (최신 실황)"
                                             AppLanguage.ENGLISH -> "Now (Live)"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "当前 (最新实况)"
                                             AppLanguage.TRADITIONAL_CHINESE -> "當前 (最新實況)"
+                                            AppLanguage.SPANISH -> "Ahora (En vivo)"
+                                            AppLanguage.FRENCH -> "Maintenant (Direct)"
+                                            AppLanguage.PORTUGUESE -> "Agora (Ao vivo)"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Black,
@@ -2090,9 +2738,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "1時間前"
+                                        AppLanguage.KOREAN -> "1시간 전"
                                         AppLanguage.ENGLISH -> "1h ago"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "1小时前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "1小時前"
+                                        AppLanguage.SPANISH -> "Hace 1h"
+                                        AppLanguage.FRENCH -> "Il y a 1h"
+                                        AppLanguage.PORTUGUESE -> "Há 1h"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2102,9 +2754,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "現在"
+                                        AppLanguage.KOREAN -> "현재"
                                         AppLanguage.ENGLISH -> "Now"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "當前"
+                                        AppLanguage.SPANISH -> "Ahora"
+                                        AppLanguage.FRENCH -> "Maintenant"
+                                        AppLanguage.PORTUGUESE -> "Agora"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2114,9 +2770,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "+60分後"
+                                        AppLanguage.KOREAN -> "+60분 후"
                                         AppLanguage.ENGLISH -> "+60m"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "+60分钟后"
                                         AppLanguage.TRADITIONAL_CHINESE -> "+60分鐘後"
+                                        AppLanguage.SPANISH -> "+60m"
+                                        AppLanguage.FRENCH -> "+60m"
+                                        AppLanguage.PORTUGUESE -> "+60m"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2136,9 +2796,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "過去"
+                                        AppLanguage.KOREAN -> "과거"
                                         AppLanguage.ENGLISH -> "Past"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "过去"
                                         AppLanguage.TRADITIONAL_CHINESE -> "過去"
+                                        AppLanguage.SPANISH -> "Pasado"
+                                        AppLanguage.FRENCH -> "Passé"
+                                        AppLanguage.PORTUGUESE -> "Passado"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2148,9 +2812,13 @@ fun RadarDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "現在"
+                                        AppLanguage.KOREAN -> "현재"
                                         AppLanguage.ENGLISH -> "Now"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                                         AppLanguage.TRADITIONAL_CHINESE -> "當前"
+                                        AppLanguage.SPANISH -> "Ahora"
+                                        AppLanguage.FRENCH -> "Maintenant"
+                                        AppLanguage.PORTUGUESE -> "Agora"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2161,9 +2829,13 @@ fun RadarDetailScreen(
                                     Text(
                                         text = when (language) {
                                             AppLanguage.JAPANESE -> "予測"
+                                            AppLanguage.KOREAN -> "예측"
                                             AppLanguage.ENGLISH -> "Forecast"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "预测"
                                             AppLanguage.TRADITIONAL_CHINESE -> "預測"
+                                            AppLanguage.SPANISH -> "Previsión"
+                                            AppLanguage.FRENCH -> "Prévision"
+                                            AppLanguage.PORTUGUESE -> "Previsão"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
@@ -2189,16 +2861,24 @@ fun RadarDetailScreen(
                                 text = if (selectedJmaLayer == JmaLayerType.TYPHOON) {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 台風進路予報 (実況・暴風域・予報円)"
+                                        AppLanguage.KOREAN -> "일본 기상청 태풍 경로 예보 (실황·폭풍역·예보원)"
                                         AppLanguage.ENGLISH -> "JMA Typhoon Track & Warnings (Active / Forecast)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "气象厅 台风路径预报 (实况・暴风区・预报圆)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "氣象廳 颱風路徑預報 (實況・暴風區・預報圓)"
+                                        AppLanguage.SPANISH -> "JMA Trayectoria y alertas de tifón (Actual / Previsión)"
+                                        AppLanguage.FRENCH -> "JMA Trajectoire et alertes typhon (Actuel / Prévision)"
+                                        AppLanguage.PORTUGUESE -> "JMA Trajetória e alertas de tufão (Atual / Previsão)"
                                     }
                                 } else {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "公式背景地図レイヤー表示中"
+                                        AppLanguage.KOREAN -> "공식 배경 지도 레이어 표시 중"
                                         AppLanguage.ENGLISH -> "Base map layer active"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "官方背景地图图层显示中"
                                         AppLanguage.TRADITIONAL_CHINESE -> "官方背景地圖圖層顯示中"
+                                        AppLanguage.SPANISH -> "Capa de mapa base activa"
+                                        AppLanguage.FRENCH -> "Couche de fond de carte active"
+                                        AppLanguage.PORTUGUESE -> "Camada de mapa base ativa"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -2257,9 +2937,13 @@ fun RadarDetailScreen(
                                         imageVector = Icons.Rounded.SkipPrevious,
                                         contentDescription = when (language) {
                                             AppLanguage.JAPANESE -> "前のフレーム"
+                                            AppLanguage.KOREAN -> "이전 프레임"
                                             AppLanguage.ENGLISH -> "Previous Frame"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "上一帧"
                                             AppLanguage.TRADITIONAL_CHINESE -> "上一幀"
+                                            AppLanguage.SPANISH -> "Fotograma anterior"
+                                            AppLanguage.FRENCH -> "Image précédente"
+                                            AppLanguage.PORTUGUESE -> "Quadro anterior"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -2290,16 +2974,24 @@ fun RadarDetailScreen(
                                         contentDescription = if (isPlaying) {
                                             when (language) {
                                                 AppLanguage.JAPANESE -> "一時停止"
+                                                AppLanguage.KOREAN -> "일시정지"
                                                 AppLanguage.ENGLISH -> "Pause"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "暂停"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "暫停"
+                                                AppLanguage.SPANISH -> "Pausar"
+                                                AppLanguage.FRENCH -> "Pause"
+                                                AppLanguage.PORTUGUESE -> "Pausar"
                                             }
                                         } else {
                                             when (language) {
                                                 AppLanguage.JAPANESE -> "再生"
+                                                AppLanguage.KOREAN -> "재생"
                                                 AppLanguage.ENGLISH -> "Play"
                                                 AppLanguage.SIMPLIFIED_CHINESE -> "播放"
                                                 AppLanguage.TRADITIONAL_CHINESE -> "播放"
+                                                AppLanguage.SPANISH -> "Reproducir"
+                                                AppLanguage.FRENCH -> "Lire"
+                                                AppLanguage.PORTUGUESE -> "Reproduzir"
                                             }
                                         },
                                         tint = colorScheme.primary,
@@ -2339,9 +3031,13 @@ fun RadarDetailScreen(
                                         imageVector = Icons.Rounded.SkipNext,
                                         contentDescription = when (language) {
                                             AppLanguage.JAPANESE -> "次のフレーム"
+                                            AppLanguage.KOREAN -> "다음 프레임"
                                             AppLanguage.ENGLISH -> "Next Frame"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "下一帧"
                                             AppLanguage.TRADITIONAL_CHINESE -> "下一幀"
+                                            AppLanguage.SPANISH -> "Siguiente fotograma"
+                                            AppLanguage.FRENCH -> "Image suivante"
+                                            AppLanguage.PORTUGUESE -> "Próximo quadro"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -2417,65 +3113,105 @@ fun RadarDetailScreen(
                 val legendTitle: String = when (currentLegendKind) {
                     RadarLegendKind.US_NEXRAD, RadarLegendKind.RAIN_VIEWER -> when (language) {
                         AppLanguage.JAPANESE -> "雨雲反射強度 (dBZ)"
+                        AppLanguage.KOREAN -> "레이더 반사도 (dBZ)"
                         AppLanguage.ENGLISH -> "Radar Reflectivity (dBZ)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "雷达反射强度 (dBZ)"
                         AppLanguage.TRADITIONAL_CHINESE -> "雷達反射強度 (dBZ)"
+                        AppLanguage.SPANISH -> "Reflectividad del radar (dBZ)"
+                        AppLanguage.FRENCH -> "Réflectivité radar (dBZ)"
+                        AppLanguage.PORTUGUESE -> "Refletividade do radar (dBZ)"
                     }
                     RadarLegendKind.RAIN_INTENSITY -> when (language) {
                         AppLanguage.JAPANESE -> "雨の強さ (mm/h)"
+                        AppLanguage.KOREAN -> "강수 강도 (mm/h)"
                         AppLanguage.ENGLISH -> "Rain Intensity (mm/h)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "降雨强度 (mm/h)"
                         AppLanguage.TRADITIONAL_CHINESE -> "降雨強度 (mm/h)"
+                        AppLanguage.SPANISH -> "Intensidad de lluvia (mm/h)"
+                        AppLanguage.FRENCH -> "Intensité des pluies (mm/h)"
+                        AppLanguage.PORTUGUESE -> "Intensidade da chuva (mm/h)"
                     }
                     RadarLegendKind.LIGHTNING -> when (language) {
                         AppLanguage.JAPANESE -> "雷活動度 (活動度1〜4)"
+                        AppLanguage.KOREAN -> "낙뢰 활동도 (1~4단계)"
                         AppLanguage.ENGLISH -> "Lightning Activity (1-4)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "雷电活动度 (1~4)"
                         AppLanguage.TRADITIONAL_CHINESE -> "雷電活動度 (1~4)"
+                        AppLanguage.SPANISH -> "Actividad eléctrica (1-4)"
+                        AppLanguage.FRENCH -> "Activité orageuse (1-4)"
+                        AppLanguage.PORTUGUESE -> "Atividade de raios (1-4)"
                     }
                     RadarLegendKind.KIKIKURU -> when (selectedJmaLayer) {
                         JmaLayerType.LANDSLIDE -> when (language) {
                             AppLanguage.JAPANESE -> "土砂キキクル (危険度)"
+                            AppLanguage.KOREAN -> "산사태 키키쿠루 (위험도)"
                             AppLanguage.ENGLISH -> "Landslide Kikikuru (Risk)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "泥石流风险 (Kikikuru)"
                             AppLanguage.TRADITIONAL_CHINESE -> "土石流風險 (Kikikuru)"
+                            AppLanguage.SPANISH -> "Riesgo de deslizamiento (Kikikuru)"
+                            AppLanguage.FRENCH -> "Risque de glissement (Kikikuru)"
+                            AppLanguage.PORTUGUESE -> "Risco de deslizamento (Kikikuru)"
                         }
                         JmaLayerType.INUNDATION -> when (language) {
                             AppLanguage.JAPANESE -> "浸水キキクル (危険度)"
+                            AppLanguage.KOREAN -> "침수 키키쿠루 (위험도)"
                             AppLanguage.ENGLISH -> "Inundation Kikikuru (Risk)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "积水淹没风险 (Kikikuru)"
                             AppLanguage.TRADITIONAL_CHINESE -> "積水淹沒風險 (Kikikuru)"
+                            AppLanguage.SPANISH -> "Riesgo de anegamiento (Kikikuru)"
+                            AppLanguage.FRENCH -> "Risque de submersion (Kikikuru)"
+                            AppLanguage.PORTUGUESE -> "Risco de alagamento (Kikikuru)"
                         }
                         JmaLayerType.FLOOD -> when (language) {
                             AppLanguage.JAPANESE -> "洪水キキクル (危険度)"
+                            AppLanguage.KOREAN -> "홍수 키키쿠루 (위험도)"
                             AppLanguage.ENGLISH -> "Flood Kikikuru (Risk)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "洪水风险 (Kikikuru)"
                             AppLanguage.TRADITIONAL_CHINESE -> "洪水風險 (Kikikuru)"
+                            AppLanguage.SPANISH -> "Riesgo de inundación (Kikikuru)"
+                            AppLanguage.FRENCH -> "Risque de crue (Kikikuru)"
+                            AppLanguage.PORTUGUESE -> "Risco de enchente (Kikikuru)"
                         }
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "キキクル (危険度分布)"
+                            AppLanguage.KOREAN -> "키키쿠루 (위험도 분포)"
                             AppLanguage.ENGLISH -> "Kikikuru (Hazard Risk)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "Kikikuru (灾害风险)"
                             AppLanguage.TRADITIONAL_CHINESE -> "Kikikuru (災害風險)"
+                            AppLanguage.SPANISH -> "Kikikuru (Riesgo de desastre)"
+                            AppLanguage.FRENCH -> "Kikikuru (Risque de catastrophe)"
+                            AppLanguage.PORTUGUESE -> "Kikikuru (Risco de desastre)"
                         }
                     }
                     RadarLegendKind.SNOW_DEPTH -> when (language) {
                         AppLanguage.JAPANESE -> "現在の積雪深 (cm)"
+                        AppLanguage.KOREAN -> "현재 적설량 (cm)"
                         AppLanguage.ENGLISH -> "Snow Depth (cm)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "当前积雪深度 (cm)"
                         AppLanguage.TRADITIONAL_CHINESE -> "當前積雪深度 (cm)"
+                        AppLanguage.SPANISH -> "Espesor de nieve (cm)"
+                        AppLanguage.FRENCH -> "Hauteur de neige (cm)"
+                        AppLanguage.PORTUGUESE -> "Profundidade da neve (cm)"
                     }
                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                         AppLanguage.JAPANESE -> "3時間降雪量 (cm)"
+                        AppLanguage.KOREAN -> "3시간 강설량 (cm)"
                         AppLanguage.ENGLISH -> "3-Hour Snowfall (cm)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "3小时降雪量 (cm)"
                         AppLanguage.TRADITIONAL_CHINESE -> "3小時降雪量 (cm)"
+                        AppLanguage.SPANISH -> "Nevada en 3 horas (cm)"
+                        AppLanguage.FRENCH -> "Chutes de neige 3 h (cm)"
+                        AppLanguage.PORTUGUESE -> "Neve em 3 horas (cm)"
                     }
                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                         AppLanguage.JAPANESE -> "24時間降雪量 (cm)"
+                        AppLanguage.KOREAN -> "24시간 강설량 (cm)"
                         AppLanguage.ENGLISH -> "24-Hour Snowfall (cm)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "24小时降雪量 (cm)"
                         AppLanguage.TRADITIONAL_CHINESE -> "24小時降雪量 (cm)"
+                        AppLanguage.SPANISH -> "Nevada en 24 horas (cm)"
+                        AppLanguage.FRENCH -> "Chutes de neige 24 h (cm)"
+                        AppLanguage.PORTUGUESE -> "Neve em 24 horas (cm)"
                     }
                 }
 
@@ -2569,9 +3305,13 @@ fun RadarDetailScreen(
                                     imageVector = Icons.Rounded.Close,
                                     contentDescription = when (language) {
                                         AppLanguage.JAPANESE -> "閉じる"
+                                        AppLanguage.KOREAN -> "닫기"
                                         AppLanguage.ENGLISH -> "Close"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                                         AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                                        AppLanguage.SPANISH -> "Cerrar"
+                                        AppLanguage.FRENCH -> "Fermer"
+                                        AppLanguage.PORTUGUESE -> "Fechar"
                                     },
                                     tint = colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(15.dp)
@@ -2651,9 +3391,13 @@ fun RadarDetailScreen(
                             Text(
                                 text = when (language) {
                                     AppLanguage.JAPANESE -> "詳細ガイド ❯"
+                                    AppLanguage.KOREAN -> "상세 가이드 ❯"
                                     AppLanguage.ENGLISH -> "Detailed Guide ❯"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "详细指南 ❯"
                                     AppLanguage.TRADITIONAL_CHINESE -> "詳細指南 ❯"
+                                    AppLanguage.SPANISH -> "Guía detallada ❯"
+                                    AppLanguage.FRENCH -> "Guide détaillé ❯"
+                                    AppLanguage.PORTUGUESE -> "Guia detalhado ❯"
                                 },
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
@@ -2741,16 +3485,24 @@ fun RadarDetailScreen(
                                     text = if (dataSource == RadarDataSource.US_NEXRAD_HRRR) {
                                         when (language) {
                                             AppLanguage.JAPANESE -> "全米気象・予報マップ候補"
+                                            AppLanguage.KOREAN -> "미국 기상·예보 지도 레이어"
                                             AppLanguage.ENGLISH -> "US Weather & Forecast Maps"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "全美气象与预报图层"
                                             AppLanguage.TRADITIONAL_CHINESE -> "全美氣象與預報圖層"
+                                            AppLanguage.SPANISH -> "Mapas meteorológicos de EE. UU."
+                                            AppLanguage.FRENCH -> "Cartes météo et prévisions É.-U."
+                                            AppLanguage.PORTUGUESE -> "Mapas meteorológicos dos EUA"
                                         }
                                     } else {
                                         when (language) {
                                             AppLanguage.JAPANESE -> "気象地図レイヤー選択"
+                                            AppLanguage.KOREAN -> "기상 지도 레이어 선택"
                                             AppLanguage.ENGLISH -> "Weather Map Layers"
                                             AppLanguage.SIMPLIFIED_CHINESE -> "气象地图图层选择"
                                             AppLanguage.TRADITIONAL_CHINESE -> "氣象地圖圖層選擇"
+                                            AppLanguage.SPANISH -> "Capas del mapa meteorológico"
+                                            AppLanguage.FRENCH -> "Couches de carte météo"
+                                            AppLanguage.PORTUGUESE -> "Camadas do mapa meteorológico"
                                         }
                                     },
                                     style = MaterialTheme.typography.titleMedium,
@@ -2762,17 +3514,25 @@ fun RadarDetailScreen(
                                 text = if (dataSource == RadarDataSource.US_NEXRAD_HRRR) {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "NOAA / NEXRAD / HRRRシミュレーション (全${UsRadarLayerType.entries.size}種類)"
+                                        AppLanguage.KOREAN -> "NOAA / NEXRAD / HRRR 시뮬레이션 (총 ${UsRadarLayerType.entries.size}종)"
                                         AppLanguage.ENGLISH -> "NOAA / NEXRAD / HRRR Simulation (${UsRadarLayerType.entries.size} Layers)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "NOAA / NEXRAD / HRRR 模拟 (全${UsRadarLayerType.entries.size}种)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "NOAA / NEXRAD / HRRR 模擬 (全${UsRadarLayerType.entries.size}種)"
+                                        AppLanguage.SPANISH -> "Simulación NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} capas)"
+                                        AppLanguage.FRENCH -> "Simulation NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} couches)"
+                                        AppLanguage.PORTUGUESE -> "Simulação NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} camadas)"
                                     }
                                 } else {
                                     val count = JmaLayerType.entries.count { showAllJapanLayers || isAllowedJapanRadarLayer(it) }
                                     when (language) {
                                         AppLanguage.JAPANESE -> "気象庁公式配信タイル (全${count}種類)"
+                                        AppLanguage.KOREAN -> "일본 기상청 공식 타일 (총 ${count}종)"
                                         AppLanguage.ENGLISH -> "JMA Official Tiles ($count Layers)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅官方切片 (全${count}种)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳官方圖磚 (全${count}種)"
+                                        AppLanguage.SPANISH -> "Mosaicos oficiales de JMA ($count capas)"
+                                        AppLanguage.FRENCH -> "Tuiles officielles JMA ($count couches)"
+                                        AppLanguage.PORTUGUESE -> "Blocos oficiais da JMA ($count camadas)"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -2787,9 +3547,13 @@ fun RadarDetailScreen(
                                 imageVector = Icons.Rounded.Close,
                                 contentDescription = when (language) {
                                     AppLanguage.JAPANESE -> "閉じる"
+                                    AppLanguage.KOREAN -> "닫기"
                                     AppLanguage.ENGLISH -> "Close"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                                     AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                                    AppLanguage.SPANISH -> "Cerrar"
+                                    AppLanguage.FRENCH -> "Fermer"
+                                    AppLanguage.PORTUGUESE -> "Fechar"
                                 },
                                 tint = colorScheme.onSurfaceVariant
                             )
@@ -2896,9 +3660,13 @@ fun RadarDetailScreen(
                                                 ) {
                                                     val updateText = when (language) {
                                                         AppLanguage.JAPANESE -> "${layer.updateIntervalMinutes}分更新"
+                                                        AppLanguage.KOREAN -> "${layer.updateIntervalMinutes}분마다 갱신"
                                                         AppLanguage.ENGLISH -> "${layer.updateIntervalMinutes}m update"
                                                         AppLanguage.SIMPLIFIED_CHINESE -> "${layer.updateIntervalMinutes}分更新"
                                                         AppLanguage.TRADITIONAL_CHINESE -> "${layer.updateIntervalMinutes}分更新"
+                                                        AppLanguage.SPANISH -> "Act. cada ${layer.updateIntervalMinutes} min"
+                                                        AppLanguage.FRENCH -> "Màj ${layer.updateIntervalMinutes} min"
+                                                        AppLanguage.PORTUGUESE -> "Atual. a cada ${layer.updateIntervalMinutes} min"
                                                     }
                                                     Text(
                                                         text = updateText,
@@ -3099,51 +3867,83 @@ fun RadarDetailScreen(
                                 text = when (currentLegendKind) {
                                     RadarLegendKind.US_NEXRAD -> when (language) {
                                         AppLanguage.JAPANESE -> "全米レーダー dBZ 反射強度基準"
+                                        AppLanguage.KOREAN -> "미국 레이더 dBZ 반사도 기준"
                                         AppLanguage.ENGLISH -> "US Radar dBZ Reflectivity Scale"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "全美雷达 dBZ 反射强度标准"
                                         AppLanguage.TRADITIONAL_CHINESE -> "全美雷達 dBZ 反射強度標準"
+                                        AppLanguage.SPANISH -> "Escala de reflectividad dBZ (EE. UU.)"
+                                        AppLanguage.FRENCH -> "Échelle de réflectivité dBZ (É.-U.)"
+                                        AppLanguage.PORTUGUESE -> "Escala de refletividade dBZ (EUA)"
                                     }
                                     RadarLegendKind.RAIN_VIEWER -> when (language) {
                                         AppLanguage.JAPANESE -> "世界レーダー dBZ 反射強度基準"
+                                        AppLanguage.KOREAN -> "글로벌 레이더 dBZ 반사도 기준"
                                         AppLanguage.ENGLISH -> "Global Radar dBZ Reflectivity Scale"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "全球雷达 dBZ 反射强度标准"
                                         AppLanguage.TRADITIONAL_CHINESE -> "全球雷達 dBZ 反射強度標準"
+                                        AppLanguage.SPANISH -> "Escala de reflectividad dBZ (Global)"
+                                        AppLanguage.FRENCH -> "Échelle de réflectivité dBZ (Mondiale)"
+                                        AppLanguage.PORTUGUESE -> "Escala de refletividade dBZ (Global)"
                                     }
                                     RadarLegendKind.LIGHTNING -> when (language) {
                                         AppLanguage.JAPANESE -> "雷ナウキャスト 活動度基準・ガイド"
+                                        AppLanguage.KOREAN -> "낙뢰 나우캐스트 활동도 기준·가이드"
                                         AppLanguage.ENGLISH -> "Lightning Nowcast Activity Scale & Guide"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "雷电即时预报活动度等级指南"
                                         AppLanguage.TRADITIONAL_CHINESE -> "雷電即時預報活動度等級指南"
+                                        AppLanguage.SPANISH -> "Escala y guía de actividad eléctrica"
+                                        AppLanguage.FRENCH -> "Échelle et guide d'activité orageuse"
+                                        AppLanguage.PORTUGUESE -> "Escala e guia de atividade de raios"
                                     }
                                     RadarLegendKind.KIKIKURU -> when (language) {
                                         AppLanguage.JAPANESE -> "キキクル（危険度分布）判定基準・ガイド"
+                                        AppLanguage.KOREAN -> "키키쿠루(위험도 분포) 판정 기준·가이드"
                                         AppLanguage.ENGLISH -> "Kikikuru Risk Level Scale & Action Guide"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "Kikikuru 风险分布判定等级指南"
                                         AppLanguage.TRADITIONAL_CHINESE -> "Kikikuru 風險分布判定等級指南"
+                                        AppLanguage.SPANISH -> "Escala de riesgo Kikikuru y guía de acción"
+                                        AppLanguage.FRENCH -> "Échelle de risque Kikikuru et guide d'action"
+                                        AppLanguage.PORTUGUESE -> "Escala de risco Kikikuru e guia de ação"
                                     }
                                     RadarLegendKind.SNOW_DEPTH -> when (language) {
                                         AppLanguage.JAPANESE -> "現在の積雪の深さ 区分・目安"
+                                        AppLanguage.KOREAN -> "현재 적설량 구분·기준"
                                         AppLanguage.ENGLISH -> "Snow Depth Scale & Travel Guide"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "当前积雪深度等级・出行参考"
                                         AppLanguage.TRADITIONAL_CHINESE -> "當前積雪深度等級・出行參考"
+                                        AppLanguage.SPANISH -> "Escala de espesor de nieve y guía vial"
+                                        AppLanguage.FRENCH -> "Échelle de hauteur de neige et guide"
+                                        AppLanguage.PORTUGUESE -> "Escala de profundidade da neve e guia"
                                     }
                                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                                         AppLanguage.JAPANESE -> "3時間降雪量 区分・目安"
+                                        AppLanguage.KOREAN -> "3시간 강설량 구분·기준"
                                         AppLanguage.ENGLISH -> "3-Hour Snowfall Intensity Scale"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "3小时降雪量等级・出行参考"
                                         AppLanguage.TRADITIONAL_CHINESE -> "3小時降雪量等級・出行參考"
+                                        AppLanguage.SPANISH -> "Escala de nevada en 3 horas"
+                                        AppLanguage.FRENCH -> "Échelle des chutes de neige (3 h)"
+                                        AppLanguage.PORTUGUESE -> "Escala de neve em 3 horas"
                                     }
                                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                                         AppLanguage.JAPANESE -> "24時間降雪量 区分・目安"
+                                        AppLanguage.KOREAN -> "24시간 강설량 구분·기준"
                                         AppLanguage.ENGLISH -> "24-Hour Snowfall Intensity Scale"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "24小时降雪量等级・出行参考"
                                         AppLanguage.TRADITIONAL_CHINESE -> "24小時降雪量等級・出行參考"
+                                        AppLanguage.SPANISH -> "Escala de nevada en 24 horas"
+                                        AppLanguage.FRENCH -> "Échelle des chutes de neige (24 h)"
+                                        AppLanguage.PORTUGUESE -> "Escala de neve em 24 horas"
                                     }
                                     else -> when (language) {
                                         AppLanguage.JAPANESE -> "雨の強さと降水量の目安"
+                                        AppLanguage.KOREAN -> "비의 세기와 강수량 기준"
                                         AppLanguage.ENGLISH -> "Rain Intensity & Precipitation Scale"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "降雨强度与降水量等级"
                                         AppLanguage.TRADITIONAL_CHINESE -> "降雨強度與降水量等級"
+                                        AppLanguage.SPANISH -> "Escala de intensidad de lluvia"
+                                        AppLanguage.FRENCH -> "Échelle d'intensité des pluies"
+                                        AppLanguage.PORTUGUESE -> "Escala de intensidade da chuva"
                                     }
                                 },
                                 style = MaterialTheme.typography.titleMedium,
@@ -3155,51 +3955,83 @@ fun RadarDetailScreen(
                                 text = when (currentLegendKind) {
                                     RadarLegendKind.US_NEXRAD -> when (language) {
                                         AppLanguage.JAPANESE -> "NOAA / NEXRAD / MRMS 標準カラーパレット (dBZ)"
+                                        AppLanguage.KOREAN -> "NOAA / NEXRAD / MRMS 표준 컬러 팔레트 (dBZ)"
                                         AppLanguage.ENGLISH -> "NOAA / NEXRAD / MRMS Standard Color Palette (dBZ)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "NOAA / NEXRAD / MRMS 标准色盘 (dBZ)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "NOAA / NEXRAD / MRMS 標準色盤 (dBZ)"
+                                        AppLanguage.SPANISH -> "Paleta estándar NOAA / NEXRAD / MRMS (dBZ)"
+                                        AppLanguage.FRENCH -> "Palette standard NOAA / NEXRAD / MRMS (dBZ)"
+                                        AppLanguage.PORTUGUESE -> "Paleta padrão NOAA / NEXRAD / MRMS (dBZ)"
                                     }
                                     RadarLegendKind.RAIN_VIEWER -> when (language) {
                                         AppLanguage.JAPANESE -> "RainViewer Universal Blue 標準カラーパレット (dBZ)"
+                                        AppLanguage.KOREAN -> "RainViewer Universal Blue 표준 컬러 팔레트 (dBZ)"
                                         AppLanguage.ENGLISH -> "RainViewer Universal Blue Color Palette (dBZ)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "RainViewer Universal Blue 标准色盘 (dBZ)"
                                         AppLanguage.TRADITIONAL_CHINESE -> "RainViewer Universal Blue 標準色盤 (dBZ)"
+                                        AppLanguage.SPANISH -> "Paleta RainViewer Universal Blue (dBZ)"
+                                        AppLanguage.FRENCH -> "Palette RainViewer Universal Blue (dBZ)"
+                                        AppLanguage.PORTUGUESE -> "Paleta RainViewer Universal Blue (dBZ)"
                                     }
                                     RadarLegendKind.LIGHTNING -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 雷ナウキャスト（活動度4〜1）基準"
+                                        AppLanguage.KOREAN -> "일본 기상청 낙뢰 나우캐스트(활동도 4~1) 기준"
                                         AppLanguage.ENGLISH -> "JMA Lightning Nowcast Activity Levels 1–4"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅雷电即时预报（活动度4〜1）标准"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳雷電即時預報（活動度4〜1）標準"
+                                        AppLanguage.SPANISH -> "Niveles de actividad eléctrica JMA (1–4)"
+                                        AppLanguage.FRENCH -> "Niveaux d'activité orageuse JMA (1–4)"
+                                        AppLanguage.PORTUGUESE -> "Níveis de atividade de raios JMA (1–4)"
                                     }
                                     RadarLegendKind.KIKIKURU -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 警戒レベル・災害切迫度（Lv1〜Lv5）"
+                                        AppLanguage.KOREAN -> "일본 기상청 경계 레벨·재해 위험도(Lv1~Lv5)"
                                         AppLanguage.ENGLISH -> "JMA Alert Levels & Evacuation Guidance (Lv1–Lv5)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅警戒级别・灾害危险度（Lv1〜Lv5）"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳警戒級別・災害危險度（Lv1〜Lv5）"
+                                        AppLanguage.SPANISH -> "Niveles de alerta y evacuación JMA (Nv1–Nv5)"
+                                        AppLanguage.FRENCH -> "Niveaux d'alerte et d'évacuation JMA (Niv. 1–5)"
+                                        AppLanguage.PORTUGUESE -> "Níveis de alerta e evacuação JMA (Nv1–Nv5)"
                                     }
                                     RadarLegendKind.SNOW_DEPTH -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 解析積雪深・アメダス積雪階級（cm）"
+                                        AppLanguage.KOREAN -> "일본 기상청 해석 적설량·AMeDAS 적설 등급 (cm)"
                                         AppLanguage.ENGLISH -> "JMA Analyzed Snow Depth Standards (cm)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅解析积雪深度标准（cm）"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳解析積雪深度標準（cm）"
+                                        AppLanguage.SPANISH -> "Estándares JMA de espesor de nieve (cm)"
+                                        AppLanguage.FRENCH -> "Normes JMA de hauteur de neige (cm)"
+                                        AppLanguage.PORTUGUESE -> "Padrões JMA de profundidade da neve (cm)"
                                     }
                                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 3時間解析降雪量・短時間豪雪警戒（cm）"
+                                        AppLanguage.KOREAN -> "일본 기상청 3시간 해석 강설량·단시간 폭설 경계 (cm)"
                                         AppLanguage.ENGLISH -> "JMA 3-Hour Analyzed Snowfall Standards (cm)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅3小时解析降雪量标准（cm）"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳3小時解析降雪量標準（cm）"
+                                        AppLanguage.SPANISH -> "Estándares JMA de nevada en 3 h (cm)"
+                                        AppLanguage.FRENCH -> "Normes JMA de chutes de neige en 3 h (cm)"
+                                        AppLanguage.PORTUGUESE -> "Padrões JMA de neve em 3 h (cm)"
                                     }
                                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 24時間解析降雪量・大雪警戒（cm）"
+                                        AppLanguage.KOREAN -> "일본 기상청 24시간 해석 강설량·대설 경계 (cm)"
                                         AppLanguage.ENGLISH -> "JMA 24-Hour Analyzed Snowfall Standards (cm)"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅24小时解析降雪量标准（cm）"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳24小時解析降雪量標準（cm）"
+                                        AppLanguage.SPANISH -> "Estándares JMA de nevada en 24 h (cm)"
+                                        AppLanguage.FRENCH -> "Normes JMA de chutes de neige en 24 h (cm)"
+                                        AppLanguage.PORTUGUESE -> "Padrões JMA de neve em 24 h (cm)"
                                     }
                                     else -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 降水ナウキャスト色基準・予報一覧"
+                                        AppLanguage.KOREAN -> "일본 기상청 강수 나우캐스트 색상 기준·예보 목록"
                                         AppLanguage.ENGLISH -> "JMA Precipitation Nowcast Color Scale & Forecast"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅 降水即时预报颜色标准・预报列表"
                                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳 降水即時預報顏色標準・預報列表"
+                                        AppLanguage.SPANISH -> "Escala de color y previsión JMA Nowcast"
+                                        AppLanguage.FRENCH -> "Échelle de couleurs et prévision JMA Nowcast"
+                                        AppLanguage.PORTUGUESE -> "Escala de cores e previsão JMA Nowcast"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -3214,9 +4046,13 @@ fun RadarDetailScreen(
                                 imageVector = Icons.Rounded.Close,
                                 contentDescription = when (language) {
                                     AppLanguage.JAPANESE -> "閉じる"
+                                    AppLanguage.KOREAN -> "닫기"
                                     AppLanguage.ENGLISH -> "Close"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                                     AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                                    AppLanguage.SPANISH -> "Cerrar"
+                                    AppLanguage.FRENCH -> "Fermer"
+                                    AppLanguage.PORTUGUESE -> "Fechar"
                                 },
                                 tint = colorScheme.onSurfaceVariant
                             )
@@ -3523,9 +4359,13 @@ fun RadarDetailScreen(
                             Text(
                                 text = when (language) {
                                     AppLanguage.JAPANESE -> "閉じる"
+                                    AppLanguage.KOREAN -> "닫기"
                                     AppLanguage.ENGLISH -> "Close"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                                     AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                                    AppLanguage.SPANISH -> "Cerrar"
+                                    AppLanguage.FRENCH -> "Fermer"
+                                    AppLanguage.PORTUGUESE -> "Fechar"
                                 },
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold
@@ -3565,34 +4405,54 @@ fun RadarDetailScreen(
             SingleChoiceDialog(
                 title = when (language) {
                     AppLanguage.JAPANESE -> "レーダー提供元の選択"
+                    AppLanguage.KOREAN -> "레이더 제공처 선택"
                     AppLanguage.ENGLISH -> "Select Radar Source"
                     AppLanguage.SIMPLIFIED_CHINESE -> "选择雷达数据源"
                     AppLanguage.TRADITIONAL_CHINESE -> "選擇雷達資料來源"
+                    AppLanguage.SPANISH -> "Seleccionar fuente de radar"
+                    AppLanguage.FRENCH -> "Sélectionner la source radar"
+                    AppLanguage.PORTUGUESE -> "Selecionar fonte do radar"
                 },
                 options = listOf(
                     RadarSourceMode.AUTO to when (language) {
                         AppLanguage.JAPANESE -> "自動判別 (位置・国名に連動)"
+                        AppLanguage.KOREAN -> "자동 선택 (위치·국가 연동)"
                         AppLanguage.ENGLISH -> "Auto (Based on location)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "自动判别 (根据位置)"
                         AppLanguage.TRADITIONAL_CHINESE -> "自動判別 (根據位置)"
+                        AppLanguage.SPANISH -> "Automático (Según ubicación)"
+                        AppLanguage.FRENCH -> "Automatique (Selon la position)"
+                        AppLanguage.PORTUGUESE -> "Automático (Por localização)"
                     },
                     RadarSourceMode.US_NEXRAD_HRRR to when (language) {
                         AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR (実況・外挿予測・予報)"
+                        AppLanguage.KOREAN -> "미국 NEXRAD / HRRR (실황·외삽 예측·예보)"
                         AppLanguage.ENGLISH -> "US NEXRAD / HRRR (Obs, Nowcast, Forecast)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "全美 NEXRAD / HRRR (实况・外推・预报)"
                         AppLanguage.TRADITIONAL_CHINESE -> "全美 NEXRAD / HRRR (實況・外推・預報)"
+                        AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Nowcast, Prev.)"
+                        AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Nowcast, Prév.)"
+                        AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Nowcast, Prev.)"
                     },
                     RadarSourceMode.JMA to when (language) {
                         AppLanguage.JAPANESE -> "気象庁 高解像度降水ナウキャスト"
+                        AppLanguage.KOREAN -> "일본 기상청 고해상도 강수 나우캐스트"
                         AppLanguage.ENGLISH -> "JMA High-Resolution Precipitation Nowcast"
                         AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅 高分辨率降雨即时预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳 高解析度降雨即時預報"
+                        AppLanguage.SPANISH -> "JMA Nowcast de precipitación de alta resolución"
+                        AppLanguage.FRENCH -> "JMA Nowcast des précipitations haute résolution"
+                        AppLanguage.PORTUGUESE -> "JMA Nowcast de precipitação de alta resolução"
                     },
                     RadarSourceMode.RAIN_VIEWER to when (language) {
                         AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
+                        AppLanguage.KOREAN -> "글로벌 레이더 (RainViewer)"
                         AppLanguage.ENGLISH -> "Global Radar (RainViewer)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "全球雷达 (RainViewer)"
                         AppLanguage.TRADITIONAL_CHINESE -> "全球雷達 (RainViewer)"
+                        AppLanguage.SPANISH -> "Radar global (RainViewer)"
+                        AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
+                        AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
                     }
                 ),
                 selectedOption = sourceMode,
@@ -3603,9 +4463,13 @@ fun RadarDetailScreen(
                 onDismiss = { showSourceDialog = false },
                 cancelText = when (language) {
                     AppLanguage.JAPANESE -> "キャンセル"
+                    AppLanguage.KOREAN -> "취소"
                     AppLanguage.ENGLISH -> "Cancel"
                     AppLanguage.SIMPLIFIED_CHINESE -> "取消"
                     AppLanguage.TRADITIONAL_CHINESE -> "取消"
+                    AppLanguage.SPANISH -> "Cancelar"
+                    AppLanguage.FRENCH -> "Annuler"
+                    AppLanguage.PORTUGUESE -> "Cancelar"
                 }
             )
         }
@@ -3766,9 +4630,13 @@ private fun TyphoonInfoCard(
                         imageVector = Icons.Rounded.Close,
                         contentDescription = when (language) {
                             AppLanguage.JAPANESE -> "閉じる"
+                            AppLanguage.KOREAN -> "닫기"
                             AppLanguage.ENGLISH -> "Close"
                             AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                             AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                            AppLanguage.SPANISH -> "Cerrar"
+                            AppLanguage.FRENCH -> "Fermer"
+                            AppLanguage.PORTUGUESE -> "Fechar"
                         },
                         tint = colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
@@ -3785,9 +4653,13 @@ private fun TyphoonInfoCard(
                 TyphoonMetricTile(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "中心気圧"
+                        AppLanguage.KOREAN -> "중심 기압"
                         AppLanguage.ENGLISH -> "Pressure"
                         AppLanguage.SIMPLIFIED_CHINESE -> "中心气压"
                         AppLanguage.TRADITIONAL_CHINESE -> "中心氣壓"
+                        AppLanguage.SPANISH -> "Presión"
+                        AppLanguage.FRENCH -> "Pression"
+                        AppLanguage.PORTUGUESE -> "Pressão"
                     },
                     value = analysis.pressureHpa?.let { "$it hPa" } ?: "---",
                     accentColor = colorScheme.primary,
@@ -3799,9 +4671,13 @@ private fun TyphoonInfoCard(
                 TyphoonMetricTile(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "進行方向・速さ"
+                        AppLanguage.KOREAN -> "이동 방향·속도"
                         AppLanguage.ENGLISH -> "Movement"
                         AppLanguage.SIMPLIFIED_CHINESE -> "移向・移速"
                         AppLanguage.TRADITIONAL_CHINESE -> "移向・移速"
+                        AppLanguage.SPANISH -> "Movimiento"
+                        AppLanguage.FRENCH -> "Déplacement"
+                        AppLanguage.PORTUGUESE -> "Deslocamento"
                     },
                     value = if (analysis.course.isNotBlank()) "${analysis.course} ${analysis.speedText}" else analysis.speedText.ifBlank { "---" },
                     accentColor = colorScheme.onSurface,
@@ -3818,18 +4694,26 @@ private fun TyphoonInfoCard(
                 TyphoonMetricTile(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "最大風速"
+                        AppLanguage.KOREAN -> "최대 풍속"
                         AppLanguage.ENGLISH -> "Max Wind"
                         AppLanguage.SIMPLIFIED_CHINESE -> "最大风速"
                         AppLanguage.TRADITIONAL_CHINESE -> "最大風速"
+                        AppLanguage.SPANISH -> "Viento máx."
+                        AppLanguage.FRENCH -> "Vent max."
+                        AppLanguage.PORTUGUESE -> "Vento máx."
                     },
                     value = analysis.maxWindMs?.let { "$it m/s" } ?: "---",
                     subtitle = analysis.maxWindMs?.let {
                         val kmh = (it * 3.6).toInt()
                         when (language) {
                             AppLanguage.JAPANESE -> "約 $kmh km/h"
+                            AppLanguage.KOREAN -> "약 $kmh km/h"
                             AppLanguage.ENGLISH -> "~$kmh km/h"
                             AppLanguage.SIMPLIFIED_CHINESE -> "约 $kmh km/h"
                             AppLanguage.TRADITIONAL_CHINESE -> "約 $kmh km/h"
+                            AppLanguage.SPANISH -> "~$kmh km/h"
+                            AppLanguage.FRENCH -> "~$kmh km/h"
+                            AppLanguage.PORTUGUESE -> "~$kmh km/h"
                         }
                     },
                     accentColor = colorScheme.tertiary,
@@ -3841,18 +4725,26 @@ private fun TyphoonInfoCard(
                 TyphoonMetricTile(
                     title = when (language) {
                         AppLanguage.JAPANESE -> "最大瞬間風速"
+                        AppLanguage.KOREAN -> "최대 순간 풍속"
                         AppLanguage.ENGLISH -> "Peak Gust"
                         AppLanguage.SIMPLIFIED_CHINESE -> "最大阵风"
                         AppLanguage.TRADITIONAL_CHINESE -> "最大陣風"
+                        AppLanguage.SPANISH -> "Racha máx."
+                        AppLanguage.FRENCH -> "Rafale max."
+                        AppLanguage.PORTUGUESE -> "Rajada máx."
                     },
                     value = analysis.gustWindMs?.let { "$it m/s" } ?: "---",
                     subtitle = analysis.gustWindMs?.let {
                         val kmh = (it * 3.6).toInt()
                         when (language) {
                             AppLanguage.JAPANESE -> "約 $kmh km/h"
+                            AppLanguage.KOREAN -> "약 $kmh km/h"
                             AppLanguage.ENGLISH -> "~$kmh km/h"
                             AppLanguage.SIMPLIFIED_CHINESE -> "约 $kmh km/h"
                             AppLanguage.TRADITIONAL_CHINESE -> "約 $kmh km/h"
+                            AppLanguage.SPANISH -> "~$kmh km/h"
+                            AppLanguage.FRENCH -> "~$kmh km/h"
+                            AppLanguage.PORTUGUESE -> "~$kmh km/h"
                         }
                     },
                     accentColor = colorScheme.error,
@@ -3884,9 +4776,13 @@ private fun TyphoonInfoCard(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "暴風域 (25m/s以上): "
+                            AppLanguage.KOREAN -> "폭풍역 (25m/s 이상): "
                             AppLanguage.ENGLISH -> "Storm (≥25m/s): "
                             AppLanguage.SIMPLIFIED_CHINESE -> "暴风圈 (≥25m/s): "
                             AppLanguage.TRADITIONAL_CHINESE -> "暴風圈 (≥25m/s): "
+                            AppLanguage.SPANISH -> "Tormenta (≥25 m/s): "
+                            AppLanguage.FRENCH -> "Tempête (≥25 m/s) : "
+                            AppLanguage.PORTUGUESE -> "Tempestade (≥25 m/s): "
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
@@ -3896,15 +4792,23 @@ private fun TyphoonInfoCard(
                         text = analysis.stormRadiusKm?.let {
                             when (language) {
                                 AppLanguage.JAPANESE -> "半径 ${it.toInt()} km"
+                                AppLanguage.KOREAN -> "반경 ${it.toInt()} km"
                                 AppLanguage.ENGLISH -> "Radius ${it.toInt()} km"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "半径 ${it.toInt()} km"
                                 AppLanguage.TRADITIONAL_CHINESE -> "半徑 ${it.toInt()} km"
+                                AppLanguage.SPANISH -> "Radio ${it.toInt()} km"
+                                AppLanguage.FRENCH -> "Rayon ${it.toInt()} km"
+                                AppLanguage.PORTUGUESE -> "Raio ${it.toInt()} km"
                             }
                         } ?: when (language) {
                             AppLanguage.JAPANESE -> "なし"
+                            AppLanguage.KOREAN -> "없음"
                             AppLanguage.ENGLISH -> "None"
                             AppLanguage.SIMPLIFIED_CHINESE -> "无"
                             AppLanguage.TRADITIONAL_CHINESE -> "無"
+                            AppLanguage.SPANISH -> "Ninguno"
+                            AppLanguage.FRENCH -> "Aucun"
+                            AppLanguage.PORTUGUESE -> "Nenhum"
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
@@ -3926,9 +4830,13 @@ private fun TyphoonInfoCard(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "強風域 (15m/s以上): "
+                            AppLanguage.KOREAN -> "강풍역 (15m/s 이상): "
                             AppLanguage.ENGLISH -> "Gale (≥15m/s): "
                             AppLanguage.SIMPLIFIED_CHINESE -> "强风圈 (≥15m/s): "
                             AppLanguage.TRADITIONAL_CHINESE -> "強風圈 (≥15m/s): "
+                            AppLanguage.SPANISH -> "Vendaval (≥15 m/s): "
+                            AppLanguage.FRENCH -> "Coup de vent (≥15 m/s) : "
+                            AppLanguage.PORTUGUESE -> "Ventania (≥15 m/s): "
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
@@ -3938,9 +4846,13 @@ private fun TyphoonInfoCard(
                         text = analysis.galeRadiusKm?.let {
                             when (language) {
                                 AppLanguage.JAPANESE -> "半径 ${it.toInt()} km"
+                                AppLanguage.KOREAN -> "반경 ${it.toInt()} km"
                                 AppLanguage.ENGLISH -> "Radius ${it.toInt()} km"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "半径 ${it.toInt()} km"
                                 AppLanguage.TRADITIONAL_CHINESE -> "半徑 ${it.toInt()} km"
+                                AppLanguage.SPANISH -> "Radio ${it.toInt()} km"
+                                AppLanguage.FRENCH -> "Rayon ${it.toInt()} km"
+                                AppLanguage.PORTUGUESE -> "Raio ${it.toInt()} km"
                             }
                         } ?: "---",
                         style = MaterialTheme.typography.bodySmall,
@@ -3969,9 +4881,13 @@ private fun TyphoonInfoCard(
                 Spacer(modifier = Modifier.width(8.dp))
                 val agencyLabel = when (language) {
                     AppLanguage.JAPANESE -> "気象庁"
+                    AppLanguage.KOREAN -> "일본 기상청"
                     AppLanguage.ENGLISH -> "JMA"
                     AppLanguage.SIMPLIFIED_CHINESE -> "气象厅"
                     AppLanguage.TRADITIONAL_CHINESE -> "氣象廳"
+                    AppLanguage.SPANISH -> "JMA"
+                    AppLanguage.FRENCH -> "JMA"
+                    AppLanguage.PORTUGUESE -> "JMA"
                 }
                 Text(
                     text = "${typhoon.formattedIssueTime} ($agencyLabel)",

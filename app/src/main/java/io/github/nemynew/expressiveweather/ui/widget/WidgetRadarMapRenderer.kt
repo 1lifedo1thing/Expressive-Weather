@@ -536,16 +536,24 @@ object WidgetRadarMapRenderer {
     private fun formatBadgeLabel(timeLabel: String?, language: AppLanguage): String {
         val live = when (language) {
             AppLanguage.JAPANESE -> "雨雲レーダー"
+            AppLanguage.KOREAN -> "강수 레이더"
             AppLanguage.ENGLISH -> "Radar"
             AppLanguage.SIMPLIFIED_CHINESE -> "降水雷达"
             AppLanguage.TRADITIONAL_CHINESE -> "降雨雷達"
+            AppLanguage.SPANISH -> "Radar"
+            AppLanguage.FRENCH -> "Radar"
+            AppLanguage.PORTUGUESE -> "Radar"
         }
         val t = timeLabel?.trim()?.takeIf { it.isNotBlank() } ?: return live
         return when (language) {
             AppLanguage.JAPANESE -> "$t 実況"
+            AppLanguage.KOREAN -> "$t 실시간"
             AppLanguage.ENGLISH -> "$t Live"
             AppLanguage.SIMPLIFIED_CHINESE -> "$t 实况"
             AppLanguage.TRADITIONAL_CHINESE -> "$t 實況"
+            AppLanguage.SPANISH -> "$t En vivo"
+            AppLanguage.FRENCH -> "$t Direct"
+            AppLanguage.PORTUGUESE -> "$t Ao vivo"
         }
     }
 

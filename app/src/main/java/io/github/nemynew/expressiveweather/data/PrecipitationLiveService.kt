@@ -45,12 +45,13 @@ class PrecipitationLiveService : Service() {
 
         const val ACTION_START_OR_UPDATE = "io.github.nemynew.expressiveweather.action.START_OR_UPDATE_RAIN_LIVE"
         const val ACTION_STOP = "io.github.nemynew.expressiveweather.action.STOP_RAIN_LIVE"
+        const val EXTRA_SILENT_UPDATE = "extra_silent_update"
 
         @Volatile
         var isServiceRunning = false
             private set
 
-        fun startOrUpdate(context: Context) {
+        fun startOrUpdate(context: Context, isSilentUpdate: Boolean = false) {
             val appContext = context.applicationContext
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
                 ContextCompat.checkSelfPermission(appContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
@@ -60,21 +61,28 @@ class PrecipitationLiveService : Service() {
 
             val intent = Intent(appContext, PrecipitationLiveService::class.java).apply {
                 action = ACTION_START_OR_UPDATE
+                putExtra(EXTRA_SILENT_UPDATE, isSilentUpdate)
             }
             try {
                 ContextCompat.startForegroundService(appContext, intent)
-                Log.d(TAG, "Requested startForegroundService for Precipitation Live Updates.")
+                Log.d(TAG, "Requested startForegroundService for Precipitation Live Updates (silent=$isSilentUpdate).")
             } catch (e: Exception) {
                 Log.w(TAG, "Failed to startForegroundService (${e.javaClass.simpleName}): ${e.message}")
                 val nowcast = PrecipitationLiveNotificationManager.currentActiveNowcast
-                if (nowcast != null && nowcast.isLiveActive) {
+                val cityName = PrecipitationLiveNotificationManager.currentActiveCityName
+                if (nowcast != null && nowcast.isLiveActive &&
+                    (PrecipitationLiveNotificationManager.isTestActive ||
+                        !PrecipitationLiveNotificationManager.isSuppressedByUserDismissal(appContext, nowcast, cityName))
+                ) {
                     val notification = PrecipitationLiveNotificationManager.buildRainLiveNotification(
                         context = appContext,
                         nowcast = nowcast,
-                        cityName = PrecipitationLiveNotificationManager.currentActiveCityName
+                        cityName = cityName,
+                        isSilentUpdate = isSilentUpdate
                     )
                     val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     nm.notify(PrecipitationLiveNotificationManager.NOTIFICATION_ID, notification)
+                    PrecipitationLiveNotificationManager.markNotificationPosted()
                     PrecipitationLiveNotificationManager.startTickerIfNeeded(appContext)
                 }
             }
@@ -126,19 +134,31 @@ class PrecipitationLiveService : Service() {
             return START_NOT_STICKY
         }
 
+        if (!PrecipitationLiveNotificationManager.isTestActive &&
+            PrecipitationLiveNotificationManager.isSuppressedByUserDismissal(this, nowcast, cityName)
+        ) {
+            Log.d(TAG, "Nowcast suppressed by user dismissal. Stopping live service.")
+            stopLiveService()
+            return START_NOT_STICKY
+        }
+
+        val isSilentUpdate = intent?.getBooleanExtra(EXTRA_SILENT_UPDATE, false) == true
         val notification = PrecipitationLiveNotificationManager.buildRainLiveNotification(
             context = this,
             nowcast = nowcast,
-            cityName = cityName
+            cityName = cityName,
+            isSilentUpdate = isSilentUpdate
         )
         if (!promoteForegroundSafely(notification)) {
             stopLiveService()
             return START_NOT_STICKY
         }
+        PrecipitationLiveNotificationManager.stopFallbackTicker()
+        PrecipitationLiveNotificationManager.markNotificationPosted()
 
         startContinuousLocationTracking()
         startPeriodicTickerLoop()
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onTimeout(startId: Int, fgsType: Int) {
@@ -229,6 +249,22 @@ class PrecipitationLiveService : Service() {
             val newNowcast = weatherData.precipitationNowcast
 
             if (newNowcast != null && newNowcast.isLiveActive && (newNowcast.minutesRemaining == null || newNowcast.minutesRemaining > 0)) {
+                if (PrecipitationLiveNotificationManager.hasUserDismissedActiveNotification(this)) {
+                    PrecipitationLiveNotificationManager.dismissByUser(
+                        context = this,
+                        cityName = newCity.name,
+                        status = newNowcast.status,
+                        targetTimestampMillis = newNowcast.targetTimestampMillis
+                    )
+                    stopLiveService()
+                    return
+                }
+                if (!PrecipitationLiveNotificationManager.isTestActive &&
+                    PrecipitationLiveNotificationManager.isSuppressedByUserDismissal(this, newNowcast, newCity.name)
+                ) {
+                    stopLiveService()
+                    return
+                }
                 PrecipitationLiveNotificationManager.updateActiveNowcastFromBackground(
                     context = this,
                     nowcast = newNowcast,
@@ -239,10 +275,12 @@ class PrecipitationLiveService : Service() {
                     val updatedNotif = PrecipitationLiveNotificationManager.buildRainLiveNotification(
                         this,
                         newNowcast,
-                        newCity.name
+                        newCity.name,
+                        isSilentUpdate = true
                     )
                     val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     nm.notify(PrecipitationLiveNotificationManager.NOTIFICATION_ID, updatedNotif)
+                    PrecipitationLiveNotificationManager.markNotificationPosted()
                 }
             } else {
                 PrecipitationLiveNotificationManager.onNowcastCleared(this, newCity.name)
@@ -278,6 +316,30 @@ class PrecipitationLiveService : Service() {
                     break
                 }
 
+                if (!PrecipitationLiveNotificationManager.isTestActive &&
+                    PrecipitationLiveNotificationManager.isSuppressedByUserDismissal(
+                        this@PrecipitationLiveService,
+                        nowcast,
+                        cityName
+                    )
+                ) {
+                    Log.d(TAG, "Rain live notification suppressed by user dismissal; stopping ticker.")
+                    stopLiveService()
+                    break
+                }
+
+                if (PrecipitationLiveNotificationManager.hasUserDismissedActiveNotification(this@PrecipitationLiveService)) {
+                    Log.d(TAG, "Detected swipe-dismissed rain live notification in ticker; suppressing & stopping service.")
+                    PrecipitationLiveNotificationManager.dismissByUser(
+                        context = this@PrecipitationLiveService,
+                        cityName = cityName,
+                        status = nowcast.status,
+                        targetTimestampMillis = nowcast.targetTimestampMillis
+                    )
+                    stopLiveService()
+                    break
+                }
+
                 if (tickCount % 3 == 0 && !PrecipitationLiveNotificationManager.isTestActive) {
                     try {
                         val freshLoc = locationProvider.getCurrentLocation(forceFresh = true)
@@ -286,6 +348,25 @@ class PrecipitationLiveService : Service() {
                             val refreshedWeather = weatherRepository.refresh(targetCity)
                             val refreshedNowcast = refreshedWeather.precipitationNowcast
                             if (refreshedNowcast != null && refreshedNowcast.isLiveActive && (refreshedNowcast.minutesRemaining == null || refreshedNowcast.minutesRemaining > 0)) {
+                                if (PrecipitationLiveNotificationManager.hasUserDismissedActiveNotification(this@PrecipitationLiveService)) {
+                                    PrecipitationLiveNotificationManager.dismissByUser(
+                                        context = this@PrecipitationLiveService,
+                                        cityName = targetCity.name,
+                                        status = refreshedNowcast.status,
+                                        targetTimestampMillis = refreshedNowcast.targetTimestampMillis
+                                    )
+                                    stopLiveService()
+                                    break
+                                }
+                                if (PrecipitationLiveNotificationManager.isSuppressedByUserDismissal(
+                                        this@PrecipitationLiveService,
+                                        refreshedNowcast,
+                                        targetCity.name
+                                    )
+                                ) {
+                                    stopLiveService()
+                                    break
+                                }
                                 PrecipitationLiveNotificationManager.updateActiveNowcastFromBackground(
                                     context = this@PrecipitationLiveService,
                                     nowcast = refreshedNowcast,
@@ -299,9 +380,11 @@ class PrecipitationLiveService : Service() {
                                         PrecipitationLiveNotificationManager.buildRainLiveNotification(
                                             this@PrecipitationLiveService,
                                             refreshedNowcast,
-                                            targetCity.name
+                                            targetCity.name,
+                                            isSilentUpdate = true
                                         )
                                     )
+                                    PrecipitationLiveNotificationManager.markNotificationPosted()
                                 }
                                 continue
                             } else {
@@ -352,9 +435,11 @@ class PrecipitationLiveService : Service() {
                             PrecipitationLiveNotificationManager.buildRainLiveNotification(
                                 this@PrecipitationLiveService,
                                 updatedNowcast,
-                                cityName
+                                cityName,
+                                isSilentUpdate = true
                             )
                         )
+                        PrecipitationLiveNotificationManager.markNotificationPosted()
                     }
                 }
             }

@@ -148,9 +148,13 @@ fun TodayDetailScreen(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "天気データを取得できませんでした"
+                        AppLanguage.KOREAN -> "날씨 데이터를 불러올 수 없습니다"
                         AppLanguage.SIMPLIFIED_CHINESE -> "无法获取天气数据"
                         AppLanguage.TRADITIONAL_CHINESE -> "無法取得天氣資料"
                         AppLanguage.ENGLISH -> "Weather data is currently unavailable"
+                        AppLanguage.SPANISH -> "Los datos meteorológicos no están disponibles"
+                        AppLanguage.FRENCH -> "Les données météo ne sont pas disponibles"
+                        AppLanguage.PORTUGUESE -> "Os dados do tempo não estão disponíveis"
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -159,9 +163,13 @@ fun TodayDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "戻る"
+                            AppLanguage.KOREAN -> "뒤로"
                             AppLanguage.SIMPLIFIED_CHINESE -> "返回"
                             AppLanguage.TRADITIONAL_CHINESE -> "返回"
                             AppLanguage.ENGLISH -> "Back"
+                            AppLanguage.SPANISH -> "Volver"
+                            AppLanguage.FRENCH -> "Retour"
+                            AppLanguage.PORTUGUESE -> "Voltar"
                         }
                     )
                 }
@@ -322,9 +330,13 @@ fun TodayDetailScreen(
                                 Text(
                                     text = when (language) {
                                         AppLanguage.JAPANESE -> "１週間の天気詳細"
+                                        AppLanguage.KOREAN -> "주간 날씨 상세"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "未来7天天气详情"
                                         AppLanguage.TRADITIONAL_CHINESE -> "未來7天天氣詳情"
                                         AppLanguage.ENGLISH -> "7-Day Weather Details"
+                                        AppLanguage.SPANISH -> "Detalles del tiempo a 7 días"
+                                        AppLanguage.FRENCH -> "Détails météo sur 7 jours"
+                                        AppLanguage.PORTUGUESE -> "Detalhes do tempo para 7 dias"
                                     },
                                     fontFamily = GoogleSansFlex,
                                     fontWeight = FontWeight.Bold,
@@ -633,9 +645,13 @@ private fun HeroDaySection(
                         } else {
                             val precipLabel = when (language) {
                                 AppLanguage.JAPANESE -> "降水確率 ${day.precipProb}%"
+                                AppLanguage.KOREAN -> "강수확률 ${day.precipProb}%"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "降水概率 ${day.precipProb}%"
                                 AppLanguage.TRADITIONAL_CHINESE -> "降雨機率 ${day.precipProb}%"
                                 AppLanguage.ENGLISH -> "Precip ${day.precipProb}%"
+                                AppLanguage.SPANISH -> "Lluvia ${day.precipProb}%"
+                                AppLanguage.FRENCH -> "Pluie ${day.precipProb} %"
+                                AppLanguage.PORTUGUESE -> "Chuva ${day.precipProb}%"
                             }
                             Surface(
                                 shape = RoundedCornerShape(12.dp),
@@ -1389,9 +1405,13 @@ private fun DetailedWeatherMetricsSection(
     } else {
         when (language) {
             AppLanguage.JAPANESE -> "データなし"
+            AppLanguage.KOREAN -> "데이터 없음"
             AppLanguage.SIMPLIFIED_CHINESE -> "暂无数据"
             AppLanguage.TRADITIONAL_CHINESE -> "暫無資料"
             AppLanguage.ENGLISH -> "No Data"
+            AppLanguage.SPANISH -> "Sin datos"
+            AppLanguage.FRENCH -> "Aucune donnée"
+            AppLanguage.PORTUGUESE -> "Sem dados"
         }
     }
 
@@ -1558,6 +1578,18 @@ private fun generateDaySmartSummary(
             else ->
                 "穏やかで過ごしやすい天候の予報です。お出かけやお洗濯にも適した心地よい一日となりそうです。"
         }
+        AppLanguage.KOREAN -> when {
+            maxProb >= 60 || sumMm >= 5.0 ->
+                "제법 많은 비가 예상됩니다. 외출 시 우산이나 우비를 꼭 챙기세요."
+            maxProb in 25..59 ->
+                "한때 소나기가 지날 가능성이 있습니다. 접이식 우산을 챙기면 안심입니다."
+            maxTemp >= 28 ->
+                "낮 동안 기온이 크게 올라 더울 전망입니다. 수분을 자주 섭취하고 더위에 대비하세요."
+            maxTemp <= 12 ->
+                "하루 종일 쌀쌀하겠습니다. 두꺼운 겉옷과 목도리로 따뜻하게 입으세요."
+            else ->
+                "온화하고 쾌적한 날씨가 예상됩니다. 외출이나 빨래하기 좋은 하루가 되겠습니다."
+        }
         AppLanguage.SIMPLIFIED_CHINESE -> when {
             maxProb >= 60 || sumMm >= 5.0 ->
                 "预计有较强降雨，外出请务必携带雨具。"
@@ -1593,6 +1625,42 @@ private fun generateDaySmartSummary(
                 "Chilly conditions throughout the day. Layer up with a warm coat or jacket."
             else ->
                 "Mild and pleasant conditions forecast. A great day for outdoor plans and activities."
+        }
+        AppLanguage.SPANISH -> when {
+            maxProb >= 60 || sumMm >= 5.0 ->
+                "Se esperan lluvias frecuentes. No olvides llevar paraguas o ropa impermeable."
+            maxProb in 25..59 ->
+                "Posibles chubascos aislados. Se recomienda llevar un paraguas plegable."
+            maxTemp >= 28 ->
+                "Jornada calurosa con temperaturas altas durante el día. Hidrátate bien y protégete del sol."
+            maxTemp <= 12 ->
+                "Ambiente frío durante todo el día. Abrígate bien con un abrigo o chaqueta cálida."
+            else ->
+                "Se prevé un tiempo templado y agradable. Un gran día para planes y actividades al aire libre."
+        }
+        AppLanguage.FRENCH -> when {
+            maxProb >= 60 || sumMm >= 5.0 ->
+                "Des épisodes de pluie sont attendus. Pensez à prendre un parapluie ou un vêtement imperméable."
+            maxProb in 25..59 ->
+                "Averses passagères possibles. Un parapluie pliable est recommandé."
+            maxTemp >= 28 ->
+                "Temps chaud avec des températures élevées en journée. Hydratez-vous régulièrement et protégez-vous du soleil."
+            maxTemp <= 12 ->
+                "Temps frais tout au long de la journée. Couvrez-vous bien avec un manteau ou une veste chaude."
+            else ->
+                "Temps doux et agréable prévu. Une belle journée pour vos sorties et activités extérieures."
+        }
+        AppLanguage.PORTUGUESE -> when {
+            maxProb >= 60 || sumMm >= 5.0 ->
+                "Previsão de períodos de chuva. Não deixe de levar guarda-chuva ou capa de chuva."
+            maxProb in 25..59 ->
+                "Possibilidade de pancadas isoladas. Recomenda-se levar um guarda-chuva compacto."
+            maxTemp >= 28 ->
+                "Tempo quente com temperaturas elevadas ao longo do dia. Hidrate-se bem e proteja-se do sol."
+            maxTemp <= 12 ->
+                "Tempo frio durante todo o dia. Agasalhe-se bem com casaco ou jaqueta quente."
+            else ->
+                "Previsão de tempo ameno e agradável. Um ótimo dia para passeios e atividades ao ar livre."
         }
     }
 }

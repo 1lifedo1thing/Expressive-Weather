@@ -33,21 +33,36 @@ object NwsAlertRepository {
         if (cUpper.contains("UNITED STATES") ||
             cUpper == "USA" ||
             cUpper == "US" ||
+            cUpper.contains("ESTADOS UNIDOS") ||
+            cUpper.contains("ÉTATS-UNIS") ||
+            cUpper.contains("ETATS-UNIS") ||
+            cUpper.contains("EE. UU.") ||
+            cUpper.contains("EE.UU.") ||
+            cUpper == "EUA" ||
             cUpper.contains("PUERTO RICO") ||
+            cUpper.contains("PORTO RICO") ||
             cUpper.contains("GUAM") ||
             cUpper.contains("VIRGIN ISLANDS") ||
+            cUpper.contains("ISLAS VÍRGENES") ||
+            cUpper.contains("ISLAS VIRGENES") ||
+            cUpper.contains("ÎLES VIERGES") ||
+            cUpper.contains("ILES VIERGES") ||
+            cUpper.contains("ILHAS VIRGENS") ||
             country.contains("アメリカ") ||
-            country.contains("米国")
+            country.contains("米国") ||
+            country.contains("미국")
         ) {
             return true
         }
 
         // カナダやメキシコなど他国が明示されている場合は米国とみなさない
-        if (cUpper.contains("CANADA") || cUpper == "CA" ||
-            cUpper.contains("MEXICO") || cUpper == "MX" ||
+        if (cUpper.contains("CANADA") || cUpper.contains("CANADÁ") || cUpper == "CA" ||
+            cUpper.contains("MEXICO") || cUpper.contains("MÉXICO") || cUpper.contains("MEXIQUE") || cUpper == "MX" ||
             cUpper.contains("CUBA") || cUpper.contains("BAHAMAS") ||
             country.contains("カナダ") || country.contains("メキシコ") ||
-            country.contains("日本") || cUpper.contains("JAPAN")
+            country.contains("캐나다") || country.contains("멕시코") ||
+            country.contains("日本") || country.contains("일본") || cUpper.contains("JAPAN") ||
+            cUpper.contains("JAPÓN") || cUpper.contains("JAPON") || cUpper.contains("JAPÃO") || cUpper.contains("JAPAO")
         ) {
             return false
         }

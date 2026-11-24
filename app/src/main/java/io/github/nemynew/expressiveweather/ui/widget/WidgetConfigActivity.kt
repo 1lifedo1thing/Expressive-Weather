@@ -253,57 +253,93 @@ private fun WidgetConfigScreen(
 
     val titleText = when (language) {
         AppLanguage.JAPANESE -> "ウィジェット設定"
+        AppLanguage.KOREAN -> "위젯 설정"
         AppLanguage.ENGLISH -> "Widget Settings"
         AppLanguage.SIMPLIFIED_CHINESE -> "微件设置"
         AppLanguage.TRADITIONAL_CHINESE -> "小工具設定"
+        AppLanguage.SPANISH -> "Ajustes del widget"
+        AppLanguage.FRENCH -> "Paramètres du widget"
+        AppLanguage.PORTUGUESE -> "Configurações do widget"
     }
     val locationSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "表示する地域"
+        AppLanguage.KOREAN -> "표시할 지역"
         AppLanguage.ENGLISH -> "Location"
         AppLanguage.SIMPLIFIED_CHINESE -> "显示地区"
         AppLanguage.TRADITIONAL_CHINESE -> "顯示地區"
+        AppLanguage.SPANISH -> "Ubicación"
+        AppLanguage.FRENCH -> "Lieu"
+        AppLanguage.PORTUGUESE -> "Localização"
     }
     val currentLocLabel = when (language) {
         AppLanguage.JAPANESE -> "現在地 (GPS自動追従)"
+        AppLanguage.KOREAN -> "현재 위치 (GPS 자동 감지)"
         AppLanguage.ENGLISH -> "Current Location (Auto GPS)"
         AppLanguage.SIMPLIFIED_CHINESE -> "当前位置（自动定位）"
         AppLanguage.TRADITIONAL_CHINESE -> "目前位置（自動定位）"
+        AppLanguage.SPANISH -> "Ubicación actual (GPS automático)"
+        AppLanguage.FRENCH -> "Position actuelle (GPS auto)"
+        AppLanguage.PORTUGUESE -> "Localização atual (GPS automático)"
     }
     val styleSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "外観スタイル"
+        AppLanguage.KOREAN -> "위젯 스타일"
         AppLanguage.ENGLISH -> "Appearance Style"
         AppLanguage.SIMPLIFIED_CHINESE -> "外观样式"
         AppLanguage.TRADITIONAL_CHINESE -> "外觀樣式"
+        AppLanguage.SPANISH -> "Estilo de apariencia"
+        AppLanguage.FRENCH -> "Style d'apparence"
+        AppLanguage.PORTUGUESE -> "Estilo de aparência"
     }
     val optionsSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "表示オプション"
+        AppLanguage.KOREAN -> "표시 옵션"
         AppLanguage.ENGLISH -> "Display Options"
         AppLanguage.SIMPLIFIED_CHINESE -> "显示选项"
         AppLanguage.TRADITIONAL_CHINESE -> "顯示選項"
+        AppLanguage.SPANISH -> "Opciones de visualización"
+        AppLanguage.FRENCH -> "Options d'affichage"
+        AppLanguage.PORTUGUESE -> "Opções de exibição"
     }
     val alertToggleLabel = when (language) {
         AppLanguage.JAPANESE -> "雨雲接近・キキクル警報を表示"
+        AppLanguage.KOREAN -> "강수 실시간 예보 및 기상 특보 표시"
         AppLanguage.ENGLISH -> "Show Rain Nowcast & Alerts"
         AppLanguage.SIMPLIFIED_CHINESE -> "显示降雨临近与灾害预警"
         AppLanguage.TRADITIONAL_CHINESE -> "顯示降雨即時預報與災害警報"
+        AppLanguage.SPANISH -> "Mostrar alertas y previsión de lluvia"
+        AppLanguage.FRENCH -> "Afficher alertes et pluie imminente"
+        AppLanguage.PORTUGUESE -> "Mostrar alertas e previsão de chuva"
     }
     val refreshToggleLabel = when (language) {
         AppLanguage.JAPANESE -> "クイック更新ボタンを表示"
+        AppLanguage.KOREAN -> "빠른 새로고침 버튼 표시"
         AppLanguage.ENGLISH -> "Show Quick Refresh Button"
         AppLanguage.SIMPLIFIED_CHINESE -> "显示快速刷新按钮"
         AppLanguage.TRADITIONAL_CHINESE -> "顯示快速重新整理按鈕"
+        AppLanguage.SPANISH -> "Mostrar botón de actualización rápida"
+        AppLanguage.FRENCH -> "Afficher le bouton d'actualisation rapide"
+        AppLanguage.PORTUGUESE -> "Mostrar botão de atualização rápida"
     }
     val searchPlaceholder = when (language) {
         AppLanguage.JAPANESE -> "都市名を検索して固定…"
+        AppLanguage.KOREAN -> "도시를 검색하여 고정…"
         AppLanguage.ENGLISH -> "Search a city to pin…"
         AppLanguage.SIMPLIFIED_CHINESE -> "搜索城市并固定…"
         AppLanguage.TRADITIONAL_CHINESE -> "搜尋城市並固定…"
+        AppLanguage.SPANISH -> "Buscar una ciudad para fijar…"
+        AppLanguage.FRENCH -> "Rechercher une ville à épingler…"
+        AppLanguage.PORTUGUESE -> "Pesquisar uma cidade para fixar…"
     }
     val applyText = when (language) {
         AppLanguage.JAPANESE -> "ウィジェットを適用"
+        AppLanguage.KOREAN -> "위젯 적용"
         AppLanguage.ENGLISH -> "Apply Widget"
         AppLanguage.SIMPLIFIED_CHINESE -> "应用微件"
         AppLanguage.TRADITIONAL_CHINESE -> "套用小工具"
+        AppLanguage.SPANISH -> "Aplicar widget"
+        AppLanguage.FRENCH -> "Appliquer le widget"
+        AppLanguage.PORTUGUESE -> "Aplicar widget"
     }
 
     Scaffold(
@@ -320,9 +356,13 @@ private fun WidgetConfigScreen(
                     IconButton(onClick = onCancel) {
                         val closeDesc = when (language) {
                             AppLanguage.JAPANESE -> "閉じる"
+                            AppLanguage.KOREAN -> "닫기"
                             AppLanguage.ENGLISH -> "Close"
                             AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
                             AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                            AppLanguage.SPANISH -> "Cerrar"
+                            AppLanguage.FRENCH -> "Fermer"
+                            AppLanguage.PORTUGUESE -> "Fechar"
                         }
                         Icon(Icons.Rounded.Close, contentDescription = closeDesc)
                     }
@@ -422,9 +462,13 @@ private fun WidgetConfigScreen(
                 item {
                     val shapeSectionTitle = when (language) {
                         AppLanguage.JAPANESE -> "Material Shape の形"
+                        AppLanguage.KOREAN -> "Material Shape 도형"
                         AppLanguage.ENGLISH -> "Material Shape"
                         AppLanguage.SIMPLIFIED_CHINESE -> "Material Shape 形状"
                         AppLanguage.TRADITIONAL_CHINESE -> "Material Shape 形狀"
+                        AppLanguage.SPANISH -> "Forma Material"
+                        AppLanguage.FRENCH -> "Forme Material"
+                        AppLanguage.PORTUGUESE -> "Forma Material"
                     }
                     SectionHeader(icon = Icons.Rounded.AutoAwesome, title = shapeSectionTitle)
                     Spacer(Modifier.height(8.dp))
@@ -499,15 +543,23 @@ private fun WidgetConfigScreen(
                 AnimatedVisibility(visible = selectedStyle == WidgetStyle.FROSTED_GLASS) {
                     val opacityTitle = when (language) {
                         AppLanguage.JAPANESE -> "半透明の不透明度（透明度調整）"
+                        AppLanguage.KOREAN -> "반투명 불투명도"
                         AppLanguage.ENGLISH -> "Translucent Opacity"
                         AppLanguage.SIMPLIFIED_CHINESE -> "半透明不透明度"
                         AppLanguage.TRADITIONAL_CHINESE -> "半透明不透明度"
+                        AppLanguage.SPANISH -> "Opacidad translúcida"
+                        AppLanguage.FRENCH -> "Opacité translucide"
+                        AppLanguage.PORTUGUESE -> "Opacidade translúcida"
                     }
                     val opacityHint = when (language) {
                         AppLanguage.JAPANESE -> "Material You カラーの濃さと透明度を調整します（左：透明寄り / 右：濃いめ）"
+                        AppLanguage.KOREAN -> "Material You 색상의 진하기와 투명도를 조절합니다 (왼쪽: 투명 / 오른쪽: 진함)"
                         AppLanguage.ENGLISH -> "Adjust Material You tint density & transparency"
                         AppLanguage.SIMPLIFIED_CHINESE -> "调整 Material You 配色浓度与透明度"
                         AppLanguage.TRADITIONAL_CHINESE -> "調整 Material You 配色濃度與透明度"
+                        AppLanguage.SPANISH -> "Ajusta la intensidad y transparencia del color Material You"
+                        AppLanguage.FRENCH -> "Ajuste l'intensité et la transparence de la teinte Material You"
+                        AppLanguage.PORTUGUESE -> "Ajuste a intensidade e a transparência da cor Material You"
                     }
                     Surface(
                         shape = RoundedCornerShape(20.dp),
@@ -584,9 +636,13 @@ private fun WidgetConfigScreen(
                             IconButton(onClick = { searchQuery = "" }) {
                                 val clearDesc = when (language) {
                                     AppLanguage.JAPANESE -> "検索をクリア"
+                                    AppLanguage.KOREAN -> "검색어 지우기"
                                     AppLanguage.ENGLISH -> "Clear search"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "清除搜索"
                                     AppLanguage.TRADITIONAL_CHINESE -> "清除搜尋"
+                                    AppLanguage.SPANISH -> "Borrar búsqueda"
+                                    AppLanguage.FRENCH -> "Effacer la recherche"
+                                    AppLanguage.PORTUGUESE -> "Limpar pesquisa"
                                 }
                                 Icon(Icons.Rounded.Close, contentDescription = clearDesc)
                             }

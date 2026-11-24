@@ -15,8 +15,12 @@ enum class JmaTyphoonIntensity(
     val id: String,
     val jaName: String,
     val enName: String,
+    val koName: String,
     val zhCnName: String,
     val zhTwName: String,
+    val esName: String,
+    val frName: String,
+    val ptName: String,
     val badgeColor: Color,
     val badgeContentColor: Color
 ) {
@@ -24,8 +28,12 @@ enum class JmaTyphoonIntensity(
         id = "violent",
         jaName = "猛烈な",
         enName = "Violent",
+        koName = "초강력",
         zhCnName = "超强台风",
         zhTwName = "強烈颱風",
+        esName = "Violento",
+        frName = "Violent",
+        ptName = "Violento",
         badgeColor = Color(0xFF9C27B0), // Purple 500
         badgeContentColor = Color.White
     ),
@@ -33,8 +41,12 @@ enum class JmaTyphoonIntensity(
         id = "very_strong",
         jaName = "非常に強い",
         enName = "Very Strong",
+        koName = "매우 강",
         zhCnName = "强台风",
         zhTwName = "中度颱風(強)",
+        esName = "Muy fuerte",
+        frName = "Très fort",
+        ptName = "Muito forte",
         badgeColor = Color(0xFFD32F2F), // Red 700
         badgeContentColor = Color.White
     ),
@@ -42,8 +54,12 @@ enum class JmaTyphoonIntensity(
         id = "strong",
         jaName = "強い",
         enName = "Strong",
+        koName = "강",
         zhCnName = "台风",
         zhTwName = "中度颱風",
+        esName = "Fuerte",
+        frName = "Fort",
+        ptName = "Forte",
         badgeColor = Color(0xFFFF9800), // Orange 500
         badgeContentColor = Color(0xFF2E1500)
     ),
@@ -51,17 +67,25 @@ enum class JmaTyphoonIntensity(
         id = "none",
         jaName = "",
         enName = "",
+        koName = "",
         zhCnName = "",
         zhTwName = "",
+        esName = "",
+        frName = "",
+        ptName = "",
         badgeColor = Color(0xFF0288D1), // Light Blue 700
         badgeContentColor = Color.White
     );
 
     fun displayName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> jaName
+        AppLanguage.KOREAN -> koName
         AppLanguage.ENGLISH -> enName
         AppLanguage.SIMPLIFIED_CHINESE -> zhCnName
         AppLanguage.TRADITIONAL_CHINESE -> zhTwName
+        AppLanguage.SPANISH -> esName
+        AppLanguage.FRENCH -> frName
+        AppLanguage.PORTUGUESE -> ptName
     }
 
     companion object {
@@ -88,36 +112,56 @@ enum class JmaTyphoonScale(
     val id: String,
     val jaName: String,
     val enName: String,
+    val koName: String,
     val zhCnName: String,
-    val zhTwName: String
+    val zhTwName: String,
+    val esName: String,
+    val frName: String,
+    val ptName: String
 ) {
     VERY_LARGE(
         id = "very_large",
         jaName = "超大型",
         enName = "Very Large",
+        koName = "초대형",
         zhCnName = "超大型",
-        zhTwName = "超大型"
+        zhTwName = "超大型",
+        esName = "Muy grande",
+        frName = "Très vaste",
+        ptName = "Muito grande"
     ),
     LARGE(
         id = "large",
         jaName = "大型",
         enName = "Large",
+        koName = "대형",
         zhCnName = "大型",
-        zhTwName = "大型"
+        zhTwName = "大型",
+        esName = "Grande",
+        frName = "Vaste",
+        ptName = "Grande"
     ),
     NONE(
         id = "none",
         jaName = "",
         enName = "",
+        koName = "",
         zhCnName = "",
-        zhTwName = ""
+        zhTwName = "",
+        esName = "",
+        frName = "",
+        ptName = ""
     );
 
     fun displayName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> jaName
+        AppLanguage.KOREAN -> koName
         AppLanguage.ENGLISH -> enName
         AppLanguage.SIMPLIFIED_CHINESE -> zhCnName
         AppLanguage.TRADITIONAL_CHINESE -> zhTwName
+        AppLanguage.SPANISH -> esName
+        AppLanguage.FRENCH -> frName
+        AppLanguage.PORTUGUESE -> ptName
     }
 
     companion object {
@@ -176,6 +220,25 @@ data class JmaTyphoonPoint(
                     else -> categoryName
                 }
             }
+            AppLanguage.KOREAN -> {
+                val base = when {
+                    categoryName.contains("温帯") -> "온대저기압"
+                    categoryName.contains("熱帯低気圧") -> "열대저압부"
+                    else -> "태풍"
+                }
+                val intensityPhrase = when (intensity) {
+                    JmaTyphoonIntensity.VIOLENT -> "초강력"
+                    JmaTyphoonIntensity.VERY_STRONG -> "매우 강한"
+                    JmaTyphoonIntensity.STRONG -> "강한"
+                    JmaTyphoonIntensity.NONE -> ""
+                }
+                when {
+                    hasScale && hasIntensity -> "${scale.koName} $intensityPhrase $base"
+                    hasScale -> "${scale.koName} $base"
+                    hasIntensity -> "$intensityPhrase $base"
+                    else -> base
+                }
+            }
             AppLanguage.ENGLISH -> {
                 val base = when {
                     categoryName.contains("温帯") -> "Extratropical Low"
@@ -212,6 +275,81 @@ data class JmaTyphoonPoint(
                     hasScale && hasIntensity -> "${scale.zhTwName}${intensity.zhTwName}"
                     hasScale -> "${scale.zhTwName}$base"
                     hasIntensity -> intensity.zhTwName
+                    else -> base
+                }
+            }
+            AppLanguage.SPANISH -> {
+                val isFeminine = categoryName.contains("熱帯低気圧")
+                val base = when {
+                    categoryName.contains("温帯") -> "Ciclón extratropical"
+                    isFeminine -> "Depresión tropical"
+                    else -> "Tifón"
+                }
+                val scaleAdj = when (scale) {
+                    JmaTyphoonScale.VERY_LARGE -> "muy grande"
+                    JmaTyphoonScale.LARGE -> "grande"
+                    JmaTyphoonScale.NONE -> ""
+                }
+                val intensityAdj = when (intensity) {
+                    JmaTyphoonIntensity.VIOLENT -> if (isFeminine) "violenta" else "violento"
+                    JmaTyphoonIntensity.VERY_STRONG -> "muy fuerte"
+                    JmaTyphoonIntensity.STRONG -> "fuerte"
+                    JmaTyphoonIntensity.NONE -> ""
+                }
+                when {
+                    hasScale && hasIntensity -> "$base $scaleAdj y $intensityAdj"
+                    hasScale -> "$base $scaleAdj"
+                    hasIntensity -> "$base $intensityAdj"
+                    else -> base
+                }
+            }
+            AppLanguage.FRENCH -> {
+                val isFeminine = categoryName.contains("温帯") || categoryName.contains("熱帯低気圧")
+                val base = when {
+                    categoryName.contains("温帯") -> "Dépression extratropicale"
+                    categoryName.contains("熱帯低気圧") -> "Dépression tropicale"
+                    else -> "Typhon"
+                }
+                val scaleAdj = when (scale) {
+                    JmaTyphoonScale.VERY_LARGE -> "très vaste"
+                    JmaTyphoonScale.LARGE -> "vaste"
+                    JmaTyphoonScale.NONE -> ""
+                }
+                val intensityAdj = when (intensity) {
+                    JmaTyphoonIntensity.VIOLENT -> if (isFeminine) "violente" else "violent"
+                    JmaTyphoonIntensity.VERY_STRONG -> if (isFeminine) "très forte" else "très fort"
+                    JmaTyphoonIntensity.STRONG -> if (isFeminine) "forte" else "fort"
+                    JmaTyphoonIntensity.NONE -> ""
+                }
+                when {
+                    hasScale && hasIntensity -> "$base $scaleAdj et $intensityAdj"
+                    hasScale -> "$base $scaleAdj"
+                    hasIntensity -> "$base $intensityAdj"
+                    else -> base
+                }
+            }
+            AppLanguage.PORTUGUESE -> {
+                val isFeminine = categoryName.contains("熱帯低気圧")
+                val base = when {
+                    categoryName.contains("温帯") -> "Ciclone extratropical"
+                    isFeminine -> "Depressão tropical"
+                    else -> "Tufão"
+                }
+                val scaleAdj = when (scale) {
+                    JmaTyphoonScale.VERY_LARGE -> "muito grande"
+                    JmaTyphoonScale.LARGE -> "grande"
+                    JmaTyphoonScale.NONE -> ""
+                }
+                val intensityAdj = when (intensity) {
+                    JmaTyphoonIntensity.VIOLENT -> if (isFeminine) "violenta" else "violento"
+                    JmaTyphoonIntensity.VERY_STRONG -> "muito forte"
+                    JmaTyphoonIntensity.STRONG -> "forte"
+                    JmaTyphoonIntensity.NONE -> ""
+                }
+                when {
+                    hasScale && hasIntensity -> "$base $scaleAdj e $intensityAdj"
+                    hasScale -> "$base $scaleAdj"
+                    hasIntensity -> "$base $intensityAdj"
                     else -> base
                 }
             }
@@ -264,9 +402,13 @@ data class JmaTyphoonItem(
         val num = numericOrder()
         return when (language) {
             AppLanguage.JAPANESE -> "$formattedNumber ($nameJp)"
+            AppLanguage.KOREAN -> if (num != null) "제${num}호 태풍 ($nameEn)" else "태풍 $formattedNumber ($nameEn)"
             AppLanguage.ENGLISH -> if (num != null) "Typhoon No.$num ($nameEn)" else "Typhoon $formattedNumber ($nameEn)"
             AppLanguage.SIMPLIFIED_CHINESE -> if (num != null) "第${num}号台风 ($nameEn)" else "$formattedNumber ($nameEn)"
             AppLanguage.TRADITIONAL_CHINESE -> if (num != null) "第${num}號颱風 ($nameEn)" else "$formattedNumber ($nameEn)"
+            AppLanguage.SPANISH -> if (num != null) "Tifón n.º $num ($nameEn)" else "Tifón $formattedNumber ($nameEn)"
+            AppLanguage.FRENCH -> if (num != null) "Typhon n° $num ($nameEn)" else "Typhon $formattedNumber ($nameEn)"
+            AppLanguage.PORTUGUESE -> if (num != null) "Tufão nº $num ($nameEn)" else "Tufão $formattedNumber ($nameEn)"
         }
     }
 
@@ -274,9 +416,13 @@ data class JmaTyphoonItem(
         val num = numericOrder()
         return when (language) {
             AppLanguage.JAPANESE -> "$formattedNumber $nameJp"
+            AppLanguage.KOREAN -> if (num != null) "제${num}호 $nameEn" else "$formattedNumber $nameEn"
             AppLanguage.ENGLISH -> if (num != null) "No.$num $nameEn" else "$formattedNumber $nameEn"
             AppLanguage.SIMPLIFIED_CHINESE -> if (num != null) "第${num}号 $nameEn" else "$formattedNumber $nameEn"
             AppLanguage.TRADITIONAL_CHINESE -> if (num != null) "第${num}號 $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.SPANISH -> if (num != null) "N.º $num $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.FRENCH -> if (num != null) "N° $num $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.PORTUGUESE -> if (num != null) "Nº $num $nameEn" else "$formattedNumber $nameEn"
         }
     }
 }

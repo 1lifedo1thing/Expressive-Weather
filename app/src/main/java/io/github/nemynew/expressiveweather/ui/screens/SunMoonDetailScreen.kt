@@ -86,16 +86,24 @@ fun SunMoonDetailScreen(
 
     val solarTrackTitle = when (language) {
         AppLanguage.JAPANESE -> "太陽の運行と日照"
+        AppLanguage.KOREAN -> "태양 궤적 및 일조"
         AppLanguage.SIMPLIFIED_CHINESE -> "太阳运行与日照轨迹"
         AppLanguage.TRADITIONAL_CHINESE -> "太陽運行與日照軌跡"
         AppLanguage.ENGLISH -> "Solar Movement & Daylight"
+        AppLanguage.SPANISH -> "Recorrido solar y luz diurna"
+        AppLanguage.FRENCH -> "Course du soleil et durée du jour"
+        AppLanguage.PORTUGUESE -> "Movimento solar e luz do dia"
     }
 
     val daylightLabel = when (language) {
         AppLanguage.JAPANESE -> "昼の長さ: ${sunSchedule.daylightHours}"
+        AppLanguage.KOREAN -> "낮 길이: ${sunSchedule.daylightHours}"
         AppLanguage.SIMPLIFIED_CHINESE -> "昼长: ${sunSchedule.daylightHours}"
         AppLanguage.TRADITIONAL_CHINESE -> "晝長: ${sunSchedule.daylightHours}"
         AppLanguage.ENGLISH -> "Daylight: ${sunSchedule.daylightHours}"
+        AppLanguage.SPANISH -> "Luz diurna: ${sunSchedule.daylightHours}"
+        AppLanguage.FRENCH -> "Jour : ${sunSchedule.daylightHours}"
+        AppLanguage.PORTUGUESE -> "Luz do dia: ${sunSchedule.daylightHours}"
     }
 
     val sunriseLabel = strings.sunrise
@@ -103,16 +111,24 @@ fun SunMoonDetailScreen(
 
     val moonPhaseTitle = when (language) {
         AppLanguage.JAPANESE -> "月の満ち欠け"
+        AppLanguage.KOREAN -> "달의 위상"
         AppLanguage.SIMPLIFIED_CHINESE -> "月相盈亏"
         AppLanguage.TRADITIONAL_CHINESE -> "月相盈虧"
         AppLanguage.ENGLISH -> "Moon Phases"
+        AppLanguage.SPANISH -> "Fases lunares"
+        AppLanguage.FRENCH -> "Phases de la lune"
+        AppLanguage.PORTUGUESE -> "Fases da lua"
     }
 
     val weeklySunTitle = when (language) {
         AppLanguage.JAPANESE -> "週間 日の出・日の入り"
+        AppLanguage.KOREAN -> "주간 일출·일몰"
         AppLanguage.SIMPLIFIED_CHINESE -> "未来7天日出日落"
         AppLanguage.TRADITIONAL_CHINESE -> "未來7天日出日落"
         AppLanguage.ENGLISH -> "7-Day Sun Schedule"
+        AppLanguage.SPANISH -> "Salida y puesta del sol (7 días)"
+        AppLanguage.FRENCH -> "Lever et coucher du soleil (7 j)"
+        AppLanguage.PORTUGUESE -> "Nascer e pôr do sol (7 dias)"
     }
 
     DetailScaffold(
@@ -341,16 +357,24 @@ fun SunMoonDetailScreen(
 
                     val ageLabel = when (language) {
                         AppLanguage.JAPANESE -> "月齢: 約 ${moonInfo.ageDays} 日 (輝面比 ${moonInfo.illumination}%)"
+                        AppLanguage.KOREAN -> "월령: 약 ${moonInfo.ageDays}일 (조도 ${moonInfo.illumination}%)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "月龄: 约 ${moonInfo.ageDays} 天 (受光比 ${moonInfo.illumination}%)"
                         AppLanguage.TRADITIONAL_CHINESE -> "月齡: 約 ${moonInfo.ageDays} 天 (受光比 ${moonInfo.illumination}%)"
                         AppLanguage.ENGLISH -> "Moon Age: ~${moonInfo.ageDays} days (${moonInfo.illumination}% lit)"
+                        AppLanguage.SPANISH -> "Edad lunar: ~${moonInfo.ageDays} días (${moonInfo.illumination}% ilum.)"
+                        AppLanguage.FRENCH -> "Âge lunaire : ~${moonInfo.ageDays} j (${moonInfo.illumination} % éclairée)"
+                        AppLanguage.PORTUGUESE -> "Idade lunar: ~${moonInfo.ageDays} dias (${moonInfo.illumination}% ilum.)"
                     }
 
                     val nextFullMoonLabel = when (language) {
                         AppLanguage.JAPANESE -> "次回満月まで: 約 ${moonInfo.daysToFullMoon} 日"
+                        AppLanguage.KOREAN -> "다음 보름달까지: 약 ${moonInfo.daysToFullMoon}일"
                         AppLanguage.SIMPLIFIED_CHINESE -> "距离下个满月: 约 ${moonInfo.daysToFullMoon} 天"
                         AppLanguage.TRADITIONAL_CHINESE -> "距離下個滿月: 約 ${moonInfo.daysToFullMoon} 天"
                         AppLanguage.ENGLISH -> "Next Full Moon: in ~${moonInfo.daysToFullMoon} days"
+                        AppLanguage.SPANISH -> "Próxima luna llena: en ~${moonInfo.daysToFullMoon} días"
+                        AppLanguage.FRENCH -> "Prochaine pleine lune : dans ~${moonInfo.daysToFullMoon} j"
+                        AppLanguage.PORTUGUESE -> "Próxima lua cheia: em ~${moonInfo.daysToFullMoon} dias"
                     }
 
                     Column(modifier = Modifier.weight(1f)) {
@@ -491,22 +515,87 @@ private fun calculateMoonPhase(language: AppLanguage, utcOffsetSeconds: Int? = n
     }
     val age = kotlin.math.round(ageFloat).toInt() % 30
 
-    val (nameJa, nameZhHans, nameZhHant, nameEn) = when {
-        age in 0..1 || age >= 29 -> Tuple4("新月", "新月", "新月", "New Moon")
-        age in 2..6 -> Tuple4("三日月 (夕月)", "峨眉月", "蛾眉月", "Waxing Crescent")
-        age in 7..8 -> Tuple4("上弦の月", "上弦月", "上弦月", "First Quarter")
-        age in 9..13 -> Tuple4("満ちていく月", "盈凸月", "盈凸月", "Waxing Gibbous")
-        age in 14..16 -> Tuple4("満月", "满月", "滿月", "Full Moon")
-        age in 17..21 -> Tuple4("欠けていく月", "亏凸月", "虧凸月", "Waning Gibbous")
-        age in 22..23 -> Tuple4("下弦の月", "下弦月", "下弦月", "Third Quarter")
-        else -> Tuple4("明け方の三日月", "残月", "殘月", "Waning Crescent")
-    }
-
-    val localizedName = when (language) {
-        AppLanguage.JAPANESE -> nameJa
-        AppLanguage.SIMPLIFIED_CHINESE -> nameZhHans
-        AppLanguage.TRADITIONAL_CHINESE -> nameZhHant
-        AppLanguage.ENGLISH -> nameEn
+    val localizedName = when {
+        age in 0..1 || age >= 29 -> when (language) {
+            AppLanguage.JAPANESE -> "新月"
+            AppLanguage.KOREAN -> "신월 (삭)"
+            AppLanguage.SIMPLIFIED_CHINESE -> "新月"
+            AppLanguage.TRADITIONAL_CHINESE -> "新月"
+            AppLanguage.ENGLISH -> "New Moon"
+            AppLanguage.SPANISH -> "Luna nueva"
+            AppLanguage.FRENCH -> "Nouvelle lune"
+            AppLanguage.PORTUGUESE -> "Lua nova"
+        }
+        age in 2..6 -> when (language) {
+            AppLanguage.JAPANESE -> "三日月 (夕月)"
+            AppLanguage.KOREAN -> "초승달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "峨眉月"
+            AppLanguage.TRADITIONAL_CHINESE -> "蛾眉月"
+            AppLanguage.ENGLISH -> "Waxing Crescent"
+            AppLanguage.SPANISH -> "Luna creciente"
+            AppLanguage.FRENCH -> "Premier croissant"
+            AppLanguage.PORTUGUESE -> "Lua crescente"
+        }
+        age in 7..8 -> when (language) {
+            AppLanguage.JAPANESE -> "上弦の月"
+            AppLanguage.KOREAN -> "상현달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "上弦月"
+            AppLanguage.TRADITIONAL_CHINESE -> "上弦月"
+            AppLanguage.ENGLISH -> "First Quarter"
+            AppLanguage.SPANISH -> "Cuarto creciente"
+            AppLanguage.FRENCH -> "Premier quartier"
+            AppLanguage.PORTUGUESE -> "Quarto crescente"
+        }
+        age in 9..13 -> when (language) {
+            AppLanguage.JAPANESE -> "満ちていく月"
+            AppLanguage.KOREAN -> "차오르는 달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "盈凸月"
+            AppLanguage.TRADITIONAL_CHINESE -> "盈凸月"
+            AppLanguage.ENGLISH -> "Waxing Gibbous"
+            AppLanguage.SPANISH -> "Gibosa creciente"
+            AppLanguage.FRENCH -> "Gibbeuse croissante"
+            AppLanguage.PORTUGUESE -> "Gibosa crescente"
+        }
+        age in 14..16 -> when (language) {
+            AppLanguage.JAPANESE -> "満月"
+            AppLanguage.KOREAN -> "보름달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "满月"
+            AppLanguage.TRADITIONAL_CHINESE -> "滿月"
+            AppLanguage.ENGLISH -> "Full Moon"
+            AppLanguage.SPANISH -> "Luna llena"
+            AppLanguage.FRENCH -> "Pleine lune"
+            AppLanguage.PORTUGUESE -> "Lua cheia"
+        }
+        age in 17..21 -> when (language) {
+            AppLanguage.JAPANESE -> "欠けていく月"
+            AppLanguage.KOREAN -> "기우는 달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "亏凸月"
+            AppLanguage.TRADITIONAL_CHINESE -> "虧凸月"
+            AppLanguage.ENGLISH -> "Waning Gibbous"
+            AppLanguage.SPANISH -> "Gibosa menguante"
+            AppLanguage.FRENCH -> "Gibbeuse décroissante"
+            AppLanguage.PORTUGUESE -> "Gibosa minguante"
+        }
+        age in 22..23 -> when (language) {
+            AppLanguage.JAPANESE -> "下弦の月"
+            AppLanguage.KOREAN -> "하현달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "下弦月"
+            AppLanguage.TRADITIONAL_CHINESE -> "下弦月"
+            AppLanguage.ENGLISH -> "Third Quarter"
+            AppLanguage.SPANISH -> "Cuarto menguante"
+            AppLanguage.FRENCH -> "Dernier quartier"
+            AppLanguage.PORTUGUESE -> "Quarto minguante"
+        }
+        else -> when (language) {
+            AppLanguage.JAPANESE -> "明け方の三日月"
+            AppLanguage.KOREAN -> "그믐달"
+            AppLanguage.SIMPLIFIED_CHINESE -> "残月"
+            AppLanguage.TRADITIONAL_CHINESE -> "殘月"
+            AppLanguage.ENGLISH -> "Waning Crescent"
+            AppLanguage.SPANISH -> "Luna menguante"
+            AppLanguage.FRENCH -> "Dernier croissant"
+            AppLanguage.PORTUGUESE -> "Lua minguante"
+        }
     }
 
     return MoonPhaseInfo(
@@ -516,7 +605,3 @@ private fun calculateMoonPhase(language: AppLanguage, utcOffsetSeconds: Int? = n
         daysToFullMoon = daysToFull
     )
 }
-
-private data class Tuple4<A, B, C, D>(
-    val a: A, val b: B, val c: C, val d: D
-)

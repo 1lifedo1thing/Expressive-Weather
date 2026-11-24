@@ -158,8 +158,12 @@ fun SettingsBottomSheet(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "一般設定" else strings.generalSettingsTitle,
                         subtitle = when (currentLanguage) {
                             AppLanguage.JAPANESE -> "言語・単位・通知など"
+                            AppLanguage.KOREAN -> "언어 · 단위 · 알림 등"
                             AppLanguage.SIMPLIFIED_CHINESE -> "语言、单位与通知等"
                             AppLanguage.TRADITIONAL_CHINESE -> "語言、單位與通知等"
+                            AppLanguage.SPANISH -> "Idioma, unidades, alertas, etc."
+                            AppLanguage.FRENCH -> "Langue, unités, alertes, etc."
+                            AppLanguage.PORTUGUESE -> "Idioma, unidades, alertas, etc."
                             AppLanguage.ENGLISH -> "Language, units, alerts, etc."
                         },
                         leadingIcon = Icons.Rounded.Build,
@@ -182,8 +186,12 @@ fun SettingsBottomSheet(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "外観設定" else strings.appearanceTitle,
                         subtitle = when (currentLanguage) {
                             AppLanguage.JAPANESE -> "テーマ・ガラス表現・図形"
+                            AppLanguage.KOREAN -> "테마 · 유리 효과 · 도형"
                             AppLanguage.SIMPLIFIED_CHINESE -> "主题配色与视觉效果"
                             AppLanguage.TRADITIONAL_CHINESE -> "主題配色與視覺效果"
+                            AppLanguage.SPANISH -> "Tema, efecto vidrio y formas"
+                            AppLanguage.FRENCH -> "Thème, verre dépoli et formes"
+                            AppLanguage.PORTUGUESE -> "Tema, vidro fosco e formas"
                             AppLanguage.ENGLISH -> "Theme, glass & shapes"
                         },
                         leadingIcon = Icons.Rounded.Palette,
@@ -206,8 +214,12 @@ fun SettingsBottomSheet(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "情報ソース" else strings.dataSourcesTitle,
                         subtitle = when (currentLanguage) {
                             AppLanguage.JAPANESE -> "気象データ設定"
+                            AppLanguage.KOREAN -> "기상 데이터 설정"
                             AppLanguage.SIMPLIFIED_CHINESE -> "气象数据源与缓存设置"
                             AppLanguage.TRADITIONAL_CHINESE -> "氣象資料來源與快取設定"
+                            AppLanguage.SPANISH -> "Ajustes de datos meteorológicos"
+                            AppLanguage.FRENCH -> "Paramètres des données météo"
+                            AppLanguage.PORTUGUESE -> "Configurações de dados meteorológicos"
                             AppLanguage.ENGLISH -> "Weather data settings"
                         },
                         leadingIcon = Icons.Rounded.Info,

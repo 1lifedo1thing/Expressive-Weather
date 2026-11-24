@@ -153,9 +153,13 @@ fun RadarCardSection(
 
     val radarTitle = when (language) {
         AppLanguage.JAPANESE -> "雨雲レーダー"
+        AppLanguage.KOREAN -> "강수 레이더"
         AppLanguage.ENGLISH -> "Precipitation Radar"
         AppLanguage.SIMPLIFIED_CHINESE -> "降水雷达"
         AppLanguage.TRADITIONAL_CHINESE -> "降水雷達"
+        AppLanguage.SPANISH -> "Radar de precipitaciones"
+        AppLanguage.FRENCH -> "Radar de précipitations"
+        AppLanguage.PORTUGUESE -> "Radar de precipitação"
     }
 
     val timeFormatter = remember(language) {
@@ -173,9 +177,13 @@ fun RadarCardSection(
             val relativeStr = when {
                 diffMin in -4..4 -> when (language) {
                     AppLanguage.JAPANESE -> "現在"
+                    AppLanguage.KOREAN -> "현재"
                     AppLanguage.ENGLISH -> "Now"
                     AppLanguage.SIMPLIFIED_CHINESE -> "现在"
                     AppLanguage.TRADITIONAL_CHINESE -> "現在"
+                    AppLanguage.SPANISH -> "Ahora"
+                    AppLanguage.FRENCH -> "Maintenant"
+                    AppLanguage.PORTUGUESE -> "Agora"
                 }
                 diffMin < 0 -> {
                     val absMin = -diffMin
@@ -184,16 +192,24 @@ fun RadarCardSection(
                         val mins = absMin % 60
                         when (language) {
                             AppLanguage.JAPANESE -> if (mins == 0) "${hours}時間前" else "${hours}時間${mins}分前"
+                            AppLanguage.KOREAN -> if (mins == 0) "${hours}시간 전" else "${hours}시간 ${mins}분 전"
                             AppLanguage.ENGLISH -> if (mins == 0) "${hours}h ago" else "${hours}h ${mins}m ago"
                             AppLanguage.SIMPLIFIED_CHINESE -> if (mins == 0) "${hours}小时前" else "${hours}小时${mins}分前"
                             AppLanguage.TRADITIONAL_CHINESE -> if (mins == 0) "${hours}小時前" else "${hours}小時${mins}分前"
+                            AppLanguage.SPANISH -> if (mins == 0) "Hace ${hours}h" else "Hace ${hours}h ${mins}m"
+                            AppLanguage.FRENCH -> if (mins == 0) "Il y a ${hours}h" else "Il y a ${hours}h ${mins}m"
+                            AppLanguage.PORTUGUESE -> if (mins == 0) "Há ${hours}h" else "Há ${hours}h ${mins}m"
                         }
                     } else {
                         when (language) {
                             AppLanguage.JAPANESE -> "${absMin}分前"
+                            AppLanguage.KOREAN -> "${absMin}분 전"
                             AppLanguage.ENGLISH -> "${absMin}m ago"
                             AppLanguage.SIMPLIFIED_CHINESE -> "${absMin}分钟前"
                             AppLanguage.TRADITIONAL_CHINESE -> "${absMin}分鐘前"
+                            AppLanguage.SPANISH -> "Hace ${absMin}m"
+                            AppLanguage.FRENCH -> "Il y a ${absMin}m"
+                            AppLanguage.PORTUGUESE -> "Há ${absMin}m"
                         }
                     }
                 }
@@ -203,16 +219,24 @@ fun RadarCardSection(
                         val mins = diffMin % 60
                         when (language) {
                             AppLanguage.JAPANESE -> if (mins == 0) "+${hours}時間後" else "+${hours}時間${mins}分後"
+                            AppLanguage.KOREAN -> if (mins == 0) "+${hours}시간 후" else "+${hours}시간 ${mins}분 후"
                             AppLanguage.ENGLISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.SIMPLIFIED_CHINESE -> if (mins == 0) "+${hours}小时" else "+${hours}小时${mins}分"
                             AppLanguage.TRADITIONAL_CHINESE -> if (mins == 0) "+${hours}小時" else "+${hours}小時${mins}分"
+                            AppLanguage.SPANISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.FRENCH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.PORTUGUESE -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                         }
                     } else {
                         when (language) {
                             AppLanguage.JAPANESE -> "+${diffMin}分予測"
+                            AppLanguage.KOREAN -> "+${diffMin}분 예측"
                             AppLanguage.ENGLISH -> "+${diffMin}m forecast"
                             AppLanguage.SIMPLIFIED_CHINESE -> "+${diffMin}分预测"
                             AppLanguage.TRADITIONAL_CHINESE -> "+${diffMin}分預測"
+                            AppLanguage.SPANISH -> "+${diffMin}m prev."
+                            AppLanguage.FRENCH -> "+${diffMin}m prév."
+                            AppLanguage.PORTUGUESE -> "+${diffMin}m prev."
                         }
                     }
                 }
@@ -263,21 +287,33 @@ fun RadarCardSection(
                     val sourceLabel = when (dataSource) {
                         RadarDataSource.JMA_NOWCAST -> when (language) {
                             AppLanguage.JAPANESE -> "気象庁 高解像度降水ナウキャスト"
+                            AppLanguage.KOREAN -> "일본 기상청 고해상도 강수 나우캐스트"
                             AppLanguage.ENGLISH -> "JMA High-Resolution Nowcast"
                             AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅 高分辨率降水临近预报"
                             AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳 高解析度降水臨近預報"
+                            AppLanguage.SPANISH -> "JMA Nowcast de alta resolución"
+                            AppLanguage.FRENCH -> "JMA Nowcast haute résolution"
+                            AppLanguage.PORTUGUESE -> "JMA Nowcast de alta resolução"
                         }
                         RadarDataSource.US_NEXRAD_HRRR -> when (language) {
                             AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR (実況・外挿予測・予報)"
+                            AppLanguage.KOREAN -> "미국 NEXRAD / HRRR (실황·외삽 예측·예보)"
                             AppLanguage.ENGLISH -> "US NEXRAD / HRRR (Obs, Nowcast, Forecast)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "全美 NEXRAD / HRRR（实况/外推/预报）"
                             AppLanguage.TRADITIONAL_CHINESE -> "全美 NEXRAD / HRRR（實況/外推/預報）"
+                            AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Nowcast, Prev.)"
+                            AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Nowcast, Prév.)"
+                            AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Nowcast, Prev.)"
                         }
                         RadarDataSource.RAIN_VIEWER -> when (language) {
                             AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
+                            AppLanguage.KOREAN -> "글로벌 레이더 (RainViewer)"
                             AppLanguage.ENGLISH -> "Global Radar (RainViewer)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "全球雷达 (RainViewer)"
                             AppLanguage.TRADITIONAL_CHINESE -> "全球雷達 (RainViewer)"
+                            AppLanguage.SPANISH -> "Radar global (RainViewer)"
+                            AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
+                            AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
                         }
                     }
                     Text(
@@ -372,15 +408,23 @@ fun RadarCardSection(
                             text = when (dataSource) {
                                 RadarDataSource.JMA_NOWCAST -> when (language) {
                                     AppLanguage.JAPANESE -> "気象庁 ナウキャスト"
+                                    AppLanguage.KOREAN -> "기상청 나우캐스트"
                                     AppLanguage.ENGLISH -> "JMA Nowcast"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "气象厅 临近预报"
                                     AppLanguage.TRADITIONAL_CHINESE -> "氣象廳 臨近預報"
+                                    AppLanguage.SPANISH -> "JMA Nowcast"
+                                    AppLanguage.FRENCH -> "JMA Nowcast"
+                                    AppLanguage.PORTUGUESE -> "JMA Nowcast"
                                 }
                                 RadarDataSource.US_NEXRAD_HRRR -> when (language) {
                                     AppLanguage.JAPANESE -> "NEXRAD / HRRR (実況・外挿・予報)"
+                                    AppLanguage.KOREAN -> "NEXRAD / HRRR (실황·외삽·예보)"
                                     AppLanguage.ENGLISH -> "NEXRAD / HRRR (Obs/Forecast)"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "NEXRAD / HRRR (实况/预报)"
                                     AppLanguage.TRADITIONAL_CHINESE -> "NEXRAD / HRRR (實況/預報)"
+                                    AppLanguage.SPANISH -> "NEXRAD / HRRR (Obs./Prev.)"
+                                    AppLanguage.FRENCH -> "NEXRAD / HRRR (Obs./Prév.)"
+                                    AppLanguage.PORTUGUESE -> "NEXRAD / HRRR (Obs./Prev.)"
                                 }
                                 RadarDataSource.RAIN_VIEWER -> "RainViewer"
                             },
@@ -418,16 +462,24 @@ fun RadarCardSection(
                                 contentDescription = if (isPlaying) {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "一時停止"
+                                        AppLanguage.KOREAN -> "일시정지"
                                         AppLanguage.ENGLISH -> "Pause"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "暂停"
                                         AppLanguage.TRADITIONAL_CHINESE -> "暫停"
+                                        AppLanguage.SPANISH -> "Pausar"
+                                        AppLanguage.FRENCH -> "Pause"
+                                        AppLanguage.PORTUGUESE -> "Pausar"
                                     }
                                 } else {
                                     when (language) {
                                         AppLanguage.JAPANESE -> "再生"
+                                        AppLanguage.KOREAN -> "재생"
                                         AppLanguage.ENGLISH -> "Play"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "播放"
                                         AppLanguage.TRADITIONAL_CHINESE -> "播放"
+                                        AppLanguage.SPANISH -> "Reproducir"
+                                        AppLanguage.FRENCH -> "Lire"
+                                        AppLanguage.PORTUGUESE -> "Reproduzir"
                                     }
                                 },
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,

@@ -471,14 +471,146 @@ object JmaWarningMaster {
         "着雪注意報" to "積雪注意報"
     )
 
+    private val warningTranslationsKo = mapOf(
+        "大雨特別警報" to "호우 특별경보",
+        "暴風特別警報" to "폭풍 특별경보",
+        "暴風雪特別警報" to "폭풍설 특별경보",
+        "大雪特別警報" to "대설 특별경보",
+        "波浪特別警報" to "풍랑 특별경보",
+        "高潮特別警報" to "폭풍해일 특별경보",
+        "大雨警報" to "호우 경보",
+        "洪水警報" to "홍수 경보",
+        "暴風警報" to "폭풍 경보",
+        "暴風雪警報" to "폭풍설 경보",
+        "大雪警報" to "대설 경보",
+        "波浪警報" to "풍랑 경보",
+        "高潮警報" to "폭풍해일 경보",
+        "大雨注意報" to "호우 주의보",
+        "洪水注意報" to "홍수 주의보",
+        "強風注意報" to "강풍 주의보",
+        "風雪注意報" to "풍설 주의보",
+        "大雪注意報" to "대설 주의보",
+        "波浪注意報" to "풍랑 주의보",
+        "高潮注意報" to "폭풍해일 주의보",
+        "雷注意報" to "낙뢰 주의보",
+        "融雪注意報" to "융설 주의보",
+        "濃霧注意報" to "짙은 안개 주의보",
+        "乾燥注意報" to "건조 주의보",
+        "なだれ注意報" to "눈사태 주의보",
+        "低温注意報" to "한파·저온 주의보",
+        "霜注意報" to "서리 주의보",
+        "着氷注意報" to "착빙 주의보",
+        "着雪注意報" to "착설 주의보"
+    )
+
+    private val warningTranslationsEs = mapOf(
+        "大雨特別警報" to "Alerta de emergencia por lluvia intensa",
+        "暴風特別警報" to "Alerta de emergencia por vientos violentos",
+        "暴風雪特別警報" to "Alerta de emergencia por ventisca",
+        "大雪特別警報" to "Alerta de emergencia por nevada intensa",
+        "波浪特別警報" to "Alerta de emergencia por oleaje extremo",
+        "高潮特別警報" to "Alerta de emergencia por marejada ciclónica",
+        "大雨警報" to "Alerta por lluvia intensa",
+        "洪水警報" to "Alerta por inundación",
+        "暴風警報" to "Alerta por vendaval",
+        "暴風雪警報" to "Alerta por ventisca",
+        "大雪警報" to "Alerta por nevada intensa",
+        "波浪警報" to "Alerta por oleaje alto",
+        "高潮警報" to "Alerta por marejada ciclónica",
+        "大雨注意報" to "Aviso por lluvia intensa",
+        "洪水注意報" to "Aviso por inundación",
+        "強風注意報" to "Aviso por viento fuerte",
+        "風雪注意報" to "Aviso por viento y nieve",
+        "大雪注意報" to "Aviso por nevada intensa",
+        "波浪注意報" to "Aviso por oleaje alto",
+        "高潮注意報" to "Aviso por marejada",
+        "雷注意報" to "Aviso por tormenta eléctrica",
+        "融雪注意報" to "Aviso por deshielo",
+        "濃霧注意報" to "Aviso por niebla densa",
+        "乾燥注意報" to "Aviso por aire seco",
+        "なだれ注意報" to "Aviso por avalancha",
+        "低温注意報" to "Aviso por bajas temperaturas",
+        "霜注意報" to "Aviso por heladas",
+        "着氷注意報" to "Aviso por formación de hielo",
+        "着雪注意報" to "Aviso por acumulación de nieve"
+    )
+
+    private val warningTranslationsFr = mapOf(
+        "大雨特別警報" to "Alerte d'urgence fortes pluies",
+        "暴風特別警報" to "Alerte d'urgence vents violents",
+        "暴風雪特別警報" to "Alerte d'urgence blizzard",
+        "大雪特別警報" to "Alerte d'urgence fortes chutes de neige",
+        "波浪特別警報" to "Alerte d'urgence vagues extrêmes",
+        "高潮特別警報" to "Alerte d'urgence onde de tempête",
+        "大雨警報" to "Alerte fortes pluies",
+        "洪水警報" to "Alerte inondation",
+        "暴風警報" to "Alerte vents violents",
+        "暴風雪警報" to "Alerte blizzard",
+        "大雪警報" to "Alerte fortes chutes de neige",
+        "波浪警報" to "Alerte fortes vagues",
+        "高潮警報" to "Alerte onde de tempête",
+        "大雨注意報" to "Avis de fortes pluies",
+        "洪水注意報" to "Avis d'inondation",
+        "強風注意報" to "Avis de vent fort",
+        "風雪注意報" to "Avis de vent et neige",
+        "大雪注意報" to "Avis de fortes chutes de neige",
+        "波浪注意報" to "Avis de fortes vagues",
+        "高潮注意報" to "Avis de marée de tempête",
+        "雷注意報" to "Avis d'orages",
+        "融雪注意報" to "Avis de fonte des neiges",
+        "濃霧注意報" to "Avis de brouillard dense",
+        "乾燥注意報" to "Avis d'air sec",
+        "なだれ注意報" to "Avis d'avalanche",
+        "低温注意報" to "Avis de grand froid",
+        "霜注意報" to "Avis de gelée",
+        "着氷注意報" to "Avis de givrage",
+        "着雪注意報" to "Avis d'accumulation de neige"
+    )
+
+    private val warningTranslationsPt = mapOf(
+        "大雨特別警報" to "Alerta de emergência de chuva forte",
+        "暴風特別警報" to "Alerta de emergência de ventos violentos",
+        "暴風雪特別警報" to "Alerta de emergência de nevasca intensa",
+        "大雪特別警報" to "Alerta de emergência de neve intensa",
+        "波浪特別警報" to "Alerta de emergência de ondas extremas",
+        "高潮特別警報" to "Alerta de emergência de ressaca ciclônica",
+        "大雨警報" to "Alerta de chuva forte",
+        "洪水警報" to "Alerta de inundação",
+        "暴風警報" to "Alerta de vendaval",
+        "暴風雪警報" to "Alerta de nevasca intensa",
+        "大雪警報" to "Alerta de neve intensa",
+        "波浪警報" to "Alerta de ondas altas",
+        "高潮警報" to "Alerta de ressaca ciclônica",
+        "大雨注意報" to "Aviso de chuva forte",
+        "洪水注意報" to "Aviso de inundação",
+        "強風注意報" to "Aviso de vento forte",
+        "風雪注意報" to "Aviso de vento e neve",
+        "大雪注意報" to "Aviso de neve intensa",
+        "波浪注意報" to "Aviso de ondas altas",
+        "高潮注意報" to "Aviso de ressaca",
+        "雷注意報" to "Aviso de tempestade elétrica",
+        "融雪注意報" to "Aviso de degelo",
+        "濃霧注意報" to "Aviso de nevoeiro denso",
+        "乾燥注意報" to "Aviso de ar seco",
+        "なだれ注意報" to "Aviso de avalanche",
+        "低温注意報" to "Aviso de baixas temperaturas",
+        "霜注意報" to "Aviso de geada",
+        "着氷注意報" to "Aviso de formação de gelo",
+        "着雪注意報" to "Aviso de acúmulo de neve"
+    )
+
     /**
      * 警報・注意報名の多言語翻訳取得
      */
     fun getLocalizedWarningName(name: String, language: AppLanguage): String {
         return when (language) {
             AppLanguage.ENGLISH -> warningTranslationsEn[name] ?: name
+            AppLanguage.KOREAN -> warningTranslationsKo[name] ?: name
             AppLanguage.SIMPLIFIED_CHINESE -> warningTranslationsZhHans[name] ?: name
             AppLanguage.TRADITIONAL_CHINESE -> warningTranslationsZhHant[name] ?: name
+            AppLanguage.SPANISH -> warningTranslationsEs[name] ?: name
+            AppLanguage.FRENCH -> warningTranslationsFr[name] ?: name
+            AppLanguage.PORTUGUESE -> warningTranslationsPt[name] ?: name
             AppLanguage.JAPANESE -> name
         }
     }
@@ -502,6 +634,21 @@ object JmaWarningMaster {
                 name.contains("乾燥") -> "Very dry atmospheric conditions with heightened risk of spreading fires."
                 name.contains("なだれ") -> "Snowpack instability leading to high avalanche risk on steep slopes."
                 else -> "The Japan Meteorological Agency has issued $name. Please stay alert to rapidly changing weather."
+            }
+            AppLanguage.KOREAN -> when {
+                name.contains("特別") -> "수십 년에 한 번 있을 극심한 위험 기상입니다. 대규모 산사태나 침수, 하천 범람 등 중대한 재해가 이미 발생했을 가능성이 매우 높은 상태입니다."
+                name.contains("大雨") -> "많은 비로 인해 산사태, 하천 범람, 저지대 침수 및 지하차도 침수 위험이 높습니다."
+                name.contains("洪水") -> "하천 수위가 급격히 상승하여 제방 월류나 범람 등 홍수 피해가 우려됩니다."
+                name.contains("暴風雪") -> "강한 바람을 동반한 폭설과 화이트아웃으로 시야가 급격히 악화되고 교통 마비가 우려됩니다."
+                name.contains("暴風") -> "강력한 바람으로 인해 건물 파손, 간판 낙하, 가로수 전도 및 대규모 정전 피해가 우려됩니다."
+                name.contains("大雪") -> "많은 눈으로 인해 도로 결빙, 교통 장애, 시설물 붕괴 및 눈사태 위험이 높습니다."
+                name.contains("高潮") -> "태풍이나 저기압으로 해수면이 비정상적으로 상승하여 해안 저지대 해수 침수가 우려됩니다."
+                name.contains("波浪") -> "매우 높은 파도와 너울로 인해 해안 시설 파손 및 선박 사고 위험이 높습니다."
+                name.contains("雷") -> "발달한 적란운으로 인해 낙뢰, 갑작스러운 강한 비, 돌풍 및 우박이 발생할 수 있습니다."
+                name.contains("濃霧") -> "짙은 안개로 시정이 크게 악화되어 도로·항공·선박 운항에 지장이 우려됩니다."
+                name.contains("乾燥") -> "대기가 매우 건조하여 산불 및 각종 화재가 빠르게 확산될 위험이 높습니다."
+                name.contains("なだれ") -> "적설 불안정으로 급경사면에서 눈사태가 발생할 위험이 높습니다."
+                else -> "기상청에서 ${getLocalizedWarningName(name, AppLanguage.KOREAN)}를 발표했습니다. 급격한 기상 변화에 각별히 주의하세요."
             }
             AppLanguage.SIMPLIFIED_CHINESE -> when {
                 name.contains("特別") -> "数十年一遇的极度危险灾害天气。滑坡泥石流、特大洪水等重大灾害极有可能已经发生，危及生命安全。"
@@ -533,6 +680,51 @@ object JmaWarningMaster {
                 name.contains("なだれ") -> "積雪過厚或融雪導致山區斜坡雪崩風險極高。"
                 else -> "日本氣象廳已發布${name}，請密切留意天氣變化並做好防範。"
             }
+            AppLanguage.SPANISH -> when {
+                name.contains("特別") -> "Condiciones extremadamente peligrosas que ocurren una vez cada varias décadas. Es muy probable que ya estén ocurriendo desastres graves como deslizamientos o inundaciones masivas."
+                name.contains("大雨") -> "Las lluvias intensas pueden provocar graves deslizamientos de tierra, desbordamientos de ríos e inundaciones urbanas en zonas bajas."
+                name.contains("洪水") -> "Se prevé un aumento rápido del caudal de los ríos con peligro de crecidas e inundaciones."
+                name.contains("暴風雪") -> "Condiciones severas de ventisca y visibilidad nula con ventisqueros peligrosos que pueden paralizar el tráfico."
+                name.contains("暴風") -> "Vientos violentos capaces de dañar edificios, derribar árboles y provocar cortes eléctricos."
+                name.contains("大雪") -> "Fuertes nevadas con riesgo de avalanchas, carreteras bloqueadas y alteraciones graves del transporte."
+                name.contains("高潮") -> "Subida peligrosa del nivel del mar que puede causar inundaciones marinas extensas en zonas costeras."
+                name.contains("波浪") -> "Oleaje extremadamente alto y mar muy agitada, peligroso para infraestructuras costeras y embarcaciones."
+                name.contains("雷") -> "Se esperan aguaceros repentinos, rayos, granizo y rachas intensas de viento."
+                name.contains("濃霧") -> "Niebla densa que reduce drásticamente la visibilidad y afecta a la circulación y al transporte."
+                name.contains("乾燥") -> "Aire muy seco con mayor riesgo de incendios y rápida propagación del fuego."
+                name.contains("なだれ") -> "Inestabilidad del manto nivoso con alto riesgo de avalanchas en laderas empinadas."
+                else -> "La Agencia Meteorológica de Japón ha emitido: ${getLocalizedWarningName(name, AppLanguage.SPANISH)}. Manténgase atento a cambios bruscos del tiempo."
+            }
+            AppLanguage.FRENCH -> when {
+                name.contains("特別") -> "Conditions extrêmement dangereuses survenant une fois par décennie. Des catastrophes majeures (glissements de terrain, crues massives) sont imminentes ou déjà en cours."
+                name.contains("大雨") -> "De fortes pluies peuvent provoquer de graves glissements de terrain, des crues fluviales et des inondations urbaines dans les zones basses."
+                name.contains("洪水") -> "Une hausse rapide du niveau des cours d'eau et des risques majeurs d'inondation sont attendus."
+                name.contains("暴風雪") -> "Conditions de blizzard sévères, visibilité nulle et congères dangereuses risquant de paralyser la circulation."
+                name.contains("暴風") -> "Vents violents capables d'endommager les bâtiments, de déraciner des arbres et de provoquer des coupures d'électricité."
+                name.contains("大雪") -> "Fortes chutes de neige entraînant un risque d'avalanche, des axes bloqués et des perturbations des transports."
+                name.contains("高潮") -> "Montée dangereuse du niveau de la mer pouvant entraîner d'importantes submersions côtières."
+                name.contains("波浪") -> "Vagues extrêmement hautes et mer très forte présentant un danger pour le littoral et les navires."
+                name.contains("雷") -> "Averses soudaines et intenses, foudre, grêle et rafales violentes sont à craindre."
+                name.contains("濃霧") -> "Brouillard dense réduisant fortement la visibilité et perturbant les déplacements."
+                name.contains("乾燥") -> "Air très sec augmentant fortement le risque de départ et de propagation d'incendies."
+                name.contains("なだれ") -> "Instabilité du manteau neigeux entraînant un risque élevé d'avalanche sur les pentes raides."
+                else -> "L'Agence météorologique du Japon a émis : ${getLocalizedWarningName(name, AppLanguage.FRENCH)}. Restez vigilant face à l'évolution rapide du temps."
+            }
+            AppLanguage.PORTUGUESE -> when {
+                name.contains("特別") -> "Condições extremamente perigosas que ocorrem uma vez em décadas. Desastres graves como deslizamentos ou inundações severas são iminentes ou já estão ocorrendo."
+                name.contains("大雨") -> "Chuvas intensas podem causar graves deslizamentos de terra, transbordamento de rios e alagamentos em áreas baixas."
+                name.contains("洪水") -> "Prevê-se elevação rápida do nível dos rios com risco grave de enchentes e transbordamento."
+                name.contains("暴風雪") -> "Nevasca severa com visibilidade nula e acúmulo de neve capaz de paralisar o trânsito."
+                name.contains("暴風") -> "Ventos violentos capazes de danificar imóveis, derrubar árvores e causar quedas de energia."
+                name.contains("大雪") -> "Forte queda de neve com risco de avalanches, bloqueio de estradas e transtornos no transporte."
+                name.contains("高潮") -> "Elevação perigosa do nível do mar com risco de invasão de água salgada em áreas costeiras."
+                name.contains("波浪") -> "Mar muito agitado com ondas extremamente altas, oferecendo perigo à costa e embarcações."
+                name.contains("雷") -> "Há risco de temporais súbitos, descargas elétricas, granizo e rajadas fortes de vento."
+                name.contains("濃霧") -> "Nevoeiro denso que reduz drasticamente a visibilidade e prejudica o tráfego."
+                name.contains("乾燥") -> "Ar muito seco com alto risco de incêndios e rápida propagação do fogo."
+                name.contains("なだれ") -> "Instabilidade na camada de neve com alto risco de avalanches em encostas íngremes."
+                else -> "A Agência Meteorológica do Japão emitiu: ${getLocalizedWarningName(name, AppLanguage.PORTUGUESE)}. Fique atento a mudanças bruscas no tempo."
+            }
             AppLanguage.JAPANESE -> fallback
         }
     }
@@ -550,6 +742,14 @@ object JmaWarningMaster {
                 name.contains("雷") -> "Seek shelter inside a sturdy building or automobile immediately if thunder is heard. Avoid trees and open areas."
                 else -> "Monitor the latest official municipal alerts and radar updates. Ensure personal safety and prepare necessary supplies."
             }
+            AppLanguage.KOREAN -> when {
+                name.contains("特別") -> "즉시 생명을 지키기 위한 최선의 행동을 취하세요. 야외 대피가 오히려 위험하다면 튼튼한 건물의 2층 이상, 산사면 반대쪽 실내로 긴급 대피하세요."
+                name.contains("大雨") || name.contains("洪水") -> "지자체 대피 지시와 재해 지도를 확인하고, 도로가 침수되기 전에 산사태·침수 위험 지역에서 안전한 고지대나 대피소로 미리 이동하세요."
+                name.contains("暴風") || name.contains("暴風雪") -> "불필요한 외출을 삼가고, 강풍이나 눈보라가 잦아들 때까지 창문에서 떨어진 튼튼한 실내에 머무세요."
+                name.contains("波浪") || name.contains("高潮") -> "해안가, 방파제, 항구 근처에는 절대 접근하지 마세요. 해안 저지대 거주자는 즉시 고지대로 대피하세요."
+                name.contains("雷") -> "천둥 소리가 들리면 즉시 튼튼한 건물이나 차량 안으로 대피하고, 나무 아래나 개활지를 피하세요."
+                else -> "최신 기상 레이더와 지자체 재난 안내를 수시로 확인하고, 필요 시 안전 확보 및 비상 대비를 하세요."
+            }
             AppLanguage.SIMPLIFIED_CHINESE -> when {
                 name.contains("特別") -> "请立即采取自救应急避难措施！如果室外积水或夜间撤离危险，请紧急退避至坚固建筑物二层以上、背离山体斜坡的安全房间。"
                 name.contains("大雨") || name.contains("洪水") -> "请查阅当地防灾疏散指南与避难地图，低洼易涝及山地滑坡风险区居民请及早转移至安全避难所。"
@@ -565,6 +765,30 @@ object JmaWarningMaster {
                 name.contains("波浪") || name.contains("高潮") -> "切勿前往海邊、防波堤或港口觀浪。沿海低窪地區居民請迅速往高處撤離。"
                 name.contains("雷") -> "聽聞雷聲請儘速進入堅固室內避雷，切勿在樹下避雨或於空曠處逗留。"
                 else -> "請密切留意最新官方氣象雷達與防災通報，做好相關安全防範措施。"
+            }
+            AppLanguage.SPANISH -> when {
+                name.contains("特別") -> "Actúe de inmediato para proteger su vida. Si salir al exterior resulta peligroso, refúgiese en una planta superior de un edificio sólido, lejos de laderas."
+                name.contains("大雨") || name.contains("洪水") -> "Consulte las órdenes de evacuación y los mapas de riesgo locales. Trasládese con antelación a zonas altas o a un refugio seguro antes de que se inunden las vías."
+                name.contains("暴風") || name.contains("暴風雪") -> "Evite cualquier desplazamiento innecesario. Permanezca en interiores, lejos de las ventanas, hasta que amainen el viento o la ventisca."
+                name.contains("波浪") || name.contains("高潮") -> "Aléjese por completo de la costa, diques y puertos. Evacúe de inmediato si reside en zonas costeras bajas."
+                name.contains("雷") -> "Refúgiese de inmediato en un edificio sólido o un vehículo si oye truenos. Evite árboles y espacios abiertos."
+                else -> "Siga las alertas municipales y el radar meteorológico. Priorice su seguridad y prepare suministros de emergencia."
+            }
+            AppLanguage.FRENCH -> when {
+                name.contains("特別") -> "Agissez immédiatement pour protéger votre vie. Si sortir est trop dangereux, montez au moins au 2e étage d'un bâtiment solide, du côté opposé aux pentes."
+                name.contains("大雨") || name.contains("洪水") -> "Consultez les consignes d'évacuation et cartes de risques locales. Rejoignez un point haut ou un abri sûr avant que les routes ne soient submergées."
+                name.contains("暴風") || name.contains("暴風雪") -> "Évitez tout déplacement non essentiel. Restez à l'intérieur, loin des fenêtres, jusqu'à la fin des vents violents ou du blizzard."
+                name.contains("波浪") || name.contains("高潮") -> "Restez totalement à l'écart du littoral, des digues et des ports. Évacuez immédiatement si vous habitez une zone côtière basse."
+                name.contains("雷") -> "Mettez-vous immédiatement à l'abri dans un bâtiment solide ou une voiture dès que le tonnerre gronde. Évitez les arbres et les zones dégagées."
+                else -> "Suivez les alertes officielles locales et le radar météo. Assurez votre sécurité et préparez le nécessaire d'urgence."
+            }
+            AppLanguage.PORTUGUESE -> when {
+                name.contains("特別") -> "Aja imediatamente para proteger sua vida. Se sair for perigoso, abrigue-se no segundo andar ou acima em um prédio sólido, longe de encostas."
+                name.contains("大雨") || name.contains("洪水") -> "Verifique as ordens de evacuação e os mapas de risco locais. Desloque-se com antecedência para áreas elevadas ou abrigos seguros antes que as vias alaguem."
+                name.contains("暴風") || name.contains("暴風雪") -> "Evite qualquer deslocamento desnecessário. Permaneça em ambiente fechado e longe das janelas até a passagem dos ventos ou da nevasca."
+                name.contains("波浪") || name.contains("高潮") -> "Mantenha-se totalmente afastado do litoral, quebra-mares e portos. Evacue imediatamente se morar em áreas costeiras baixas."
+                name.contains("雷") -> "Procure abrigo imediatamente em um prédio sólido ou veículo ao ouvir trovões. Evite árvores e áreas abertas."
+                else -> "Acompanhe os alertas oficiais locais e o radar meteorológico. Garanta sua segurança e prepare itens de emergência."
             }
             AppLanguage.JAPANESE -> fallback
         }
@@ -585,6 +809,17 @@ object JmaWarningMaster {
                 name.contains("高潮") -> listOf("Extreme sea level rises", "Seawater overtopping sea defenses", "Flooding of underground facilities")
                 name.contains("雷") -> listOf("Cloud-to-ground lightning strikes", "Sudden severe microbursts & wind squalls", "Hail damaging crops and property")
                 else -> listOf("Rapid weather degradation", "Local government evacuation alerts")
+            }
+            AppLanguage.KOREAN -> when {
+                name.contains("大雨") -> listOf("산사태 및 급경사지 붕괴", "도로 및 지하차도 침수", "배수로·하천 급격한 수위 상승")
+                name.contains("洪水") -> listOf("하천 수위 급상승", "제방 침식 및 월류·붕괴 위험", "하천변 저지대 침수")
+                name.contains("暴風") -> listOf("강풍으로 인한 간판·낙하물 비산", "가로수 전도 및 건물 파손", "전선 단선에 따른 광역 정전")
+                name.contains("暴風雪") -> listOf("시야 제로(화이트아웃) 현상", "눈더미로 인한 차량 고립", "산간·외곽 지역 고립 위험")
+                name.contains("大雪") -> listOf("폭설 하중으로 인한 지붕·시설물 파손", "도로 적설 및 결빙 미끄럼 사고", "급경사면 눈사태 위험")
+                name.contains("波浪") -> listOf("방파제를 넘는 높은 파도·너울", "항만 시설 및 선박 파손", "해안 도로 월파 피해")
+                name.contains("高潮") -> listOf("만조 시 기록적 해수면 상승", "방조제 월류 및 해수 유입", "해안 저지대·지하 공간 침수")
+                name.contains("雷") -> listOf("낙뢰로 인한 감전·화재 피해", "갑작스러운 돌풍 및 하강기류", "우박으로 인한 차량·농작물 피해")
+                else -> listOf("급격한 기상 악화", "지자체 대피 안내 확인")
             }
             AppLanguage.SIMPLIFIED_CHINESE -> when {
                 name.contains("大雨") -> listOf("山体滑坡与斜坡崩塌", "下穿隧道及道路内涝水浸", "沟渠排水不畅及河水暴涨")
@@ -607,6 +842,39 @@ object JmaWarningMaster {
                 name.contains("高潮") -> listOf("風暴潮潮位急遽上升", "海水越堤倒灌城鎮", "地下空間與低窪地區積水")
                 name.contains("雷") -> listOf("落雷擊傷人身安全風險", "瞬間強風與突發劇烈陣雨", "局部冰雹掉落砸損")
                 else -> listOf("天候劇烈惡化變化", "政府最新避難通報動態")
+            }
+            AppLanguage.SPANISH -> when {
+                name.contains("大雨") -> listOf("Deslizamientos y derrumbes en laderas", "Calles y pasos inferiores inundados", "Desbordamiento rápido de desagües")
+                name.contains("洪水") -> listOf("Aumento rápido del caudal fluvial", "Erosión y rotura de diques", "Inundación de zonas bajas ribereñas")
+                name.contains("暴風") -> listOf("Objetos arrastrados por el viento", "Caída de árboles y daños en edificios", "Cortes eléctricos generalizados")
+                name.contains("暴風雪") -> listOf("Visibilidad nula por ventisca", "Vehículos atrapados en la nieve", "Aislamiento de zonas rurales y de montaña")
+                name.contains("大雪") -> listOf("Daños en techos por peso de la nieve", "Calzadas heladas y resbaladizas", "Avalanchas en pendientes pronunciadas")
+                name.contains("波浪") -> listOf("Olas rompiendo sobre rompeolas", "Daños a embarcaciones y puertos", "Oleaje fuerte y rebase costero")
+                name.contains("高潮") -> listOf("Subida extrema del nivel del mar", "Desbordamiento de defensas costeras", "Inundación de instalaciones subterráneas")
+                name.contains("雷") -> listOf("Impactos de rayos", "Rachas súbitas y microrráfagas", "Granizo con daños en bienes y cultivos")
+                else -> listOf("Empeoramiento rápido del tiempo", "Avisos de evacuación de autoridades locales")
+            }
+            AppLanguage.FRENCH -> when {
+                name.contains("大雨") -> listOf("Glissements de terrain et éboulements", "Routes et passages souterrains inondés", "Débordement rapide des fossés et canaux")
+                name.contains("洪水") -> listOf("Montée rapide du niveau des rivières", "Érosion et rupture de digues", "Inondation des zones basses riveraines")
+                name.contains("暴風") -> listOf("Projectiles emportés par les rafales", "Chutes d'arbres et dégâts aux bâtiments", "Coupures d'électricité étendues")
+                name.contains("暴風雪") -> listOf("Visibilité quasi nulle (blizzard)", "Véhicules bloqués par les congères", "Isolement des zones rurales et montagneuses")
+                name.contains("大雪") -> listOf("Surcharge de neige sur les toitures", "Routes verglacées et glissantes", "Avalanches sur les pentes raides")
+                name.contains("波浪") -> listOf("Vagues submergeant les digues", "Dégâts aux navires et infrastructures portuaires", "Paquets de mer sur le littoral")
+                name.contains("高潮") -> listOf("Élévation extrême du niveau de la mer", "Franchissement des ouvrages côtiers", "Inondation des espaces souterrains")
+                name.contains("雷") -> listOf("Impacts de foudre au sol", "Rafales violentes et grains soudains", "Grêle endommageant biens et cultures")
+                else -> listOf("Dégradation rapide de la météo", "Consignes d'évacuation locales")
+            }
+            AppLanguage.PORTUGUESE -> when {
+                name.contains("大雨") -> listOf("Deslizamentos e queda de encostas", "Ruas e passagens subterrâneas alagadas", "Transbordamento rápido de bueiros e córregos")
+                name.contains("洪水") -> listOf("Elevação rápida do nível dos rios", "Erosão e rompimento de diques", "Alagamento de áreas ribeirinhas baixas")
+                name.contains("暴風") -> listOf("Objetos arremessados por ventos extremos", "Queda de árvores e danos a imóveis", "Quedas generalizadas de energia elétrica")
+                name.contains("暴風雪") -> listOf("Visibilidade quase nula por nevasca", "Veículos presos na neve", "Isolamento de áreas rurais e montanhosas")
+                name.contains("大雪") -> listOf("Acúmulo pesado de neve e danos em telhados", "Pistas congeladas e escorregadias", "Avalanches em encostas íngremes")
+                name.contains("波浪") -> listOf("Ondas ultrapassando quebra-mares", "Danos a embarcações e portos", "Ressaca e avanço do mar na orla")
+                name.contains("高潮") -> listOf("Elevação extrema do nível do mar", "Água do mar ultrapassando barreiras costeiras", "Alagamento de instalações subterrâneas")
+                name.contains("雷") -> listOf("Descargas elétricas (raios)", "Rajadas súbitas e vendavais locais", "Granizo com danos a bens e lavouras")
+                else -> listOf("Piora rápida do tempo", "Alertas de evacuação das autoridades locais")
             }
             AppLanguage.JAPANESE -> fallback
         }
@@ -643,6 +911,15 @@ object JmaWarningMaster {
                     "$topName ほか${otherCount}件の注意報"
                 }
             }
+            AppLanguage.KOREAN -> {
+                if (hasWarnings && hasAdvisories) {
+                    "$topName 외 ${otherCount}건의 경보·주의보"
+                } else if (hasWarnings) {
+                    "$topName 외 ${otherCount}건의 경보"
+                } else {
+                    "$topName 외 ${otherCount}건의 주의보"
+                }
+            }
             AppLanguage.ENGLISH -> {
                 "$topName & $otherCount more"
             }
@@ -664,6 +941,9 @@ object JmaWarningMaster {
                     "$topName 等${count}項注意報"
                 }
             }
+            AppLanguage.SPANISH -> "$topName y $otherCount más"
+            AppLanguage.FRENCH -> "$topName et $otherCount autre${if (otherCount > 1) "s" else ""}"
+            AppLanguage.PORTUGUESE -> "$topName e mais $otherCount"
         }
     }
 }

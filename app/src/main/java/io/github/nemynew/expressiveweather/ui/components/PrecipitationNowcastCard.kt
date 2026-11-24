@@ -97,8 +97,12 @@ fun PrecipitationNowcastCard(
     val subText = nowcast.localizedSubText(language)
     val radarContentDescription = when (language) {
         AppLanguage.ENGLISH -> "Open precipitation radar"
+        AppLanguage.KOREAN -> "강수 레이더 열기"
         AppLanguage.SIMPLIFIED_CHINESE -> "打开降水雷达"
         AppLanguage.TRADITIONAL_CHINESE -> "開啟降水雷達"
+        AppLanguage.SPANISH -> "Abrir radar de precipitación"
+        AppLanguage.FRENCH -> "Ouvrir le radar de précipitations"
+        AppLanguage.PORTUGUESE -> "Abrir radar de precipitação"
         AppLanguage.JAPANESE -> "雨雲レーダーを開く"
     }
 
@@ -156,8 +160,12 @@ fun PrecipitationNowcastCard(
                     if (isTestOverride) {
                         val testBadgeText = when (language) {
                             AppLanguage.ENGLISH -> "TEST PREVIEW"
+                            AppLanguage.KOREAN -> "테스트 미리보기"
                             AppLanguage.SIMPLIFIED_CHINESE -> "测试预览"
                             AppLanguage.TRADITIONAL_CHINESE -> "測試預覽"
+                            AppLanguage.SPANISH -> "VISTA DE PRUEBA"
+                            AppLanguage.FRENCH -> "APERÇU TEST"
+                            AppLanguage.PORTUGUESE -> "PRÉVIA DE TESTE"
                             AppLanguage.JAPANESE -> "テスト表示"
                         }
                         Surface(
@@ -215,26 +223,42 @@ fun PrecipitationNowcastCard(
                             val labelText = when {
                                 status == RainStatus.RAIN_APPROACHING -> when (language) {
                                     AppLanguage.ENGLISH -> "Rain starts"
+                                    AppLanguage.KOREAN -> "비 시작"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "开始降雨"
                                     AppLanguage.TRADITIONAL_CHINESE -> "開始降雨"
+                                    AppLanguage.SPANISH -> "Empieza"
+                                    AppLanguage.FRENCH -> "Début"
+                                    AppLanguage.PORTUGUESE -> "Começa"
                                     AppLanguage.JAPANESE -> "降り始め"
                                 }
                                 nowcast.isPeak -> when (language) {
                                     AppLanguage.ENGLISH -> "Peak"
+                                    AppLanguage.KOREAN -> "최대 강수"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "最强峰值"
                                     AppLanguage.TRADITIONAL_CHINESE -> "最強峰值"
+                                    AppLanguage.SPANISH -> "Pico"
+                                    AppLanguage.FRENCH -> "Pic"
+                                    AppLanguage.PORTUGUESE -> "Pico"
                                     AppLanguage.JAPANESE -> "ピーク"
                                 }
                                 mins > 90 -> when (language) {
                                     AppLanguage.ENGLISH -> "Duration"
+                                    AppLanguage.KOREAN -> "지속 예상"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "持续时间"
                                     AppLanguage.TRADITIONAL_CHINESE -> "持續時間"
+                                    AppLanguage.SPANISH -> "Duración"
+                                    AppLanguage.FRENCH -> "Durée"
+                                    AppLanguage.PORTUGUESE -> "Duração"
                                     AppLanguage.JAPANESE -> "継続予想"
                                 }
                                 else -> when (language) {
                                     AppLanguage.ENGLISH -> "Rain stops"
+                                    AppLanguage.KOREAN -> "비 그침"
                                     AppLanguage.SIMPLIFIED_CHINESE -> "预计雨停"
                                     AppLanguage.TRADITIONAL_CHINESE -> "預計雨停"
+                                    AppLanguage.SPANISH -> "Termina"
+                                    AppLanguage.FRENCH -> "Fin"
+                                    AppLanguage.PORTUGUESE -> "Termina"
                                     AppLanguage.JAPANESE -> "降り止み"
                                 }
                             }
@@ -251,15 +275,23 @@ fun PrecipitationNowcastCard(
                                 val prefixText = if (mins > 90) {
                                     when (language) {
                                         AppLanguage.ENGLISH -> "~"
+                                        AppLanguage.KOREAN -> "약"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "约"
                                         AppLanguage.TRADITIONAL_CHINESE -> "約"
+                                        AppLanguage.SPANISH -> "~"
+                                        AppLanguage.FRENCH -> "~"
+                                        AppLanguage.PORTUGUESE -> "~"
                                         AppLanguage.JAPANESE -> "約"
                                     }
                                 } else {
                                     when (language) {
                                         AppLanguage.ENGLISH -> "in "
+                                        AppLanguage.KOREAN -> "약"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "剩"
                                         AppLanguage.TRADITIONAL_CHINESE -> "剩"
+                                        AppLanguage.SPANISH -> "en "
+                                        AppLanguage.FRENCH -> "dans "
+                                        AppLanguage.PORTUGUESE -> "em "
                                         AppLanguage.JAPANESE -> "あと"
                                     }
                                 }
@@ -276,8 +308,12 @@ fun PrecipitationNowcastCard(
                                     val displayVal = if (mins > 180) "$hours+" else "$hours"
                                     val suffixText = when (language) {
                                         AppLanguage.ENGLISH -> "h"
+                                        AppLanguage.KOREAN -> "시간"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "小时"
                                         AppLanguage.TRADITIONAL_CHINESE -> "小時"
+                                        AppLanguage.SPANISH -> "h"
+                                        AppLanguage.FRENCH -> "h"
+                                        AppLanguage.PORTUGUESE -> "h"
                                         AppLanguage.JAPANESE -> "時間"
                                     }
                                     Text(
@@ -297,8 +333,12 @@ fun PrecipitationNowcastCard(
                                 } else {
                                     val suffixText = when (language) {
                                         AppLanguage.ENGLISH -> "m"
+                                        AppLanguage.KOREAN -> "분"
                                         AppLanguage.SIMPLIFIED_CHINESE -> "分"
                                         AppLanguage.TRADITIONAL_CHINESE -> "分"
+                                        AppLanguage.SPANISH -> "min"
+                                        AppLanguage.FRENCH -> "min"
+                                        AppLanguage.PORTUGUESE -> "min"
                                         AppLanguage.JAPANESE -> "分"
                                     }
                                     Text(
@@ -325,8 +365,12 @@ fun PrecipitationNowcastCard(
                         ) {
                             val labelText = when (language) {
                                 AppLanguage.ENGLISH -> "Duration"
+                                AppLanguage.KOREAN -> "지속 예상"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "持续时间"
                                 AppLanguage.TRADITIONAL_CHINESE -> "持續時間"
+                                AppLanguage.SPANISH -> "Duración"
+                                AppLanguage.FRENCH -> "Durée"
+                                AppLanguage.PORTUGUESE -> "Duração"
                                 AppLanguage.JAPANESE -> "継続予想"
                             }
                             Text(
@@ -338,8 +382,12 @@ fun PrecipitationNowcastCard(
                             Spacer(modifier = Modifier.height(1.dp))
                             val valueText = when (language) {
                                 AppLanguage.ENGLISH -> "6h+"
+                                AppLanguage.KOREAN -> "6시간+"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "6小时+"
                                 AppLanguage.TRADITIONAL_CHINESE -> "6小時+"
+                                AppLanguage.SPANISH -> "6h+"
+                                AppLanguage.FRENCH -> "6h+"
+                                AppLanguage.PORTUGUESE -> "6h+"
                                 AppLanguage.JAPANESE -> "6時間+"
                             }
                             Text(
@@ -358,8 +406,12 @@ fun PrecipitationNowcastCard(
                         ) {
                             val probLabel = when (language) {
                                 AppLanguage.ENGLISH -> "Rain chance"
+                                AppLanguage.KOREAN -> "강수 확률"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "降水概率"
                                 AppLanguage.TRADITIONAL_CHINESE -> "降水機率"
+                                AppLanguage.SPANISH -> "Prob. lluvia"
+                                AppLanguage.FRENCH -> "Risque pluie"
+                                AppLanguage.PORTUGUESE -> "Prob. chuva"
                                 AppLanguage.JAPANESE -> "降水確率"
                             }
                             Text(
@@ -467,8 +519,12 @@ fun PrecipitationTimelineChart(
         ) {
             val chartTitle = when (language) {
                 AppLanguage.ENGLISH -> "60-Min Rain Trend"
+                AppLanguage.KOREAN -> "향후 60분 강수 추이"
                 AppLanguage.SIMPLIFIED_CHINESE -> "未来60分钟降水趋势"
                 AppLanguage.TRADITIONAL_CHINESE -> "未來60分鐘降水趨勢"
+                AppLanguage.SPANISH -> "Tendencia de lluvia (60 min)"
+                AppLanguage.FRENCH -> "Tendance pluie (60 min)"
+                AppLanguage.PORTUGUESE -> "Tendência de chuva (60 min)"
                 AppLanguage.JAPANESE -> "今後60分間の雨雲推移"
             }
             Row(
@@ -493,8 +549,12 @@ fun PrecipitationTimelineChart(
             if (peakPrecip > 0.05) {
                 val peakText = when (language) {
                     AppLanguage.ENGLISH -> "Peak ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
+                    AppLanguage.KOREAN -> "최대 약 ${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                     AppLanguage.SIMPLIFIED_CHINESE -> "最大约 ${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                     AppLanguage.TRADITIONAL_CHINESE -> "最大約 ${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
+                    AppLanguage.SPANISH -> "Pico ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
+                    AppLanguage.FRENCH -> "Pic ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
+                    AppLanguage.PORTUGUESE -> "Pico ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                     AppLanguage.JAPANESE -> "最大 約${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                 }
                 Surface(
@@ -700,14 +760,22 @@ fun PrecipitationTimelineChart(
         ) {
             val labelNow = when (language) {
                 AppLanguage.ENGLISH -> "Now"
+                AppLanguage.KOREAN -> "현재"
                 AppLanguage.SIMPLIFIED_CHINESE -> "现在"
                 AppLanguage.TRADITIONAL_CHINESE -> "現在"
+                AppLanguage.SPANISH -> "Ahora"
+                AppLanguage.FRENCH -> "Maint."
+                AppLanguage.PORTUGUESE -> "Agora"
                 AppLanguage.JAPANESE -> "現在"
             }
             val labelSuffix = when (language) {
                 AppLanguage.ENGLISH -> "m"
+                AppLanguage.KOREAN -> "분"
                 AppLanguage.SIMPLIFIED_CHINESE -> "分"
                 AppLanguage.TRADITIONAL_CHINESE -> "分"
+                AppLanguage.SPANISH -> "m"
+                AppLanguage.FRENCH -> "m"
+                AppLanguage.PORTUGUESE -> "m"
                 AppLanguage.JAPANESE -> "分"
             }
             val timeLabels = listOf(labelNow, "15$labelSuffix", "30$labelSuffix", "45$labelSuffix", "60$labelSuffix")
@@ -743,32 +811,48 @@ fun PrecipitationTimelineChart(
                 nowcast.isJapan || nowcast.dataSourceName?.contains("JMA") == true || nowcast.dataSourceName?.contains("気象庁") == true -> {
                     when (language) {
                         AppLanguage.ENGLISH -> "Source: Japan Meteorological Agency (JMA)"
+                        AppLanguage.KOREAN -> "출처: 일본 기상청 (JMA) 고해상도 강수 나우캐스트"
                         AppLanguage.SIMPLIFIED_CHINESE -> "数据来源: 日本气象厅 (JMA)"
                         AppLanguage.TRADITIONAL_CHINESE -> "資料來源: 日本氣象廳 (JMA)"
+                        AppLanguage.SPANISH -> "Fuente: Agencia Meteorológica de Japón (JMA)"
+                        AppLanguage.FRENCH -> "Source : Agence météorologique du Japon (JMA)"
+                        AppLanguage.PORTUGUESE -> "Fonte: Agência Meteorológica do Japão (JMA)"
                         AppLanguage.JAPANESE -> "情報源: 気象庁 高解像度降水ナウキャスト"
                     }
                 }
                 nowcast.isUS || nowcast.dataSourceName?.contains("NOAA") == true || nowcast.dataSourceName?.contains("NWS") == true -> {
                     when (language) {
                         AppLanguage.ENGLISH -> "Source: National Weather Service (NOAA/NWS)"
+                        AppLanguage.KOREAN -> "출처: 미국 국립기상청 (NOAA/NWS)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "数据来源: 美国国家气象局 (NOAA/NWS)"
                         AppLanguage.TRADITIONAL_CHINESE -> "資料來源: 美國國家氣象局 (NOAA/NWS)"
+                        AppLanguage.SPANISH -> "Fuente: Servicio Meteorológico Nacional (NOAA/NWS)"
+                        AppLanguage.FRENCH -> "Source : National Weather Service (NOAA/NWS)"
+                        AppLanguage.PORTUGUESE -> "Fonte: Serviço Nacional de Meteorologia (NOAA/NWS)"
                         AppLanguage.JAPANESE -> "情報源: 米国気象局 高解像度数値予報 (NOAA/NWS)"
                     }
                 }
                 nowcast.isEurope || nowcast.dataSourceName?.contains("ECMWF") == true || nowcast.dataSourceName?.contains("欧州") == true || nowcast.dataSourceName?.contains("ヨーロッパ") == true -> {
                     when (language) {
                         AppLanguage.ENGLISH -> "Source: ECMWF / European Met Services (via Open-Meteo)"
+                        AppLanguage.KOREAN -> "출처: 유럽중기예보센터 (ECMWF) / 유럽 각국 기상청"
                         AppLanguage.SIMPLIFIED_CHINESE -> "数据来源: 欧洲中期天气预报中心 (ECMWF) / 欧洲各气象局"
                         AppLanguage.TRADITIONAL_CHINESE -> "資料來源: 歐洲中期天氣預報中心 (ECMWF) / 歐洲各氣象局"
+                        AppLanguage.SPANISH -> "Fuente: ECMWF / Servicios Met. Europeos (vía Open-Meteo)"
+                        AppLanguage.FRENCH -> "Source : ECMWF / Services météo européens (via Open-Meteo)"
+                        AppLanguage.PORTUGUESE -> "Fonte: ECMWF / Serviços Met. Europeus (via Open-Meteo)"
                         AppLanguage.JAPANESE -> "情報源: 欧州中期予報センター (ECMWF) / 各気象機関"
                     }
                 }
                 else -> {
                     when (language) {
                         AppLanguage.ENGLISH -> "Source: ECMWF & NOAA Numerical Models (via Open-Meteo)"
+                        AppLanguage.KOREAN -> "출처: ECMWF · NOAA 수치예보 모델 (Open-Meteo)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "数据来源: ECMWF・NOAA 国际数值气象预报"
                         AppLanguage.TRADITIONAL_CHINESE -> "資料來源: ECMWF・NOAA 國際數值氣象預報"
+                        AppLanguage.SPANISH -> "Fuente: Modelos numéricos ECMWF y NOAA (vía Open-Meteo)"
+                        AppLanguage.FRENCH -> "Source : Modèles numériques ECMWF & NOAA (via Open-Meteo)"
+                        AppLanguage.PORTUGUESE -> "Fonte: Modelos numéricos ECMWF e NOAA (via Open-Meteo)"
                         AppLanguage.JAPANESE -> "情報源: ECMWF・NOAA 国際数値気象モデル"
                     }
                 }

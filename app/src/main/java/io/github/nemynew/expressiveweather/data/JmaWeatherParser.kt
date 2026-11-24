@@ -55,6 +55,8 @@ object JmaWeatherParser {
         var windGustsKmH = 12.0
         var precip1h = 0.0
         var precip24h = 0.0
+        var amedasObservedPrecip10m: Double? = null
+        var amedasObservedPrecip1h: Double? = null
         var observedMax: Int? = null
         var observedMin: Int? = null
 
@@ -92,9 +94,11 @@ object JmaWeatherParser {
                         windGustsKmH = windSpeedMs * 3.6 * 1.35
                     }
 
-                    val p10 = latestObj.optJSONArray("precipitation10m")?.optDouble(0, Double.NaN)?.takeIf { !it.isNaN() } ?: 0.0
-                    val p1 = latestObj.optJSONArray("precipitation1h")?.optDouble(0, Double.NaN)?.takeIf { !it.isNaN() }
-                    precip1h = p1 ?: (p10 * 6.0)
+                    val p10Raw = latestObj.optJSONArray("precipitation10m")?.optDouble(0, Double.NaN)?.takeIf { !it.isNaN() }
+                    val p1Raw = latestObj.optJSONArray("precipitation1h")?.optDouble(0, Double.NaN)?.takeIf { !it.isNaN() }
+                    amedasObservedPrecip10m = p10Raw
+                    amedasObservedPrecip1h = p1Raw
+                    precip1h = p1Raw ?: ((p10Raw ?: 0.0) * 6.0)
 
                     val p24 = latestObj.optJSONArray("precipitation24h")?.optDouble(0)
                     if (p24 != null && !p24.isNaN()) precip24h = p24
@@ -324,7 +328,25 @@ object JmaWeatherParser {
         val todayMaxPop = if (popSlots.isNotEmpty()) popSlots.take(4).maxOf { it.pop } else (todayPops.maxOrNull() ?: 0)
         val currentPop = getPopForTimestamp(calNow.timeInMillis, popSlots, todayMaxPop)
 
-        // 現在の天気状態 (実況値 + 気象台予報のハイブリッド判定)
+        // 実況降水判定:
+        // - AMeDAS は直近10分値 (precipitation10m) を優先し、既に止んだ過去の1時間累計で雨残りを起こさない
+        // - 高解像度降水ナウキャスト (hrpns) の現在時刻付近タイル値も現在天気判定へ統合
+        val liveAmedasPrecipMmH: Double? = when {
+            amedasObservedPrecip10m != null -> amedasObservedPrecip10m * 6.0
+            amedasObservedPrecip1h != null -> amedasObservedPrecip1h
+            else -> null
+        }
+        val nowMillis = calNow.timeInMillis
+        val nowcastCurrentMm: Double? = jmaMinutelySeries
+            ?.filter { kotlin.math.abs(it.first - nowMillis) <= 15 * 60 * 1000L }
+            ?.minByOrNull { kotlin.math.abs(it.first - nowMillis) }
+            ?.second
+        val currentLivePrecipMm: Double = maxOf(
+            liveAmedasPrecipMmH?.takeIf { it > 0.05 } ?: 0.0,
+            nowcastCurrentMm?.takeIf { it >= PrecipitationAnalyzer.THRESHOLD_RAIN_START } ?: 0.0
+        )
+
+        // 現在の天気状態 (実況値・ナウキャスト最優先 + 気象台予報のハイブリッド判定)
         val condition = resolveCondition(
             codeStr = todayWeatherCodeStr,
             weatherText = todayWeatherText,
@@ -332,7 +354,9 @@ object JmaWeatherParser {
             pop = currentPop,
             isDay = isDay,
             isCurrent = true,
-            observedPrecipMm = precip1h
+            observedPrecipMm = liveAmedasPrecipMmH ?: 0.0,
+            nowcastPrecipMm = nowcastCurrentMm,
+            hasObservedPrecipData = liveAmedasPrecipMmH != null
         )
 
         // =========================================================
@@ -374,6 +398,14 @@ object JmaWeatherParser {
             val hWind = (windSpeedKmH * (0.8 + tempFraction * 0.4)).coerceAtLeast(1.0)
             val hGust = hWind * 1.35
 
+            // 降水量 (mm) - THRESHOLD_RAIN_START (1.0 mm/h) と整合する階層マッピング
+            // step=1 は hrpns (5分刻み)、step>=2 は rasrf (1時間毎) に対応するため許容時間差を調整
+            val matchWindowMs = if (step <= 1) 15 * 60 * 1000L else 30 * 60 * 1000L
+            val nowcastHourPrecip = jmaMinutelySeries
+                ?.filter { kotlin.math.abs(it.first - hCal.timeInMillis) <= matchWindowMs }
+                ?.minByOrNull { kotlin.math.abs(it.first - hCal.timeInMillis) }
+                ?.second
+
             // 天気状態の精密判定
             val codeForHour = if (isSameDay) todayWeatherCodeStr else tomorrowWeatherCodeStr
             val textForHour = if (isSameDay) todayWeatherText else tomorrowWeatherText
@@ -388,21 +420,16 @@ object JmaWeatherParser {
                     pop = hPop,
                     isDay = hIsDay,
                     isCurrent = false,
-                    observedPrecipMm = 0.0
+                    observedPrecipMm = 0.0,
+                    nowcastPrecipMm = nowcastHourPrecip,
+                    hasObservedPrecipData = false
                 )
             }
 
-            // 降水量 (mm) - THRESHOLD_RAIN_START (1.0 mm/h) と整合する階層マッピング
-            // step=1 は hrpns (5分刻み)、step>=2 は rasrf (1時間毎) に対応するため許容時間差を調整
-            val matchWindowMs = if (step <= 1) 15 * 60 * 1000L else 30 * 60 * 1000L
-            val nowcastHourPrecip = jmaMinutelySeries
-                ?.filter { kotlin.math.abs(it.first - hCal.timeInMillis) <= matchWindowMs }
-                ?.minByOrNull { kotlin.math.abs(it.first - hCal.timeInMillis) }
-                ?.second
             val hPrecipMm = if (step == 0) {
-                precip1h
-            } else if (nowcastHourPrecip != null && nowcastHourPrecip > 0.0) {
-                nowcastHourPrecip
+                currentLivePrecipMm
+            } else if (nowcastHourPrecip != null) {
+                if (nowcastHourPrecip >= PrecipitationAnalyzer.THRESHOLD_RAIN_START) nowcastHourPrecip else 0.0
             } else {
                 if (hCondition.isPrecipitating) {
                     if (hPop >= 70) 2.5 else if (hPop >= 50) 1.2 else 0.4
@@ -662,7 +689,7 @@ object JmaWeatherParser {
         // 日本国内のナウキャスト解析: Open-Meteo等の外部降水情報は遮断し、
         // 気象庁の公式データ（アメダス10分値・高解像度降水ナウキャストタイル・予報・降水確率スロット）のみで高精度解析を実施
         val precipitationNowcast = PrecipitationAnalyzer.analyze(
-            currentPrecipMm = precip1h,
+            currentPrecipMm = currentLivePrecipMm,
             currentCondition = condition,
             minutelyTimes = null,
             minutelyPrecips = null,
@@ -707,7 +734,7 @@ object JmaWeatherParser {
             isDay = isDay,
             dewPointC = currentTemp - ((100 - humidity) / 5),
             windGustsKmH = windGustsKmH,
-            precipitationMm = precip1h,
+            precipitationMm = currentLivePrecipMm,
             precipitationSumMm = precip24h,
             precipitationProbabilityMax = todayMaxPop,
             windDetails = windDetails,
@@ -736,8 +763,8 @@ object JmaWeatherParser {
     }
 
     /**
-     * 実況値（降水ミリ数）と気象台予報コード・時間帯・降水確率を統合した、
-     * 現実の空模様と完全一致する精密天気状態判定エンジン
+     * 実況値（AMeDAS 10分降水量・高解像度降水ナウキャスト）と気象台予報コード・時間帯・降水確率を統合した、
+     * 現実の空模様と一致する精密天気状態判定エンジン
      */
     fun resolveCondition(
         codeStr: String,
@@ -746,27 +773,52 @@ object JmaWeatherParser {
         pop: Int,
         isDay: Boolean,
         isCurrent: Boolean,
-        observedPrecipMm: Double = 0.0
+        observedPrecipMm: Double = 0.0,
+        nowcastPrecipMm: Double? = null,
+        hasObservedPrecipData: Boolean = false
     ): WeatherCondition {
-        // 1. 実況降雨の最優先判定 (AMeDAS で現に 0.1mm 以上の降水が観測されている場合)
-        if (isCurrent && observedPrecipMm > 0.05) {
-            val code = codeStr.toIntOrNull() ?: 100
-            val isSnowCode = code in 400..499 || code in listOf(104, 105, 115, 116, 204, 205, 215, 216, 303, 304, 309, 314, 315, 316, 317, 326, 327, 340)
-            return if (isSnowCode) WeatherCondition.SNOW
-            else if (observedPrecipMm >= 10.0) WeatherCondition.HEAVY_RAIN
-            else WeatherCondition.RAIN
-        }
-
         val code = codeStr.toIntOrNull() ?: 100
         val text = weatherText
+        val compactText = text.replace(" ", "").replace("\u3000", "")
+        val isSnowCode = code in 400..499 || code in listOf(
+            104, 105, 115, 116, 204, 205, 215, 216,
+            303, 304, 309, 314, 315, 316, 317, 326, 327, 340
+        )
+        val isThunderCode = code in listOf(108, 119, 123, 125, 140, 208, 219, 230, 240, 250, 350)
 
+        // 1. 実況・短時間ナウキャスト降水量の最優先判定
+        val activeObservedPrecipMm = if (isCurrent && observedPrecipMm > 0.05) observedPrecipMm else 0.0
+        val activeNowcastPrecipMm = if (nowcastPrecipMm != null && nowcastPrecipMm >= PrecipitationAnalyzer.THRESHOLD_RAIN_START) {
+            nowcastPrecipMm
+        } else {
+            0.0
+        }
+        val activePrecipMm = maxOf(activeObservedPrecipMm, activeNowcastPrecipMm)
+        if (activePrecipMm > 0.05) {
+            return when {
+                isSnowCode -> WeatherCondition.SNOW
+                isThunderCode && activePrecipMm >= 5.0 -> WeatherCondition.THUNDERSTORM
+                activePrecipMm >= 10.0 -> WeatherCondition.HEAVY_RAIN
+                else -> WeatherCondition.RAIN
+            }
+        }
+
+        // 2. 実況観測（AMeDAS / 高解像度降水ナウキャスト）または短時間降水予報で
+        //    降水なしが確定している場合は、府県予報コードの「雨」で誤って雨表示にしない
+        val isConfirmedDry = (isCurrent && (hasObservedPrecipData || nowcastPrecipMm != null)) ||
+            (!isCurrent && nowcastPrecipMm != null)
+        if (isConfirmedDry) {
+            return resolveDryBaseCondition(code, compactText, hourOfDay, pop, isDay)
+        }
+
+        // 3. 実況・短時間降水データが利用できない時間帯（遠未来やオフライン時）の予報コード判定
         // 雷雨判定
-        if (code in listOf(108, 119, 123, 125, 140, 208, 219, 230, 240, 250, 350) || text.contains("雷")) {
+        if (isThunderCode || compactText.contains("雷")) {
             if (pop >= 50 || hourOfDay >= 15) return WeatherCondition.THUNDERSTORM
         }
 
         // 雪判定 (400系)
-        if (code in 400..499 || text.contains("雪")) {
+        if (code in 400..499 || compactText.contains("雪")) {
             if (code in listOf(411, 420, 422) && hourOfDay >= 12 && pop < 30) {
                 return if (isDay) WeatherCondition.CLEAR else WeatherCondition.FEW_CLOUDS
             }
@@ -774,24 +826,38 @@ object JmaWeatherParser {
         }
 
         // 霧判定
-        if (code in listOf(130, 131, 209) || text.contains("霧")) {
+        if (code in listOf(130, 131, 209) || compactText.contains("霧")) {
             if (hourOfDay in 4..8) return WeatherCondition.FOG
         }
 
         // 300系 (雨ベース)
         if (code in 300..399) {
             // 雨後晴れ / 雨後曇り (311, 313, 320..325)
-            if (code in listOf(311, 313, 320, 321, 322, 323, 324, 325) || text.contains("雨後") || text.contains("雨のち")) {
-                val rainEndsAfterNoon = code == 322 || text.contains("昼頃から晴") || text.contains("昼頃から曇")
-                val rainEndsEvening = code == 323 || text.contains("夕方から晴")
+            if (code in listOf(311, 313, 320, 321, 322, 323, 324, 325) ||
+                compactText.contains("雨後") ||
+                compactText.contains("雨のち") ||
+                compactText.contains("夕方からくもり") ||
+                compactText.contains("夕方から曇") ||
+                compactText.contains("夜くもり") ||
+                compactText.contains("夜曇")
+            ) {
+                val rainEndsAfterNoon = code == 322 ||
+                    compactText.contains("昼頃から晴") ||
+                    compactText.contains("昼頃から曇") ||
+                    compactText.contains("昼頃からくもり")
+                val rainEndsEvening = code == 323 ||
+                    compactText.contains("夕方から晴") ||
+                    compactText.contains("夕方からくもり") ||
+                    compactText.contains("夕方から曇")
                 val clearThreshold = when {
+                    compactText.contains("夜くもり") || compactText.contains("夜曇") -> 18
                     rainEndsEvening -> 17
                     rainEndsAfterNoon -> 12
-                    code in listOf(320, 321) || text.contains("朝の内") -> 9
+                    code in listOf(320, 321) || compactText.contains("朝の内") -> 9
                     else -> 12
                 }
                 if (hourOfDay >= clearThreshold && pop < 40) {
-                    return if (code in listOf(311, 320, 322, 324) || text.contains("晴")) {
+                    return if (code in listOf(311, 320, 322, 324) || compactText.contains("晴")) {
                         if (isDay) WeatherCondition.CLEAR else WeatherCondition.FEW_CLOUDS
                     } else {
                         WeatherCondition.CLOUDY
@@ -802,17 +868,28 @@ object JmaWeatherParser {
             return WeatherCondition.RAIN
         }
 
-        // 100系・200系の複合天気（晴後雨、曇時々晴夜遅く雨など）
+        // 100系・200系の複合天気（晴後雨、曇時々晴夜遅く雨、くもり昼過ぎから夕方雨など）
         val hasRain = hasRainInCode(codeStr, text)
         if (hasRain) {
             val isRainTime: Boolean = when {
-                code in listOf(121, 221) || text.contains("朝の内") -> hourOfDay < 9
-                code in listOf(126, 224) || text.contains("昼頃から雨") -> hourOfDay >= 12
-                code in listOf(127, 225) || text.contains("夕方から雨") -> hourOfDay >= 16
-                text.contains("夜遅く") -> hourOfDay >= 21
-                code in listOf(128, 226) || text.contains("夜は雨") -> hourOfDay >= 19
-                code in listOf(112, 113, 114, 212, 213, 214) || text.contains("後雨") || text.contains("のち雨") -> hourOfDay >= 18 || pop >= 50
-                else -> pop >= 50
+                code in listOf(121, 221) || compactText.contains("朝の内") || compactText.contains("朝まで") -> hourOfDay < 9
+                compactText.contains("昼過ぎから夕方") || compactText.contains("昼頃から夕方") -> hourOfDay in 12..18
+                code in listOf(126, 224) || compactText.contains("昼頃から") -> hourOfDay >= 12
+                compactText.contains("昼過ぎから") || compactText.contains("午後から") -> hourOfDay >= 13
+                compactText.contains("夕方一時") || compactText.contains("夕方時々") -> hourOfDay in 15..19
+                code in listOf(127, 225) || compactText.contains("夕方から") -> hourOfDay >= 16
+                compactText.contains("夜遅く") -> hourOfDay >= 21
+                compactText.contains("夜のはじめ頃") -> hourOfDay in 18..21
+                code in listOf(128, 226) ||
+                    compactText.contains("夜は雨") ||
+                    compactText.contains("夜から雨") ||
+                    compactText.contains("夜一時雨") ||
+                    compactText.contains("夜時々雨") ||
+                    compactText.contains("夜雨") -> hourOfDay >= 18
+                code in listOf(112, 113, 114, 212, 213, 214) ||
+                    compactText.contains("後雨") ||
+                    compactText.contains("のち雨") -> hourOfDay >= 15
+                else -> pop >= 60
             }
 
             if (isRainTime && pop >= 40) {
@@ -820,9 +897,49 @@ object JmaWeatherParser {
             }
         }
 
-        // 日中・非降水時の基底天気
-        val isSunnyBase = (code in 100..199) || (code in listOf(201, 210, 211, 223)) || text.contains("晴")
-        val hasCloudy = (code in 200..299) || (code in listOf(101, 110, 111)) || text.contains("くもり") || text.contains("曇")
+        return resolveDryBaseCondition(code, compactText, hourOfDay, pop, isDay)
+    }
+
+    /**
+     * 非降水時の基底天気（晴れ・薄曇り・曇り・朝霧）を判定
+     */
+    private fun resolveDryBaseCondition(
+        code: Int,
+        compactText: String,
+        hourOfDay: Int,
+        pop: Int,
+        isDay: Boolean
+    ): WeatherCondition {
+        if ((code in listOf(130, 131, 209) || compactText.contains("霧")) && hourOfDay in 4..8) {
+            return WeatherCondition.FOG
+        }
+
+        // 雨・雪主体の予報日でも、現時点で非降水なら「曇り」（晴れ移行後のみ晴れ）
+        if (code in 300..399) {
+            val clearThreshold = when {
+                code == 323 || compactText.contains("夕方から晴") -> 17
+                code == 322 || compactText.contains("昼頃から晴") -> 12
+                code in listOf(320, 321) || compactText.contains("朝の内") -> 9
+                else -> 12
+            }
+            if ((code in listOf(311, 320, 322, 324) || compactText.contains("晴")) &&
+                hourOfDay >= clearThreshold &&
+                pop < 40
+            ) {
+                return if (isDay) WeatherCondition.CLEAR else WeatherCondition.FEW_CLOUDS
+            }
+            return WeatherCondition.CLOUDY
+        }
+
+        if (code in 400..499) {
+            if (code in listOf(411, 420, 422) && hourOfDay >= 12 && pop < 30) {
+                return if (isDay) WeatherCondition.CLEAR else WeatherCondition.FEW_CLOUDS
+            }
+            return WeatherCondition.CLOUDY
+        }
+
+        val isSunnyBase = (code in 100..199) || (code in listOf(201, 210, 211, 223)) || compactText.contains("晴")
+        val hasCloudy = (code in 200..299) || (code in listOf(101, 110, 111)) || compactText.contains("くもり") || compactText.contains("曇")
 
         return when {
             isSunnyBase && !hasCloudy -> WeatherCondition.CLEAR

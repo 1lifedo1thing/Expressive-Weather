@@ -63,6 +63,10 @@ fun LanguageSelectionScreen(
     val preferredOrder = remember {
         listOf(
             AppLanguage.ENGLISH,
+            AppLanguage.SPANISH,
+            AppLanguage.FRENCH,
+            AppLanguage.PORTUGUESE,
+            AppLanguage.KOREAN,
             AppLanguage.SIMPLIFIED_CHINESE,
             AppLanguage.TRADITIONAL_CHINESE,
             AppLanguage.JAPANESE

@@ -134,9 +134,13 @@ fun WindDetailScreen(
                 Text(
                     text = when (language) {
                         AppLanguage.JAPANESE -> "天気データを取得できませんでした"
+                        AppLanguage.KOREAN -> "날씨 데이터를 불러올 수 없습니다"
                         AppLanguage.SIMPLIFIED_CHINESE -> "无法获取天气数据"
                         AppLanguage.TRADITIONAL_CHINESE -> "無法取得天氣資料"
                         AppLanguage.ENGLISH -> "Weather data is currently unavailable"
+                        AppLanguage.SPANISH -> "Los datos meteorológicos no están disponibles"
+                        AppLanguage.FRENCH -> "Les données météo ne sont pas disponibles"
+                        AppLanguage.PORTUGUESE -> "Os dados do tempo não estão disponíveis"
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -145,9 +149,13 @@ fun WindDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.JAPANESE -> "戻る"
+                            AppLanguage.KOREAN -> "뒤로"
                             AppLanguage.SIMPLIFIED_CHINESE -> "返回"
                             AppLanguage.TRADITIONAL_CHINESE -> "返回"
                             AppLanguage.ENGLISH -> "Back"
+                            AppLanguage.SPANISH -> "Volver"
+                            AppLanguage.FRENCH -> "Retour"
+                            AppLanguage.PORTUGUESE -> "Voltar"
                         }
                     )
                 }
@@ -1028,27 +1036,43 @@ private fun BeaufortAndLifeInsightsSection(
                     val (laundryText, laundryColor) = when {
                         windMs < 1.6 -> when (language) {
                             AppLanguage.JAPANESE -> "乾きにくい"
+                            AppLanguage.KOREAN -> "잘 마르지 않음"
                             AppLanguage.SIMPLIFIED_CHINESE -> "不易晾干"
                             AppLanguage.TRADITIONAL_CHINESE -> "不易晾乾"
                             AppLanguage.ENGLISH -> "Slow drying"
+                            AppLanguage.SPANISH -> "Secado lento"
+                            AppLanguage.FRENCH -> "Séchage lent"
+                            AppLanguage.PORTUGUESE -> "Secagem lenta"
                         } to colorScheme.onSurfaceVariant
                         windMs < 8.0 -> when (language) {
                             AppLanguage.JAPANESE -> "外干しに最適"
+                            AppLanguage.KOREAN -> "야외 건조 최적"
                             AppLanguage.SIMPLIFIED_CHINESE -> "适宜户外晾晒"
                             AppLanguage.TRADITIONAL_CHINESE -> "適宜戶外晾曬"
                             AppLanguage.ENGLISH -> "Great for drying"
+                            AppLanguage.SPANISH -> "Ideal para secar"
+                            AppLanguage.FRENCH -> "Idéal pour sécher"
+                            AppLanguage.PORTUGUESE -> "Ótimo para secar"
                         } to colorScheme.primary
                         windMs < 10.8 -> when (language) {
                             AppLanguage.JAPANESE -> "飛ばされないよう留める"
+                            AppLanguage.KOREAN -> "날리지 않게 고정"
                             AppLanguage.SIMPLIFIED_CHINESE -> "注意固定防风吹落"
                             AppLanguage.TRADITIONAL_CHINESE -> "注意固定防風吹落"
                             AppLanguage.ENGLISH -> "Fasten securely"
+                            AppLanguage.SPANISH -> "Sujetar bien"
+                            AppLanguage.FRENCH -> "Bien fixer"
+                            AppLanguage.PORTUGUESE -> "Prender bem"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "部屋干し推奨"
+                            AppLanguage.KOREAN -> "실내 건조 권장"
                             AppLanguage.SIMPLIFIED_CHINESE -> "建议室内晾干"
                             AppLanguage.TRADITIONAL_CHINESE -> "建議室內晾乾"
                             AppLanguage.ENGLISH -> "Dry indoors"
+                            AppLanguage.SPANISH -> "Secar en interior"
+                            AppLanguage.FRENCH -> "Sécher à l'intérieur"
+                            AppLanguage.PORTUGUESE -> "Secar em ambiente interno"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1063,21 +1087,33 @@ private fun BeaufortAndLifeInsightsSection(
                     val (umbrellaText, umbrellaColor) = when {
                         windMs < 5.5 -> when (language) {
                             AppLanguage.JAPANESE -> "問題なく使用可能"
+                            AppLanguage.KOREAN -> "안전하게 사용 가능"
                             AppLanguage.SIMPLIFIED_CHINESE -> "可正常撑伞"
                             AppLanguage.TRADITIONAL_CHINESE -> "可正常撐傘"
                             AppLanguage.ENGLISH -> "Safe to use"
+                            AppLanguage.SPANISH -> "Uso seguro"
+                            AppLanguage.FRENCH -> "Sans problème"
+                            AppLanguage.PORTUGUESE -> "Uso seguro"
                         } to colorScheme.primary
                         windMs < 10.8 -> when (language) {
                             AppLanguage.JAPANESE -> "両手でしっかり保持"
+                            AppLanguage.KOREAN -> "단단히 잡고 사용"
                             AppLanguage.SIMPLIFIED_CHINESE -> "双手握紧防翻伞"
                             AppLanguage.TRADITIONAL_CHINESE -> "雙手握緊防翻傘"
                             AppLanguage.ENGLISH -> "Hold firmly"
+                            AppLanguage.SPANISH -> "Sujetar con firmeza"
+                            AppLanguage.FRENCH -> "Tenir fermement"
+                            AppLanguage.PORTUGUESE -> "Segurar firme"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "傘破損・転倒の恐れ"
+                            AppLanguage.KOREAN -> "우산 파손·낙상 주의"
                             AppLanguage.SIMPLIFIED_CHINESE -> "极易损伞摔倒危险"
                             AppLanguage.TRADITIONAL_CHINESE -> "極易損傘跌倒危險"
                             AppLanguage.ENGLISH -> "Damaging winds"
+                            AppLanguage.SPANISH -> "Vientos dañinos"
+                            AppLanguage.FRENCH -> "Vents violents"
+                            AppLanguage.PORTUGUESE -> "Ventos fortes"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1097,21 +1133,33 @@ private fun BeaufortAndLifeInsightsSection(
                     val (cyclingText, cyclingColor) = when {
                         windMs < 8.0 -> when (language) {
                             AppLanguage.JAPANESE -> "快適に走行可能"
+                            AppLanguage.KOREAN -> "쾌적한 주행 가능"
                             AppLanguage.SIMPLIFIED_CHINESE -> "平稳舒适骑行"
                             AppLanguage.TRADITIONAL_CHINESE -> "平穩舒適騎行"
                             AppLanguage.ENGLISH -> "Smooth ride"
+                            AppLanguage.SPANISH -> "Trayecto cómodo"
+                            AppLanguage.FRENCH -> "Trajet agréable"
+                            AppLanguage.PORTUGUESE -> "Pedalada tranquila"
                         } to colorScheme.primary
                         windMs < 13.9 -> when (language) {
                             AppLanguage.JAPANESE -> "横風に煽られ注意"
+                            AppLanguage.KOREAN -> "측풍 주의"
                             AppLanguage.SIMPLIFIED_CHINESE -> "注意侧风摇摆"
                             AppLanguage.TRADITIONAL_CHINESE -> "注意側風搖擺"
                             AppLanguage.ENGLISH -> "Crosswind caution"
+                            AppLanguage.SPANISH -> "Cuidado con viento lateral"
+                            AppLanguage.FRENCH -> "Attention au vent latéral"
+                            AppLanguage.PORTUGUESE -> "Atenção ao vento lateral"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "転倒の恐れあり危険"
+                            AppLanguage.KOREAN -> "전도 위험·주행 주의"
                             AppLanguage.SIMPLIFIED_CHINESE -> "有吹翻危险禁止骑行"
                             AppLanguage.TRADITIONAL_CHINESE -> "有吹翻危險禁止騎行"
                             AppLanguage.ENGLISH -> "Dangerous"
+                            AppLanguage.SPANISH -> "Peligroso"
+                            AppLanguage.FRENCH -> "Dangereux"
+                            AppLanguage.PORTUGUESE -> "Perigoso"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1126,15 +1174,23 @@ private fun BeaufortAndLifeInsightsSection(
                     val (outdoorText, outdoorColor) = when {
                         windMs < 10.8 -> when (language) {
                             AppLanguage.JAPANESE -> "窓を開けて換気良好"
+                            AppLanguage.KOREAN -> "환기하기 좋음"
                             AppLanguage.SIMPLIFIED_CHINESE -> "开窗通风良好"
                             AppLanguage.TRADITIONAL_CHINESE -> "開窗通風良好"
                             AppLanguage.ENGLISH -> "Good ventilation"
+                            AppLanguage.SPANISH -> "Buena ventilación"
+                            AppLanguage.FRENCH -> "Bonne aération"
+                            AppLanguage.PORTUGUESE -> "Boa ventilação"
                         } to colorScheme.primary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "強風のため戸締まり推奨"
+                            AppLanguage.KOREAN -> "강풍으로 창문 닫기 권장"
                             AppLanguage.SIMPLIFIED_CHINESE -> "风力过大紧闭门窗"
                             AppLanguage.TRADITIONAL_CHINESE -> "風力過大緊閉門窗"
                             AppLanguage.ENGLISH -> "Keep windows shut"
+                            AppLanguage.SPANISH -> "Mantén las ventanas cerradas"
+                            AppLanguage.FRENCH -> "Fermez les fenêtres"
+                            AppLanguage.PORTUGUESE -> "Mantenha as janelas fechadas"
                         } to colorScheme.error
                     }
                     InsightTile(

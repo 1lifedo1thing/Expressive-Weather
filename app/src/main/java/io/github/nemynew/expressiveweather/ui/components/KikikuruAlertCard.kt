@@ -223,23 +223,35 @@ fun KikikuruAlertCard(
     val title = if (cityName.isNullOrBlank()) {
         when (language) {
             AppLanguage.ENGLISH -> "Alert Level $levelNum $levelTitle"
+            AppLanguage.KOREAN -> "경계 단계 $levelNum $levelTitle"
             AppLanguage.SIMPLIFIED_CHINESE -> "警戒等级$levelNum $levelTitle"
             AppLanguage.TRADITIONAL_CHINESE -> "警戒等級$levelNum $levelTitle"
+            AppLanguage.SPANISH -> "Nivel de alerta $levelNum $levelTitle"
+            AppLanguage.FRENCH -> "Niveau d'alerte $levelNum $levelTitle"
+            AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum $levelTitle"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle"
         }
     } else {
         when (language) {
             AppLanguage.ENGLISH -> "Alert Level $levelNum $levelTitle ($cityName)"
+            AppLanguage.KOREAN -> "경계 단계 $levelNum $levelTitle ($cityName)"
             AppLanguage.SIMPLIFIED_CHINESE -> "警戒等级$levelNum $levelTitle ($cityName)"
             AppLanguage.TRADITIONAL_CHINESE -> "警戒等級$levelNum $levelTitle ($cityName)"
+            AppLanguage.SPANISH -> "Nivel de alerta $levelNum $levelTitle ($cityName)"
+            AppLanguage.FRENCH -> "Niveau d'alerte $levelNum $levelTitle ($cityName)"
+            AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum $levelTitle ($cityName)"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle（$cityName）"
         }
     }
 
     val resolvedButtonText = buttonText ?: when (language) {
         AppLanguage.ENGLISH -> "Check Kikikuru Map"
+        AppLanguage.KOREAN -> "키키쿠루 지도 확인"
         AppLanguage.SIMPLIFIED_CHINESE -> "查看危险度分布图"
         AppLanguage.TRADITIONAL_CHINESE -> "查看危險度分佈圖"
+        AppLanguage.SPANISH -> "Ver mapa de riesgo Kikikuru"
+        AppLanguage.FRENCH -> "Voir la carte Kikikuru"
+        AppLanguage.PORTUGUESE -> "Ver mapa de risco Kikikuru"
         AppLanguage.JAPANESE -> "キキクルマップを確認"
     }
 

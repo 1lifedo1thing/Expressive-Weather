@@ -22,42 +22,66 @@ enum class WidgetStyle(val id: String) {
     fun getDisplayName(language: AppLanguage): String = when (this) {
         WEATHER_EXPRESSIVE -> when (language) {
             AppLanguage.JAPANESE -> "天候連動グラデーション"
+            AppLanguage.KOREAN -> "날씨 연동 그라데이션"
             AppLanguage.ENGLISH -> "Weather Adaptive"
             AppLanguage.SIMPLIFIED_CHINESE -> "天气动态渐变"
             AppLanguage.TRADITIONAL_CHINESE -> "天氣動態漸層"
+            AppLanguage.SPANISH -> "Adaptado al clima"
+            AppLanguage.FRENCH -> "Adapté à la météo"
+            AppLanguage.PORTUGUESE -> "Adaptado ao clima"
         }
         MATERIAL_YOU -> when (language) {
             AppLanguage.JAPANESE -> "Material You (壁紙連動)"
+            AppLanguage.KOREAN -> "Material You (배경화면 연동)"
             AppLanguage.ENGLISH -> "Material You (Dynamic)"
             AppLanguage.SIMPLIFIED_CHINESE -> "Material You（壁纸取色）"
             AppLanguage.TRADITIONAL_CHINESE -> "Material You（桌布取色）"
+            AppLanguage.SPANISH -> "Material You (Dinámico)"
+            AppLanguage.FRENCH -> "Material You (Dynamique)"
+            AppLanguage.PORTUGUESE -> "Material You (Dinâmico)"
         }
         FROSTED_GLASS -> when (language) {
             AppLanguage.JAPANESE -> "Material You 半透明"
+            AppLanguage.KOREAN -> "Material You 반투명"
             AppLanguage.ENGLISH -> "Translucent Material You"
             AppLanguage.SIMPLIFIED_CHINESE -> "Material You 半透明"
             AppLanguage.TRADITIONAL_CHINESE -> "Material You 半透明"
+            AppLanguage.SPANISH -> "Material You translúcido"
+            AppLanguage.FRENCH -> "Material You translucide"
+            AppLanguage.PORTUGUESE -> "Material You translúcido"
         }
     }
 
     fun getDescription(language: AppLanguage): String = when (this) {
         WEATHER_EXPRESSIVE -> when (language) {
             AppLanguage.JAPANESE -> "空模様と昼夜に調和する鮮やかなグラデーション背景"
+            AppLanguage.KOREAN -> "실시간 날씨와 낮·밤에 맞춰 변화하는 생생한 그라데이션 배경"
             AppLanguage.ENGLISH -> "Expressive sky gradients matching real-time weather & daylight"
             AppLanguage.SIMPLIFIED_CHINESE -> "随实时天气与昼夜变化的绚丽渐变背景"
             AppLanguage.TRADITIONAL_CHINESE -> "隨即時天氣與晝夜變化的絢麗漸層背景"
+            AppLanguage.SPANISH -> "Degradados de cielo expresivos según el clima y la luz en tiempo real"
+            AppLanguage.FRENCH -> "Dégradés de ciel expressifs selon la météo et la lumière en temps réel"
+            AppLanguage.PORTUGUESE -> "Gradientes de céu expressivos conforme o clima e a luz em tempo real"
         }
         MATERIAL_YOU -> when (language) {
             AppLanguage.JAPANESE -> "ホーム画面の壁紙カラーとダーク/ライト設定に自動調和"
+            AppLanguage.KOREAN -> "홈 화면 배경화면 색상 및 다크/라이트 모드에 자동으로 맞춤"
             AppLanguage.ENGLISH -> "Adapts automatically to wallpaper colors and system theme"
             AppLanguage.SIMPLIFIED_CHINESE -> "自动匹配主屏幕壁纸色调与深浅色模式"
             AppLanguage.TRADITIONAL_CHINESE -> "自動匹配主畫面桌布色調與深淺色模式"
+            AppLanguage.SPANISH -> "Se adapta automáticamente a los colores del fondo y al tema del sistema"
+            AppLanguage.FRENCH -> "S'adapte automatiquement aux couleurs du fond d'écran et au thème système"
+            AppLanguage.PORTUGUESE -> "Adapta-se automaticamente às cores do papel de parede e ao tema do sistema"
         }
         FROSTED_GLASS -> when (language) {
             AppLanguage.JAPANESE -> "端末の Material You カラーをベースにした半透明デザイン（透明度調整可）"
+            AppLanguage.KOREAN -> "기기의 Material You 색상을 바탕으로 한 반투명 디자인 (투명도 조절 가능)"
             AppLanguage.ENGLISH -> "Translucent card tinted by your Material You palette (adjustable opacity)"
             AppLanguage.SIMPLIFIED_CHINESE -> "基于设备 Material You 配色的半透明设计（可调不透明度）"
             AppLanguage.TRADITIONAL_CHINESE -> "基於裝置 Material You 配色的半透明設計（可調不透明度）"
+            AppLanguage.SPANISH -> "Tarjeta translúcida teñida con tu paleta Material You (opacidad ajustable)"
+            AppLanguage.FRENCH -> "Carte translucide teintée par votre palette Material You (opacité réglable)"
+            AppLanguage.PORTUGUESE -> "Cartão translúcido com tons da sua paleta Material You (opacidade ajustável)"
         }
     }
 
@@ -119,39 +143,63 @@ enum class MaterialWidgetShape(val id: String) {
     fun getDisplayName(language: AppLanguage): String = when (this) {
         PILL -> when (language) {
             AppLanguage.JAPANESE -> "Pill (既定)"
+            AppLanguage.KOREAN -> "Pill (기본)"
             AppLanguage.ENGLISH -> "Pill (Default)"
             AppLanguage.SIMPLIFIED_CHINESE -> "Pill（默认）"
             AppLanguage.TRADITIONAL_CHINESE -> "Pill（預設）"
+            AppLanguage.SPANISH -> "Pill (Predeterminado)"
+            AppLanguage.FRENCH -> "Pill (Par défaut)"
+            AppLanguage.PORTUGUESE -> "Pill (Padrão)"
         }
         OVAL -> when (language) {
             AppLanguage.JAPANESE -> "Oval"
+            AppLanguage.KOREAN -> "Oval"
             AppLanguage.ENGLISH -> "Oval"
             AppLanguage.SIMPLIFIED_CHINESE -> "Oval"
             AppLanguage.TRADITIONAL_CHINESE -> "Oval"
+            AppLanguage.SPANISH -> "Oval"
+            AppLanguage.FRENCH -> "Oval"
+            AppLanguage.PORTUGUESE -> "Oval"
         }
         COOKIE_12 -> when (language) {
             AppLanguage.JAPANESE -> "Cookie"
+            AppLanguage.KOREAN -> "Cookie"
             AppLanguage.ENGLISH -> "Cookie"
             AppLanguage.SIMPLIFIED_CHINESE -> "Cookie"
             AppLanguage.TRADITIONAL_CHINESE -> "Cookie"
+            AppLanguage.SPANISH -> "Cookie"
+            AppLanguage.FRENCH -> "Cookie"
+            AppLanguage.PORTUGUESE -> "Cookie"
         }
         CLOVER_4 -> when (language) {
             AppLanguage.JAPANESE -> "Clover"
+            AppLanguage.KOREAN -> "Clover"
             AppLanguage.ENGLISH -> "Clover"
             AppLanguage.SIMPLIFIED_CHINESE -> "Clover"
             AppLanguage.TRADITIONAL_CHINESE -> "Clover"
+            AppLanguage.SPANISH -> "Clover"
+            AppLanguage.FRENCH -> "Clover"
+            AppLanguage.PORTUGUESE -> "Clover"
         }
         SUNNY -> when (language) {
             AppLanguage.JAPANESE -> "Sunny"
+            AppLanguage.KOREAN -> "Sunny"
             AppLanguage.ENGLISH -> "Sunny"
             AppLanguage.SIMPLIFIED_CHINESE -> "Sunny"
             AppLanguage.TRADITIONAL_CHINESE -> "Sunny"
+            AppLanguage.SPANISH -> "Sunny"
+            AppLanguage.FRENCH -> "Sunny"
+            AppLanguage.PORTUGUESE -> "Sunny"
         }
         PUFFY -> when (language) {
             AppLanguage.JAPANESE -> "Puffy"
+            AppLanguage.KOREAN -> "Puffy"
             AppLanguage.ENGLISH -> "Puffy"
             AppLanguage.SIMPLIFIED_CHINESE -> "Puffy"
             AppLanguage.TRADITIONAL_CHINESE -> "Puffy"
+            AppLanguage.SPANISH -> "Puffy"
+            AppLanguage.FRENCH -> "Puffy"
+            AppLanguage.PORTUGUESE -> "Puffy"
         }
     }
 }

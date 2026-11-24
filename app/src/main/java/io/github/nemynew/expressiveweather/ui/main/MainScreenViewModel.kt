@@ -483,14 +483,14 @@ class MainScreenViewModel(
                     KikikuruNotificationManager.cancelAll(ctx)
                     PrecipitationLiveNotificationManager.cancel(ctx)
                 } else {
-                    val defaultCity = _uiState.value.defaultCity
                     val selectedCity = _uiState.value.selectedCity
-                    val isCurrentLocation = selectedCity.id == defaultCity.id ||
-                            (selectedCity.latitude == defaultCity.latitude && selectedCity.longitude == defaultCity.longitude)
-                    val isUnresolvedPlaceholder = selectedCity.id == repository.defaultCity.id &&
-                            locationProvider?.hasLocationPermission() == true &&
-                            repository.getLastResolvedLocationCity() == null
-                    if (isCurrentLocation && !isUnresolvedPlaceholder) {
+                    val isEligible = WeatherRepository.isCityEligibleForNotifications(
+                        city = selectedCity,
+                        hasLocationPermission = locationProvider?.hasLocationPermission() == true,
+                        resolvedGpsCity = repository.getLastResolvedLocationCity(),
+                        savedCities = _uiState.value.savedCities
+                    )
+                    if (isEligible) {
                         _uiState.value.currentAlert?.let { alert ->
                             KikikuruNotificationManager.updateLiveAlertNotification(ctx, alert)
                         }
@@ -738,10 +738,13 @@ class MainScreenViewModel(
             } else if (newOverride == null) {
                 val actual = _uiState.value.weatherData?.precipitationNowcast
                 if (actual != null) {
-                    val isUnresolvedPlaceholder = _uiState.value.selectedCity.id == repository.defaultCity.id &&
-                            locationProvider?.hasLocationPermission() == true &&
-                            repository.getLastResolvedLocationCity() == null
-                    if (!isUnresolvedPlaceholder) {
+                    val isEligible = WeatherRepository.isCityEligibleForNotifications(
+                        city = _uiState.value.selectedCity,
+                        hasLocationPermission = locationProvider?.hasLocationPermission() == true,
+                        resolvedGpsCity = repository.getLastResolvedLocationCity(),
+                        savedCities = _uiState.value.savedCities
+                    )
+                    if (isEligible) {
                         PrecipitationLiveNotificationManager.updateRainLiveNotification(ctx, actual, _uiState.value.selectedCity.name)
                     } else {
                         PrecipitationLiveNotificationManager.cancel(ctx)
@@ -1048,12 +1051,22 @@ class MainScreenViewModel(
                 )
                 _uiState.update { current ->
                     val hasData = current.weatherData != null
+                    val localizedError = when (current.language) {
+                        AppLanguage.JAPANESE -> "気象データの更新に失敗しました: ${e.localizedMessage ?: "通信エラー"}"
+                        AppLanguage.KOREAN -> "기상 데이터를 업데이트하지 못했습니다: ${e.localizedMessage ?: "네트워크 오류"}"
+                        AppLanguage.SIMPLIFIED_CHINESE -> "气象数据更新失败：${e.localizedMessage ?: "网络错误"}"
+                        AppLanguage.TRADITIONAL_CHINESE -> "氣象資料更新失敗：${e.localizedMessage ?: "網路錯誤"}"
+                        AppLanguage.SPANISH -> "No se pudieron actualizar los datos meteorológicos: ${e.localizedMessage ?: "Error de red"}"
+                        AppLanguage.FRENCH -> "Échec de la mise à jour des données météo : ${e.localizedMessage ?: "Erreur réseau"}"
+                        AppLanguage.PORTUGUESE -> "Falha ao atualizar os dados meteorológicos: ${e.localizedMessage ?: "Erro de rede"}"
+                        AppLanguage.ENGLISH -> "Failed to refresh weather data: ${e.localizedMessage ?: "Network error"}"
+                    }
                     current.copy(
                         isRefreshing = false,
                         isLoading = false,
                         isFromCache = hasData,
                         isStale = hasData,
-                        errorMessage = if (hasData) null else "気象データの更新に失敗しました: ${e.localizedMessage ?: "通信エラー"}"
+                        errorMessage = if (hasData) null else localizedError
                     )
                 }
             }
@@ -1069,16 +1082,15 @@ class MainScreenViewModel(
     ) {
         if (!_uiState.value.isLiveAlertNotificationEnabled) return
         val ctx = repository.context ?: return
-        val defaultCity = _uiState.value.defaultCity
-        val isCurrentLocation = city.id == defaultCity.id ||
-            (city.latitude == defaultCity.latitude && city.longitude == defaultCity.longitude)
-        if (!isCurrentLocation) return
-
-        // 位置情報権限があるにもかかわらず初回GPS解決前のフォールバック「東京」を表示中なら、誤った東京通知を出さない
-        val isUnresolvedPlaceholder = city.id == repository.defaultCity.id &&
-            locationProvider?.hasLocationPermission() == true &&
-            repository.getLastResolvedLocationCity() == null
-        if (isUnresolvedPlaceholder) return
+        val hasLocPerm = locationProvider?.hasLocationPermission() == true
+        val resolvedGpsCity = repository.getLastResolvedLocationCity()
+        val isEligible = WeatherRepository.isCityEligibleForNotifications(
+            city = city,
+            hasLocationPermission = hasLocPerm,
+            resolvedGpsCity = resolvedGpsCity,
+            savedCities = _uiState.value.savedCities
+        )
+        if (!isEligible) return
 
         weatherData.alertInfo?.let { alert ->
             KikikuruNotificationManager.updateLiveAlertNotification(ctx, alert, city.name)

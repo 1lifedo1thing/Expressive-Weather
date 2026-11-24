@@ -183,9 +183,13 @@ fun RadarTimelineController(
                     ) {
                         val loadingText = when (language) {
                             AppLanguage.ENGLISH -> "Loading data..."
+                            AppLanguage.KOREAN -> "데이터 불러오는 중..."
                             AppLanguage.SIMPLIFIED_CHINESE -> "正在加载数据..."
                             AppLanguage.TRADITIONAL_CHINESE -> "正在載入資料..."
                             AppLanguage.JAPANESE -> "データ読み込み中..."
+                            AppLanguage.SPANISH -> "Cargando datos..."
+                            AppLanguage.FRENCH -> "Chargement des données..."
+                            AppLanguage.PORTUGUESE -> "Carregando dados..."
                         }
                         Text(
                             text = currentFrame?.displayLabel ?: loadingText,
@@ -208,16 +212,24 @@ fun RadarTimelineController(
                         val badgeText = if (isForecast) {
                             when (language) {
                                 AppLanguage.ENGLISH -> "HRRR Forecast"
+                                AppLanguage.KOREAN -> "HRRR 예측"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "HRRR预测"
                                 AppLanguage.TRADITIONAL_CHINESE -> "HRRR預測"
                                 AppLanguage.JAPANESE -> "HRRR予測"
+                                AppLanguage.SPANISH -> "Previsión HRRR"
+                                AppLanguage.FRENCH -> "Prévision HRRR"
+                                AppLanguage.PORTUGUESE -> "Previsão HRRR"
                             }
                         } else {
                             when (language) {
                                 AppLanguage.ENGLISH -> "MRMS Live"
+                                AppLanguage.KOREAN -> "MRMS 실황"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "MRMS实况"
                                 AppLanguage.TRADITIONAL_CHINESE -> "MRMS實況"
                                 AppLanguage.JAPANESE -> "MRMS実況"
+                                AppLanguage.SPANISH -> "MRMS en vivo"
+                                AppLanguage.FRENCH -> "MRMS en direct"
+                                AppLanguage.PORTUGUESE -> "MRMS ao vivo"
                             }
                         }
 
@@ -263,9 +275,13 @@ fun RadarTimelineController(
                     ) {
                         val opacityDesc = when (language) {
                             AppLanguage.ENGLISH -> "Adjust Opacity"
+                            AppLanguage.KOREAN -> "불투명도 조절"
                             AppLanguage.SIMPLIFIED_CHINESE -> "调整透明度"
                             AppLanguage.TRADITIONAL_CHINESE -> "調整透明度"
                             AppLanguage.JAPANESE -> "不透明度調整"
+                            AppLanguage.SPANISH -> "Ajustar opacidad"
+                            AppLanguage.FRENCH -> "Régler l'opacité"
+                            AppLanguage.PORTUGUESE -> "Ajustar opacidade"
                         }
                         Icon(
                             imageVector = Icons.Rounded.Opacity,
@@ -301,9 +317,13 @@ fun RadarTimelineController(
                 ) {
                     val opacityLabel = when (language) {
                         AppLanguage.ENGLISH -> "Radar Opacity"
+                        AppLanguage.KOREAN -> "레이더 투명도"
                         AppLanguage.SIMPLIFIED_CHINESE -> "雷达透明度"
                         AppLanguage.TRADITIONAL_CHINESE -> "雷達透明度"
                         AppLanguage.JAPANESE -> "レーダー透過度"
+                        AppLanguage.SPANISH -> "Opacidad del radar"
+                        AppLanguage.FRENCH -> "Opacité du radar"
+                        AppLanguage.PORTUGUESE -> "Opacidade do radar"
                     }
                     Text(
                         text = opacityLabel,
@@ -359,9 +379,13 @@ fun RadarTimelineController(
                 // 2時間前（先頭）へジャンプ
                 val rewindDesc = when (language) {
                     AppLanguage.ENGLISH -> "Jump to 2 hours ago"
+                    AppLanguage.KOREAN -> "2시간 전으로 이동"
                     AppLanguage.SIMPLIFIED_CHINESE -> "跳至2小时前"
                     AppLanguage.TRADITIONAL_CHINESE -> "跳至2小時前"
                     AppLanguage.JAPANESE -> "2時間前へジャンプ"
+                    AppLanguage.SPANISH -> "Ir a hace 2 horas"
+                    AppLanguage.FRENCH -> "Aller à il y a 2 h"
+                    AppLanguage.PORTUGUESE -> "Ir para 2 horas atrás"
                 }
                 IconButton(
                     onClick = onSeekToStart,
@@ -377,9 +401,13 @@ fun RadarTimelineController(
                 // コマ戻し (1フレーム戻す)
                 val prevDesc = when (language) {
                     AppLanguage.ENGLISH -> "Step Back"
+                    AppLanguage.KOREAN -> "이전 프레임"
                     AppLanguage.SIMPLIFIED_CHINESE -> "上一帧"
                     AppLanguage.TRADITIONAL_CHINESE -> "上一格"
                     AppLanguage.JAPANESE -> "コマ戻し"
+                    AppLanguage.SPANISH -> "Paso atrás"
+                    AppLanguage.FRENCH -> "Image précédente"
+                    AppLanguage.PORTUGUESE -> "Voltar um quadro"
                 }
                 IconButton(
                     onClick = onStepBackward,
@@ -401,16 +429,24 @@ fun RadarTimelineController(
                 val playPauseDesc = if (playbackState.isPlaying) {
                     when (language) {
                         AppLanguage.ENGLISH -> "Pause"
+                        AppLanguage.KOREAN -> "일시정지"
                         AppLanguage.SIMPLIFIED_CHINESE -> "暂停"
                         AppLanguage.TRADITIONAL_CHINESE -> "暫停"
                         AppLanguage.JAPANESE -> "一時停止"
+                        AppLanguage.SPANISH -> "Pausar"
+                        AppLanguage.FRENCH -> "Pause"
+                        AppLanguage.PORTUGUESE -> "Pausar"
                     }
                 } else {
                     when (language) {
                         AppLanguage.ENGLISH -> "Play"
+                        AppLanguage.KOREAN -> "재생"
                         AppLanguage.SIMPLIFIED_CHINESE -> "播放"
                         AppLanguage.TRADITIONAL_CHINESE -> "播放"
                         AppLanguage.JAPANESE -> "再生"
+                        AppLanguage.SPANISH -> "Reproducir"
+                        AppLanguage.FRENCH -> "Lire"
+                        AppLanguage.PORTUGUESE -> "Reproduzir"
                     }
                 }
 
@@ -433,9 +469,13 @@ fun RadarTimelineController(
                 // コマ送り (1フレーム進める)
                 val nextDesc = when (language) {
                     AppLanguage.ENGLISH -> "Step Forward"
+                    AppLanguage.KOREAN -> "다음 프레임"
                     AppLanguage.SIMPLIFIED_CHINESE -> "下一帧"
                     AppLanguage.TRADITIONAL_CHINESE -> "下一格"
                     AppLanguage.JAPANESE -> "コマ送り"
+                    AppLanguage.SPANISH -> "Paso adelante"
+                    AppLanguage.FRENCH -> "Image suivante"
+                    AppLanguage.PORTUGUESE -> "Avançar um quadro"
                 }
                 IconButton(
                     onClick = onStepForward,
@@ -451,9 +491,13 @@ fun RadarTimelineController(
                 // 現在時刻 (NOW) へワンタップジャンプ
                 val nowBtnText = when (language) {
                     AppLanguage.ENGLISH -> "NOW"
+                    AppLanguage.KOREAN -> "현재"
                     AppLanguage.SIMPLIFIED_CHINESE -> "现在"
                     AppLanguage.TRADITIONAL_CHINESE -> "現在"
                     AppLanguage.JAPANESE -> "現在"
+                    AppLanguage.SPANISH -> "AHORA"
+                    AppLanguage.FRENCH -> "DIRECT"
+                    AppLanguage.PORTUGUESE -> "AGORA"
                 }
                 Surface(
                     shape = RoundedCornerShape(14.dp),
@@ -503,9 +547,13 @@ private fun TimelineZoneSlider(
         ) {
             val pastZoneLabel = when (language) {
                 AppLanguage.ENGLISH -> "◀ Past 2h (MRMS Live)"
+                AppLanguage.KOREAN -> "◀ 지난 2시간 (MRMS 실황)"
                 AppLanguage.SIMPLIFIED_CHINESE -> "◀ 过去2小时 (MRMS 实况)"
                 AppLanguage.TRADITIONAL_CHINESE -> "◀ 過去2小時 (MRMS 實況)"
                 AppLanguage.JAPANESE -> "◀ 過去2時間 (MRMS 実況)"
+                AppLanguage.SPANISH -> "◀ Últimas 2h (MRMS en vivo)"
+                AppLanguage.FRENCH -> "◀ 2 dern. h (MRMS en direct)"
+                AppLanguage.PORTUGUESE -> "◀ Últimas 2h (MRMS ao vivo)"
             }
             Text(
                 text = pastZoneLabel,
@@ -518,9 +566,13 @@ private fun TimelineZoneSlider(
 
             val futureZoneLabel = when (language) {
                 AppLanguage.ENGLISH -> "Next 18h (HRRR Forecast) ▶"
+                AppLanguage.KOREAN -> "앞으로 18시간 (HRRR 예측) ▶"
                 AppLanguage.SIMPLIFIED_CHINESE -> "未来18小时 (HRRR 预测) ▶"
                 AppLanguage.TRADITIONAL_CHINESE -> "未來18小時 (HRRR 預測) ▶"
                 AppLanguage.JAPANESE -> "未来18時間 (HRRR 予測) ▶"
+                AppLanguage.SPANISH -> "Próx. 18h (Previsión HRRR) ▶"
+                AppLanguage.FRENCH -> "18 proch. h (Prévision HRRR) ▶"
+                AppLanguage.PORTUGUESE -> "Próx. 18h (Previsão HRRR) ▶"
             }
             Text(
                 text = futureZoneLabel,
@@ -661,9 +713,13 @@ private fun TimelineZoneSlider(
         ) {
             val minus2h = when (language) {
                 AppLanguage.ENGLISH -> "-2h"
+                AppLanguage.KOREAN -> "-2시간"
                 AppLanguage.SIMPLIFIED_CHINESE -> "-2小时"
                 AppLanguage.TRADITIONAL_CHINESE -> "-2小時"
                 AppLanguage.JAPANESE -> "-2時間"
+                AppLanguage.SPANISH -> "-2h"
+                AppLanguage.FRENCH -> "-2h"
+                AppLanguage.PORTUGUESE -> "-2h"
             }
             Text(
                 text = minus2h,
@@ -674,9 +730,13 @@ private fun TimelineZoneSlider(
             )
             val currentLabel = when (language) {
                 AppLanguage.ENGLISH -> "Now"
+                AppLanguage.KOREAN -> "현재 시각"
                 AppLanguage.SIMPLIFIED_CHINESE -> "当前"
                 AppLanguage.TRADITIONAL_CHINESE -> "當前"
                 AppLanguage.JAPANESE -> "現在時刻"
+                AppLanguage.SPANISH -> "Ahora"
+                AppLanguage.FRENCH -> "Maintenant"
+                AppLanguage.PORTUGUESE -> "Agora"
             }
             Text(
                 text = currentLabel,
@@ -688,9 +748,13 @@ private fun TimelineZoneSlider(
             )
             val plus18h = when (language) {
                 AppLanguage.ENGLISH -> "+18h"
+                AppLanguage.KOREAN -> "+18시간"
                 AppLanguage.SIMPLIFIED_CHINESE -> "+18小时"
                 AppLanguage.TRADITIONAL_CHINESE -> "+18小時"
                 AppLanguage.JAPANESE -> "+18時間"
+                AppLanguage.SPANISH -> "+18h"
+                AppLanguage.FRENCH -> "+18h"
+                AppLanguage.PORTUGUESE -> "+18h"
             }
             Text(
                 text = plus18h,
@@ -746,9 +810,13 @@ fun RadarDbzLegendBar(
             ) {
                 val legendTitle = when (language) {
                     AppLanguage.ENGLISH -> "Reflectivity (dBZ)"
+                    AppLanguage.KOREAN -> "강수 반사도 (dBZ)"
                     AppLanguage.SIMPLIFIED_CHINESE -> "雨云反射强度 (dBZ)"
                     AppLanguage.TRADITIONAL_CHINESE -> "雨雲反射強度 (dBZ)"
                     AppLanguage.JAPANESE -> "雨雲反射強度 (dBZ)"
+                    AppLanguage.SPANISH -> "Reflectividad (dBZ)"
+                    AppLanguage.FRENCH -> "Réflectivité (dBZ)"
+                    AppLanguage.PORTUGUESE -> "Refletividade (dBZ)"
                 }
                 Text(
                     text = legendTitle,
@@ -759,9 +827,13 @@ fun RadarDbzLegendBar(
                 )
                 val legendDetailDesc = when (language) {
                     AppLanguage.ENGLISH -> "Legend Details"
+                    AppLanguage.KOREAN -> "범례 상세"
                     AppLanguage.SIMPLIFIED_CHINESE -> "图例详情"
                     AppLanguage.TRADITIONAL_CHINESE -> "圖例詳情"
                     AppLanguage.JAPANESE -> "凡例詳細"
+                    AppLanguage.SPANISH -> "Detalles de la leyenda"
+                    AppLanguage.FRENCH -> "Détails de la légende"
+                    AppLanguage.PORTUGUESE -> "Detalhes da legenda"
                 }
                 Icon(
                     imageVector = Icons.Rounded.Info,

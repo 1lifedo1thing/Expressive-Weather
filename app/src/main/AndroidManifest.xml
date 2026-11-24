@@ -105,6 +105,16 @@
             android:exported="false"
             android:foregroundServiceType="dataSync|location" />
 
+        <!-- 雨雲接近通知のユーザー消去検知レシーバー (内部専用) -->
+        <receiver
+            android:name=".data.PrecipitationLiveDismissReceiver"
+            android:exported="false" />
+
+        <!-- 警戒レベル・キキクル通知のユーザー消去検知レシーバー (内部専用) -->
+        <receiver
+            android:name=".data.KikikuruAlertDismissReceiver"
+            android:exported="false" />
+
         <!-- 通常天気のバックグラウンド更新ブロードキャストレシーバー (内部専用) -->
         <receiver
             android:name=".data.WeatherUpdateReceiver"

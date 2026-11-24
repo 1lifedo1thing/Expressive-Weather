@@ -4,24 +4,36 @@ import androidx.compose.runtime.staticCompositionLocalOf
 
 enum class AppLanguage(val code: String, val displayName: String) {
     JAPANESE("ja", "日本語"),
+    KOREAN("ko", "한국어"),
     SIMPLIFIED_CHINESE("zh-CN", "简体中文"),
     TRADITIONAL_CHINESE("zh-TW", "繁體中文"),
-    ENGLISH("en", "English");
+    ENGLISH("en", "English"),
+    SPANISH("es", "Español"),
+    FRENCH("fr", "Français"),
+    PORTUGUESE("pt", "Português");
 
     val strings: AppStrings
         get() = when (this) {
             JAPANESE -> JapaneseStrings
+            KOREAN -> KoreanStrings
             SIMPLIFIED_CHINESE -> SimplifiedChineseStrings
             TRADITIONAL_CHINESE -> TraditionalChineseStrings
             ENGLISH -> EnglishStrings
+            SPANISH -> SpanishStrings
+            FRENCH -> FrenchStrings
+            PORTUGUESE -> PortugueseStrings
         }
 
     val locale: java.util.Locale
         get() = when (this) {
             JAPANESE -> java.util.Locale.JAPAN
+            KOREAN -> java.util.Locale.KOREA
             SIMPLIFIED_CHINESE -> java.util.Locale.SIMPLIFIED_CHINESE
             TRADITIONAL_CHINESE -> java.util.Locale.TRADITIONAL_CHINESE
             ENGLISH -> java.util.Locale.US
+            SPANISH -> java.util.Locale("es", "ES")
+            FRENCH -> java.util.Locale.FRANCE
+            PORTUGUESE -> java.util.Locale("pt", "BR")
         }
 
     val composeLocale: androidx.compose.ui.text.intl.Locale
@@ -44,7 +56,11 @@ enum class AppLanguage(val code: String, val displayName: String) {
                 (code.startsWith("zh-HK", ignoreCase = true) && it == TRADITIONAL_CHINESE) ||
                 (code.startsWith("zh-MO", ignoreCase = true) && it == TRADITIONAL_CHINESE) ||
                 (code.startsWith("ja", ignoreCase = true) && it == JAPANESE) ||
-                (code.startsWith("en", ignoreCase = true) && it == ENGLISH)
+                (code.startsWith("ko", ignoreCase = true) && it == KOREAN) ||
+                (code.startsWith("en", ignoreCase = true) && it == ENGLISH) ||
+                (code.startsWith("es", ignoreCase = true) && it == SPANISH) ||
+                (code.startsWith("fr", ignoreCase = true) && it == FRENCH) ||
+                (code.startsWith("pt", ignoreCase = true) && it == PORTUGUESE)
             } ?: JAPANESE
         }
     }
@@ -1298,15 +1314,1054 @@ val TraditionalChineseStrings = AppStrings(
     retry = "重試"
 )
 
+val KoreanStrings = AppStrings(
+    appName = "Expressive Weather",
+    selectLocation = "지역 선택",
+    currentLocation = "현재 위치",
+    currentLocationWithCity = { city -> "현재 위치 ($city)" },
+    savedLocations = "저장된 지역",
+    savedCities = "저장된 도시",
+    addLocation = "지역 추가",
+    currentlyViewing = "현재 보는 중",
+    noSavedLocations = "저장된 지역이 없습니다",
+    recentSearches = "최근 검색",
+    searchCityPlaceholder = "도시 이름 입력...",
+    searchingCities = "도시 검색 중...",
+    noCitiesFound = "검색 결과가 없습니다",
+    close = "닫기",
+    cancel = "취소",
+    removeSaved = "삭제",
+    selected = "선택됨",
+
+    feelsLike = { temp -> "체감 $temp°" },
+    high = { temp -> "최고 $temp°" },
+    low = { temp -> "최저 $temp°" },
+    updated = { time -> "업데이트: $time" },
+    justNow = "방금 전",
+    minutesAgo = { mins -> "${mins}분 전" },
+    hoursAgo = { hours -> "${hours}시간 전" },
+    daysAgo = { days -> "${days}일 전" },
+    cachedDataBadge = { relative -> "캐시: $relative" },
+    weatherDataSource = "기상 데이터 제공: Open-Meteo",
+    lastUpdatedRelative = { time, relative -> "업데이트: $time ($relative)" },
+    cachedDataRelative = { time, relative -> "캐시: $time ($relative)" },
+    pullToRefreshHint = "탭하여 새로고침",
+    hourlyForecast = "시간별 날씨",
+    tapForDetails = "탭하여 자세히 보기",
+    now = "현재",
+    sevenDayForecast = "7일 주간 예보",
+    today = "오늘",
+    tomorrow = "내일",
+
+    wind = "바람",
+    uvIndex = "자외선 (UV)",
+    airQuality = "대기질",
+    humidity = "습도",
+    sun = "일출·일몰",
+    pressure = "기압",
+    visibility = "가시거리",
+    precipitation = "강수량",
+    dailyPrecipitationSum = "일 강수량",
+    todayTotalPrecip = "24시간 합계",
+    feelsLikeCard = "체감 온도",
+
+    windGusts = { gusts -> String.format(java.util.Locale.US, "돌풍: %.1f m/s", gusts) },
+    uvDailyMax = { max -> "오늘 최고 UV $max" },
+    uvAdvice = "자외선 차단제 권장",
+    uvLevelLow = "낮음",
+    uvLevelModerate = "보통",
+    uvLevelHigh = "높음",
+    uvLevelVeryHigh = "매우 높음",
+    uvLevelExtreme = "위험",
+
+    aqiLevelGood = "좋음",
+    aqiLevelModerate = "보통",
+    aqiLevelSensitive = "민감군 주의",
+    aqiLevelUnhealthy = "나쁨",
+    aqiLevelHazardous = "매우 나쁨",
+
+    humidityDry = "건조",
+    humidityComfortable = "쾌적",
+    humidityHumid = "습함",
+    dewPoint = { dp -> "이슬점 $dp°C" },
+
+    sunrise = "일출",
+    sunset = "일몰",
+    daylightDuration = { duration -> "낮 길이 $duration" },
+
+    pressureLow = "저기압",
+    pressureNormal = "표준 기압",
+    pressureHigh = "고기압",
+
+    visibilityClear = "매우 맑음",
+    visibilityGood = "보통",
+    visibilityMisty = "박무",
+    visibilityFoggy = "안개",
+    visibilityExcellent = "시야 매우 좋음",
+    visibilityModerate = "시야 양호",
+    visibilityPoor = "시야 불량",
+
+    maxPrecipChance = { prob -> "최대 확률 $prob%" },
+    noPrecipitation = "현재 강수 없음",
+    rainPrecip = "비",
+    snowPrecip = "눈",
+
+    tempDiff = { diff -> if (diff >= 0) "기온 대비 +$diff°" else "기온 대비 $diff°" },
+    tempSame = "실제 기온과 동일",
+    feelsHot = "더움",
+    feelsWarm = "따뜻함",
+    feelsComfortable = "쾌적함",
+    feelsCool = "선선함",
+    feelsCold = "추움",
+    feelsChilly = "쌀쌀함",
+
+    windDetailsTitle = "바람 상세",
+    windSpeedAndDirection = "풍속 및 풍향",
+    windDirectionLabel = "풍향",
+    windSpeedLabel = "평균 풍속",
+    windGustsLabel = "최대 순간풍속 (돌풍)",
+    windGustsMultiplier = { mult -> "평균의 %.1f배".format(mult) },
+    hourlyWindTitle = "24시간 바람 예보",
+    dailyWindTitle = "7일 주간 바람 예보",
+    beaufortScaleTitle = "보퍼트 풍력 계급",
+    beaufortScaleLevel = { lvl -> "풍력 $lvl" },
+    lifeInsightsTitle = "생활·활동 영향",
+    laundryTitle = "빨래",
+    umbrellaTitle = "우산 사용",
+    cyclingTitle = "자전거·이륜차",
+    outdoorTitle = "환기·야외활동",
+    peakWindNotice = { time, spd -> "$time 무렵 최대 돌풍 %.1f m/s 예상".format(spd) },
+    dominantWind = "주풍향",
+    maxWind = "최대 풍속",
+    maxGusts = "최대 돌풍",
+
+    todayWeatherTitle = "오늘의 상세 날씨",
+    todayOverview = "오늘의 하늘과 기상 변화",
+    interactive24hChartTitle = "타임라인",
+    interactive24hChartSubtitle = "그래프를 문질러 상세 수치를 확인하세요",
+    touchScrubberGuide = "탭하거나 드래그하여 시간대별 상세 수치를 확인하세요",
+    precipitationAndProbability = "강수확률·강수량",
+    daypartsTitle = "시간대별 분석",
+    morningTitle = "아침 (6:00 - 12:00)",
+    afternoonTitle = "오후 (12:00 - 18:00)",
+    eveningTitle = "저녁~밤 (18:00 - 24:00)",
+    overnightTitle = "심야~새벽 (0:00 - 6:00)",
+    lifestyleAdvisorTitle = "생활 지수",
+    clothingTitle = "옷차림 지수",
+    clothingTip = { temp ->
+        when {
+            temp >= 26 -> "반팔이 시원합니다. 통풍이 잘되는 가벼운 옷을 권장합니다"
+            temp >= 20 -> "긴팔 셔츠나 얇은 상의가 적당합니다. 가벼운 겉옷을 챙기면 좋아요"
+            temp >= 15 -> "니트, 가디건 또는 얇은 재킷을 추천합니다"
+            temp >= 10 -> "재킷이나 트렌치코트 등 겉옷이 필요합니다"
+            else -> "겨울 코트와 목도리 등으로 따뜻하게 보온하세요"
+        }
+    },
+    umbrellaAdviceTitle = "우산 지수",
+    umbrellaTip = { prob, mm ->
+        when {
+            prob >= 60 || mm >= 2.0 -> "튼튼한 장우산이나 우비를 꼭 챙겨 외출하세요"
+            prob >= 30 || mm > 0.0 -> "접이식 우산을 가방에 챙겨두면 안심됩니다"
+            else -> "우산이 필요 없는 날씨입니다. 가볍게 외출하세요"
+        }
+    },
+    laundryAdviceTitle = "빨래 지수",
+    laundryTip = { humidity, rainProb ->
+        when {
+            rainProb >= 40 -> "비 소식이 있어 실내 건조를 강력히 권장합니다"
+            humidity <= 50 -> "쾌속 건조! 두꺼운 빨래도 잘 마르는 최고의 빨래 날씨입니다"
+            humidity <= 70 -> "야외 건조가 가능합니다. 오후의 갑작스러운 날씨 변화에 유의하세요"
+            else -> "습도가 높습니다. 실내 건조나 건조기 사용을 권장합니다"
+        }
+    },
+    uvAdviceTitle = "자외선 지수",
+    uvTip = { uv ->
+        when {
+            uv >= 8 -> "자외선이 매우 강합니다. 양산, 선글라스, 자외선 차단제가 필수입니다"
+            uv >= 6 -> "자외선이 강한 편입니다. 그늘을 이용하고 자외선 차단에 신경 쓰세요"
+            uv >= 3 -> "보통 수준의 햇볕입니다. 장시간 외출 시 자외선 차단을 권장합니다"
+            else -> "자외선이 약합니다. 별도의 차단이 필요하지 않습니다"
+        }
+    },
+    ventilationAdviceTitle = "환기·쾌적 지수",
+    ventilationTip = { humidity, aqi ->
+        when {
+            aqi > 100 -> "대기질에 유의하세요. 환기는 짧게 하는 것을 권장합니다"
+            humidity in 40..60 -> "쾌적한 공기입니다. 창문을 열어 환기하기 좋은 타이밍입니다"
+            humidity > 70 -> "바깥 습도가 높습니다. 환기 후 제습이나 에어컨 사용이 효과적입니다"
+            else -> "공기가 다소 건조합니다. 실내 가습기 활용을 고려해 보세요"
+        }
+    },
+    detailedMetricsTitle = "상세 정보",
+    dewPointLabel = "이슬점 온도",
+    sunScheduleTitle = "일출·일몰",
+    sunRemaining = { remain -> "일몰까지 $remain 남음" },
+    daylightLabel = "낮의 길이",
+
+    settingsTitle = "설정",
+    settingsSubtitle = "환경 설정 및 시스템 구성",
+    tempUnitTitle = "온도 단위",
+    tempUnitSubtitle = { symbol, isC -> "현재: $symbol (${if (isC) "섭씨" else "화씨"})" },
+    windSpeedUnitTitle = "풍속 단위",
+    windSpeedUnitSubtitle = { unit -> "현재: $unit" },
+    windSpeedMatchLanguage = "언어에 맞춤",
+    refreshTitle = "날씨 데이터 새로고침",
+    refreshSubtitle = { isRef -> if (isRef) "최신 데이터를 불러오는 중..." else "현재 관측 정보와 예보 동기화" },
+    resetLocationTitle = "현재 위치로 돌아가기",
+    resetLocationSubtitle = "GPS 현재 위치 또는 기본 도시로 설정",
+    languageTitle = "언어 설정",
+    languageSubtitle = "앱 표시 언어 전환",
+    changeLanguageTitle = "언어 변경",
+    currentLanguageSection = "현재 언어",
+    availableLanguagesSection = "설정 가능한 언어",
+    weatherThemeTitle = "날씨 연동 테마 색상",
+    weatherThemeSubtitle = { enabled -> if (enabled) "현재 날씨에 맞춰 앱 전체 색상을 자동 조절 중" else "기본 테마 색상 사용 중" },
+    themePresetTitle = "테마 색상 프리셋",
+    themePresetSubtitle = { name, isAdaptive -> if (isAdaptive) "날씨에 따라 자동 변화 중 ($name)" else "$name 색상으로 고정됨" },
+    themePresetDialogTitle = "테마 색상 선택",
+    themePresetDialogSubtitle = "원하는 색상으로 고정하거나 날씨 연동 색상을 설정할 수 있습니다",
+    appearanceTitle = "화면 설정",
+    appearanceSubtitle = "테마 색상 설정",
+    generalSettingsTitle = "일반 설정",
+    generalSettingsSubtitle = "언어 및 단위 설정 (온도·풍속)",
+    dataSourcesTitle = "데이터 출처",
+    dataSourcesSubtitle = "기상 데이터 제공처 확인 및 소스 전환",
+    dataSourcesSectionTitle = "기상 데이터 제공처",
+    dataAndSyncTitle = "날씨 데이터 및 동기화",
+    aboutTitle = "앱 정보",
+    syncNowTitle = "지금 날씨 데이터 동기화",
+    syncNowSubtitle = "최신 관측값과 예보 데이터를 즉시 가져옵니다",
+    clearCacheConfirmMessage = "저장된 오프라인 날씨 데이터를 삭제합니다. 다음 새로고침 시 최신 데이터를 다시 가져옵니다.",
+    dataSourcesOpenMeteoDesc = "일본 기상청 (JMA) & Open-Meteo\n일본 지역 기상 정보는 일본 기상청 공식 데이터를 직접 가져오며, 한국을 포함한 전 세계 지역은 글로벌 Open-Meteo API를 사용합니다.",
+    dataSourcesFutureNotice = "일본 지역은 JMA 공식 엔드포인트에서, 한국 및 전 세계 지역은 Open-Meteo에서 최신 기상 데이터를 자동으로 가져옵니다.",
+    sourceActiveBadge = "사용 중",
+    sourceComingSoonBadge = "지원 예정",
+    sourceJmaTitle = "일본 기상청 (JMA)",
+    sourceJmaDesc = "일본 국지 예보, 고해상도 강수 나우캐스트 및 중규모 수치예보모델 (MSM).",
+    sourceEcmwfTitle = "ECMWF (유럽중기예보센터)",
+    sourceEcmwfDesc = "세계 최고 수준의 글로벌 중기 수치예보모델 (IFS).",
+    sourceNoaaTitle = "NOAA GFS (미국 해양대기청)",
+    sourceNoaaDesc = "미국 기상청이 운영하는 글로벌 수치예보 시스템.",
+    appVersionTitle = "버전",
+    appVersionValue = "1.0 (Expressive Edition)",
+    debugSettingsTitle = "디버그 설정",
+    debugSettingsSubtitle = "날씨 애니메이션 시뮬레이션 및 캐시 관리",
+    debugSimulationTitle = "날씨 애니메이션 시뮬레이션",
+    debugSimulationSubtitle = "각 날씨의 배경 그라데이션, 구름, 강수, 번개 애니메이션 미리보기",
+    backgroundPreviewTitle = "날씨 애니메이션 시뮬레이션",
+    backgroundPreviewSubtitle = "각 날씨의 배경 그라데이션, 구름, 강수, 번개 애니메이션 미리보기",
+    debugResetPreview = "실제 날씨로 복원",
+    clearCacheTitle = "캐시 삭제",
+    clearCacheSubtitle = "저장된 오프라인 날씨 데이터와 임시 캐시 삭제",
+    clearCacheSuccess = "캐시를 삭제했습니다",
+    forceRefreshTitle = "강제 재동기화",
+    forceRefreshSubtitle = "API 서버에서 최신 데이터를 직접 다시 가져옵니다",
+    systemDiagnosticsTitle = "시스템 진단 정보",
+    tabAll = "전체",
+    tabAppearance = "화면",
+    tabGeneral = "일반",
+    tabSources = "출처",
+    tabDebug = "디버그",
+
+    loadingWeather = "날씨 데이터를 불러오는 중...",
+    loadingLocation = "현재 위치를 확인하는 중...",
+    errorOccurred = "오류가 발생했습니다",
+    retry = "다시 시도"
+)
+
+val SpanishStrings = AppStrings(
+    appName = "Expressive Weather",
+    selectLocation = "Seleccionar ubicación",
+    currentLocation = "Ubicación actual",
+    currentLocationWithCity = { city -> "Ubicación actual ($city)" },
+    savedLocations = "Ubicaciones guardadas",
+    savedCities = "Ciudades guardadas",
+    addLocation = "Añadir ubicación",
+    currentlyViewing = "Viendo ahora",
+    noSavedLocations = "No hay ubicaciones guardadas",
+    recentSearches = "Búsquedas recientes",
+    searchCityPlaceholder = "Buscar ciudad...",
+    searchingCities = "Buscando ciudades...",
+    noCitiesFound = "No se encontraron ciudades",
+    close = "Cerrar",
+    cancel = "Cancelar",
+    removeSaved = "Eliminar",
+    selected = "Seleccionado",
+
+    feelsLike = { temp -> "Sensación $temp°" },
+    high = { temp -> "Máx: $temp°" },
+    low = { temp -> "Mín: $temp°" },
+    updated = { time -> "Actualizado: $time" },
+    justNow = "Ahora mismo",
+    minutesAgo = { mins -> "Hace ${mins} min" },
+    hoursAgo = { hours -> "Hace ${hours} h" },
+    daysAgo = { days -> "Hace ${days} d" },
+    cachedDataBadge = { relative -> "Caché: $relative" },
+    weatherDataSource = "Datos meteorológicos de Open-Meteo",
+    lastUpdatedRelative = { time, relative -> "Actualizado: $time ($relative)" },
+    cachedDataRelative = { time, relative -> "Caché: $time ($relative)" },
+    pullToRefreshHint = "Toca para actualizar",
+    hourlyForecast = "Pronóstico por horas",
+    tapForDetails = "Toca para ver detalles",
+    now = "Ahora",
+    sevenDayForecast = "Pronóstico de 7 días",
+    today = "Hoy",
+    tomorrow = "Mañana",
+
+    wind = "Viento",
+    uvIndex = "Índice UV",
+    airQuality = "Calidad del aire",
+    humidity = "Humedad",
+    sun = "Sol",
+    pressure = "Presión",
+    visibility = "Visibilidad",
+    precipitation = "Precipitación",
+    dailyPrecipitationSum = "Precipitación diaria",
+    todayTotalPrecip = "Total 24 h",
+    feelsLikeCard = "Sensación térmica",
+
+    windGusts = { gusts -> String.format(java.util.Locale.US, "Ráfagas: %.1f m/s", gusts) },
+    uvDailyMax = { max -> "UV máx. hoy: $max" },
+    uvAdvice = "Se recomienda protector solar",
+    uvLevelLow = "Bajo",
+    uvLevelModerate = "Moderado",
+    uvLevelHigh = "Alto",
+    uvLevelVeryHigh = "Muy alto",
+    uvLevelExtreme = "Extremo",
+
+    aqiLevelGood = "Buena",
+    aqiLevelModerate = "Moderada",
+    aqiLevelSensitive = "Grupos sensibles",
+    aqiLevelUnhealthy = "Mala",
+    aqiLevelHazardous = "Peligrosa",
+
+    humidityDry = "Seco",
+    humidityComfortable = "Agradable",
+    humidityHumid = "Húmedo",
+    dewPoint = { dp -> "Punto de rocío $dp°C" },
+
+    sunrise = "Amanecer",
+    sunset = "Atardecer",
+    daylightDuration = { duration -> "Luz solar $duration" },
+
+    pressureLow = "Baja",
+    pressureNormal = "Normal",
+    pressureHigh = "Alta",
+
+    visibilityClear = "Despejada",
+    visibilityGood = "Buena",
+    visibilityMisty = "Bruma",
+    visibilityFoggy = "Niebla",
+    visibilityExcellent = "Visibilidad excelente",
+    visibilityModerate = "Visibilidad moderada",
+    visibilityPoor = "Visibilidad reducida",
+
+    maxPrecipChance = { prob -> "Prob. máx. $prob%" },
+    noPrecipitation = "Sin precipitaciones",
+    rainPrecip = "Lluvia",
+    snowPrecip = "Nieve",
+
+    tempDiff = { diff -> if (diff >= 0) "+$diff° vs temp." else "$diff° vs temp." },
+    tempSame = "Igual que la temperatura",
+    feelsHot = "Caluroso",
+    feelsWarm = "Cálido",
+    feelsComfortable = "Agradable",
+    feelsCool = "Fresco",
+    feelsCold = "Frío",
+    feelsChilly = "Algo fresco",
+
+    windDetailsTitle = "Detalles del viento",
+    windSpeedAndDirection = "Velocidad y dirección",
+    windDirectionLabel = "Dirección",
+    windSpeedLabel = "Viento medio",
+    windGustsLabel = "Ráfagas máximas",
+    windGustsMultiplier = { mult -> "%.1fx velocidad media".format(mult) },
+    hourlyWindTitle = "Viento en las próximas 24 h",
+    dailyWindTitle = "Pronóstico de viento (7 días)",
+    beaufortScaleTitle = "Escala de Beaufort",
+    beaufortScaleLevel = { lvl -> "Fuerza $lvl" },
+    lifeInsightsTitle = "Impacto en actividades diarias",
+    laundryTitle = "Colada",
+    umbrellaTitle = "Paraguas",
+    cyclingTitle = "Ciclismo",
+    outdoorTitle = "Exterior y ventanas",
+    peakWindNotice = { time, spd -> "Ráfagas máximas de %.1f m/s hacia las $time".format(spd) },
+    dominantWind = "Viento dominante",
+    maxWind = "Viento máx.",
+    maxGusts = "Ráfagas máx.",
+
+    todayWeatherTitle = "Detalles del tiempo de hoy",
+    todayOverview = "Resumen y evolución de hoy",
+    interactive24hChartTitle = "Línea temporal",
+    interactive24hChartSubtitle = "Desliza sobre el gráfico para ver detalles",
+    touchScrubberGuide = "Toca o arrastra la línea temporal para ver valores por hora",
+    precipitationAndProbability = "Precipitación y probabilidad",
+    daypartsTitle = "Por franjas horarias",
+    morningTitle = "Mañana (6:00 - 12:00)",
+    afternoonTitle = "Tarde (12:00 - 18:00)",
+    eveningTitle = "Noche (18:00 - 24:00)",
+    overnightTitle = "Madrugada (0:00 - 6:00)",
+    lifestyleAdvisorTitle = "Índices diarios",
+    clothingTitle = "Vestimenta",
+    clothingTip = { temp ->
+        when {
+            temp >= 26 -> "Manga corta recomendada. Usa ropa ligera y transpirable"
+            temp >= 20 -> "Camisa de manga larga o prenda ligera. Lleva algo por si refresca"
+            temp >= 15 -> "Se recomienda jersey, cárdigan o chaqueta ligera"
+            temp >= 10 -> "Necesitarás chaqueta o gabardina para ir cómodo"
+            else -> "Abrigo grueso, bufanda y capas cálidas muy recomendables"
+        }
+    },
+    umbrellaAdviceTitle = "Paraguas",
+    umbrellaTip = { prob, mm ->
+        when {
+            prob >= 60 || mm >= 2.0 -> "Lleva un paraguas resistente o impermeable hoy"
+            prob >= 30 || mm > 0.0 -> "Conviene llevar un paraguas plegable en el bolso"
+            else -> "No hace falta paraguas hoy. Sal ligero"
+        }
+    },
+    laundryAdviceTitle = "Colada",
+    laundryTip = { humidity, rainProb ->
+        when {
+            rainProb >= 40 -> "Se recomienda secar en interior por riesgo de lluvia"
+            humidity <= 50 -> "¡Secado rápido! Tiempo ideal incluso para prendas gruesas"
+            humidity <= 70 -> "Se puede tender fuera. Atento a cambios por la tarde"
+            else -> "Humedad alta. Mejor secar en interior o usar secadora"
+        }
+    },
+    uvAdviceTitle = "Protección UV",
+    uvTip = { uv ->
+        when {
+            uv >= 8 -> "¡Índice UV muy alto! Protector solar, gafas de sol y gorra esenciales"
+            uv >= 6 -> "Radiación UV alta. Busca sombra al mediodía y usa protector solar"
+            uv >= 3 -> "Radiación moderada. Protege tu piel si pasas tiempo al aire libre"
+            else -> "Nivel UV bajo. No se requieren medidas especiales"
+        }
+    },
+    ventilationAdviceTitle = "Ventilación y confort",
+    ventilationTip = { humidity, aqi ->
+        when {
+            aqi > 100 -> "Calidad del aire desfavorable. Ventila solo brevemente"
+            humidity in 40..60 -> "¡Aire fresco y agradable! Momento ideal para ventilar"
+            humidity > 70 -> "Ambiente exterior húmedo. Usa deshumidificador o aire acondicionado tras ventilar"
+            else -> "Aire algo seco. Considera usar un humidificador en interiores"
+        }
+    },
+    detailedMetricsTitle = "Métricas detalladas",
+    dewPointLabel = "Punto de rocío",
+    sunScheduleTitle = "Horario solar",
+    sunRemaining = { remain -> "$remain hasta el atardecer" },
+    daylightLabel = "Horas de luz",
+
+    settingsTitle = "Ajustes",
+    settingsSubtitle = "Preferencias y configuración del sistema",
+    tempUnitTitle = "Unidad de temperatura",
+    tempUnitSubtitle = { symbol, isC -> "Actual: $symbol (${if (isC) "Celsius" else "Fahrenheit"})" },
+    windSpeedUnitTitle = "Unidad de velocidad del viento",
+    windSpeedUnitSubtitle = { unit -> "Actual: $unit" },
+    windSpeedMatchLanguage = "Según el idioma",
+    refreshTitle = "Actualizar datos meteorológicos",
+    refreshSubtitle = { isRef -> if (isRef) "Recibiendo datos recientes..." else "Sincronizar observaciones y pronóstico" },
+    resetLocationTitle = "Volver a la ubicación actual",
+    resetLocationSubtitle = "Usar ubicación GPS o ciudad predeterminada",
+    languageTitle = "Idioma",
+    languageSubtitle = "Cambiar idioma de la aplicación",
+    changeLanguageTitle = "Cambiar idioma",
+    currentLanguageSection = "Idioma actual",
+    availableLanguagesSection = "Idiomas disponibles",
+    weatherThemeTitle = "Tema adaptable al tiempo",
+    weatherThemeSubtitle = { enabled -> if (enabled) "Los colores se ajustan automáticamente al tiempo actual" else "Usando colores predeterminados del sistema" },
+    themePresetTitle = "Color y preajuste del tema",
+    themePresetSubtitle = { name, isAdaptive -> if (isAdaptive) "Adaptado al tiempo ($name)" else "Fijo en $name" },
+    themePresetDialogTitle = "Seleccionar color del tema",
+    themePresetDialogSubtitle = "Elige un color fijo o activa el modo adaptable al tiempo",
+    appearanceTitle = "Apariencia",
+    appearanceSubtitle = "Ajustes de colores del tema",
+    generalSettingsTitle = "Ajustes generales",
+    generalSettingsSubtitle = "Idioma y unidades (temperatura y viento)",
+    dataSourcesTitle = "Fuentes de datos",
+    dataSourcesSubtitle = "Proveedores de datos meteorológicos y fuentes futuras",
+    dataSourcesSectionTitle = "Proveedor de datos meteorológicos",
+    dataAndSyncTitle = "Datos meteorológicos y sincronización",
+    aboutTitle = "Información de la app",
+    syncNowTitle = "Sincronizar datos ahora",
+    syncNowSubtitle = "Obtener las últimas observaciones y pronósticos",
+    clearCacheConfirmMessage = "Se eliminarán los datos meteorológicos en caché. Se obtendrán datos nuevos en la próxima actualización.",
+    dataSourcesOpenMeteoDesc = "Agencia Meteorológica de Japón (JMA) y Open-Meteo\nLos datos en Japón provienen directamente de la JMA (estaciones AMeDAS y pronósticos oficiales). Las ubicaciones internacionales utilizan la API global de Open-Meteo.",
+    dataSourcesFutureNotice = "Los datos de Japón se obtienen automáticamente de la JMA, y el resto del mundo se cubre con Open-Meteo.",
+    sourceActiveBadge = "Activo",
+    sourceComingSoonBadge = "Próximamente",
+    sourceJmaTitle = "Agencia Meteorológica de Japón (JMA)",
+    sourceJmaDesc = "Radar regional de alta resolución y modelo numérico de mesoescala (MSM) en Japón.",
+    sourceEcmwfTitle = "ECMWF (Centro Europeo de Previsiones)",
+    sourceEcmwfDesc = "Modelo numérico global de predicción a medio plazo (IFS) líder en el mundo.",
+    sourceNoaaTitle = "NOAA GFS (Sistema Global de Pronóstico)",
+    sourceNoaaDesc = "Modelo meteorológico global operado por el Servicio Meteorológico Nacional de EE. UU.",
+    appVersionTitle = "Versión",
+    appVersionValue = "1.0 (Expressive Edition)",
+    debugSettingsTitle = "Ajustes de depuración",
+    debugSettingsSubtitle = "Simulación de animaciones climáticas y gestión de caché",
+    debugSimulationTitle = "Simulación atmosférica",
+    debugSimulationSubtitle = "Probar animaciones de fondo, nubes, lluvia, tormenta, nieve y niebla",
+    backgroundPreviewTitle = "Simulación atmosférica",
+    backgroundPreviewSubtitle = "Probar animaciones de fondo, nubes, lluvia, tormenta, nieve y niebla",
+    debugResetPreview = "Restablecer al tiempo real",
+    clearCacheTitle = "Borrar caché",
+    clearCacheSubtitle = "Eliminar datos meteorológicos en caché y base de datos local",
+    clearCacheSuccess = "Caché borrada correctamente",
+    forceRefreshTitle = "Forzar resincronización",
+    forceRefreshSubtitle = "Obtener los datos más recientes directamente del servidor",
+    systemDiagnosticsTitle = "Diagnóstico del sistema",
+    tabAll = "Todo",
+    tabAppearance = "Apariencia",
+    tabGeneral = "General",
+    tabSources = "Fuentes",
+    tabDebug = "Depuración",
+
+    loadingWeather = "Obteniendo datos meteorológicos...",
+    loadingLocation = "Obteniendo tu ubicación...",
+    errorOccurred = "Se produjo un error",
+    retry = "Reintentar"
+)
+
+val FrenchStrings = AppStrings(
+    appName = "Expressive Weather",
+    selectLocation = "Choisir un lieu",
+    currentLocation = "Position actuelle",
+    currentLocationWithCity = { city -> "Position actuelle ($city)" },
+    savedLocations = "Lieux enregistrés",
+    savedCities = "Villes enregistrées",
+    addLocation = "Ajouter un lieu",
+    currentlyViewing = "Affiché actuellement",
+    noSavedLocations = "Aucun lieu enregistré",
+    recentSearches = "Recherches récentes",
+    searchCityPlaceholder = "Rechercher une ville...",
+    searchingCities = "Recherche de villes...",
+    noCitiesFound = "Aucune ville trouvée",
+    close = "Fermer",
+    cancel = "Annuler",
+    removeSaved = "Supprimer",
+    selected = "Sélectionné",
+
+    feelsLike = { temp -> "Ressenti $temp°" },
+    high = { temp -> "Max : $temp°" },
+    low = { temp -> "Min : $temp°" },
+    updated = { time -> "Mis à jour : $time" },
+    justNow = "À l'instant",
+    minutesAgo = { mins -> "Il y a ${mins} min" },
+    hoursAgo = { hours -> "Il y a ${hours} h" },
+    daysAgo = { days -> "Il y a ${days} j" },
+    cachedDataBadge = { relative -> "Cache : $relative" },
+    weatherDataSource = "Données météo par Open-Meteo",
+    lastUpdatedRelative = { time, relative -> "Mis à jour : $time ($relative)" },
+    cachedDataRelative = { time, relative -> "Cache : $time ($relative)" },
+    pullToRefreshHint = "Appuyer pour actualiser",
+    hourlyForecast = "Prévisions heure par heure",
+    tapForDetails = "Appuyer pour les détails",
+    now = "Maintenant",
+    sevenDayForecast = "Prévisions sur 7 jours",
+    today = "Aujourd'hui",
+    tomorrow = "Demain",
+
+    wind = "Vent",
+    uvIndex = "Indice UV",
+    airQuality = "Qualité de l'air",
+    humidity = "Humidité",
+    sun = "Soleil",
+    pressure = "Pression",
+    visibility = "Visibilité",
+    precipitation = "Précipitations",
+    dailyPrecipitationSum = "Cumul journalier",
+    todayTotalPrecip = "Total 24 h",
+    feelsLikeCard = "Ressenti",
+
+    windGusts = { gusts -> String.format(java.util.Locale.US, "Rafales : %.1f m/s", gusts) },
+    uvDailyMax = { max -> "UV max. du jour : $max" },
+    uvAdvice = "Crème solaire recommandée",
+    uvLevelLow = "Faible",
+    uvLevelModerate = "Modéré",
+    uvLevelHigh = "Élevé",
+    uvLevelVeryHigh = "Très élevé",
+    uvLevelExtreme = "Extrême",
+
+    aqiLevelGood = "Bonne",
+    aqiLevelModerate = "Moyenne",
+    aqiLevelSensitive = "Sensible",
+    aqiLevelUnhealthy = "Mauvaise",
+    aqiLevelHazardous = "Dangereuse",
+
+    humidityDry = "Sec",
+    humidityComfortable = "Agréable",
+    humidityHumid = "Humide",
+    dewPoint = { dp -> "Point de rosée $dp°C" },
+
+    sunrise = "Lever du soleil",
+    sunset = "Coucher du soleil",
+    daylightDuration = { duration -> "Ensoleillement $duration" },
+
+    pressureLow = "Basse",
+    pressureNormal = "Normale",
+    pressureHigh = "Élevée",
+
+    visibilityClear = "Dégagée",
+    visibilityGood = "Bonne",
+    visibilityMisty = "Brumeux",
+    visibilityFoggy = "Brouillard",
+    visibilityExcellent = "Excellente visibilité",
+    visibilityModerate = "Visibilité moyenne",
+    visibilityPoor = "Visibilité réduite",
+
+    maxPrecipChance = { prob -> "Risque max. $prob%" },
+    noPrecipitation = "Aucune précipitation",
+    rainPrecip = "Pluie",
+    snowPrecip = "Neige",
+
+    tempDiff = { diff -> if (diff >= 0) "+$diff° vs temp." else "$diff° vs temp." },
+    tempSame = "Identique à la température",
+    feelsHot = "Chaud",
+    feelsWarm = "Doux",
+    feelsComfortable = "Agréable",
+    feelsCool = "Frais",
+    feelsCold = "Froid",
+    feelsChilly = "Un peu frais",
+
+    windDetailsTitle = "Détails du vent",
+    windSpeedAndDirection = "Vitesse et direction",
+    windDirectionLabel = "Direction",
+    windSpeedLabel = "Vent moyen",
+    windGustsLabel = "Rafales maximales",
+    windGustsMultiplier = { mult -> "%.1fx vent moyen".format(mult) },
+    hourlyWindTitle = "Vent sur 24 heures",
+    dailyWindTitle = "Prévisions de vent (7 jours)",
+    beaufortScaleTitle = "Échelle de Beaufort",
+    beaufortScaleLevel = { lvl -> "Force $lvl" },
+    lifeInsightsTitle = "Conseils quotidiens",
+    laundryTitle = "Linge",
+    umbrellaTitle = "Parapluie",
+    cyclingTitle = "Vélo",
+    outdoorTitle = "Extérieur et fenêtres",
+    peakWindNotice = { time, spd -> "Rafales max. de %.1f m/s vers $time".format(spd) },
+    dominantWind = "Vent dominant",
+    maxWind = "Vent max.",
+    maxGusts = "Rafales max.",
+
+    todayWeatherTitle = "Détails météo du jour",
+    todayOverview = "Conditions et tendances du jour",
+    interactive24hChartTitle = "Chronologie",
+    interactive24hChartSubtitle = "Faites glisser sur le graphique pour explorer",
+    touchScrubberGuide = "Touchez ou glissez pour voir les valeurs heure par heure",
+    precipitationAndProbability = "Précipitations et probabilité",
+    daypartsTitle = "Par moment de la journée",
+    morningTitle = "Matin (6:00 - 12:00)",
+    afternoonTitle = "Après-midi (12:00 - 18:00)",
+    eveningTitle = "Soirée (18:00 - 24:00)",
+    overnightTitle = "Nuit (0:00 - 6:00)",
+    lifestyleAdvisorTitle = "Indices de vie",
+    clothingTitle = "Tenue conseillée",
+    clothingTip = { temp ->
+        when {
+            temp >= 26 -> "Manches courtes recommandées. Privilégiez des vêtements légers"
+            temp >= 20 -> "Chemise ou haut léger idéal. Gardez une petite veste à portée"
+            temp >= 15 -> "Pull, gilet ou veste légère recommandé"
+            temp >= 10 -> "Une veste ou un imperméable est conseillé"
+            else -> "Manteau chaud, écharpe et couches épaisses fortement conseillés"
+        }
+    },
+    umbrellaAdviceTitle = "Parapluie",
+    umbrellaTip = { prob, mm ->
+        when {
+            prob >= 60 || mm >= 2.0 -> "Emportez un parapluie solide ou un imperméable aujourd'hui"
+            prob >= 30 || mm > 0.0 -> "Glissez un parapluie pliant dans votre sac par précaution"
+            else -> "Pas besoin de parapluie aujourd'hui"
+        }
+    },
+    laundryAdviceTitle = "Séchage du linge",
+    laundryTip = { humidity, rainProb ->
+        when {
+            rainProb >= 40 -> "Séchage en intérieur vivement conseillé en raison du risque de pluie"
+            humidity <= 50 -> "Séchage rapide ! Temps idéal même pour le linge épais"
+            humidity <= 70 -> "Séchage extérieur possible. Surveillez l'évolution cet après-midi"
+            else -> "Air humide. Privilégiez le séchage en intérieur ou le sèche-linge"
+        }
+    },
+    uvAdviceTitle = "Protection UV",
+    uvTip = { uv ->
+        when {
+            uv >= 8 -> "Indice UV très élevé ! Crème solaire, lunettes et chapeau indispensables"
+            uv >= 6 -> "Indice UV élevé. Restez à l'ombre à midi et appliquez de la crème solaire"
+            uv >= 3 -> "Ensoleillement modéré. Protection UV conseillée en cas d'exposition prolongée"
+            else -> "Indice UV faible. Aucune précaution particulière requise"
+        }
+    },
+    ventilationAdviceTitle = "Aération et confort",
+    ventilationTip = { humidity, aqi ->
+        when {
+            aqi > 100 -> "Qualité de l'air dégradée. Limitez la durée d'aération"
+            humidity in 40..60 -> "Air frais et agréable ! Moment idéal pour aérer"
+            humidity > 70 -> "Air extérieur humide. Déshumidificateur ou climatisation conseillé après aération"
+            else -> "Air un peu sec. Pensez à utiliser un humidificateur à l'intérieur"
+        }
+    },
+    detailedMetricsTitle = "Détails",
+    dewPointLabel = "Point de rosée",
+    sunScheduleTitle = "Course du soleil",
+    sunRemaining = { remain -> "$remain avant le coucher du soleil" },
+    daylightLabel = "Durée du jour",
+
+    settingsTitle = "Paramètres",
+    settingsSubtitle = "Préférences et configuration du système",
+    tempUnitTitle = "Unité de température",
+    tempUnitSubtitle = { symbol, isC -> "Actuel : $symbol (${if (isC) "Celsius" else "Fahrenheit"})" },
+    windSpeedUnitTitle = "Unité de vitesse du vent",
+    windSpeedUnitSubtitle = { unit -> "Actuel : $unit" },
+    windSpeedMatchLanguage = "Selon la langue",
+    refreshTitle = "Actualiser les données météo",
+    refreshSubtitle = { isRef -> if (isRef) "Récupération des données..." else "Synchroniser les observations et prévisions" },
+    resetLocationTitle = "Revenir à la position actuelle",
+    resetLocationSubtitle = "Utiliser la position GPS ou la ville par défaut",
+    languageTitle = "Langue",
+    languageSubtitle = "Changer la langue d'affichage",
+    changeLanguageTitle = "Changer la langue",
+    currentLanguageSection = "Langue actuelle",
+    availableLanguagesSection = "Langues disponibles",
+    weatherThemeTitle = "Thème adapté à la météo",
+    weatherThemeSubtitle = { enabled -> if (enabled) "Les couleurs s'adaptent dynamiquement à la météo" else "Couleurs par défaut du système" },
+    themePresetTitle = "Couleur et thème prédéfini",
+    themePresetSubtitle = { name, isAdaptive -> if (isAdaptive) "Adapté à la météo ($name)" else "Fixé sur $name" },
+    themePresetDialogTitle = "Choisir la couleur du thème",
+    themePresetDialogSubtitle = "Fixez une couleur ou activez l'adaptation automatique à la météo",
+    appearanceTitle = "Apparence",
+    appearanceSubtitle = "Paramètres de couleurs du thème",
+    generalSettingsTitle = "Paramètres généraux",
+    generalSettingsSubtitle = "Langue et unités (température et vent)",
+    dataSourcesTitle = "Sources de données",
+    dataSourcesSubtitle = "Fournisseurs météo et futures sources",
+    dataSourcesSectionTitle = "Fournisseur de données météo",
+    dataAndSyncTitle = "Données météo et synchronisation",
+    aboutTitle = "À propos",
+    syncNowTitle = "Synchroniser maintenant",
+    syncNowSubtitle = "Récupérer les dernières observations et prévisions",
+    clearCacheConfirmMessage = "Les données météo en cache seront supprimées. De nouvelles données seront chargées à la prochaine actualisation.",
+    dataSourcesOpenMeteoDesc = "Agence météorologique du Japon (JMA) et Open-Meteo\nLes données au Japon proviennent directement de la JMA (stations AMeDAS et prévisions officielles). Les lieux hors Japon utilisent l'API mondiale Open-Meteo.",
+    dataSourcesFutureNotice = "Les données japonaises proviennent directement de la JMA, et le reste du monde est couvert par Open-Meteo.",
+    sourceActiveBadge = "Actif",
+    sourceComingSoonBadge = "Bientôt",
+    sourceJmaTitle = "Agence météorologique du Japon (JMA)",
+    sourceJmaDesc = "Radar régional haute résolution et modèle numérique méso-échelle (MSM) pour le Japon.",
+    sourceEcmwfTitle = "ECMWF (Centre européen de prévisions)",
+    sourceEcmwfDesc = "Modèle numérique mondial de prévision à moyen terme (IFS) de référence.",
+    sourceNoaaTitle = "NOAA GFS (Global Forecast System)",
+    sourceNoaaDesc = "Modèle météorologique mondial opéré par le National Weather Service américain.",
+    appVersionTitle = "Version",
+    appVersionValue = "1.0 (Expressive Edition)",
+    debugSettingsTitle = "Paramètres de débogage",
+    debugSettingsSubtitle = "Simulation d'animations météo et gestion du cache",
+    debugSimulationTitle = "Simulation atmosphérique",
+    debugSimulationSubtitle = "Tester les animations d'arrière-plan, nuages, pluie, orage, neige et brouillard",
+    backgroundPreviewTitle = "Simulation atmosphérique",
+    backgroundPreviewSubtitle = "Tester les animations d'arrière-plan, nuages, pluie, orage, neige et brouillard",
+    debugResetPreview = "Revenir à la météo réelle",
+    clearCacheTitle = "Vider le cache",
+    clearCacheSubtitle = "Supprimer les données météo en cache et la base locale",
+    clearCacheSuccess = "Cache vidé avec succès",
+    forceRefreshTitle = "Forcer la resynchronisation",
+    forceRefreshSubtitle = "Récupérer directement les données les plus récentes du serveur",
+    systemDiagnosticsTitle = "Diagnostics système",
+    tabAll = "Tout",
+    tabAppearance = "Apparence",
+    tabGeneral = "Général",
+    tabSources = "Sources",
+    tabDebug = "Débogage",
+
+    loadingWeather = "Chargement des données météo...",
+    loadingLocation = "Localisation en cours...",
+    errorOccurred = "Une erreur est survenue",
+    retry = "Réessayer"
+)
+
+val PortugueseStrings = AppStrings(
+    appName = "Expressive Weather",
+    selectLocation = "Selecionar local",
+    currentLocation = "Localização atual",
+    currentLocationWithCity = { city -> "Localização atual ($city)" },
+    savedLocations = "Locais salvos",
+    savedCities = "Cidades salvas",
+    addLocation = "Adicionar local",
+    currentlyViewing = "Visualizando agora",
+    noSavedLocations = "Nenhum local salvo",
+    recentSearches = "Pesquisas recentes",
+    searchCityPlaceholder = "Buscar cidade...",
+    searchingCities = "Buscando cidades...",
+    noCitiesFound = "Nenhuma cidade encontrada",
+    close = "Fechar",
+    cancel = "Cancelar",
+    removeSaved = "Remover",
+    selected = "Selecionado",
+
+    feelsLike = { temp -> "Sensação $temp°" },
+    high = { temp -> "Máx: $temp°" },
+    low = { temp -> "Mín: $temp°" },
+    updated = { time -> "Atualizado: $time" },
+    justNow = "Agora mesmo",
+    minutesAgo = { mins -> "Há ${mins} min" },
+    hoursAgo = { hours -> "Há ${hours} h" },
+    daysAgo = { days -> "Há ${days} d" },
+    cachedDataBadge = { relative -> "Cache: $relative" },
+    weatherDataSource = "Dados meteorológicos por Open-Meteo",
+    lastUpdatedRelative = { time, relative -> "Atualizado: $time ($relative)" },
+    cachedDataRelative = { time, relative -> "Cache: $time ($relative)" },
+    pullToRefreshHint = "Toque para atualizar",
+    hourlyForecast = "Previsão por hora",
+    tapForDetails = "Toque para detalhes",
+    now = "Agora",
+    sevenDayForecast = "Previsão para 7 dias",
+    today = "Hoje",
+    tomorrow = "Amanhã",
+
+    wind = "Vento",
+    uvIndex = "Índice UV",
+    airQuality = "Qualidade do ar",
+    humidity = "Umidade",
+    sun = "Sol",
+    pressure = "Pressão",
+    visibility = "Visibilidade",
+    precipitation = "Precipitação",
+    dailyPrecipitationSum = "Chuva do dia",
+    todayTotalPrecip = "Total 24 h",
+    feelsLikeCard = "Sensação térmica",
+
+    windGusts = { gusts -> String.format(java.util.Locale.US, "Rajadas: %.1f m/s", gusts) },
+    uvDailyMax = { max -> "UV máx. hoje: $max" },
+    uvAdvice = "Protetor solar recomendado",
+    uvLevelLow = "Baixo",
+    uvLevelModerate = "Moderado",
+    uvLevelHigh = "Alto",
+    uvLevelVeryHigh = "Muito alto",
+    uvLevelExtreme = "Extremo",
+
+    aqiLevelGood = "Boa",
+    aqiLevelModerate = "Moderada",
+    aqiLevelSensitive = "Grupos sensíveis",
+    aqiLevelUnhealthy = "Ruim",
+    aqiLevelHazardous = "Perigosa",
+
+    humidityDry = "Seco",
+    humidityComfortable = "Agradável",
+    humidityHumid = "Úmido",
+    dewPoint = { dp -> "Ponto de orvalho $dp°C" },
+
+    sunrise = "Nascer do sol",
+    sunset = "Pôr do sol",
+    daylightDuration = { duration -> "Luz do dia $duration" },
+
+    pressureLow = "Baixa",
+    pressureNormal = "Normal",
+    pressureHigh = "Alta",
+
+    visibilityClear = "Limpa",
+    visibilityGood = "Boa",
+    visibilityMisty = "Névoa",
+    visibilityFoggy = "Neblina",
+    visibilityExcellent = "Visibilidade excelente",
+    visibilityModerate = "Visibilidade moderada",
+    visibilityPoor = "Visibilidade reduzida",
+
+    maxPrecipChance = { prob -> "Chance máx. $prob%" },
+    noPrecipitation = "Sem precipitação",
+    rainPrecip = "Chuva",
+    snowPrecip = "Neve",
+
+    tempDiff = { diff -> if (diff >= 0) "+$diff° vs temp." else "$diff° vs temp." },
+    tempSame = "Igual à temperatura",
+    feelsHot = "Quente",
+    feelsWarm = "Ameno",
+    feelsComfortable = "Agradável",
+    feelsCool = "Fresco",
+    feelsCold = "Frio",
+    feelsChilly = "Friozinho",
+
+    windDetailsTitle = "Detalhes do vento",
+    windSpeedAndDirection = "Velocidade e direção",
+    windDirectionLabel = "Direção",
+    windSpeedLabel = "Vento médio",
+    windGustsLabel = "Rajadas máximas",
+    windGustsMultiplier = { mult -> "%.1fx vento médio".format(mult) },
+    hourlyWindTitle = "Vento nas próximas 24 h",
+    dailyWindTitle = "Previsão de vento (7 dias)",
+    beaufortScaleTitle = "Escala Beaufort",
+    beaufortScaleLevel = { lvl -> "Força $lvl" },
+    lifeInsightsTitle = "Impacto no dia a dia",
+    laundryTitle = "Roupas no varal",
+    umbrellaTitle = "Guarda-chuva",
+    cyclingTitle = "Ciclismo",
+    outdoorTitle = "Ar livre e janelas",
+    peakWindNotice = { time, spd -> "Rajadas máximas de %.1f m/s por volta das $time".format(spd) },
+    dominantWind = "Vento predominante",
+    maxWind = "Vento máx.",
+    maxGusts = "Rajadas máx.",
+
+    todayWeatherTitle = "Detalhes do clima de hoje",
+    todayOverview = "Condições e panorama de hoje",
+    interactive24hChartTitle = "Linha do tempo",
+    interactive24hChartSubtitle = "Deslize no gráfico para ver detalhes",
+    touchScrubberGuide = "Toque ou arraste na linha do tempo para valores por hora",
+    precipitationAndProbability = "Precipitação e probabilidade",
+    daypartsTitle = "Por período do dia",
+    morningTitle = "Manhã (6:00 - 12:00)",
+    afternoonTitle = "Tarde (12:00 - 18:00)",
+    eveningTitle = "Noite (18:00 - 24:00)",
+    overnightTitle = "Madrugada (0:00 - 6:00)",
+    lifestyleAdvisorTitle = "Índices do dia",
+    clothingTitle = "Vestuário",
+    clothingTip = { temp ->
+        when {
+            temp >= 26 -> "Roupas leves e frescas recomendadas para o calor"
+            temp >= 20 -> "Camisa de manga longa ou blusa leve. Leve um agasalho fino"
+            temp >= 15 -> "Suéter, cardigã ou jaqueta leve recomendados"
+            temp >= 10 -> "Uma jaqueta ou casaco é necessário para ficar confortável"
+            else -> "Casaco pesado, cachecol e camadas quentes muito recomendados"
+        }
+    },
+    umbrellaAdviceTitle = "Guarda-chuva",
+    umbrellaTip = { prob, mm ->
+        when {
+            prob >= 60 || mm >= 2.0 -> "Leve um guarda-chuva resistente ou capa de chuva hoje"
+            prob >= 30 || mm > 0.0 -> "Vale deixar um guarda-chuva dobrável na bolsa"
+            else -> "Não precisa de guarda-chuva hoje. Aproveite o dia"
+        }
+    },
+    laundryAdviceTitle = "Varal",
+    laundryTip = { humidity, rainProb ->
+        when {
+            rainProb >= 40 -> "Recomendado secar em local coberto devido ao risco de chuva"
+            humidity <= 50 -> "Secagem rápida! Clima perfeito até para roupas pesadas"
+            humidity <= 70 -> "Pode secar ao ar livre. Fique atento a mudanças à tarde"
+            else -> "Umidade alta. Prefira secar em ambiente interno ou na secadora"
+        }
+    },
+    uvAdviceTitle = "Proteção UV",
+    uvTip = { uv ->
+        when {
+            uv >= 8 -> "Índice UV muito alto! Protetor solar, óculos escuros e chapéu essenciais"
+            uv >= 6 -> "Radiação UV alta. Procure sombra ao meio-dia e use protetor solar"
+            uv >= 3 -> "Sol moderado. Proteção UV recomendada em exposições prolongadas"
+            else -> "Índice UV baixo. Sem necessidade de cuidados especiais"
+        }
+    },
+    ventilationAdviceTitle = "Ventilação e conforto",
+    ventilationTip = { humidity, aqi ->
+        when {
+            aqi > 100 -> "Atenção à qualidade do ar. Mantenha a ventilação breve"
+            humidity in 40..60 -> "Ar fresco e agradável! Ótimo momento para arejar a casa"
+            humidity > 70 -> "Ar externo abafado. Use desumidificador ou ar-condicionado após ventilar"
+            else -> "Ar um pouco seco. Considere usar um umidificador em ambientes internos"
+        }
+    },
+    detailedMetricsTitle = "Detalhes",
+    dewPointLabel = "Ponto de orvalho",
+    sunScheduleTitle = "Horário do sol",
+    sunRemaining = { remain -> "$remain até o pôr do sol" },
+    daylightLabel = "Duração do dia",
+
+    settingsTitle = "Configurações",
+    settingsSubtitle = "Preferências e configuração do sistema",
+    tempUnitTitle = "Unidade de temperatura",
+    tempUnitSubtitle = { symbol, isC -> "Atual: $symbol (${if (isC) "Celsius" else "Fahrenheit"})" },
+    windSpeedUnitTitle = "Unidade de velocidade do vento",
+    windSpeedUnitSubtitle = { unit -> "Atual: $unit" },
+    windSpeedMatchLanguage = "Seguir o idioma",
+    refreshTitle = "Atualizar dados do clima",
+    refreshSubtitle = { isRef -> if (isRef) "Recebendo dados mais recentes..." else "Sincronizar observações e previsão" },
+    resetLocationTitle = "Voltar à localização atual",
+    resetLocationSubtitle = "Usar localização GPS ou cidade padrão",
+    languageTitle = "Idioma",
+    languageSubtitle = "Alterar o idioma do aplicativo",
+    changeLanguageTitle = "Alterar idioma",
+    currentLanguageSection = "Idioma atual",
+    availableLanguagesSection = "Idiomas disponíveis",
+    weatherThemeTitle = "Tema adaptável ao clima",
+    weatherThemeSubtitle = { enabled -> if (enabled) "As cores do app se adaptam ao clima atual" else "Usando as cores padrão do sistema" },
+    themePresetTitle = "Cor e tema predefinido",
+    themePresetSubtitle = { name, isAdaptive -> if (isAdaptive) "Adaptando ao clima ($name)" else "Fixado em $name" },
+    themePresetDialogTitle = "Escolher cor do tema",
+    themePresetDialogSubtitle = "Escolha uma cor fixa ou ative o modo adaptável ao clima",
+    appearanceTitle = "Aparência",
+    appearanceSubtitle = "Configurações de cor do tema",
+    generalSettingsTitle = "Configurações gerais",
+    generalSettingsSubtitle = "Idioma e unidades (temperatura e vento)",
+    dataSourcesTitle = "Fontes de dados",
+    dataSourcesSubtitle = "Provedores de previsão e futuras fontes",
+    dataSourcesSectionTitle = "Provedor de dados meteorológicos",
+    dataAndSyncTitle = "Dados do clima e sincronização",
+    aboutTitle = "Sobre o app",
+    syncNowTitle = "Sincronizar agora",
+    syncNowSubtitle = "Buscar observações e previsões mais recentes",
+    clearCacheConfirmMessage = "Os dados meteorológicos em cache serão apagados. Dados novos serão baixados na próxima atualização.",
+    dataSourcesOpenMeteoDesc = "Agência Meteorológica do Japão (JMA) e Open-Meteo\nOs dados no Japão vêm diretamente da JMA (estações AMeDAS e previsões oficiais). Locais fora do Japão utilizam a API global Open-Meteo.",
+    dataSourcesFutureNotice = "Os dados no Japão vêm automaticamente da JMA, e locais no mundo todo são atendidos pelo Open-Meteo.",
+    sourceActiveBadge = "Ativo",
+    sourceComingSoonBadge = "Em breve",
+    sourceJmaTitle = "Agência Meteorológica do Japão (JMA)",
+    sourceJmaDesc = "Radar regional de alta resolução e modelo numérico de mesoescala (MSM) no Japão.",
+    sourceEcmwfTitle = "ECMWF (Centro Europeu de Previsões)",
+    sourceEcmwfDesc = "Modelo numérico global de previsão de médio prazo (IFS) líder mundial.",
+    sourceNoaaTitle = "NOAA GFS (Global Forecast System)",
+    sourceNoaaDesc = "Modelo meteorológico global operado pelo Serviço Meteorológico Nacional dos EUA.",
+    appVersionTitle = "Versão",
+    appVersionValue = "1.0 (Expressive Edition)",
+    debugSettingsTitle = "Configurações de depuração",
+    debugSettingsSubtitle = "Simulação de animações climáticas e ferramentas de cache",
+    debugSimulationTitle = "Simulação atmosférica",
+    debugSimulationSubtitle = "Testar animações de fundo, nuvens, chuva, tempestade, neve e neblina",
+    backgroundPreviewTitle = "Simulação atmosférica",
+    backgroundPreviewSubtitle = "Testar animações de fundo, nuvens, chuva, tempestade, neve e neblina",
+    debugResetPreview = "Voltar ao clima real",
+    clearCacheTitle = "Limpar cache",
+    clearCacheSubtitle = "Apagar dados meteorológicos em cache e banco de dados local",
+    clearCacheSuccess = "Cache limpo com sucesso",
+    forceRefreshTitle = "Forçar ressincronização",
+    forceRefreshSubtitle = "Buscar dados mais recentes diretamente do servidor",
+    systemDiagnosticsTitle = "Diagnóstico do sistema",
+    tabAll = "Tudo",
+    tabAppearance = "Aparência",
+    tabGeneral = "Geral",
+    tabSources = "Fontes",
+    tabDebug = "Depuração",
+
+    loadingWeather = "Carregando dados do clima...",
+    loadingLocation = "Obtendo sua localização...",
+    errorOccurred = "Ocorreu um erro",
+    retry = "Tentar novamente"
+)
+
 val LocalAppStrings = staticCompositionLocalOf { JapaneseStrings }
 val LocalAppLanguage = staticCompositionLocalOf { AppLanguage.JAPANESE }
 
 /**
- * 風向き方位の多言語（日本語・英語・簡体字中国語・繁体字中国語）変換
+ * 風向き方位の多言語（日本語・韓国語・英語・簡体字中国語・繁体字中国語）変換
  */
 fun getLocalizedWindDirection(direction: String, language: AppLanguage): String {
     return when (language) {
         AppLanguage.JAPANESE -> direction
+        AppLanguage.KOREAN -> when (direction) {
+            "北" -> "북"
+            "北北東" -> "북북동"
+            "北東" -> "북동"
+            "東北東" -> "동북동"
+            "東" -> "동"
+            "東南東" -> "동남동"
+            "南東" -> "남동"
+            "南南東" -> "남남동"
+            "南" -> "남"
+            "南南西" -> "남남서"
+            "南西" -> "남서"
+            "西南西" -> "서남서"
+            "西" -> "서"
+            "西北西" -> "서북서"
+            "北西" -> "북서"
+            "北北西" -> "북북서"
+            else -> direction
+        }
         AppLanguage.SIMPLIFIED_CHINESE -> when (direction) {
             "北" -> "北"
             "北北東" -> "东北偏北"
@@ -1364,6 +2419,25 @@ fun getLocalizedWindDirection(direction: String, language: AppLanguage): String 
             "北北西" -> "NNW"
             else -> direction
         }
+        AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> when (direction) {
+            "北" -> "N"
+            "北北東" -> "NNE"
+            "北東" -> "NE"
+            "東北東" -> "ENE"
+            "東" -> "E"
+            "東南東" -> "ESE"
+            "南東" -> "SE"
+            "南南東" -> "SSE"
+            "南" -> "S"
+            "南南西" -> "SSO"
+            "南西" -> "SO"
+            "西南西" -> "OSO"
+            "西" -> "O"
+            "西北西" -> "ONO"
+            "北西" -> "NO"
+            "北北西" -> "NNO"
+            else -> direction
+        }
     }
 }
 
@@ -1383,20 +2457,20 @@ fun getLocalizedWindDirection(degree: Float, language: AppLanguage): String {
 }
 
 /**
- * 曜日の多言語（日本語・英語・簡体字・繁体字）双方向変換
+ * 曜日の多言語双方向変換
  */
 fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
     val trimmed = dayLabel.trim().removeSuffix(".")
     val dayKey = when {
-        trimmed.equals("Today", ignoreCase = true) || trimmed == "今日" || trimmed == "今天" -> "TODAY"
-        trimmed.equals("Tomorrow", ignoreCase = true) || trimmed == "明日" || trimmed == "明天" -> "TOMORROW"
-        trimmed.startsWith("Mon", ignoreCase = true) || trimmed.startsWith("月") || trimmed == "周一" || trimmed == "週一" || trimmed == "星期一" || trimmed == "禮拜一" -> "MON"
-        trimmed.startsWith("Tue", ignoreCase = true) || trimmed.startsWith("火") || trimmed == "周二" || trimmed == "週二" || trimmed == "星期二" || trimmed == "禮拜二" -> "TUE"
-        trimmed.startsWith("Wed", ignoreCase = true) || trimmed.startsWith("水") || trimmed == "周三" || trimmed == "週三" || trimmed == "星期三" || trimmed == "禮拜三" -> "WED"
-        trimmed.startsWith("Thu", ignoreCase = true) || trimmed.startsWith("木") || trimmed == "周四" || trimmed == "週四" || trimmed == "星期四" || trimmed == "禮拜四" -> "THU"
-        trimmed.startsWith("Fri", ignoreCase = true) || trimmed.startsWith("金") || trimmed == "周五" || trimmed == "週五" || trimmed == "星期五" || trimmed == "禮拜五" -> "FRI"
-        trimmed.startsWith("Sat", ignoreCase = true) || trimmed.startsWith("土") || trimmed == "周六" || trimmed == "週六" || trimmed == "星期六" || trimmed == "禮拜六" -> "SAT"
-        trimmed.startsWith("Sun", ignoreCase = true) || trimmed.startsWith("日") || trimmed == "周日" || trimmed == "週日" || trimmed == "星期日" || trimmed == "星期天" || trimmed == "周天" || trimmed == "週天" || trimmed == "禮拜天" || trimmed == "禮拜日" -> "SUN"
+        trimmed.equals("Today", ignoreCase = true) || trimmed == "今日" || trimmed == "今天" || trimmed == "오늘" || trimmed.equals("Hoy", ignoreCase = true) || trimmed.equals("Aujourd'hui", ignoreCase = true) || trimmed.equals("Hoje", ignoreCase = true) -> "TODAY"
+        trimmed.equals("Tomorrow", ignoreCase = true) || trimmed == "明日" || trimmed == "明天" || trimmed == "내일" || trimmed.equals("Mañana", ignoreCase = true) || trimmed.equals("Manana", ignoreCase = true) || trimmed.equals("Demain", ignoreCase = true) || trimmed.equals("Amanhã", ignoreCase = true) || trimmed.equals("Amanha", ignoreCase = true) -> "TOMORROW"
+        trimmed.startsWith("Mon", ignoreCase = true) || trimmed.startsWith("月") || trimmed == "周一" || trimmed == "週一" || trimmed == "星期一" || trimmed == "禮拜一" || trimmed == "월" || trimmed == "월요일" || trimmed.startsWith("Lun", ignoreCase = true) || trimmed.startsWith("Seg", ignoreCase = true) -> "MON"
+        trimmed.startsWith("Tue", ignoreCase = true) || trimmed.startsWith("火") || trimmed == "周二" || trimmed == "週二" || trimmed == "星期二" || trimmed == "禮拜二" || trimmed == "화" || trimmed == "화요일" || trimmed.startsWith("Mar", ignoreCase = true) || trimmed.startsWith("Ter", ignoreCase = true) -> "TUE"
+        trimmed.startsWith("Wed", ignoreCase = true) || trimmed.startsWith("水") || trimmed == "周三" || trimmed == "週三" || trimmed == "星期三" || trimmed == "禮拜三" || trimmed == "수" || trimmed == "수요일" || trimmed.startsWith("Mié", ignoreCase = true) || trimmed.startsWith("Mie", ignoreCase = true) || trimmed.startsWith("Mer", ignoreCase = true) || trimmed.startsWith("Qua", ignoreCase = true) -> "WED"
+        trimmed.startsWith("Thu", ignoreCase = true) || trimmed.startsWith("木") || trimmed == "周四" || trimmed == "週四" || trimmed == "星期四" || trimmed == "禮拜四" || trimmed == "목" || trimmed == "목요일" || trimmed.startsWith("Jue", ignoreCase = true) || trimmed.startsWith("Jeu", ignoreCase = true) || trimmed.startsWith("Qui", ignoreCase = true) -> "THU"
+        trimmed.startsWith("Fri", ignoreCase = true) || trimmed.startsWith("金") || trimmed == "周五" || trimmed == "週五" || trimmed == "星期五" || trimmed == "禮拜五" || trimmed == "금" || trimmed == "금요일" || trimmed.startsWith("Vie", ignoreCase = true) || trimmed.startsWith("Ven", ignoreCase = true) || trimmed.startsWith("Sex", ignoreCase = true) -> "FRI"
+        trimmed.startsWith("Sat", ignoreCase = true) || trimmed.startsWith("土") || trimmed == "周六" || trimmed == "週六" || trimmed == "星期六" || trimmed == "禮拜六" || trimmed == "토" || trimmed == "토요일" || trimmed.startsWith("Sáb", ignoreCase = true) || trimmed.startsWith("Sab", ignoreCase = true) || trimmed.startsWith("Sam", ignoreCase = true) -> "SAT"
+        trimmed.startsWith("Sun", ignoreCase = true) || trimmed.startsWith("日") || trimmed == "周日" || trimmed == "週日" || trimmed == "星期日" || trimmed == "星期天" || trimmed == "周天" || trimmed == "週天" || trimmed == "禮拜天" || trimmed == "禮拜日" || trimmed == "일" || trimmed == "일요일" || trimmed.startsWith("Dom", ignoreCase = true) || trimmed.startsWith("Dim", ignoreCase = true) -> "SUN"
         else -> null
     }
 
@@ -1413,6 +2487,18 @@ fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
             "FRI" -> "金"
             "SAT" -> "土"
             "SUN" -> "日"
+            else -> dayLabel
+        }
+        AppLanguage.KOREAN -> when (dayKey) {
+            "TODAY" -> "오늘"
+            "TOMORROW" -> "내일"
+            "MON" -> "월"
+            "TUE" -> "화"
+            "WED" -> "수"
+            "THU" -> "목"
+            "FRI" -> "금"
+            "SAT" -> "토"
+            "SUN" -> "일"
             else -> dayLabel
         }
         AppLanguage.SIMPLIFIED_CHINESE -> when (dayKey) {
@@ -1451,20 +2537,60 @@ fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
             "SUN" -> "Sun"
             else -> dayLabel
         }
+        AppLanguage.SPANISH -> when (dayKey) {
+            "TODAY" -> "Hoy"
+            "TOMORROW" -> "Mañana"
+            "MON" -> "Lun"
+            "TUE" -> "Mar"
+            "WED" -> "Mié"
+            "THU" -> "Jue"
+            "FRI" -> "Vie"
+            "SAT" -> "Sáb"
+            "SUN" -> "Dom"
+            else -> dayLabel
+        }
+        AppLanguage.FRENCH -> when (dayKey) {
+            "TODAY" -> "Aujourd'hui"
+            "TOMORROW" -> "Demain"
+            "MON" -> "Lun"
+            "TUE" -> "Mar"
+            "WED" -> "Mer"
+            "THU" -> "Jeu"
+            "FRI" -> "Ven"
+            "SAT" -> "Sam"
+            "SUN" -> "Dim"
+            else -> dayLabel
+        }
+        AppLanguage.PORTUGUESE -> when (dayKey) {
+            "TODAY" -> "Hoje"
+            "TOMORROW" -> "Amanhã"
+            "MON" -> "Seg"
+            "TUE" -> "Ter"
+            "WED" -> "Qua"
+            "THU" -> "Qui"
+            "FRI" -> "Sex"
+            "SAT" -> "Sáb"
+            "SUN" -> "Dom"
+            else -> dayLabel
+        }
     }
 }
 
 /**
- * 24時間予報などのタイムライン時間ラベル（「現在」「Now」「现在」）の多言語変換
+ * 24時間予報などのタイムライン時間ラベル（「現在」「Now」「现在」等）の多言語変換
  */
 fun getLocalizedTimeLabel(timeLabel: String, language: AppLanguage): String {
     val trimmed = timeLabel.trim()
-    if (trimmed == "現在" || trimmed.equals("now", ignoreCase = true) || trimmed == "现在") {
+    if (trimmed == "現在" || trimmed.equals("now", ignoreCase = true) || trimmed == "现在" || trimmed == "현재" || trimmed.equals("ahora", ignoreCase = true) || trimmed.equals("maintenant", ignoreCase = true) || trimmed.equals("agora", ignoreCase = true)) {
         return when (language) {
             AppLanguage.JAPANESE -> "現在"
+            AppLanguage.KOREAN -> "현재"
             AppLanguage.SIMPLIFIED_CHINESE -> "现在"
             AppLanguage.TRADITIONAL_CHINESE -> "現在"
             AppLanguage.ENGLISH -> "Now"
+            AppLanguage.SPANISH -> "Ahora"
+            AppLanguage.FRENCH -> "Maintenant"
+            AppLanguage.PORTUGUESE -> "Agora"
         }
     }
     return timeLabel
@@ -1474,6 +2600,16 @@ fun getLocalizedTimeLabel(timeLabel: String, language: AppLanguage): String {
 fun WeatherCondition.getLocalizedLabel(language: AppLanguage): String {
     return when (language) {
         AppLanguage.JAPANESE -> label
+        AppLanguage.KOREAN -> when (this) {
+            WeatherCondition.CLEAR -> "맑음"
+            WeatherCondition.FEW_CLOUDS -> "구름 조금"
+            WeatherCondition.CLOUDY -> "흐림"
+            WeatherCondition.RAIN -> "비"
+            WeatherCondition.HEAVY_RAIN -> "강한 비"
+            WeatherCondition.THUNDERSTORM -> "뇌우"
+            WeatherCondition.SNOW -> "눈"
+            WeatherCondition.FOG -> "안개"
+        }
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             WeatherCondition.CLEAR -> "晴"
             WeatherCondition.FEW_CLOUDS -> "多云"
@@ -1495,12 +2631,52 @@ fun WeatherCondition.getLocalizedLabel(language: AppLanguage): String {
             WeatherCondition.FOG -> "霧"
         }
         AppLanguage.ENGLISH -> englishLabel
+        AppLanguage.SPANISH -> when (this) {
+            WeatherCondition.CLEAR -> "Despejado"
+            WeatherCondition.FEW_CLOUDS -> "Parcialmente nublado"
+            WeatherCondition.CLOUDY -> "Nublado"
+            WeatherCondition.RAIN -> "Lluvia"
+            WeatherCondition.HEAVY_RAIN -> "Lluvia intensa"
+            WeatherCondition.THUNDERSTORM -> "Tormenta"
+            WeatherCondition.SNOW -> "Nieve"
+            WeatherCondition.FOG -> "Niebla"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            WeatherCondition.CLEAR -> "Dégagé"
+            WeatherCondition.FEW_CLOUDS -> "Peu nuageux"
+            WeatherCondition.CLOUDY -> "Nuageux"
+            WeatherCondition.RAIN -> "Pluie"
+            WeatherCondition.HEAVY_RAIN -> "Pluie forte"
+            WeatherCondition.THUNDERSTORM -> "Orage"
+            WeatherCondition.SNOW -> "Neige"
+            WeatherCondition.FOG -> "Brouillard"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            WeatherCondition.CLEAR -> "Céu limpo"
+            WeatherCondition.FEW_CLOUDS -> "Parcialmente nublado"
+            WeatherCondition.CLOUDY -> "Nublado"
+            WeatherCondition.RAIN -> "Chuva"
+            WeatherCondition.HEAVY_RAIN -> "Chuva forte"
+            WeatherCondition.THUNDERSTORM -> "Tempestade"
+            WeatherCondition.SNOW -> "Neve"
+            WeatherCondition.FOG -> "Neblina"
+        }
     }
 }
 
 fun WeatherCondition.getLocalizedTagline(language: AppLanguage): String {
     return when (language) {
         AppLanguage.JAPANESE -> tagline
+        AppLanguage.KOREAN -> when (this) {
+            WeatherCondition.CLEAR -> "화창하고 맑은 하늘이 이어집니다"
+            WeatherCondition.FEW_CLOUDS -> "부드러운 구름 사이로 햇살이 비칩니다"
+            WeatherCondition.CLOUDY -> "구름이 많고 차분한 하늘입니다"
+            WeatherCondition.RAIN -> "비가 내리고 있습니다. 외출 시 우산을 챙기세요"
+            WeatherCondition.HEAVY_RAIN -> "강한 비가 내리고 있습니다. 이동 시 안전에 유의하세요"
+            WeatherCondition.THUNDERSTORM -> "대기가 불안정합니다. 천둥·번개와 돌풍에 주의하세요"
+            WeatherCondition.SNOW -> "눈이 내리고 있습니다. 따뜻하게 입고 미끄럼에 주의하세요"
+            WeatherCondition.FOG -> "안개로 시야가 흐립니다. 운전 및 보행 시 주의하세요"
+        }
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             WeatherCondition.CLEAR -> "晴空万里，阳光明媚"
             WeatherCondition.FEW_CLOUDS -> "柔和的云层间透出阳光"
@@ -1530,6 +2706,36 @@ fun WeatherCondition.getLocalizedTagline(language: AppLanguage): String {
             WeatherCondition.THUNDERSTORM -> "Unstable atmosphere. Watch out for sudden lightning and gusts"
             WeatherCondition.SNOW -> "Snow is falling gently. Bundle up and stay warm"
             WeatherCondition.FOG -> "Misty conditions with reduced visibility. Drive carefully"
+        }
+        AppLanguage.SPANISH -> when (this) {
+            WeatherCondition.CLEAR -> "Cielo despejado y sol agradable durante todo el día"
+            WeatherCondition.FEW_CLOUDS -> "Suaves rayos de sol asoman entre nubes dispersas"
+            WeatherCondition.CLOUDY -> "Cielo nublado con ambiente tranquilo y templado"
+            WeatherCondition.RAIN -> "Llueve suavemente en la zona. No olvides el paraguas"
+            WeatherCondition.HEAVY_RAIN -> "Llueve con intensidad. Extrema la precaución al desplazarte"
+            WeatherCondition.THUNDERSTORM -> "Atmósfera inestable. Atención a rayos y ráfagas de viento"
+            WeatherCondition.SNOW -> "Cae nieve suavemente. Abrígate bien y ten cuidado al caminar"
+            WeatherCondition.FOG -> "Niebla con visibilidad reducida. Conduce con precaución"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            WeatherCondition.CLEAR -> "Ciel dégagé et beau soleil tout au long de la journée"
+            WeatherCondition.FEW_CLOUDS -> "Doux rayons de soleil à travers quelques nuages"
+            WeatherCondition.CLOUDY -> "Ciel couvert avec un temps calme et doux"
+            WeatherCondition.RAIN -> "Pluie fine sur le secteur. N'oubliez pas votre parapluie"
+            WeatherCondition.HEAVY_RAIN -> "Pluie soutenue. Soyez prudent lors de vos déplacements"
+            WeatherCondition.THUNDERSTORM -> "Temps instable. Attention aux éclairs et aux rafales"
+            WeatherCondition.SNOW -> "Chutes de neige légères. Couvrez-vous bien et soyez prudent"
+            WeatherCondition.FOG -> "Brouillard réduisant la visibilité. Conduisez prudemment"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            WeatherCondition.CLEAR -> "Céu limpo e sol agradável ao longo do dia"
+            WeatherCondition.FEW_CLOUDS -> "Raios suaves de sol entre nuvens esparsas"
+            WeatherCondition.CLOUDY -> "Céu nublado com clima calmo e ameno"
+            WeatherCondition.RAIN -> "Chuva leve na região. Não esqueça o guarda-chuva"
+            WeatherCondition.HEAVY_RAIN -> "Chuva forte no momento. Redobre a atenção ao se deslocar"
+            WeatherCondition.THUNDERSTORM -> "Tempo instável. Atenção para raios e rajadas de vento"
+            WeatherCondition.SNOW -> "Neve caindo suavemente. Agasalhe-se bem e tenha cuidado"
+            WeatherCondition.FOG -> "Neblina com visibilidade reduzida. Dirija com atenção"
         }
     }
 }
@@ -1713,39 +2919,504 @@ object ChineseCityDictionary {
     }
 }
 
+/**
+ * 主要都市の韓国語辞書
+ */
+object KoreanCityDictionary {
+    private val jaToKo = mapOf(
+        "東京都" to "도쿄",
+        "東京" to "도쿄",
+        "大阪市" to "오사카",
+        "大阪" to "오사카",
+        "横浜市" to "요코하마",
+        "横浜" to "요코하마",
+        "名古屋市" to "나고야",
+        "名古屋" to "나고야",
+        "札幌市" to "삿포로",
+        "札幌" to "삿포로",
+        "福岡市" to "후쿠오카",
+        "福岡" to "후쿠오카",
+        "神戸市" to "고베",
+        "神戸" to "고베",
+        "京都市" to "교토",
+        "京都" to "교토",
+        "さいたま市" to "사이타마",
+        "さいたま" to "사이타마",
+        "埼玉" to "사이타마",
+        "広島市" to "히로시마",
+        "広島" to "히로시마",
+        "仙台市" to "센다이",
+        "仙台" to "센다이",
+        "千葉市" to "지바",
+        "千葉" to "지바",
+        "北九州市" to "기타큐슈",
+        "川崎市" to "가와사키",
+        "静岡市" to "시즈오카",
+        "静岡" to "시즈오카",
+        "浜松市" to "하마마쓰",
+        "那覇市" to "나하",
+        "那覇" to "나하",
+        "沖縄" to "오키나와",
+        "金沢市" to "가나자와",
+        "金沢" to "가나자와",
+        "長崎市" to "나가사키",
+        "長崎" to "나가사키",
+        "熊本市" to "구마모토",
+        "熊本" to "구마모토",
+        "鹿児島市" to "가고시마",
+        "鹿児島" to "가고시마",
+        "千代田区" to "치요다구",
+        "新宿区" to "신주쿠구",
+        "渋谷区" to "시부야구",
+        "港区" to "미나토구",
+        "中央区" to "주오구",
+        "勝浦市" to "가쓰우라",
+        "勝浦" to "가쓰우라",
+        "ソウル" to "서울",
+        "釜山" to "부산",
+        "仁川" to "인천",
+        "大邱" to "대구",
+        "大田" to "대전",
+        "光州" to "광주",
+        "蔚山" to "울산",
+        "済州" to "제주",
+        "水原" to "수원",
+        "世宗" to "세종"
+    )
+
+    private val enToKo = mapOf(
+        "Tokyo" to "도쿄",
+        "Osaka" to "오사카",
+        "Kyoto" to "교토",
+        "Yokohama" to "요코하마",
+        "Nagoya" to "나고야",
+        "Sapporo" to "삿포로",
+        "Fukuoka" to "후쿠오카",
+        "Kobe" to "고베",
+        "Saitama" to "사이타마",
+        "Hiroshima" to "히로시마",
+        "Sendai" to "센다이",
+        "Chiba" to "지바",
+        "Naha" to "나하",
+        "Okinawa" to "오키나와",
+        "Kanazawa" to "가나자와",
+        "Nagasaki" to "나가사키",
+        "Kumamoto" to "구마모토",
+        "Kagoshima" to "가고시마",
+        "Seoul" to "서울",
+        "Busan" to "부산",
+        "Incheon" to "인천",
+        "Daegu" to "대구",
+        "Daejeon" to "대전",
+        "Gwangju" to "광주",
+        "Ulsan" to "울산",
+        "Suwon" to "수원",
+        "Jeju" to "제주",
+        "Jeju City" to "제주시",
+        "Sejong" to "세종",
+        "Seongnam" to "성남",
+        "Goyang" to "고양",
+        "Yongin" to "용인",
+        "Changwon" to "창원",
+        "Cheongju" to "청주",
+        "Jeonju" to "전주",
+        "Cheonan" to "천안",
+        "Chuncheon" to "춘천",
+        "Gangneung" to "강릉",
+        "Pohang" to "포항",
+        "Gyeongju" to "경주",
+        "Yeosu" to "여수",
+        "Beijing" to "베이징",
+        "Shanghai" to "상하이",
+        "Guangzhou" to "광저우",
+        "Shenzhen" to "선전",
+        "Hong Kong" to "홍콩",
+        "Taipei" to "타이베이",
+        "London" to "런던",
+        "Paris" to "파리",
+        "Berlin" to "베를린",
+        "Rome" to "로마",
+        "Madrid" to "마드리드",
+        "New York" to "뉴욕",
+        "Los Angeles" to "로스앤젤레스",
+        "San Francisco" to "샌프란시스코",
+        "Chicago" to "시카고",
+        "Seattle" to "시애틀",
+        "Honolulu" to "호놀룰루",
+        "Singapore" to "싱가포르",
+        "Bangkok" to "방콕",
+        "Sydney" to "시드니",
+        "Melbourne" to "멜버른",
+        "Toronto" to "토론토",
+        "Vancouver" to "밴쿠버",
+        "Dubai" to "두바이"
+    )
+
+    private fun containsHangul(text: String): Boolean {
+        return text.any { ch -> ch in '\uAC00'..'\uD7A3' || ch in '\u1100'..'\u11FF' || ch in '\u3130'..'\u318F' }
+    }
+
+    fun translateToKorean(nameJa: String, nameEn: String): String {
+        if (containsHangul(nameJa)) return nameJa
+        if (containsHangul(nameEn)) return nameEn
+        return jaToKo[nameJa]
+            ?: enToKo[nameEn]
+            ?: jaToKo[nameJa.removeSuffix("市").removeSuffix("区").removeSuffix("町").removeSuffix("村")]
+            ?: if (nameEn.isNotBlank()) nameEn else nameJa
+    }
+}
+
+/**
+ * 主要都市のスペイン語・フランス語・ポルトガル語辞書
+ */
+object EuropeanCityDictionary {
+    private val enToEs = mapOf(
+        "Tokyo" to "Tokio",
+        "Kyoto" to "Kioto",
+        "New York" to "Nueva York",
+        "Los Angeles" to "Los Ángeles",
+        "Philadelphia" to "Filadelfia",
+        "New Orleans" to "Nueva Orleans",
+        "Mexico City" to "Ciudad de México",
+        "London" to "Londres",
+        "Edinburgh" to "Edimburgo",
+        "Dublin" to "Dublín",
+        "Paris" to "París",
+        "Marseille" to "Marsella",
+        "Nice" to "Niza",
+        "Bordeaux" to "Burdeos",
+        "Strasbourg" to "Estrasburgo",
+        "Berlin" to "Berlín",
+        "Munich" to "Múnich",
+        "Frankfurt" to "Fráncfort",
+        "Cologne" to "Colonia",
+        "Hamburg" to "Hamburgo",
+        "Rome" to "Roma",
+        "Milan" to "Milán",
+        "Florence" to "Florencia",
+        "Venice" to "Venecia",
+        "Naples" to "Nápoles",
+        "Turin" to "Turín",
+        "Seville" to "Sevilla",
+        "Lisbon" to "Lisboa",
+        "Porto" to "Oporto",
+        "Brussels" to "Bruselas",
+        "Antwerp" to "Amberes",
+        "Amsterdam" to "Ámsterdam",
+        "Zurich" to "Zúrich",
+        "Geneva" to "Ginebra",
+        "Vienna" to "Viena",
+        "Prague" to "Praga",
+        "Warsaw" to "Varsovia",
+        "Copenhagen" to "Copenhague",
+        "Stockholm" to "Estocolmo",
+        "Athens" to "Atenas",
+        "Moscow" to "Moscú",
+        "Saint Petersburg" to "San Petersburgo",
+        "Istanbul" to "Estambul",
+        "Cairo" to "El Cairo",
+        "Beijing" to "Pekín",
+        "Shanghai" to "Shanghái",
+        "Taipei" to "Taipéi",
+        "Seoul" to "Seúl",
+        "Singapore" to "Singapur",
+        "Sydney" to "Sídney",
+        "Dubai" to "Dubái",
+        "Sao Paulo" to "São Paulo"
+    )
+
+    private val jaToEs = mapOf(
+        "東京都" to "Tokio",
+        "東京" to "Tokio",
+        "京都市" to "Kioto",
+        "京都" to "Kioto",
+        "大阪市" to "Osaka",
+        "大阪" to "Osaka",
+        "横浜市" to "Yokohama",
+        "横浜" to "Yokohama",
+        "名古屋市" to "Nagoya",
+        "名古屋" to "Nagoya",
+        "札幌市" to "Sapporo",
+        "札幌" to "Sapporo",
+        "福岡市" to "Fukuoka",
+        "福岡" to "Fukuoka",
+        "神戸市" to "Kobe",
+        "神戸" to "Kobe",
+        "広島市" to "Hiroshima",
+        "広島" to "Hiroshima",
+        "仙台市" to "Sendai",
+        "仙台" to "Sendai",
+        "那覇市" to "Naha",
+        "那覇" to "Naha",
+        "沖縄" to "Okinawa"
+    )
+
+    private val enToFr = mapOf(
+        "Tokyo" to "Tokyo",
+        "Kyoto" to "Kyoto",
+        "New York" to "New York",
+        "Philadelphia" to "Philadelphie",
+        "New Orleans" to "La Nouvelle-Orléans",
+        "Montreal" to "Montréal",
+        "Quebec" to "Québec",
+        "Mexico City" to "Mexico",
+        "London" to "Londres",
+        "Edinburgh" to "Édimbourg",
+        "Paris" to "Paris",
+        "Frankfurt" to "Francfort",
+        "Hamburg" to "Hambourg",
+        "Rome" to "Rome",
+        "Venice" to "Venise",
+        "Naples" to "Naples",
+        "Seville" to "Séville",
+        "Barcelona" to "Barcelone",
+        "Lisbon" to "Lisbonne",
+        "Brussels" to "Bruxelles",
+        "Antwerp" to "Anvers",
+        "Geneva" to "Genève",
+        "Vienna" to "Vienne",
+        "Warsaw" to "Varsovie",
+        "Copenhagen" to "Copenhague",
+        "Athens" to "Athènes",
+        "Moscow" to "Moscou",
+        "Saint Petersburg" to "Saint-Pétersbourg",
+        "Cairo" to "Le Caire",
+        "Beijing" to "Pékin",
+        "Seoul" to "Séoul",
+        "Singapore" to "Singapour",
+        "Dubai" to "Dubaï",
+        "Sao Paulo" to "São Paulo"
+    )
+
+    private val jaToFr = mapOf(
+        "東京都" to "Tokyo",
+        "東京" to "Tokyo",
+        "京都市" to "Kyoto",
+        "京都" to "Kyoto",
+        "大阪市" to "Osaka",
+        "大阪" to "Osaka",
+        "横浜市" to "Yokohama",
+        "横浜" to "Yokohama",
+        "名古屋市" to "Nagoya",
+        "名古屋" to "Nagoya",
+        "札幌市" to "Sapporo",
+        "札幌" to "Sapporo",
+        "福岡市" to "Fukuoka",
+        "福岡" to "Fukuoka",
+        "神戸市" to "Kobe",
+        "神戸" to "Kobe",
+        "広島市" to "Hiroshima",
+        "広島" to "Hiroshima",
+        "仙台市" to "Sendai",
+        "仙台" to "Sendai",
+        "那覇市" to "Naha",
+        "那覇" to "Naha",
+        "沖縄" to "Okinawa"
+    )
+
+    private val enToPt = mapOf(
+        "Tokyo" to "Tóquio",
+        "Kyoto" to "Quioto",
+        "New York" to "Nova York",
+        "Philadelphia" to "Filadélfia",
+        "New Orleans" to "Nova Orleans",
+        "Mexico City" to "Cidade do México",
+        "Sao Paulo" to "São Paulo",
+        "Brasilia" to "Brasília",
+        "London" to "Londres",
+        "Edinburgh" to "Edimburgo",
+        "Paris" to "Paris",
+        "Marseille" to "Marselha",
+        "Bordeaux" to "Bordéus",
+        "Strasbourg" to "Estrasburgo",
+        "Berlin" to "Berlim",
+        "Munich" to "Munique",
+        "Cologne" to "Colônia",
+        "Hamburg" to "Hamburgo",
+        "Rome" to "Roma",
+        "Milan" to "Milão",
+        "Florence" to "Florença",
+        "Venice" to "Veneza",
+        "Naples" to "Nápoles",
+        "Turin" to "Turim",
+        "Seville" to "Sevilha",
+        "Lisbon" to "Lisboa",
+        "Brussels" to "Bruxelas",
+        "Antwerp" to "Antuérpia",
+        "Amsterdam" to "Amsterdã",
+        "Zurich" to "Zurique",
+        "Geneva" to "Genebra",
+        "Vienna" to "Viena",
+        "Prague" to "Praga",
+        "Warsaw" to "Varsóvia",
+        "Copenhagen" to "Copenhague",
+        "Stockholm" to "Estocolmo",
+        "Athens" to "Atenas",
+        "Moscow" to "Moscou",
+        "Saint Petersburg" to "São Petersburgo",
+        "Istanbul" to "Istambul",
+        "Beijing" to "Pequim",
+        "Shanghai" to "Xangai",
+        "Taipei" to "Taipé",
+        "Seoul" to "Seul",
+        "Singapore" to "Singapura"
+    )
+
+    private val jaToPt = mapOf(
+        "東京都" to "Tóquio",
+        "東京" to "Tóquio",
+        "京都市" to "Quioto",
+        "京都" to "Quioto",
+        "大阪市" to "Osaka",
+        "大阪" to "Osaka",
+        "横浜市" to "Yokohama",
+        "横浜" to "Yokohama",
+        "名古屋市" to "Nagoya",
+        "名古屋" to "Nagoya",
+        "札幌市" to "Sapporo",
+        "札幌" to "Sapporo",
+        "福岡市" to "Fukuoka",
+        "福岡" to "Fukuoka",
+        "神戸市" to "Kobe",
+        "神戸" to "Kobe",
+        "広島市" to "Hiroshima",
+        "広島" to "Hiroshima",
+        "仙台市" to "Sendai",
+        "仙台" to "Sendai",
+        "那覇市" to "Naha",
+        "那覇" to "Naha",
+        "沖縄" to "Okinawa"
+    )
+
+    private fun isLatinScript(text: String): Boolean {
+        return text.isNotBlank() && text.none { ch ->
+            ch in '\u3040'..'\u30FF' || // Hiragana & Katakana
+            ch in '\u4E00'..'\u9FFF' || // CJK Unified Ideographs
+            ch in '\uAC00'..'\uD7A3' || // Hangul Syllables
+            ch in '\u1100'..'\u11FF' ||
+            ch in '\u3130'..'\u318F'
+        }
+    }
+
+    private fun translate(
+        nameJa: String,
+        nameEn: String,
+        enMap: Map<String, String>,
+        jaMap: Map<String, String>
+    ): String {
+        return enMap[nameEn]
+            ?: jaMap[nameJa]
+            ?: jaMap[nameJa.removeSuffix("市").removeSuffix("区").removeSuffix("町").removeSuffix("村")]
+            ?: when {
+                isLatinScript(nameJa) -> nameJa
+                nameEn.isNotBlank() -> nameEn
+                else -> nameJa
+            }
+    }
+
+    fun translateToSpanish(nameJa: String, nameEn: String): String =
+        translate(nameJa, nameEn, enToEs, jaToEs)
+
+    fun translateToFrench(nameJa: String, nameEn: String): String =
+        translate(nameJa, nameEn, enToFr, jaToFr)
+
+    fun translateToPortuguese(nameJa: String, nameEn: String): String =
+        translate(nameJa, nameEn, enToPt, jaToPt)
+}
+
 fun City.localizedName(language: AppLanguage): String {
     return when (language) {
         AppLanguage.JAPANESE -> name
+        AppLanguage.KOREAN -> KoreanCityDictionary.translateToKorean(name, nameEn)
         AppLanguage.SIMPLIFIED_CHINESE -> ChineseCityDictionary.translateToSimplified(name, nameEn)
         AppLanguage.TRADITIONAL_CHINESE -> ChineseCityDictionary.translateToTraditional(name, nameEn)
         AppLanguage.ENGLISH -> if (nameEn.isNotBlank()) nameEn else name
+        AppLanguage.SPANISH -> EuropeanCityDictionary.translateToSpanish(name, nameEn)
+        AppLanguage.FRENCH -> EuropeanCityDictionary.translateToFrench(name, nameEn)
+        AppLanguage.PORTUGUESE -> EuropeanCityDictionary.translateToPortuguese(name, nameEn)
     }
 }
 
 fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
     AppLanguage.JAPANESE -> when (language) {
         AppLanguage.JAPANESE -> "日本語"
+        AppLanguage.KOREAN -> "일본어"
         AppLanguage.ENGLISH -> "Japanese"
         AppLanguage.SIMPLIFIED_CHINESE -> "日语"
         AppLanguage.TRADITIONAL_CHINESE -> "日語"
+        AppLanguage.SPANISH -> "Japonés"
+        AppLanguage.FRENCH -> "Japonais"
+        AppLanguage.PORTUGUESE -> "Japonês"
+    }
+    AppLanguage.KOREAN -> when (language) {
+        AppLanguage.JAPANESE -> "韓国語"
+        AppLanguage.KOREAN -> "한국어"
+        AppLanguage.ENGLISH -> "Korean"
+        AppLanguage.SIMPLIFIED_CHINESE -> "韩语"
+        AppLanguage.TRADITIONAL_CHINESE -> "韓語"
+        AppLanguage.SPANISH -> "Coreano"
+        AppLanguage.FRENCH -> "Coréen"
+        AppLanguage.PORTUGUESE -> "Coreano"
     }
     AppLanguage.ENGLISH -> when (language) {
         AppLanguage.JAPANESE -> "English"
+        AppLanguage.KOREAN -> "영어 (English)"
         AppLanguage.ENGLISH -> "English"
         AppLanguage.SIMPLIFIED_CHINESE -> "英语 (English)"
         AppLanguage.TRADITIONAL_CHINESE -> "英語 (English)"
+        AppLanguage.SPANISH -> "Inglés"
+        AppLanguage.FRENCH -> "Anglais"
+        AppLanguage.PORTUGUESE -> "Inglês"
     }
     AppLanguage.SIMPLIFIED_CHINESE -> when (language) {
         AppLanguage.JAPANESE -> "中国語 (簡体字)"
+        AppLanguage.KOREAN -> "중국어 (간체)"
         AppLanguage.ENGLISH -> "Chinese (Simplified)"
         AppLanguage.SIMPLIFIED_CHINESE -> "简体中文"
         AppLanguage.TRADITIONAL_CHINESE -> "簡體中文"
+        AppLanguage.SPANISH -> "Chino (simplificado)"
+        AppLanguage.FRENCH -> "Chinois (simplifié)"
+        AppLanguage.PORTUGUESE -> "Chinês (simplificado)"
     }
     AppLanguage.TRADITIONAL_CHINESE -> when (language) {
         AppLanguage.JAPANESE -> "中国語 (繁体字)"
+        AppLanguage.KOREAN -> "중국어 (번체)"
         AppLanguage.ENGLISH -> "Chinese (Traditional)"
         AppLanguage.SIMPLIFIED_CHINESE -> "繁体中文"
         AppLanguage.TRADITIONAL_CHINESE -> "繁體中文"
+        AppLanguage.SPANISH -> "Chino (tradicional)"
+        AppLanguage.FRENCH -> "Chinois (traditionnel)"
+        AppLanguage.PORTUGUESE -> "Chinês (tradicional)"
+    }
+    AppLanguage.SPANISH -> when (language) {
+        AppLanguage.JAPANESE -> "スペイン語"
+        AppLanguage.KOREAN -> "스페인어"
+        AppLanguage.ENGLISH -> "Spanish"
+        AppLanguage.SIMPLIFIED_CHINESE -> "西班牙语"
+        AppLanguage.TRADITIONAL_CHINESE -> "西班牙語"
+        AppLanguage.SPANISH -> "Español"
+        AppLanguage.FRENCH -> "Espagnol"
+        AppLanguage.PORTUGUESE -> "Espanhol"
+    }
+    AppLanguage.FRENCH -> when (language) {
+        AppLanguage.JAPANESE -> "フランス語"
+        AppLanguage.KOREAN -> "프랑스어"
+        AppLanguage.ENGLISH -> "French"
+        AppLanguage.SIMPLIFIED_CHINESE -> "法语"
+        AppLanguage.TRADITIONAL_CHINESE -> "法語"
+        AppLanguage.SPANISH -> "Francés"
+        AppLanguage.FRENCH -> "Français"
+        AppLanguage.PORTUGUESE -> "Francês"
+    }
+    AppLanguage.PORTUGUESE -> when (language) {
+        AppLanguage.JAPANESE -> "ポルトガル語"
+        AppLanguage.KOREAN -> "포르투갈어"
+        AppLanguage.ENGLISH -> "Portuguese"
+        AppLanguage.SIMPLIFIED_CHINESE -> "葡萄牙语"
+        AppLanguage.TRADITIONAL_CHINESE -> "葡萄牙語"
+        AppLanguage.SPANISH -> "Portugués"
+        AppLanguage.FRENCH -> "Portugais"
+        AppLanguage.PORTUGUESE -> "Português"
     }
 }
 

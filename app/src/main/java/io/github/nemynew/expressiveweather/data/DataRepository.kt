@@ -175,6 +175,29 @@ class WeatherRepository(
         return resolveFallbackCurrentCityOrNull() ?: defaultCity
     }
 
+    /**
+     * 通知（雨雲接近・気象警報）の対象として許可された都市のみを解決する。
+     * - 位置情報権限あり: 実測GPS現在地（または直近のGPS解決都市）
+     * - 位置情報権限なし / GPS未取得時: ユーザーが「登録した地名 (savedCities)」に含まれている都市のみ
+     * - 未登録の検索プレビュー都市やフォールバック東京は null を返し、誤通知を防止する。
+     */
+    suspend fun resolveNotificationTargetCityOrNull(
+        hasLocationPermission: Boolean,
+        liveGpsCity: City? = null
+    ): City? {
+        if (hasLocationPermission) {
+            if (liveGpsCity != null) return liveGpsCity
+            getLastResolvedLocationCity()?.let { return it }
+        }
+        val savedCities = getAllSavedCities()
+        if (savedCities.isEmpty()) return null
+        val lastSelected = getLastSelectedCity()
+        val matchedLast = savedCities.firstOrNull { saved ->
+            isSameCityForNotification(saved, lastSelected)
+        }
+        return matchedLast ?: savedCities.firstOrNull()
+    }
+
     suspend fun getAllSavedCities(): List<City> = withContext(Dispatchers.IO) {
         val dao = savedCityDao
         if (dao != null) {
@@ -185,6 +208,28 @@ class WeatherRepository(
     }
 
     companion object {
+        internal fun isSameCityForNotification(a: City, b: City): Boolean {
+            if (a.id.isNotBlank() && a.id == b.id && a.id != "current") return true
+            return LocationKeyNormalizer.normalize(a.latitude, a.longitude) ==
+                LocationKeyNormalizer.normalize(b.latitude, b.longitude)
+        }
+
+        /**
+         * 指定された都市が通知（雨雲接近・気象警報）の対象として適格かを判定する。
+         * 実測GPS現在地、またはユーザーが明示的に登録した都市 (`savedCities`) のみ true を返す。
+         */
+        internal fun isCityEligibleForNotifications(
+            city: City,
+            hasLocationPermission: Boolean,
+            resolvedGpsCity: City?,
+            savedCities: List<City>
+        ): Boolean {
+            if (hasLocationPermission && resolvedGpsCity != null && isSameCityForNotification(city, resolvedGpsCity)) {
+                return true
+            }
+            return savedCities.any { saved -> isSameCityForNotification(saved, city) }
+        }
+
         // キャッシュ有効期間：30分（30分以内ならフレッシュとみなし裏での再取得は行わない）
         const val CACHE_STALE_DURATION_MS = 30 * 60 * 1000L
         // キャッシュ保持上限期間：7日（7日以上経過した不要レコードをクリーンアップ）
@@ -520,6 +565,12 @@ class WeatherRepository(
 
     fun setLiveAlertNotificationEnabled(enabled: Boolean) {
         putPrefBoolean("live_alert_notification_enabled", enabled)
+        if (enabled) {
+            context?.let {
+                PrecipitationLiveNotificationManager.clearDismissalSuppression(it)
+                KikikuruNotificationManager.clearDismissalSuppression(it)
+            }
+        }
         notifySettingsChanged()
     }
 
@@ -920,12 +971,7 @@ class WeatherRepository(
         }
         val enrichedNowcast = weather.precipitationNowcast?.let { nowcast ->
             val updated = if (nowcast.localizedHeadlines.isEmpty()) {
-                val languages = listOf(
-                    AppLanguage.JAPANESE,
-                    AppLanguage.ENGLISH,
-                    AppLanguage.SIMPLIFIED_CHINESE,
-                    AppLanguage.TRADITIONAL_CHINESE
-                )
+                val languages = AppLanguage.entries
                 val headlines = languages.associate { lang ->
                     lang.code to (PrecipitationNowcastTranslator.translateHeadline(nowcast.headline, lang) ?: nowcast.headline)
                 }
@@ -1285,9 +1331,13 @@ class WeatherRepository(
         try {
             val langCode = when (language) {
                 AppLanguage.JAPANESE -> "ja"
+                AppLanguage.KOREAN -> "default"
                 AppLanguage.ENGLISH -> "en"
                 AppLanguage.SIMPLIFIED_CHINESE -> "default"
                 AppLanguage.TRADITIONAL_CHINESE -> "default"
+                AppLanguage.SPANISH -> "default"
+                AppLanguage.FRENCH -> "fr"
+                AppLanguage.PORTUGUESE -> "default"
             }
             val photonResults = PhotonGeocodingService.search(
                 query = trimmed,

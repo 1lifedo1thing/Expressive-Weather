@@ -76,21 +76,33 @@ fun FeelsLikeDetailScreen(
     val diffText = when {
         diffDisplay > 0 -> when (language) {
             AppLanguage.ENGLISH -> "+${diffDisplay}${unitSymbol} warmer than actual"
+            AppLanguage.KOREAN -> "실제 기온보다 +${diffDisplay}${unitSymbol} 높음"
             AppLanguage.SIMPLIFIED_CHINESE -> "较实际气温偏高 +${diffDisplay}${unitSymbol}"
             AppLanguage.TRADITIONAL_CHINESE -> "較實際氣溫偏高 +${diffDisplay}${unitSymbol}"
-            else -> "実気温より +${diffDisplay}${unitSymbol} 高い"
+            AppLanguage.SPANISH -> "+${diffDisplay}${unitSymbol} más cálido que la real"
+            AppLanguage.FRENCH -> "+${diffDisplay}${unitSymbol} plus chaud que le réel"
+            AppLanguage.PORTUGUESE -> "+${diffDisplay}${unitSymbol} mais quente que a real"
+            AppLanguage.JAPANESE -> "実気温より +${diffDisplay}${unitSymbol} 高い"
         }
         diffDisplay < 0 -> when (language) {
             AppLanguage.ENGLISH -> "${diffDisplay}${unitSymbol} cooler than actual"
+            AppLanguage.KOREAN -> "실제 기온보다 ${diffDisplay}${unitSymbol} 낮음"
             AppLanguage.SIMPLIFIED_CHINESE -> "较实际气温偏低 ${diffDisplay}${unitSymbol}"
             AppLanguage.TRADITIONAL_CHINESE -> "較實際氣溫偏低 ${diffDisplay}${unitSymbol}"
-            else -> "実気温より ${diffDisplay}${unitSymbol} 低い"
+            AppLanguage.SPANISH -> "${diffDisplay}${unitSymbol} más fresco que la real"
+            AppLanguage.FRENCH -> "${diffDisplay}${unitSymbol} plus frais que le réel"
+            AppLanguage.PORTUGUESE -> "${diffDisplay}${unitSymbol} mais frio que a real"
+            AppLanguage.JAPANESE -> "実気温より ${diffDisplay}${unitSymbol} 低い"
         }
         else -> when (language) {
             AppLanguage.ENGLISH -> "Similar to actual temperature"
+            AppLanguage.KOREAN -> "실제 기온과 거의 같음"
             AppLanguage.SIMPLIFIED_CHINESE -> "与实际气温基本一致"
             AppLanguage.TRADITIONAL_CHINESE -> "與實際氣溫基本一致"
-            else -> "実気温とほぼ同じ"
+            AppLanguage.SPANISH -> "Similar a la temperatura real"
+            AppLanguage.FRENCH -> "Proche de la température réelle"
+            AppLanguage.PORTUGUESE -> "Semelhante à temperatura real"
+            AppLanguage.JAPANESE -> "実気温とほぼ同じ"
         }
     }
 
@@ -133,9 +145,13 @@ fun FeelsLikeDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.ENGLISH -> "Apparent Temperature (BOM Index)"
+                            AppLanguage.KOREAN -> "체감 온도 (체감 지수)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "体感温度 (BOM 体感指数)"
                             AppLanguage.TRADITIONAL_CHINESE -> "體感溫度 (BOM 體感指數)"
-                            else -> "体感温度 (体感指数)"
+                            AppLanguage.SPANISH -> "Sensación térmica (Índice BOM)"
+                            AppLanguage.FRENCH -> "Température ressentie (Indice BOM)"
+                            AppLanguage.PORTUGUESE -> "Sensação térmica (Índice BOM)"
+                            AppLanguage.JAPANESE -> "体感温度 (体感指数)"
                         },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -185,9 +201,13 @@ fun FeelsLikeDetailScreen(
                         Text(
                             text = when (language) {
                                 AppLanguage.ENGLISH -> "Actual Temperature"
+                                AppLanguage.KOREAN -> "실제 기온"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "实际气温"
                                 AppLanguage.TRADITIONAL_CHINESE -> "實際氣溫"
-                                else -> "実際の気温"
+                                AppLanguage.SPANISH -> "Temperatura real"
+                                AppLanguage.FRENCH -> "Température réelle"
+                                AppLanguage.PORTUGUESE -> "Temperatura real"
+                                AppLanguage.JAPANESE -> "実際の気温"
                             },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -210,9 +230,13 @@ fun FeelsLikeDetailScreen(
                         Text(
                             text = when (language) {
                                 AppLanguage.ENGLISH -> "Feels Like"
+                                AppLanguage.KOREAN -> "체감 온도"
                                 AppLanguage.SIMPLIFIED_CHINESE -> "体感温度"
                                 AppLanguage.TRADITIONAL_CHINESE -> "體感溫度"
-                                else -> "体感温度"
+                                AppLanguage.SPANISH -> "Sensación térmica"
+                                AppLanguage.FRENCH -> "Ressenti"
+                                AppLanguage.PORTUGUESE -> "Sensação térmica"
+                                AppLanguage.JAPANESE -> "体感温度"
                             },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -251,9 +275,13 @@ fun FeelsLikeDetailScreen(
                 Text(
                     text = when (language) {
                         AppLanguage.ENGLISH -> "Today's Apparent Temperature Trend"
+                        AppLanguage.KOREAN -> "오늘의 체감 온도 추이"
                         AppLanguage.SIMPLIFIED_CHINESE -> "今日体感温度变化"
                         AppLanguage.TRADITIONAL_CHINESE -> "今日體感溫度變化"
-                        else -> "本日の体感温度推移"
+                        AppLanguage.SPANISH -> "Evolución de la sensación térmica"
+                        AppLanguage.FRENCH -> "Évolution du ressenti aujourd'hui"
+                        AppLanguage.PORTUGUESE -> "Tendência da sensação térmica hoje"
+                        AppLanguage.JAPANESE -> "本日の体感温度推移"
                     },
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
@@ -328,9 +356,13 @@ fun FeelsLikeDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.ENGLISH -> "Clothing & Outfit Recommendations"
+                            AppLanguage.KOREAN -> "옷차림 지수 및 추천"
                             AppLanguage.SIMPLIFIED_CHINESE -> "穿衣指数与搭配建议"
                             AppLanguage.TRADITIONAL_CHINESE -> "穿衣指數與搭配建議"
-                            else -> "服装指数とアドバイス"
+                            AppLanguage.SPANISH -> "Recomendaciones de vestimenta"
+                            AppLanguage.FRENCH -> "Conseils vestimentaires"
+                            AppLanguage.PORTUGUESE -> "Recomendações de vestuário"
+                            AppLanguage.JAPANESE -> "服装指数とアドバイス"
                         },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -371,9 +403,13 @@ fun FeelsLikeDetailScreen(
                         Text(
                             text = when (language) {
                                 AppLanguage.ENGLISH -> "Recommended dressing based on wind chill, humidity, and thermal comfort."
+                                AppLanguage.KOREAN -> "바람과 습도의 영향을 반영한 추천 옷차림입니다."
                                 AppLanguage.SIMPLIFIED_CHINESE -> "综合考量风速与湿度后得出的最佳穿搭指南。"
                                 AppLanguage.TRADITIONAL_CHINESE -> "綜合考量風速與濕度後得出的最佳穿搭指南。"
-                                else -> "風速や湿度の影響を考慮した推奨スタイルです。"
+                                AppLanguage.SPANISH -> "Vestimenta recomendada según el viento, la humedad y el confort térmico."
+                                AppLanguage.FRENCH -> "Tenue recommandée selon le refroidissement éolien, l'humidité et le confort thermique."
+                                AppLanguage.PORTUGUESE -> "Vestuário recomendado com base no vento, umidade e conforto térmico."
+                                AppLanguage.JAPANESE -> "風速や湿度の影響を考慮した推奨スタイルです。"
                             },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -403,9 +439,13 @@ fun FeelsLikeDetailScreen(
                     Text(
                         text = when (language) {
                             AppLanguage.ENGLISH -> "Understanding Apparent Temperature"
+                            AppLanguage.KOREAN -> "체감 온도의 원리"
                             AppLanguage.SIMPLIFIED_CHINESE -> "体感温度原理"
                             AppLanguage.TRADITIONAL_CHINESE -> "體感溫度原理"
-                            else -> "体感温度の仕組み"
+                            AppLanguage.SPANISH -> "Cómo se calcula la sensación térmica"
+                            AppLanguage.FRENCH -> "Comprendre la température ressentie"
+                            AppLanguage.PORTUGUESE -> "Entendendo a sensação térmica"
+                            AppLanguage.JAPANESE -> "体感温度の仕組み"
                         },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -419,11 +459,19 @@ fun FeelsLikeDetailScreen(
                     text = when (language) {
                         AppLanguage.ENGLISH ->
                             "Apparent temperature computes thermal sensation by synthesizing ambient temperature, relative humidity, and wind speed (Australian BOM / Steadman formula). Wind accelerates evaporative cooling, whereas high humidity restricts transpiration."
+                        AppLanguage.KOREAN ->
+                            "체감 온도는 기온에 습도와 풍속을 종합해 산출합니다(호주 기상청 BOM / Steadman 공식). 바람이 강할수록 체열이 빠르게 빠져나가 더 서늘하게 느껴지고, 습도가 높으면 땀 증발이 억제되어 실제 기온보다 무덥게 느껴집니다."
                         AppLanguage.SIMPLIFIED_CHINESE ->
                             "体感温度综合了环境气温、相对湿度与风速等多项物理指标（依据澳大利亚气象局 BOM / Steadman 国际公式）。风速增大会加速带走体表热量，而高湿度则会阻碍汗液自然蒸发使人倍感闷热。"
                         AppLanguage.TRADITIONAL_CHINESE ->
                             "體感溫度綜合了環境氣溫、相對濕度與風速等多項物理指標（依據澳洲氣象局 BOM / Steadman 國際公式）。風速增強會加速帶走體表熱量，高濕度則會阻礙汗液自然蒸發使人倍感悶熱。"
-                        else ->
+                        AppLanguage.SPANISH ->
+                            "La sensación térmica combina la temperatura ambiente, la humedad relativa y la velocidad del viento (fórmula BOM de Australia / Steadman). El viento acelera el enfriamiento corporal, mientras que la humedad alta dificulta la evaporación del sudor."
+                        AppLanguage.FRENCH ->
+                            "La température ressentie combine la température ambiante, l'humidité relative et la vitesse du vent (formule BOM australienne / Steadman). Le vent accélère le refroidissement, tandis qu'une forte humidité freine l'évaporation de la transpiration."
+                        AppLanguage.PORTUGUESE ->
+                            "A sensação térmica combina a temperatura ambiente, a umidade relativa e a velocidade do vento (fórmula BOM australiana / Steadman). O vento acelera o resfriamento do corpo, enquanto a alta umidade dificulta a evaporação do suor."
+                        AppLanguage.JAPANESE ->
                             "体感温度は気温に加え、「湿度」と「風速」を総合して算出されます（オーストラリア気象局/Steadman基準）。風速が強まると風冷効果で体温が奪われ、湿度が高まると発汗による気化熱冷却が阻害されて蒸し暑く感じられます。"
                     },
                     style = MaterialTheme.typography.bodySmall,
@@ -453,60 +501,96 @@ private fun getFeelsLikeAnalysis(
     val factor = when {
         diff > 0 && humidity > 60 -> when (language) {
             AppLanguage.ENGLISH -> "Elevated humidity suppresses body heat dissipation, making it feel noticeably warmer and muggy."
+            AppLanguage.KOREAN -> "습도가 높아 체열 발산이 억제되면서 실제 기온보다 더 덥고 후텁지근하게 느껴집니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "湿度较高抑制体表排汗散热，体感明显比实际气温更加温热潮湿。"
             AppLanguage.TRADITIONAL_CHINESE -> "濕度較高抑制體表排汗散熱，體感明顯比實際氣溫更加悶熱。"
-            else -> "湿度が高めのため、皮膚からの熱放散が抑えられ、実際よりも暖かく（蒸し暑く）感じられます。"
+            AppLanguage.SPANISH -> "La humedad elevada dificulta la disipación del calor corporal, generando una sensación más cálida y bochornosa."
+            AppLanguage.FRENCH -> "L'humidité élevée limite la dissipation de la chaleur corporelle, rendant l'air nettement plus chaud et lourd."
+            AppLanguage.PORTUGUESE -> "A umidade elevada dificulta a dissipação do calor corporal, deixando a sensação mais quente e abafada."
+            AppLanguage.JAPANESE -> "湿度が高めのため、皮膚からの熱放散が抑えられ、実際よりも暖かく（蒸し暑く）感じられます。"
         }
         diff < 0 && windSpeedKmH > 15.0 -> when (language) {
             AppLanguage.ENGLISH -> "Active airflow enhances evaporative wind chill, creating a cooler sensation than the ambient temperature."
+            AppLanguage.KOREAN -> "바람의 영향으로 체열이 빠르게 식어 실제 기온보다 서늘하거나 쌀쌀하게 느껴집니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "受风力与风寒效应影响，体表散热加快，感觉明显比实际温度偏凉。"
             AppLanguage.TRADITIONAL_CHINESE -> "受風力與風寒效應影響，體表散熱加快，感覺明顯比實際溫度偏涼。"
-            else -> "風が吹いているため、風冷効果（ウィンドチル）により実際の気温よりも涼しく（肌寒く）感じられます。"
+            AppLanguage.SPANISH -> "El viento intensifica la sensación de frío, haciendo que se perciba más fresco que la temperatura real."
+            AppLanguage.FRENCH -> "Le vent accentue le refroidissement éolien, donnant une sensation plus fraîche que la température réelle."
+            AppLanguage.PORTUGUESE -> "O vento intensifica o resfriamento, criando uma sensação mais fria do que a temperatura ambiente."
+            AppLanguage.JAPANESE -> "風が吹いているため、風冷効果（ウィンドチル）により実際の気温よりも涼しく（肌寒く）感じられます。"
         }
         else -> when (language) {
             AppLanguage.ENGLISH -> "Humidity and airflow are well-balanced; the apparent temperature closely tracks the thermometer."
+            AppLanguage.KOREAN -> "습도와 풍속의 균형이 적절해 실제 기온과 거의 비슷한 쾌적한 상태입니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "湿度与风速比例适中，体感温度与实际气温非常接近。"
             AppLanguage.TRADITIONAL_CHINESE -> "濕度與風速比例適中，體感溫度與實際氣溫非常接近。"
-            else -> "湿度と風速のバランスが標準的で、ほぼ実際の気温に近い心地よさです。"
+            AppLanguage.SPANISH -> "La humedad y el viento están equilibrados; la sensación térmica coincide casi con el termómetro."
+            AppLanguage.FRENCH -> "L'humidité et le vent sont équilibrés ; le ressenti correspond presque à la température affichée."
+            AppLanguage.PORTUGUESE -> "A umidade e o vento estão equilibrados; a sensação térmica acompanha de perto o termômetro."
+            AppLanguage.JAPANESE -> "湿度と風速のバランスが標準的で、ほぼ実際の気温に近い心地よさです。"
         }
     }
 
     val outfit = when {
         feelsLike >= 28 -> when (language) {
             AppLanguage.ENGLISH -> "T-shirt weather. Stay hydrated and stay cool under direct sunlight."
+            AppLanguage.KOREAN -> "반팔 차림이 알맞은 무더운 날씨입니다. 온열 질환 예방과 수분 섭취에 신경 쓰세요."
             AppLanguage.SIMPLIFIED_CHINESE -> "短袖或清凉夏装适宜。请注意防暑降温与补充水分。"
             AppLanguage.TRADITIONAL_CHINESE -> "短袖或清涼夏裝適宜。請注意防暑降溫與補充水分。"
-            else -> "半袖で快適にお過ごしいただけます。熱中症対策・水分補給を心がけてください。"
+            AppLanguage.SPANISH -> "Ideal para camiseta ligera. Mantente hidratado y busca sombra bajo el sol directo."
+            AppLanguage.FRENCH -> "Temps de t-shirt. Hydratez-vous bien et restez au frais au soleil."
+            AppLanguage.PORTUGUESE -> "Clima para camiseta leve. Hidrate-se bem e proteja-se do sol direto."
+            AppLanguage.JAPANESE -> "半袖で快適にお過ごしいただけます。熱中症対策・水分補給を心がけてください。"
         }
         feelsLike >= 23 -> when (language) {
             AppLanguage.ENGLISH -> "Short sleeves or light long sleeves are perfect for comfortable outings."
+            AppLanguage.KOREAN -> "반팔이나 얇은 긴팔 셔츠가 알맞은 쾌적한 날씨입니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "短袖或薄长袖衬衫即可，体感舒适宜人。"
             AppLanguage.TRADITIONAL_CHINESE -> "短袖或薄長袖襯衫即可，體感舒適宜人。"
-            else -> "半袖または薄手の長袖シャツが快適な過ごしやすい気候です。"
+            AppLanguage.SPANISH -> "Manga corta o camisa ligera de manga larga son ideales para salir."
+            AppLanguage.FRENCH -> "Manches courtes ou manches longues légères parfaites pour sortir."
+            AppLanguage.PORTUGUESE -> "Manga curta ou manga longa leve são ideais para um passeio confortável."
+            AppLanguage.JAPANESE -> "半袖または薄手の長袖シャツが快適な過ごしやすい気候です。"
         }
         feelsLike >= 17 -> when (language) {
             AppLanguage.ENGLISH -> "Long sleeves, casual sweaters, or light cardigans are ideal."
+            AppLanguage.KOREAN -> "긴팔 티셔츠나 셔츠, 얇은 카디건을 챙기면 안심입니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "长袖衬衫、卫衣或薄开衫尤为适宜，早晚防风。"
             AppLanguage.TRADITIONAL_CHINESE -> "長袖襯衫、薄長T或薄開衫尤為適宜。"
-            else -> "長袖シャツやカットソー、薄手のカーディガンがあると安心です。"
+            AppLanguage.SPANISH -> "Manga larga, suéter ligero o cárdigan fino son lo más adecuado."
+            AppLanguage.FRENCH -> "Manches longues, pull léger ou gilet fin sont idéaux."
+            AppLanguage.PORTUGUESE -> "Manga longa, suéter leve ou cardigã fino são ideais."
+            AppLanguage.JAPANESE -> "長袖シャツやカットソー、薄手のカーディガンがあると安心です。"
         }
         feelsLike >= 12 -> when (language) {
             AppLanguage.ENGLISH -> "Jackets, trenches, knit sweaters, or windbreakers are recommended."
+            AppLanguage.KOREAN -> "니트나 재킷, 트렌치코트 등 겉옷을 챙겨 입는 것이 좋습니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "建议穿着夹克外衣、薄毛衣或风衣防风保暖。"
             AppLanguage.TRADITIONAL_CHINESE -> "建議穿著夾克外衣、薄毛衣或風衣防風保暖。"
-            else -> "セーターやジャケット、トレンチコートなどの上着が必要です。"
+            AppLanguage.SPANISH -> "Se recomiendan chaquetas, gabardinas, jerséis de punto o cortavientos."
+            AppLanguage.FRENCH -> "Veste, trench, pull en maille ou coupe-vent recommandés."
+            AppLanguage.PORTUGUESE -> "Jaquetas, casacos leves, suéteres de tricô ou corta-ventos são recomendados."
+            AppLanguage.JAPANESE -> "セーターやジャケット、トレンチコートなどの上着が必要です。"
         }
         feelsLike >= 6 -> when (language) {
             AppLanguage.ENGLISH -> "Heavier winter coats, scarves, and insulated layers are necessary."
+            AppLanguage.KOREAN -> "겨울 코트와 목도리 등 든든한 방한 복장을 권장합니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "需穿着保暖大衣、羽绒服或羊毛围巾抵御寒冷。"
             AppLanguage.TRADITIONAL_CHINESE -> "需穿著保暖大衣、羽絨衣或羊毛圍巾禦寒。"
-            else -> "冬物コートやマフラーなどのしっかりとした防寒着をお選びください。"
+            AppLanguage.SPANISH -> "Se necesitan abrigos de invierno, bufandas y capas térmicas."
+            AppLanguage.FRENCH -> "Manteau d'hiver épais, écharpe et couches isolantes nécessaires."
+            AppLanguage.PORTUGUESE -> "Casacos de inverno pesados, cachecóis e camadas térmicas são necessários."
+            AppLanguage.JAPANESE -> "冬物コートやマフラーなどのしっかりとした防寒着をお選びください。"
         }
         else -> when (language) {
             AppLanguage.ENGLISH -> "Heavy down coat, thermal underlayers, gloves, and knit caps essential."
+            AppLanguage.KOREAN -> "패딩과 장갑, 보온 이너웨어 등 철저한 방한 대비가 필수입니다."
             AppLanguage.SIMPLIFIED_CHINESE -> "严寒低温，请配备厚羽绒服、保暖手套及全面防寒保暖装备。"
             AppLanguage.TRADITIONAL_CHINESE -> "嚴寒低溫，請配備厚羽絨衣、保暖手套及全面防寒保暖裝備。"
-            else -> "ダウンジャケットや手袋、万全の防寒対策が必須です。"
+            AppLanguage.SPANISH -> "Abrigo de plumas grueso, ropa térmica, guantes y gorro son imprescindibles."
+            AppLanguage.FRENCH -> "Doudoune épaisse, sous-vêtements thermiques, gants et bonnet indispensables."
+            AppLanguage.PORTUGUESE -> "Casaco acolchoado pesado, roupas térmicas, luvas e gorro são essenciais."
+            AppLanguage.JAPANESE -> "ダウンジャケットや手袋、万全の防寒対策が必須です。"
         }
     }
 

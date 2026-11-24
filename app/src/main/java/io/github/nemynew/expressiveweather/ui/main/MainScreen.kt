@@ -494,14 +494,22 @@ fun MainScreen(
                 val testKikikuruAlertInfo = remember(uiState.language) {
                     val cityName = when (uiState.language) {
                         AppLanguage.ENGLISH -> "Chiyoda (Test)"
+                        AppLanguage.KOREAN -> "지요다구 (테스트)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "千代田区 (测试)"
                         AppLanguage.TRADITIONAL_CHINESE -> "千代田區 (測試)"
+                        AppLanguage.SPANISH -> "Chiyoda (Prueba)"
+                        AppLanguage.FRENCH -> "Chiyoda (Test)"
+                        AppLanguage.PORTUGUESE -> "Chiyoda (Teste)"
                         AppLanguage.JAPANESE -> "千代田区 (テスト)"
                     }
                     val mockHeadline = when (uiState.language) {
                         AppLanguage.ENGLISH -> "【Alert Level 4 Equivalent】Extremely dangerous situation. Life-threatening disasters may occur at any moment."
+                        AppLanguage.KOREAN -> "【경계 단계 4 상당】생명에 위험이 닥칠 수 있는 산사태·침수 피해가 언제 발생해도 이상하지 않은 매우 위험한 상황입니다."
                         AppLanguage.SIMPLIFIED_CHINESE -> "【相当于警戒等级4】情况极其危险，危及生命的重大灾害随时可能发生。"
                         AppLanguage.TRADITIONAL_CHINESE -> "【相當於警戒等級4】情況極其危險，危及生命的重大災害隨時可能發生。"
+                        AppLanguage.SPANISH -> "【Equivalente a Nivel de Alerta 4】Situación extremadamente peligrosa. Pueden ocurrir desastres potencialmente mortales en cualquier momento."
+                        AppLanguage.FRENCH -> "【Équivalent Niveau d'alerte 4】Situation extrêmement dangereuse. Des catastrophes mettant la vie en danger peuvent survenir à tout moment."
+                        AppLanguage.PORTUGUESE -> "【Equivalente ao Nível de Alerta 4】Situação extremamente perigosa. Desastres com risco de vida podem ocorrer a qualquer momento."
                         AppLanguage.JAPANESE -> "【警戒レベル４相当】これは、命に危険が及ぶ土砂災害や浸水害がいつ発生してもおかしくない極めて危険な状況です。"
                     }
                     MunicipalityAlertInfo(
@@ -1443,9 +1451,13 @@ private fun SavedCitiesAlertBanner(
     val displayPlace = targetCity?.localizedName(language) ?: savedMaxAlert.municipalityName
     val bannerText = when (language) {
         AppLanguage.JAPANESE -> "⚠️ 登録地点［$displayPlace］に【レベル${savedMaxAlert.alertLevel.level} ${savedMaxAlert.alertLevel.title}】が発表中 (タップして表示)"
+        AppLanguage.KOREAN -> "⚠️ 저장된 위치 [$displayPlace]에 【${savedMaxAlert.alertLevel.level}단계 ${savedMaxAlert.alertLevel.getTitle(language)}】 발령 중 (탭하여 보기)"
         AppLanguage.ENGLISH -> "⚠️ Saved Location [$displayPlace]: [Level ${savedMaxAlert.alertLevel.level}] active (Tap to view)"
         AppLanguage.SIMPLIFIED_CHINESE -> "⚠️ 已保存地点［$displayPlace］正在发布【等级${savedMaxAlert.alertLevel.level} ${savedMaxAlert.alertLevel.title}】(点击查看)"
         AppLanguage.TRADITIONAL_CHINESE -> "⚠️ 已儲存地點［$displayPlace］正在發布【等級${savedMaxAlert.alertLevel.level} ${savedMaxAlert.alertLevel.title}】(點擊查看)"
+        AppLanguage.SPANISH -> "⚠️ Ubicación guardada [$displayPlace]: [Nivel ${savedMaxAlert.alertLevel.level}] activo (Toca para ver)"
+        AppLanguage.FRENCH -> "⚠️ Lieu enregistré [$displayPlace] : [Niveau ${savedMaxAlert.alertLevel.level}] actif (Appuyer pour voir)"
+        AppLanguage.PORTUGUESE -> "⚠️ Local salvo [$displayPlace]: [Nível ${savedMaxAlert.alertLevel.level}] ativo (Toque para ver)"
     }
 
     Surface(

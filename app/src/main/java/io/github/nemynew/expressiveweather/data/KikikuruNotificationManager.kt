@@ -24,12 +24,22 @@ import androidx.graphics.shapes.transformed
 import io.github.nemynew.expressiveweather.MainActivity
 import io.github.nemynew.expressiveweather.ui.screens.RadarDetailActivity
 import io.github.nemynew.expressiveweather.util.LocaleUtils
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+
+@Serializable
+internal data class KikikuruAlertDismissal(
+    val municipalityCode: String,
+    val dismissedLevel: Int,
+    val dismissedSignature: String,
+    val dismissedAtMillis: Long,
+    val suppressUntilMillis: Long
+)
 
 /**
  * 警戒レベル・キキクル Live Updates 通知マネージャー
- * 
- * Android 16+ Rich Ongoing Notifications および Galaxy Now Bar に完全対応した
+ *
+ * Android 16+ Native Live Updates (Promoted Ongoing + ProgressStyle) および Galaxy Now Bar に完全対応した
  * 進行中アクティビティ（Live Notification）を構築・管理します。
  */
 object KikikuruNotificationManager {
@@ -37,6 +47,11 @@ object KikikuruNotificationManager {
     private const val PREFS_NAME = "expressive_weather_prefs"
     private const val KEY_ACTIVE_ALERT_JSON = "kikikuru_active_alert_json"
     private const val KEY_ACTIVE_CITY_NAME = "kikikuru_active_city_name"
+    private const val KEY_LAST_ALERTED_LEVEL = "kikikuru_last_alerted_level"
+    private const val KEY_LAST_POSTED_SIGNATURE = "kikikuru_last_posted_signature"
+    private const val KEY_DISMISSED_ALERT_JSON = "kikikuru_dismissed_alert_json"
+    private const val ALERT_DISMISS_SUPPRESS_MS = 3 * 60 * 60 * 1000L
+    private const val NOTIFICATION_POST_GRACE_MS = 5_000L
     const val CHANNEL_ID = "kikikuru_live_updates"
     const val NOTIFICATION_ID = 9110
 
@@ -53,9 +68,210 @@ object KikikuruNotificationManager {
     var isTestModeActive: Boolean = false
         private set
 
-    // 直近で音・バイブ通知を発火した警戒レベル（昇格時は setOnlyAlertOnce(false) で確実に鳴動）
+    // 直近で音・バイブ通知を発火した警戒レベル（SharedPreferences にも永続化しプロセス再起動時の再鳴動を防止）
     @Volatile
     private var lastAlertedLevel: Int = 0
+
+    @Volatile
+    private var lastAlertedLevelLoaded: Boolean = false
+
+    @Volatile
+    private var lastPostedSignature: String = ""
+
+    @Volatile
+    private var lastUserDismissal: KikikuruAlertDismissal? = null
+
+    @Volatile
+    private var dismissalLoadedFromPrefs: Boolean = false
+
+    @Volatile
+    internal var lastNotificationPostedAtMillis: Long = 0L
+
+    internal fun buildAlertSignature(alertInfo: MunicipalityAlertInfo): String {
+        val warningsPart = alertInfo.activeWarnings
+            .map { "${it.code}:${it.name}" }
+            .sorted()
+            .joinToString(",")
+        val flagsPart = alertInfo.disasterFlags.activeTypes
+            .map { it.name }
+            .sorted()
+            .joinToString(",")
+        val muniKey = alertInfo.municipalityCode.ifBlank { alertInfo.municipalityName.trim() }
+        return "$muniKey|lv=${alertInfo.alertLevel.level}|primary=${alertInfo.targetDisasterPrimary?.name.orEmpty()}|w=$warningsPart|f=$flagsPart"
+    }
+
+    internal fun shouldSuppressAlert(
+        dismissal: KikikuruAlertDismissal?,
+        alertInfo: MunicipalityAlertInfo,
+        nowMillis: Long = System.currentTimeMillis()
+    ): Boolean {
+        if (dismissal == null) return false
+        if (nowMillis >= dismissal.suppressUntilMillis) return false
+        val incomingMuni = alertInfo.municipalityCode.ifBlank { alertInfo.municipalityName.trim() }
+        if (dismissal.municipalityCode.isNotBlank() &&
+            incomingMuni.isNotBlank() &&
+            dismissal.municipalityCode != incomingMuni
+        ) {
+            return false
+        }
+        // 警戒レベルが消去時より引き上がった場合（例: レベル2 → レベル3/4）は安全のため必ず再通知する
+        if (alertInfo.alertLevel.level > dismissal.dismissedLevel) {
+            return false
+        }
+        return true
+    }
+
+    private fun loadLastAlertedLevelIfNeeded(context: Context): Int {
+        if (!lastAlertedLevelLoaded) {
+            lastAlertedLevelLoaded = true
+            try {
+                val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                lastAlertedLevel = prefs.getInt(KEY_LAST_ALERTED_LEVEL, 0)
+                lastPostedSignature = prefs.getString(KEY_LAST_POSTED_SIGNATURE, "") ?: ""
+            } catch (_: Exception) {}
+        }
+        return lastAlertedLevel
+    }
+
+    private fun persistAlertTracking(context: Context, level: Int, signature: String) {
+        lastAlertedLevel = level
+        lastAlertedLevelLoaded = true
+        lastPostedSignature = signature
+        try {
+            val editor = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+            if (level <= 0 && signature.isBlank()) {
+                editor.remove(KEY_LAST_ALERTED_LEVEL).remove(KEY_LAST_POSTED_SIGNATURE)
+            } else {
+                editor.putInt(KEY_LAST_ALERTED_LEVEL, level)
+                    .putString(KEY_LAST_POSTED_SIGNATURE, signature)
+            }
+            editor.apply()
+        } catch (_: Exception) {}
+    }
+
+    private fun persistDismissalState(context: Context, dismissal: KikikuruAlertDismissal?) {
+        lastUserDismissal = dismissal
+        dismissalLoadedFromPrefs = true
+        try {
+            val editor = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+            if (dismissal == null) {
+                editor.remove(KEY_DISMISSED_ALERT_JSON)
+            } else {
+                editor.putString(KEY_DISMISSED_ALERT_JSON, WeatherJsonSerializer.json.encodeToString(dismissal))
+            }
+            editor.apply()
+        } catch (_: Exception) {}
+    }
+
+    private fun getDismissalState(context: Context, nowMillis: Long = System.currentTimeMillis()): KikikuruAlertDismissal? {
+        if (!dismissalLoadedFromPrefs) {
+            dismissalLoadedFromPrefs = true
+            try {
+                val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                val raw = prefs.getString(KEY_DISMISSED_ALERT_JSON, null)
+                if (!raw.isNullOrBlank()) {
+                    lastUserDismissal = WeatherJsonSerializer.json.decodeFromString<KikikuruAlertDismissal>(raw)
+                }
+            } catch (_: Exception) {
+                lastUserDismissal = null
+            }
+        }
+        val current = lastUserDismissal ?: return null
+        if (nowMillis >= current.suppressUntilMillis) {
+            persistDismissalState(context, null)
+            return null
+        }
+        return current
+    }
+
+    fun isSuppressedByUserDismissal(
+        context: Context,
+        alertInfo: MunicipalityAlertInfo,
+        nowMillis: Long = System.currentTimeMillis()
+    ): Boolean {
+        val dismissal = getDismissalState(context, nowMillis)
+        return shouldSuppressAlert(dismissal, alertInfo, nowMillis)
+    }
+
+    fun clearDismissalSuppression(context: Context) {
+        persistDismissalState(context.applicationContext, null)
+    }
+
+    internal fun markNotificationPosted(nowMillis: Long = System.currentTimeMillis()) {
+        lastNotificationPostedAtMillis = nowMillis
+    }
+
+    internal fun isNotificationCurrentlyShowing(context: Context): Boolean {
+        return try {
+            val nm = context.applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                ?: return true
+            nm.activeNotifications.any { it.id == NOTIFICATION_ID }
+        } catch (_: Throwable) {
+            true
+        }
+    }
+
+    internal fun hasUserDismissedActiveNotification(
+        context: Context,
+        nowMillis: Long = System.currentTimeMillis()
+    ): Boolean {
+        val postedAt = lastNotificationPostedAtMillis
+        if (postedAt <= 0L || nowMillis - postedAt < NOTIFICATION_POST_GRACE_MS) {
+            return false
+        }
+        return !isNotificationCurrentlyShowing(context)
+    }
+
+    fun dismissByUser(
+        context: Context,
+        municipalityCode: String = "",
+        dismissedLevel: Int = 0,
+        signature: String = "",
+        nowMillis: Long = System.currentTimeMillis()
+    ) {
+        val appContext = context.applicationContext
+        val wasTest = isTestModeActive
+        val active = currentActiveAlertInfo
+        val effectiveMuni = municipalityCode.ifBlank {
+            active?.municipalityCode?.ifBlank { active.municipalityName.trim() } ?: currentActiveCityName.trim()
+        }
+        val effectiveLevel = if (dismissedLevel > 0) dismissedLevel else (active?.alertLevel?.level ?: 2)
+        val effectiveSig = signature.ifBlank { active?.let { buildAlertSignature(it) } ?: lastPostedSignature }
+
+        if (!wasTest && effectiveLevel >= 2) {
+            val record = KikikuruAlertDismissal(
+                municipalityCode = effectiveMuni,
+                dismissedLevel = effectiveLevel,
+                dismissedSignature = effectiveSig,
+                dismissedAtMillis = nowMillis,
+                suppressUntilMillis = nowMillis + ALERT_DISMISS_SUPPRESS_MS
+            )
+            persistDismissalState(appContext, record)
+            Log.d(TAG, "Recorded Kikikuru alert dismissal suppression (muni='$effectiveMuni', lv=$effectiveLevel)")
+        }
+        cancelAll(appContext)
+    }
+
+    private fun createDismissPendingIntent(
+        context: Context,
+        municipalityCode: String,
+        level: Int,
+        signature: String
+    ): PendingIntent {
+        val appContext = context.applicationContext
+        val dismissIntent = Intent(appContext, KikikuruAlertDismissReceiver::class.java).apply {
+            action = KikikuruAlertDismissReceiver.ACTION_DISMISS_KIKIKURU_ALERT
+            putExtra(KikikuruAlertDismissReceiver.EXTRA_MUNICIPALITY_CODE, municipalityCode)
+            putExtra(KikikuruAlertDismissReceiver.EXTRA_ALERT_LEVEL, level)
+            putExtra(KikikuruAlertDismissReceiver.EXTRA_ALERT_SIGNATURE, signature)
+        }
+        return PendingIntent.getBroadcast(
+            appContext,
+            NOTIFICATION_ID + 2,
+            dismissIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
 
     private fun persistActiveAlert(context: Context, alertInfo: MunicipalityAlertInfo?, cityName: String) {
         try {
@@ -76,10 +292,11 @@ object KikikuruNotificationManager {
             val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             val json = prefs.getString(KEY_ACTIVE_ALERT_JSON, null) ?: return
             val restored = WeatherJsonSerializer.json.decodeFromString<MunicipalityAlertInfo>(json)
-            if (restored.alertLevel.level < 2) {
+            if (restored.alertLevel.level < 2 || isSuppressedByUserDismissal(context, restored)) {
                 persistActiveAlert(context, null, "")
                 return
             }
+            loadLastAlertedLevelIfNeeded(context)
             currentActiveAlertInfo = restored
             currentActiveCityName = prefs.getString(KEY_ACTIVE_CITY_NAME, "") ?: restored.municipalityName
         } catch (_: Exception) {}
@@ -94,14 +311,22 @@ object KikikuruNotificationManager {
             val language = LocaleUtils.getSavedLanguage(context.applicationContext)
             val name = when (language) {
                 AppLanguage.ENGLISH -> "Disaster Alert Live Updates"
+                AppLanguage.KOREAN -> "재난 경보 실시간 알림"
                 AppLanguage.SIMPLIFIED_CHINESE -> "灾害预警实时动态通知"
                 AppLanguage.TRADITIONAL_CHINESE -> "災害警報即時動態通知"
+                AppLanguage.SPANISH -> "Alertas de desastre en tiempo real"
+                AppLanguage.FRENCH -> "Alertes catastrophe en temps réel"
+                AppLanguage.PORTUGUESE -> "Alertas de desastre em tempo real"
                 AppLanguage.JAPANESE -> "警戒レベル・キキクル Live Updates"
             }
             val descriptionText = when (language) {
                 AppLanguage.ENGLISH -> "Real-time ongoing alerts when Level 2+ weather or disaster warnings are active"
+                AppLanguage.KOREAN -> "해당 지역에 경계 레벨 2 이상의 기상·재난 특보가 발표될 때 표시되는 실시간 알림"
                 AppLanguage.SIMPLIFIED_CHINESE -> "当所在地区发布2级以上气象或灾害预警时的实时常驻通知"
                 AppLanguage.TRADITIONAL_CHINESE -> "當所在地區發布2級以上氣象或災害警報時的即時常駐通知"
+                AppLanguage.SPANISH -> "Notificaciones continuas en tiempo real cuando hay alertas meteorológicas o de desastre de nivel 2 o superior"
+                AppLanguage.FRENCH -> "Notifications continues en temps réel lorsque des alertes météo ou catastrophe de niveau 2 ou plus sont actives"
+                AppLanguage.PORTUGUESE -> "Notificações contínuas em tempo real quando houver alertas meteorológicos ou de desastre de nível 2 ou superior"
                 AppLanguage.JAPANESE -> "市区町村で警戒レベル2以上の警報・注意報が発表された際のリアルタイム警戒通知（ライブ通知）"
             }
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -126,7 +351,8 @@ object KikikuruNotificationManager {
     fun buildLiveNotification(
         context: Context,
         alertInfo: MunicipalityAlertInfo,
-        cityName: String = alertInfo.municipalityName
+        cityName: String = alertInfo.municipalityName,
+        isSilentUpdate: Boolean = false
     ): Notification {
         val appContext = context.applicationContext
         createNotificationChannel(appContext)
@@ -147,14 +373,22 @@ object KikikuruNotificationManager {
 
         val primaryDisaster = when (language) {
             AppLanguage.ENGLISH -> primaryDetail.disasterType.shortLabelEn
+            AppLanguage.KOREAN -> primaryDetail.disasterType.shortLabelKo
             AppLanguage.SIMPLIFIED_CHINESE -> primaryDetail.disasterType.shortLabelZhHans
             AppLanguage.TRADITIONAL_CHINESE -> primaryDetail.disasterType.shortLabelZhHant
+            AppLanguage.SPANISH -> primaryDetail.disasterType.shortLabelEs
+            AppLanguage.FRENCH -> primaryDetail.disasterType.shortLabelFr
+            AppLanguage.PORTUGUESE -> primaryDetail.disasterType.shortLabelPt
             AppLanguage.JAPANESE -> primaryDetail.disasterType.shortLabelJa
         }
         val chipText = when (language) {
             AppLanguage.ENGLISH -> "$primaryDisaster Lv.$levelNum"
+            AppLanguage.KOREAN -> "$primaryDisaster 레벨 $levelNum"
             AppLanguage.SIMPLIFIED_CHINESE -> "$primaryDisaster ${levelNum}级"
             AppLanguage.TRADITIONAL_CHINESE -> "$primaryDisaster ${levelNum}級"
+            AppLanguage.SPANISH -> "$primaryDisaster Nv.$levelNum"
+            AppLanguage.FRENCH -> "$primaryDisaster Niv.$levelNum"
+            AppLanguage.PORTUGUESE -> "$primaryDisaster Nv.$levelNum"
             AppLanguage.JAPANESE -> "$primaryDisaster レベル$levelNum"
         }
 
@@ -165,8 +399,12 @@ object KikikuruNotificationManager {
         val levelTitle = level.getTitle(language)
         val summaryText = when (language) {
             AppLanguage.ENGLISH -> "Alert Level $levelNum [$levelTitle] $evacBadge"
+            AppLanguage.KOREAN -> "경계 레벨 $levelNum 【$levelTitle】 $evacBadge"
             AppLanguage.SIMPLIFIED_CHINESE -> "警戒级别 $levelNum 【$levelTitle】 $evacBadge"
             AppLanguage.TRADITIONAL_CHINESE -> "警戒級別 $levelNum 【$levelTitle】 $evacBadge"
+            AppLanguage.SPANISH -> "Nivel de alerta $levelNum [$levelTitle] $evacBadge"
+            AppLanguage.FRENCH -> "Niveau d'alerte $levelNum [$levelTitle] $evacBadge"
+            AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum [$levelTitle] $evacBadge"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum 【$levelTitle】 $evacBadge"
         }.trim()
 
@@ -174,31 +412,53 @@ object KikikuruNotificationManager {
             val labels = alertInfo.disasterFlags.activeTypes.joinToString("・") {
                 when (language) {
                     AppLanguage.ENGLISH -> it.labelEn
+                    AppLanguage.KOREAN -> it.labelKo
                     AppLanguage.SIMPLIFIED_CHINESE -> it.labelZhHans
                     AppLanguage.TRADITIONAL_CHINESE -> it.labelZhHant
+                    AppLanguage.SPANISH -> it.labelEs
+                    AppLanguage.FRENCH -> it.labelFr
+                    AppLanguage.PORTUGUESE -> it.labelPt
                     AppLanguage.JAPANESE -> it.labelJa
                 }
             }
             when (language) {
                 AppLanguage.ENGLISH -> "[Hazards: $labels]"
+                AppLanguage.KOREAN -> "【경계 대상: $labels】"
                 AppLanguage.SIMPLIFIED_CHINESE -> "【警戒对象: $labels】"
                 AppLanguage.TRADITIONAL_CHINESE -> "【警戒對象: $labels】"
+                AppLanguage.SPANISH -> "[Riesgos: $labels]"
+                AppLanguage.FRENCH -> "[Risques : $labels]"
+                AppLanguage.PORTUGUESE -> "[Riscos: $labels]"
                 AppLanguage.JAPANESE -> "【警戒対象: $labels】"
             }
         } else ""
 
         val warningsText = if (alertInfo.activeWarnings.isNotEmpty()) {
-            alertInfo.activeWarnings.joinToString("、") { it.name } + when (language) {
+            val separator = when (language) {
+                AppLanguage.JAPANESE, AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "、"
+                AppLanguage.ENGLISH, AppLanguage.KOREAN, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> ", "
+            }
+            alertInfo.activeWarnings.joinToString(separator) {
+                JmaWarningMaster.getLocalizedWarningName(it.name, language)
+            } + when (language) {
                 AppLanguage.ENGLISH -> " active"
+                AppLanguage.KOREAN -> " 발효 중"
                 AppLanguage.SIMPLIFIED_CHINESE -> " 生效中"
                 AppLanguage.TRADITIONAL_CHINESE -> " 生效中"
+                AppLanguage.SPANISH -> " en vigor"
+                AppLanguage.FRENCH -> " en vigueur"
+                AppLanguage.PORTUGUESE -> " em vigor"
                 AppLanguage.JAPANESE -> " 発表中"
             }
         } else {
             when (language) {
                 AppLanguage.ENGLISH -> "Weather advisory active"
+                AppLanguage.KOREAN -> "기상 주의보 발효 중"
                 AppLanguage.SIMPLIFIED_CHINESE -> "注意报生效中"
                 AppLanguage.TRADITIONAL_CHINESE -> "注意報生效中"
+                AppLanguage.SPANISH -> "Aviso meteorológico en vigor"
+                AppLanguage.FRENCH -> "Vigilance météo en vigueur"
+                AppLanguage.PORTUGUESE -> "Aviso meteorológico em vigor"
                 AppLanguage.JAPANESE -> "注意報発表中"
             }
         }
@@ -251,11 +511,25 @@ object KikikuruNotificationManager {
 
         val notificationColor = level.colorHex.toInt()
         val badgeBitmap = createLevelBadgeBitmap(appContext, level)
+        val alertSignature = buildAlertSignature(alertInfo)
+        val muniKey = alertInfo.municipalityCode.ifBlank { targetCity }
+        val dismissPendingIntent = createDismissPendingIntent(
+            context = appContext,
+            municipalityCode = muniKey,
+            level = levelNum,
+            signature = alertSignature
+        )
 
-        val isEscalated = levelNum > lastAlertedLevel
+        val prevAlertedLevel = loadLastAlertedLevelIfNeeded(appContext)
+        val isEscalated = !isSilentUpdate && levelNum > prevAlertedLevel
         if (isEscalated) {
-            lastAlertedLevel = levelNum
+            persistAlertTracking(appContext, levelNum, alertSignature)
+        } else if (lastPostedSignature != alertSignature) {
+            persistAlertTracking(appContext, maxOf(prevAlertedLevel, levelNum), alertSignature)
         }
+
+        val isSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
+        val useProgressStyle = Build.VERSION.SDK_INT >= 36 && !isSamsung
 
         val builder = NotificationCompat.Builder(appContext, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
@@ -264,24 +538,22 @@ object KikikuruNotificationManager {
             .setContentText(actionText)
             .setSubText(chipText)
             .setTicker(tickerText)
-            .setProgress(5, levelNum, false)
             .setUsesChronometer(false)
-            .setShowWhen(false)
-            .setStyle(
-                NotificationCompat.BigTextStyle()
-                    .setBigContentTitle(title)
-                    .setSummaryText(summaryText)
-                    .bigText(bigText)
-            )
+            .setShowWhen(true)
             .setColor(notificationColor)
             .setColorized(false)
+            .setGroupSummary(false)
             .setOngoing(true)
+            .setRequestPromotedOngoing(true)
+            .setShortCriticalText(chipText)
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .setCategory(NotificationCompat.CATEGORY_STATUS)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOnlyAlertOnce(!isEscalated)
+            .setSilent(isSilentUpdate && !isEscalated)
             .setContentIntent(pendingIntent)
+            .setDeleteIntent(dismissPendingIntent)
             .setAutoCancel(false)
             .addAction(
                 android.R.drawable.ic_dialog_map,
@@ -292,12 +564,61 @@ object KikikuruNotificationManager {
                 android.R.drawable.ic_menu_info_details,
                 when (language) {
                     AppLanguage.ENGLISH -> "Open App"
+                    AppLanguage.KOREAN -> "앱 열기"
                     AppLanguage.SIMPLIFIED_CHINESE -> "打开应用"
                     AppLanguage.TRADITIONAL_CHINESE -> "開啟應用程式"
+                    AppLanguage.SPANISH -> "Abrir app"
+                    AppLanguage.FRENCH -> "Ouvrir l'app"
+                    AppLanguage.PORTUGUESE -> "Abrir app"
                     AppLanguage.JAPANESE -> "アプリを開く"
                 },
                 mainAppPendingIntent
             )
+            .addAction(
+                android.R.drawable.ic_menu_close_clear_cancel,
+                when (language) {
+                    AppLanguage.ENGLISH -> "Dismiss"
+                    AppLanguage.KOREAN -> "닫기"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "关闭"
+                    AppLanguage.TRADITIONAL_CHINESE -> "關閉"
+                    AppLanguage.SPANISH -> "Descartar"
+                    AppLanguage.FRENCH -> "Fermer"
+                    AppLanguage.PORTUGUESE -> "Dispensar"
+                    AppLanguage.JAPANESE -> "閉じる"
+                },
+                dismissPendingIntent
+            )
+
+        if (useProgressStyle) {
+            val levelColors = intArrayOf(
+                AlertLevel.LEVEL_1.colorHex.toInt(),
+                AlertLevel.LEVEL_2.colorHex.toInt(),
+                AlertLevel.LEVEL_3.colorHex.toInt(),
+                AlertLevel.LEVEL_4.colorHex.toInt(),
+                AlertLevel.LEVEL_5.colorHex.toInt()
+            )
+            val progressStyle = NotificationCompat.ProgressStyle()
+                .setProgress(levelNum)
+            for (i in 0 until 5) {
+                progressStyle.addProgressSegment(
+                    NotificationCompat.ProgressStyle.Segment(1).setColor(levelColors[i])
+                )
+            }
+            for (i in 1..4) {
+                progressStyle.addProgressPoint(
+                    NotificationCompat.ProgressStyle.Point(i).setColor(levelColors[(i - 1).coerceIn(0, 4)])
+                )
+            }
+            builder.setStyle(progressStyle)
+        } else {
+            builder.setProgress(5, levelNum, false)
+                .setStyle(
+                    NotificationCompat.BigTextStyle()
+                        .setBigContentTitle(title)
+                        .setSummaryText(summaryText)
+                        .bigText(bigText)
+                )
+        }
 
         // Galaxy One UI 7 Now Bar 互換用エクストラ設定
         builder.extras.putBoolean("com.samsung.android.app.notification.nowbar", true)
@@ -306,93 +627,10 @@ object KikikuruNotificationManager {
         builder.extras.putString("com.samsung.android.app.notification.subtext", chipText)
         builder.extras.putString("com.samsung.android.app.notification.title", chipText)
 
-        if (Build.VERSION.SDK_INT >= 36) {
-            builder.extras.putBoolean("android.requestPromotedOngoing", true)
-            builder.extras.putCharSequence("android.shortCriticalText", chipText)
-            try {
-                builder.javaClass.getMethod("setShortCriticalText", CharSequence::class.java).invoke(builder, chipText)
-            } catch (_: Throwable) {
-                try {
-                    builder.javaClass.getMethod("setShortCriticalText", String::class.java).invoke(builder, chipText)
-                } catch (_: Throwable) {}
-            }
-            try {
-                builder.javaClass.getMethod("setRequestPromotedOngoing", Boolean::class.javaPrimitiveType).invoke(builder, true)
-            } catch (_: Throwable) {}
-        }
-
         val notification = builder.build()
-
-        // Android 16+ (API 36+) Native Live Updates (Status Bar Chip) & ProgressStyle 適用
-        val isSamsung = Build.MANUFACTURER.equals("samsung", ignoreCase = true)
-        if (Build.VERSION.SDK_INT >= 36) {
-            try {
-                val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                val canPromote = try {
-                    nm.javaClass.getMethod("canPostPromotedNotifications").invoke(nm) as? Boolean ?: true
-                } catch (_: Throwable) {
-                    true
-                }
-                if (canPromote) {
-                    val platformBuilder = Notification.Builder.recoverBuilder(appContext, notification)
-                    try {
-                        platformBuilder.javaClass.getMethod("setShortCriticalText", String::class.java).invoke(platformBuilder, chipText)
-                    } catch (e: Throwable) {
-                        Log.w(TAG, "platformBuilder.setShortCriticalText invocation failed: ${e.message}")
-                    }
-                    try {
-                        platformBuilder.javaClass.getMethod("setRequestPromotedOngoing", Boolean::class.javaPrimitiveType).invoke(platformBuilder, true)
-                    } catch (_: Throwable) {}
-
-                    if (!isSamsung) {
-                        try {
-                            val progressStyleClass = Class.forName("android.app.Notification\$ProgressStyle")
-                            val pointClass = Class.forName("android.app.Notification\$ProgressStyle\$Point")
-                            val segmentClass = Class.forName("android.app.Notification\$ProgressStyle\$Segment")
-
-                            val progressStyle = progressStyleClass.getDeclaredConstructor().newInstance()
-                            progressStyleClass.getMethod("setProgress", Int::class.javaPrimitiveType).invoke(progressStyle, levelNum)
-
-                            val levelColors = intArrayOf(
-                                AlertLevel.LEVEL_1.colorHex.toInt(),
-                                AlertLevel.LEVEL_2.colorHex.toInt(),
-                                AlertLevel.LEVEL_3.colorHex.toInt(),
-                                AlertLevel.LEVEL_4.colorHex.toInt(),
-                                AlertLevel.LEVEL_5.colorHex.toInt()
-                            )
-                            val addSegmentMethod = progressStyleClass.getMethod("addProgressSegment", segmentClass)
-                            for (i in 0 until 5) {
-                                val segment = segmentClass.getConstructor(Int::class.javaPrimitiveType).newInstance(1)
-                                try {
-                                    segmentClass.getMethod("setColor", Int::class.javaPrimitiveType).invoke(segment, levelColors[i])
-                                } catch (_: Throwable) {}
-                                addSegmentMethod.invoke(progressStyle, segment)
-                            }
-
-                            val addPointMethod = progressStyleClass.getMethod("addProgressPoint", pointClass)
-                            for (i in 1..4) {
-                                try {
-                                    val point = pointClass.getConstructor(Int::class.javaPrimitiveType).newInstance(i)
-                                    try {
-                                        pointClass.getMethod("setColor", Int::class.javaPrimitiveType).invoke(point, levelColors[(i - 1).coerceIn(0, 4)])
-                                    } catch (_: Throwable) {}
-                                    addPointMethod.invoke(progressStyle, point)
-                                } catch (_: Throwable) {}
-                            }
-
-                            platformBuilder.javaClass.getMethod("setStyle", Notification.Style::class.java).invoke(platformBuilder, progressStyle)
-                        } catch (e: Throwable) {
-                            Log.w(TAG, "ProgressStyle configuration: ${e.message}")
-                        }
-                    }
-
-                    return platformBuilder.build()
-                }
-            } catch (e: Throwable) {
-                Log.w(TAG, "Failed to apply platformBuilder modifications: ${e.message}")
-            }
+        if (Build.VERSION.SDK_INT >= 36 && io.github.nemynew.expressiveweather.BuildConfig.DEBUG) {
+            Log.d(TAG, "Built API 36 alert notification: promotable=${notification.hasPromotableCharacteristics()}")
         }
-
         return notification
     }
 
@@ -406,12 +644,41 @@ object KikikuruNotificationManager {
         if (alertInfo != null && alertInfo.alertLevel.level >= 2) {
             return buildLiveNotification(context, alertInfo, currentActiveCityName)
         }
+        val language = LocaleUtils.getSavedLanguage(context.applicationContext)
+        val fgTitle = when (language) {
+            AppLanguage.ENGLISH -> "Monitoring weather alerts"
+            AppLanguage.KOREAN -> "기상 경계 정보 감시 중"
+            AppLanguage.SIMPLIFIED_CHINESE -> "正在监测气象预警信息"
+            AppLanguage.TRADITIONAL_CHINESE -> "正在監測氣象警報資訊"
+            AppLanguage.SPANISH -> "Supervisando alertas meteorológicas"
+            AppLanguage.FRENCH -> "Surveillance des alertes météo"
+            AppLanguage.PORTUGUESE -> "Monitorando alertas meteorológicos"
+            AppLanguage.JAPANESE -> "気象警戒情報を監視中"
+        }
+        val fgText = when (language) {
+            AppLanguage.ENGLISH -> "Waiting for disaster risk updates"
+            AppLanguage.KOREAN -> "재난 위험도 정보를 대기하고 있습니다"
+            AppLanguage.SIMPLIFIED_CHINESE -> "正在等待灾害风险信息更新"
+            AppLanguage.TRADITIONAL_CHINESE -> "正在等待災害風險資訊更新"
+            AppLanguage.SPANISH -> "Esperando actualizaciones de riesgo de desastre"
+            AppLanguage.FRENCH -> "En attente des mises à jour des risques"
+            AppLanguage.PORTUGUESE -> "Aguardando atualizações de risco de desastre"
+            AppLanguage.JAPANESE -> "気象庁キキクル情報を待機しています"
+        }
+        val dismissPendingIntent = createDismissPendingIntent(
+            context = context,
+            municipalityCode = currentActiveAlertInfo?.municipalityCode.orEmpty(),
+            level = currentActiveAlertInfo?.alertLevel?.level ?: 2,
+            signature = lastPostedSignature
+        )
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
-            .setContentTitle("気象警戒情報を監視中")
-            .setContentText("気象庁キキクル情報を待機しています")
+            .setContentTitle(fgTitle)
+            .setContentText(fgText)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
+            .setSilent(true)
+            .setDeleteIntent(dismissPendingIntent)
             .setAutoCancel(false)
         return builder.build()
     }
@@ -464,7 +731,8 @@ object KikikuruNotificationManager {
             currentActiveAlertInfo = null
             currentActiveCityName = ""
             isTestModeActive = false
-            lastAlertedLevel = 0
+            lastNotificationPostedAtMillis = 0L
+            persistAlertTracking(appContext, 0, "")
             persistActiveAlert(appContext, null, "")
             KikikuruLiveAlertService.stop(appContext)
             notificationManager.cancel(NOTIFICATION_ID)
@@ -484,12 +752,53 @@ object KikikuruNotificationManager {
             }
         }
 
+        val incomingSignature = buildAlertSignature(alertInfo)
+        loadLastAlertedLevelIfNeeded(appContext)
+
+        // ユーザーがスワイプ消去した同一レベル以下の警報は再通知しない（レベル昇格時のみ再通知）
+        if (!isTestModeActive && isSuppressedByUserDismissal(appContext, alertInfo)) {
+            Log.d(TAG, "Skipping Kikikuru alert notification: suppressed by user dismissal (${alertInfo.municipalityName} Lv.${alertInfo.alertLevel.level})")
+            if (KikikuruLiveAlertService.isActivePolling) {
+                KikikuruLiveAlertService.stop(appContext)
+            }
+            return
+        }
+
+        // 既に表示中の通知をユーザーがスワイプ消去していた場合は再送せず抑止記録して終了
+        if (!isTestModeActive &&
+            KikikuruLiveAlertService.isActivePolling &&
+            hasUserDismissedActiveNotification(appContext)
+        ) {
+            Log.d(TAG, "Detected swipe-dismissed Kikikuru notification during update; suppressing re-post.")
+            dismissByUser(
+                context = appContext,
+                municipalityCode = alertInfo.municipalityCode.ifBlank { alertInfo.municipalityName },
+                dismissedLevel = alertInfo.alertLevel.level,
+                signature = incomingSignature
+            )
+            return
+        }
+
+        // 全く同一内容の警報が既に通知欄へ掲示済みなら重複再投稿をスキップ（1分毎・3分毎のスパムを完全抑止）
+        val isIdenticalAlreadyShowing = !isTestModeActive &&
+            incomingSignature == lastPostedSignature &&
+            isNotificationCurrentlyShowing(appContext) &&
+            currentActiveAlertInfo != null
+        if (isIdenticalAlreadyShowing) {
+            currentActiveAlertInfo = alertInfo
+            currentActiveCityName = cityName
+            persistActiveAlert(appContext, alertInfo, cityName)
+            Log.d(TAG, "Identical Kikikuru alert already active in shade; skipping redundant notify ($incomingSignature).")
+            return
+        }
+
+        val isAlreadyShowing = isNotificationCurrentlyShowing(appContext)
         currentActiveAlertInfo = alertInfo
         currentActiveCityName = cityName
         persistActiveAlert(appContext, alertInfo, cityName)
 
         // フォアグラウンドサービスを起動して startForeground と結合 (失敗時は内部で notify フォールバック)
-        KikikuruLiveAlertService.startOrUpdate(appContext)
+        KikikuruLiveAlertService.startOrUpdate(appContext, isSilentUpdate = isAlreadyShowing && !isTestModeActive)
 
         Log.d(TAG, "Dispatched Live Updates Foreground Service: ${alertInfo.municipalityName} Lv.${alertInfo.alertLevel.level}")
     }
@@ -599,6 +908,7 @@ object KikikuruNotificationManager {
      * 設定画面やデバッグ画面からの動作確認用テスト通知メソッド
      */
     fun sendTestNotification(context: Context, testLevel: AlertLevel = AlertLevel.LEVEL_4) {
+        clearDismissalSuppression(context)
         isTestModeActive = true
         val testCity = WeatherRepository.resolveTestCityName(context)
         val dummyAlert = MunicipalityAlertInfo(
@@ -654,6 +964,8 @@ object KikikuruNotificationManager {
         isTestModeActive = false
         currentActiveAlertInfo = null
         currentActiveCityName = ""
+        lastNotificationPostedAtMillis = 0L
+        persistAlertTracking(appContext, 0, "")
         persistActiveAlert(appContext, null, "")
         KikikuruLiveAlertService.stop(appContext)
         val notificationManager = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

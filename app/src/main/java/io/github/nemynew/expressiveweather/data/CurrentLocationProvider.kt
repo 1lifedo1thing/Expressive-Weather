@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import io.github.nemynew.expressiveweather.BuildConfig
+import io.github.nemynew.expressiveweather.util.LocaleUtils
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -270,17 +271,47 @@ class CurrentLocationProvider(context: Context) {
         val lat = location.latitude
         val lon = location.longitude
         val inJapan = isLocationOrCountryInJapan(null, lat, lon)
+        val savedLanguage = LocaleUtils.getSavedLanguage(appContext)
+        val primaryLocale = when (savedLanguage) {
+            AppLanguage.JAPANESE -> Locale.JAPAN
+            AppLanguage.KOREAN -> Locale.KOREA
+            AppLanguage.SIMPLIFIED_CHINESE -> Locale.SIMPLIFIED_CHINESE
+            AppLanguage.TRADITIONAL_CHINESE -> Locale.TRADITIONAL_CHINESE
+            AppLanguage.ENGLISH -> Locale.US
+            AppLanguage.SPANISH -> Locale("es", "ES")
+            AppLanguage.FRENCH -> Locale.FRANCE
+            AppLanguage.PORTUGUESE -> Locale("pt", "BR")
+        }
+        val fallbackCurrentName = when (savedLanguage) {
+            AppLanguage.JAPANESE -> "現在地"
+            AppLanguage.KOREAN -> "현재 위치"
+            AppLanguage.SIMPLIFIED_CHINESE -> "当前位置"
+            AppLanguage.TRADITIONAL_CHINESE -> "目前位置"
+            AppLanguage.ENGLISH -> "Current Location"
+            AppLanguage.SPANISH -> "Ubicación actual"
+            AppLanguage.FRENCH -> "Position actuelle"
+            AppLanguage.PORTUGUESE -> "Localização atual"
+        }
 
         var displayName = ""
         var englishName = ""
-        var country = if (inJapan) "日本" else ""
+        var country = if (inJapan) {
+            when (savedLanguage) {
+                AppLanguage.JAPANESE, AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "日本"
+                AppLanguage.KOREAN -> "일본"
+                AppLanguage.ENGLISH -> "Japan"
+                AppLanguage.SPANISH -> "Japón"
+                AppLanguage.FRENCH -> "Japon"
+                AppLanguage.PORTUGUESE -> "Japão"
+            }
+        } else ""
 
         try {
             coroutineScope {
-                val jaDeferred = async {
+                val primaryDeferred = async {
                     withTimeoutOrNull(2000L) {
-                        val jaGeocoder = Geocoder(appContext, Locale.JAPAN)
-                        reverseGeocodeSingle(jaGeocoder, lat, lon)
+                        val primaryGeocoder = Geocoder(appContext, primaryLocale)
+                        reverseGeocodeSingle(primaryGeocoder, lat, lon)
                     }
                 }
                 val enDeferred = async {
@@ -290,13 +321,13 @@ class CurrentLocationProvider(context: Context) {
                     }
                 }
 
-                jaDeferred.await()?.let { addr ->
-                    displayName = resolveDetailedName(addr)
+                primaryDeferred.await()?.let { addr ->
+                    displayName = resolveDetailedName(addr, fallbackCurrentName)
                     country = addr.countryName ?: addr.adminArea ?: country
                 }
 
                 enDeferred.await()?.let { addr ->
-                    englishName = resolveDetailedName(addr)
+                    englishName = resolveDetailedName(addr, "Current Location")
                     if (country.isBlank()) {
                         country = addr.countryName ?: addr.adminArea ?: ""
                     }
@@ -308,7 +339,7 @@ class CurrentLocationProvider(context: Context) {
             // Geocoder 失敗時はフォールバック
         }
 
-        if (inJapan && (displayName.isBlank() || displayName == "現在地")) {
+        if (inJapan && (displayName.isBlank() || displayName == fallbackCurrentName || displayName == "現在地")) {
             val jmaInfo = JmaAreaResolver.resolve(lat, lon)
             displayName = jmaInfo.stationName.ifBlank { jmaInfo.officeName }
             if (englishName.isBlank() || englishName == "Current Location") {
@@ -317,11 +348,11 @@ class CurrentLocationProvider(context: Context) {
         }
 
         if (englishName.isBlank() || englishName == "Current Location") {
-            englishName = if (displayName.isNotBlank() && displayName != "現在地") displayName else "Current Location"
+            englishName = if (displayName.isNotBlank() && displayName != fallbackCurrentName && displayName != "現在地") displayName else "Current Location"
         }
 
         if (displayName.isBlank()) {
-            displayName = "現在地"
+            displayName = fallbackCurrentName
         }
 
         val resolved = City(
@@ -366,7 +397,7 @@ class CurrentLocationProvider(context: Context) {
         }
     }
 
-    private fun resolveDetailedName(addr: android.location.Address): String {
+    private fun resolveDetailedName(addr: android.location.Address, fallback: String = "現在地"): String {
         val admin = addr.adminArea?.trim().orEmpty()
         val locality = addr.locality?.trim().orEmpty()
         val subLocality = addr.subLocality?.trim().orEmpty()
@@ -380,7 +411,7 @@ class CurrentLocationProvider(context: Context) {
             subLocality.isNotBlank() -> subLocality
             admin.isNotBlank() && thoroughfare.isNotBlank() -> "$admin $thoroughfare"
             admin.isNotBlank() -> admin
-            else -> "現在地"
+            else -> fallback
         }
     }
 }

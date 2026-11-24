@@ -44,40 +44,94 @@ enum class UsRadarLayerFilter(
     val id: String,
     val titleJa: String,
     val titleEn: String,
+    val titleKo: String,
     val descriptionJa: String,
-    val descriptionEn: String
+    val descriptionEn: String,
+    val descriptionKo: String
 ) {
     ALL(
         "all",
         "統合タイムライン (実況＋外挿＋予報)",
         "Unified Timeline (Obs + Nowcast + Forecast)",
+        "통합 타임라인 (실황 + 외삽 + 예보)",
         "過去2時間実況から18時間予報までシームレス連続再生",
-        "Seamless playback from 2h ago to 18h ahead"
+        "Seamless playback from 2h ago to 18h ahead",
+        "2시간 전 실황부터 18시간 후 예보까지 연속 재생"
     ),
     OBSERVATION_ONLY(
         "obs",
         "実況レーダーマップ (NEXRAD / MRMS)",
         "Observation Radar (NEXRAD / MRMS)",
+        "실황 레이더 지도 (NEXRAD / MRMS)",
         "地上反射強度の過去2時間高精度実況トラッキング",
-        "High-resolution observation tracking for past 2 hours"
+        "High-resolution observation tracking for past 2 hours",
+        "지난 2시간 고정밀 지상 반사도 실황 추적"
     ),
     EXTRAPOLATION_ONLY(
         "extrap",
         "直近0分から60分先：NEXRAD外挿予測",
         "Nowcast Extrapolation (0-60 min)",
+        "0~60분 초단기 예측: NEXRAD 외삽 예측",
         "レーダーエコー移動ベクトルによる1時間短時間予測",
-        "Motion-vector extrapolated nowcast for next 60 minutes"
+        "Motion-vector extrapolated nowcast for next 60 minutes",
+        "레이더 에코 이동 벡터 기반 향후 60분 초단기 예측"
     ),
     HRRR_FORECAST_ONLY(
         "hrrr",
         "予報レーダーマップ (HRRRシミュレーション)",
         "Forecast Radar (HRRR Simulation)",
+        "예보 레이더 지도 (HRRR 시뮬레이션)",
         "数値気象予測モデルによる18時間先までの広域シミュレーション",
-        "Numerical weather prediction simulation up to 18h ahead"
+        "Numerical weather prediction simulation up to 18h ahead",
+        "수치기상예보 모델 기반 향후 18시간 광역 시뮬레이션"
     );
 
-    fun title(language: AppLanguage): String = if (language == AppLanguage.JAPANESE) titleJa else titleEn
-    fun description(language: AppLanguage): String = if (language == AppLanguage.JAPANESE) descriptionJa else descriptionEn
+    fun title(language: AppLanguage): String = when (language) {
+        AppLanguage.JAPANESE -> titleJa
+        AppLanguage.KOREAN -> titleKo
+        AppLanguage.SPANISH -> when (this) {
+            ALL -> "Línea temporal unificada (Obs. + Ahora + Pronóstico)"
+            OBSERVATION_ONLY -> "Radar de observación (NEXRAD / MRMS)"
+            EXTRAPOLATION_ONLY -> "Extrapolación inmediata (0-60 min)"
+            HRRR_FORECAST_ONLY -> "Radar de pronóstico (Simulación HRRR)"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            ALL -> "Chronologie unifiée (Obs. + Immédiat + Prévision)"
+            OBSERVATION_ONLY -> "Radar d'observation (NEXRAD / MRMS)"
+            EXTRAPOLATION_ONLY -> "Extrapolation immédiate (0-60 min)"
+            HRRR_FORECAST_ONLY -> "Radar de prévision (Simulation HRRR)"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            ALL -> "Linha do tempo unificada (Obs. + Agora + Previsão)"
+            OBSERVATION_ONLY -> "Radar de observação (NEXRAD / MRMS)"
+            EXTRAPOLATION_ONLY -> "Extrapolação imediata (0-60 min)"
+            HRRR_FORECAST_ONLY -> "Radar de previsão (Simulação HRRR)"
+        }
+        else -> titleEn
+    }
+    fun description(language: AppLanguage): String = when (language) {
+        AppLanguage.JAPANESE -> descriptionJa
+        AppLanguage.KOREAN -> descriptionKo
+        AppLanguage.SPANISH -> when (this) {
+            ALL -> "Reproducción continua desde hace 2 h hasta 18 h adelante"
+            OBSERVATION_ONLY -> "Seguimiento de observación en alta resolución de las últimas 2 h"
+            EXTRAPOLATION_ONLY -> "Predicción inmediata por vectores de movimiento para los próximos 60 min"
+            HRRR_FORECAST_ONLY -> "Simulación numérica meteorológica hasta 18 h adelante"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            ALL -> "Lecture continue de 2 h passées à 18 h à venir"
+            OBSERVATION_ONLY -> "Suivi d'observation haute résolution des 2 dernières heures"
+            EXTRAPOLATION_ONLY -> "Prévision immédiate par vecteurs de déplacement sur 60 min"
+            HRRR_FORECAST_ONLY -> "Simulation de prévision numérique jusqu'à 18 h d'échéance"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            ALL -> "Reprodução contínua de 2 h atrás até 18 h à frente"
+            OBSERVATION_ONLY -> "Acompanhamento de observação em alta resolução das últimas 2 h"
+            EXTRAPOLATION_ONLY -> "Previsão imediata por vetores de deslocamento para os próximos 60 min"
+            HRRR_FORECAST_ONLY -> "Simulação numérica meteorológica até 18 h à frente"
+        }
+        else -> descriptionEn
+    }
 }
 
 /**
@@ -121,6 +175,12 @@ enum class UsLayerCategory(
 
     fun displayName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> displayNameJa
+        AppLanguage.KOREAN -> when (this) {
+            UNIFIED -> "통합 타임라인"
+            HRRR_FORECAST -> "HRRR 시뮬레이션 예보"
+            NOWCAST -> "초단기 외삽 예측 (0~60분)"
+            OBSERVATION -> "실황 레이더 지도"
+        }
         AppLanguage.ENGLISH -> displayNameEn
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             UNIFIED -> "综合时间线"
@@ -134,10 +194,34 @@ enum class UsLayerCategory(
             NOWCAST -> "短臨外推預測 (0~60分)"
             OBSERVATION -> "實況雷達地圖"
         }
+        AppLanguage.SPANISH -> when (this) {
+            UNIFIED -> "Línea temporal unificada"
+            HRRR_FORECAST -> "Pronóstico HRRR"
+            NOWCAST -> "Extrapolación inmediata (0-60 min)"
+            OBSERVATION -> "Radar de observación"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            UNIFIED -> "Chronologie unifiée"
+            HRRR_FORECAST -> "Prévision HRRR"
+            NOWCAST -> "Prévision immédiate (0-60 min)"
+            OBSERVATION -> "Radar d'observation"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            UNIFIED -> "Linha do tempo unificada"
+            HRRR_FORECAST -> "Previsão HRRR"
+            NOWCAST -> "Extrapolação imediata (0-60 min)"
+            OBSERVATION -> "Radar de observação"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> descriptionJa
+        AppLanguage.KOREAN -> when (this) {
+            UNIFIED -> "실황·초단기 외삽 예측·HRRR 예보 연속 재생"
+            HRRR_FORECAST -> "NOAA 고해상도 수치예보 모델 18시간 시뮬레이션"
+            NOWCAST -> "NEXRAD 레이더 에코 이동 벡터 예측"
+            OBSERVATION -> "미국 전역 NEXRAD/MRMS 다중 레이더 실황"
+        }
         AppLanguage.ENGLISH -> descriptionEn
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             UNIFIED -> "实况、短临外推与HRRR预报的连续回放"
@@ -150,6 +234,24 @@ enum class UsLayerCategory(
             HRRR_FORECAST -> "NOAA高解析度數值預報模型18小時模擬"
             NOWCAST -> "NEXRAD雷達回波移動向量預測"
             OBSERVATION -> "全美NEXRAD/MRMS多雷達合成實況"
+        }
+        AppLanguage.SPANISH -> when (this) {
+            UNIFIED -> "Reproducción continua de observaciones pasadas a pronóstico HRRR de 18 h"
+            HRRR_FORECAST -> "Simulaciones de 18 h del modelo NOAA de alta resolución"
+            NOWCAST -> "Predicción inmediata por vectores de eco radar NEXRAD (60 min)"
+            OBSERVATION -> "Observaciones multirradar NEXRAD y MRMS en todo EE. UU."
+        }
+        AppLanguage.FRENCH -> when (this) {
+            UNIFIED -> "Lecture continue des observations passées aux prévisions HRRR sur 18 h"
+            HRRR_FORECAST -> "Simulations sur 18 h du modèle haute résolution NOAA HRRR"
+            NOWCAST -> "Prévision immédiate par vecteurs d'échos radar NEXRAD (60 min)"
+            OBSERVATION -> "Observations multiradar NEXRAD et MRMS à l'échelle nationale"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            UNIFIED -> "Reprodução contínua de observações passadas até previsão HRRR de 18 h"
+            HRRR_FORECAST -> "Simulações de 18 h do modelo NOAA de alta resolução"
+            NOWCAST -> "Previsão imediata por vetores de eco radar NEXRAD (60 min)"
+            OBSERVATION -> "Observações multirradar NEXRAD e MRMS em todos os EUA"
         }
     }
 }
@@ -336,6 +438,20 @@ enum class UsRadarLayerType(
 
     fun displayName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> displayNameJa
+        AppLanguage.KOREAN -> when (this) {
+            UNIFIED_ALL -> "통합 타임라인 (실황+외삽+예보)"
+            HRRR_COMPOSITE_REFL -> "HRRR 1km 모의 반사도 예보"
+            HRRR_PRECIP_TYPE -> "HRRR 강수 형태 예보 (비·눈·진눈깨비·어는비)"
+            HRRR_TOTAL_PRECIP -> "HRRR 누적 강수량 예보 (향후 18시간)"
+            HRRR_WIND_GUSTS -> "HRRR 지상 돌풍·강풍 예보"
+            HRRR_TORNADO_POTENTIAL -> "HRRR 악기상·토네이도 지수 (STP/UH)"
+            HRRR_CLOUD_COVER -> "HRRR 운량·저시정 시뮬레이션"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "0~60분 초단기 예측: NEXRAD 외삽 예측"
+            NEXRAD_STORM_MOTION -> "NEXRAD 스톰 이동 벡터·추적"
+            MRMS_BASE_REFLECTIVITY -> "MRMS 지상 반사도 실황"
+            MRMS_ECHO_TOPS -> "MRMS 에코 정고도 (적란운 높이)"
+            MRMS_QPE_1H -> "MRMS 1시간 누적 강수량 실황"
+        }
         AppLanguage.ENGLISH -> displayNameEn
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             UNIFIED_ALL -> "综合时间线 (实况+外推+预报)"
@@ -365,10 +481,66 @@ enum class UsRadarLayerType(
             MRMS_ECHO_TOPS -> "MRMS 回波頂高 (積雨雲高度)"
             MRMS_QPE_1H -> "MRMS 1小時累計降水實況"
         }
+        AppLanguage.SPANISH -> when (this) {
+            UNIFIED_ALL -> "Radar unificado (Obs. + Ahora + HRRR)"
+            HRRR_COMPOSITE_REFL -> "Reflectividad simulada HRRR 1 km"
+            HRRR_PRECIP_TYPE -> "Tipo de precipitación HRRR (Lluvia/Nieve/Hielo)"
+            HRRR_TOTAL_PRECIP -> "Precipitación acumulada HRRR (18 h)"
+            HRRR_WIND_GUSTS -> "Rachas de viento en superficie HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Índice de tornado y helicidad HRRR (STP/UH)"
+            HRRR_CLOUD_COVER -> "Simulación de nubosidad y niebla HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Extrapolación NEXRAD (0-60 min)"
+            NEXRAD_STORM_MOTION -> "Movimiento y seguimiento de tormentas NEXRAD"
+            MRMS_BASE_REFLECTIVITY -> "Reflectividad base continua MRMS"
+            MRMS_ECHO_TOPS -> "Topes de eco MRMS (18 dBZ / 50 dBZ)"
+            MRMS_QPE_1H -> "Precipitación radar MRMS en 1 hora (QPE)"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            UNIFIED_ALL -> "Radar unifié (Obs. + Immédiat + HRRR)"
+            HRRR_COMPOSITE_REFL -> "Réflectivité simulée HRRR 1 km"
+            HRRR_PRECIP_TYPE -> "Type de précipitations HRRR (Pluie/Neige/Verglas)"
+            HRRR_TOTAL_PRECIP -> "Cumul de précipitations HRRR (18 h)"
+            HRRR_WIND_GUSTS -> "Rafales de vent en surface HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Potentiel tornadique et hélicité HRRR (STP/UH)"
+            HRRR_CLOUD_COVER -> "Simulation de nébulosité et brouillard HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Extrapolation immédiate NEXRAD (0-60 min)"
+            NEXRAD_STORM_MOTION -> "Déplacement et suivi des orages NEXRAD"
+            MRMS_BASE_REFLECTIVITY -> "Réflectivité de base MRMS"
+            MRMS_ECHO_TOPS -> "Sommets d'échos MRMS (18 dBZ / 50 dBZ)"
+            MRMS_QPE_1H -> "Cumul radar MRMS sur 1 heure (QPE)"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            UNIFIED_ALL -> "Radar unificado (Obs. + Agora + HRRR)"
+            HRRR_COMPOSITE_REFL -> "Refletividade simulada HRRR 1 km"
+            HRRR_PRECIP_TYPE -> "Tipo de precipitação HRRR (Chuva/Neve/Gelo)"
+            HRRR_TOTAL_PRECIP -> "Precipitação acumulada HRRR (18 h)"
+            HRRR_WIND_GUSTS -> "Rajadas de vento na superfície HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Potencial de tornado e helicidade HRRR (STP/UH)"
+            HRRR_CLOUD_COVER -> "Simulação de nebulosidade e nevoeiro HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Extrapolação imediata NEXRAD (0-60 min)"
+            NEXRAD_STORM_MOTION -> "Deslocamento e rastreio de tempestades NEXRAD"
+            MRMS_BASE_REFLECTIVITY -> "Refletividade de base contínua MRMS"
+            MRMS_ECHO_TOPS -> "Topos de eco MRMS (18 dBZ / 50 dBZ)"
+            MRMS_QPE_1H -> "Precipitação radar MRMS em 1 hora (QPE)"
+        }
     }
 
     fun shortName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> shortNameJa
+        AppLanguage.KOREAN -> when (this) {
+            UNIFIED_ALL -> "통합 레이더"
+            HRRR_COMPOSITE_REFL -> "HRRR 모의 반사도"
+            HRRR_PRECIP_TYPE -> "HRRR 강수 형태"
+            HRRR_TOTAL_PRECIP -> "HRRR 누적 강수"
+            HRRR_WIND_GUSTS -> "HRRR 돌풍"
+            HRRR_TORNADO_POTENTIAL -> "HRRR 토네이도"
+            HRRR_CLOUD_COVER -> "HRRR 운량·안개"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "NEXRAD 외삽"
+            NEXRAD_STORM_MOTION -> "스톰 추적"
+            MRMS_BASE_REFLECTIVITY -> "MRMS 실황"
+            MRMS_ECHO_TOPS -> "에코 정고도"
+            MRMS_QPE_1H -> "MRMS 1h 강수"
+        }
         AppLanguage.ENGLISH -> shortNameEn
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             UNIFIED_ALL -> "综合时间线"
@@ -398,10 +570,66 @@ enum class UsRadarLayerType(
             MRMS_ECHO_TOPS -> "MRMS雲頂"
             MRMS_QPE_1H -> "MRMS 1h降水"
         }
+        AppLanguage.SPANISH -> when (this) {
+            UNIFIED_ALL -> "Unificado"
+            HRRR_COMPOSITE_REFL -> "Reflectividad HRRR"
+            HRRR_PRECIP_TYPE -> "Tipo precip. HRRR"
+            HRRR_TOTAL_PRECIP -> "Acumulado HRRR"
+            HRRR_WIND_GUSTS -> "Rachas HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Tornado/UH HRRR"
+            HRRR_CLOUD_COVER -> "Nubes/Niebla HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "NEXRAD Ahora"
+            NEXRAD_STORM_MOTION -> "Rastreo tormentas"
+            MRMS_BASE_REFLECTIVITY -> "MRMS Base"
+            MRMS_ECHO_TOPS -> "Topes de eco"
+            MRMS_QPE_1H -> "MRMS 1 h"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            UNIFIED_ALL -> "Unifié"
+            HRRR_COMPOSITE_REFL -> "Réflectivité HRRR"
+            HRRR_PRECIP_TYPE -> "Type précip. HRRR"
+            HRRR_TOTAL_PRECIP -> "Cumul HRRR"
+            HRRR_WIND_GUSTS -> "Rafales HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Tornade/UH HRRR"
+            HRRR_CLOUD_COVER -> "Nuages/Brouil. HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "NEXRAD Immédiat"
+            NEXRAD_STORM_MOTION -> "Suivi orages"
+            MRMS_BASE_REFLECTIVITY -> "MRMS Base"
+            MRMS_ECHO_TOPS -> "Sommets d'échos"
+            MRMS_QPE_1H -> "MRMS 1 h"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            UNIFIED_ALL -> "Unificado"
+            HRRR_COMPOSITE_REFL -> "Refletividade HRRR"
+            HRRR_PRECIP_TYPE -> "Tipo precip. HRRR"
+            HRRR_TOTAL_PRECIP -> "Acumulado HRRR"
+            HRRR_WIND_GUSTS -> "Rajadas HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Tornado/UH HRRR"
+            HRRR_CLOUD_COVER -> "Nuvens/Nevoeiro HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "NEXRAD Agora"
+            NEXRAD_STORM_MOTION -> "Rastreio tempest."
+            MRMS_BASE_REFLECTIVITY -> "MRMS Base"
+            MRMS_ECHO_TOPS -> "Topos de eco"
+            MRMS_QPE_1H -> "MRMS 1 h"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> descriptionJa
+        AppLanguage.KOREAN -> when (this) {
+            UNIFIED_ALL -> "2시간 전 실황부터 0~60분 외삽, 18시간 HRRR 예보까지 연속 재생"
+            HRRR_COMPOSITE_REFL -> "지상 1km 강수·호우·뇌우 에코 모의 시뮬레이션 (최대 18시간)"
+            HRRR_PRECIP_TYPE -> "비(초록)·눈(파랑)·진눈깨비(주황)·어는비(보라) 강수 유형 판별"
+            HRRR_TOTAL_PRECIP -> "향후 1~18시간 예상 누적 총강수량 시뮬레이션"
+            HRRR_WIND_GUSTS -> "뇌우 동반 하강기류 및 돌풍·강풍장 예측 시뮬레이션"
+            HRRR_TORNADO_POTENTIAL -> "슈퍼셀 및 토네이도 유발 회전 상승기류 잠재력 시뮬레이션"
+            HRRR_CLOUD_COVER -> "전층 운량 및 짙은 안개·저시정 구역 광역 시뮬레이션"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "레이더 에코 이동 벡터 기반 향후 60분 고정밀 초단기 예측"
+            NEXRAD_STORM_MOTION -> "발달한 뇌우 셀의 이동 방향 및 예상 도달 지점 추적"
+            MRMS_BASE_REFLECTIVITY -> "미국 전역 NEXRAD 다중 레이더 합성 지상 반사도 실황"
+            MRMS_ECHO_TOPS -> "비구름 운정 고도 및 급격한 적란운 발달·우박·낙뢰 위험 감시"
+            MRMS_QPE_1H -> "최근 1시간 다중 센서 레이더 추정 누적 강수량"
+        }
         AppLanguage.ENGLISH -> descriptionEn
         AppLanguage.SIMPLIFIED_CHINESE -> when (this) {
             UNIFIED_ALL -> "过去2小时实况至18小时预报连续播放"
@@ -430,6 +658,48 @@ enum class UsRadarLayerType(
             MRMS_BASE_REFLECTIVITY -> "多雷達多感測器合成全國無縫基準反射率實況"
             MRMS_ECHO_TOPS -> "雷達回波頂高及積雨雲垂直發展高度"
             MRMS_QPE_1H -> "地面自動雨量站校準後的高精度1小時定量降水"
+        }
+        AppLanguage.SPANISH -> when (this) {
+            UNIFIED_ALL -> "Reproducción continua de 2 h de observación a 18 h de pronóstico HRRR"
+            HRRR_COMPOSITE_REFL -> "Pronóstico de reflectividad radar simulada a 1 km AGL hasta 18 h"
+            HRRR_PRECIP_TYPE -> "Tipo de precipitación simulado: lluvia, nieve, aguanieve y lluvia helada"
+            HRRR_TOTAL_PRECIP -> "Simulación de precipitación acumulada total en las próximas 18 horas"
+            HRRR_WIND_GUSTS -> "Pronóstico de rachas de viento en superficie y microrráfagas"
+            HRRR_TORNADO_POTENTIAL -> "Simulación de helicidad ascendente y parámetro de tornado significativo"
+            HRRR_CLOUD_COVER -> "Pronóstico de nubosidad total, niebla y baja visibilidad"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Predicción inmediata extrapolada por vectores para los próximos 60 min"
+            NEXRAD_STORM_MOTION -> "Seguimiento de células tormentosas y pronóstico de trayectoria"
+            MRMS_BASE_REFLECTIVITY -> "Observación nacional multisensor NEXRAD de reflectividad en superficie"
+            MRMS_ECHO_TOPS -> "Altura de topes nubosos para vigilar el rápido desarrollo convectivo"
+            MRMS_QPE_1H -> "Estimación cuantitativa de precipitación radar multisensor (1 hora)"
+        }
+        AppLanguage.FRENCH -> when (this) {
+            UNIFIED_ALL -> "Lecture continue de 2 h d'observations à 18 h de prévisions HRRR"
+            HRRR_COMPOSITE_REFL -> "Prévision de réflectivité radar simulée à 1 km AGL jusqu'à 18 h"
+            HRRR_PRECIP_TYPE -> "Type de précipitations simulé : pluie, neige, grésil et pluie verglaçante"
+            HRRR_TOTAL_PRECIP -> "Simulation du cumul total de précipitations sur les 18 prochaines heures"
+            HRRR_WIND_GUSTS -> "Prévision des rafales de vent en surface et rafales descendantes"
+            HRRR_TORNADO_POTENTIAL -> "Simulation d'hélicité ascendante et d'indice de tornade significative"
+            HRRR_CLOUD_COVER -> "Prévision de nébulosité totale, brouillard et faible visibilité"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Prévision immédiate par vecteurs de déplacement sur 60 minutes"
+            NEXRAD_STORM_MOTION -> "Suivi des cellules orageuses et prévision de leur trajectoire"
+            MRMS_BASE_REFLECTIVITY -> "Observation nationale multicapteur NEXRAD de la réflectivité au sol"
+            MRMS_ECHO_TOPS -> "Hauteur des sommets nuageux pour suivre la convection rapide"
+            MRMS_QPE_1H -> "Estimation quantitative radar multicapteur des précipitations (1 heure)"
+        }
+        AppLanguage.PORTUGUESE -> when (this) {
+            UNIFIED_ALL -> "Reprodução contínua de 2 h de observação até 18 h de previsão HRRR"
+            HRRR_COMPOSITE_REFL -> "Previsão de refletividade radar simulada a 1 km AGL até 18 h"
+            HRRR_PRECIP_TYPE -> "Tipo de precipitação simulado: chuva, neve, granizo fino e chuva congelante"
+            HRRR_TOTAL_PRECIP -> "Simulação de precipitação acumulada total nas próximas 18 horas"
+            HRRR_WIND_GUSTS -> "Previsão de rajadas de vento na superfície e correntes descendentes"
+            HRRR_TORNADO_POTENTIAL -> "Simulação de helicidade ascendente e parâmetro de tornado significativo"
+            HRRR_CLOUD_COVER -> "Previsão de nebulosidade total, nevoeiro e baixa visibilidade"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Previsão imediata extrapolada por vetores para os próximos 60 min"
+            NEXRAD_STORM_MOTION -> "Rastreamento de células de tempestade e previsão de trajetória"
+            MRMS_BASE_REFLECTIVITY -> "Observação nacional multissensor NEXRAD de refletividade em superfície"
+            MRMS_ECHO_TOPS -> "Altura dos topos de nuvens monitorando desenvolvimento convectivo rápido"
+            MRMS_QPE_1H -> "Estimativa quantitativa de precipitação por radar multissensor (1 hora)"
         }
     }
 }
@@ -499,6 +769,15 @@ data class DbzColorLevel(
 ) {
     fun intensityName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> intensityName
+        AppLanguage.KOREAN -> when (dbzValue) {
+            5 -> "매우 약한 비·이슬비"
+            15 -> "약한 비"
+            25 -> "보통 비"
+            35 -> "강한 비"
+            45 -> "매우 강한 비"
+            55 -> "폭우"
+            else -> "극심한 뇌우·우박"
+        }
         AppLanguage.ENGLISH -> when (dbzValue) {
             5 -> "Faint / Drizzle"
             15 -> "Light Rain"
@@ -526,10 +805,46 @@ data class DbzColorLevel(
             55 -> "大暴雨"
             else -> "特大風暴/冰雹"
         }
+        AppLanguage.SPANISH -> when (dbzValue) {
+            5 -> "Débil / Llovizna"
+            15 -> "Lluvia débil"
+            25 -> "Lluvia moderada"
+            35 -> "Lluvia fuerte"
+            45 -> "Lluvia muy fuerte"
+            55 -> "Aguacero intenso"
+            else -> "Tormenta severa / Granizo"
+        }
+        AppLanguage.FRENCH -> when (dbzValue) {
+            5 -> "Faible / Bruine"
+            15 -> "Pluie faible"
+            25 -> "Pluie modérée"
+            35 -> "Pluie forte"
+            45 -> "Pluie très forte"
+            55 -> "Averse torrentielle"
+            else -> "Orage violent / Grêle"
+        }
+        AppLanguage.PORTUGUESE -> when (dbzValue) {
+            5 -> "Fraca / Garoa"
+            15 -> "Chuva fraca"
+            25 -> "Chuva moderada"
+            35 -> "Chuva forte"
+            45 -> "Chuva muito forte"
+            55 -> "Aguaceiro intenso"
+            else -> "Tempestade severa / Granizo"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> description
+        AppLanguage.KOREAN -> when (dbzValue) {
+            5 -> "빗방울이 떨어지는 매우 약한 이슬비 (0.1~0.5 mm/h)"
+            15 -> "우산이 필요한 약한 비 (1~2 mm/h)"
+            25 -> "꾸준히 내리며 발이 젖는 보통 비 (2~5 mm/h)"
+            35 -> "물웅덩이가 생기는 강한 비 (5~15 mm/h)"
+            45 -> "우산을 써도 젖는 매우 강한 비·천둥 동반 (15~30 mm/h)"
+            55 -> "시야 악화 및 도로 침수 위험이 있는 폭우 (30~60 mm/h)"
+            else -> "슈퍼셀·대형 우박·토네이도 위험이 높은 최대급 반사도 (60+ mm/h)"
+        }
         AppLanguage.ENGLISH -> when (dbzValue) {
             5 -> "Extremely light drizzle / sprinkling (0.1-0.5 mm/h)"
             15 -> "Light rain requiring an umbrella (1-2 mm/h)"
@@ -556,6 +871,33 @@ data class DbzColorLevel(
             45 -> "撐傘也會淋濕的暴雨伴雷電 (15~30 mm/h)"
             55 -> "傾盆暴雨，能見度驟降及路面積水風險 (30~60 mm/h)"
             else -> "最高級反射強度，極可能伴隨超級單體與大冰雹 (60+ mm/h)"
+        }
+        AppLanguage.SPANISH -> when (dbzValue) {
+            5 -> "Llovizna muy débil o gotas aisladas (0,1-0,5 mm/h)"
+            15 -> "Lluvia ligera, se recomienda paraguas (1-2 mm/h)"
+            25 -> "Lluvia constante que moja el calzado (2-5 mm/h)"
+            35 -> "Lluvia fuerte que forma charcos (5-15 mm/h)"
+            45 -> "Lluvia intensa y racheada con truenos (15-30 mm/h)"
+            55 -> "Aguacero violento, riesgo de inundaciones locales (30-60 mm/h)"
+            else -> "Reflectividad máxima; alto riesgo de supercélulas y granizo grande (60+ mm/h)"
+        }
+        AppLanguage.FRENCH -> when (dbzValue) {
+            5 -> "Bruine très légère ou quelques gouttes (0,1-0,5 mm/h)"
+            15 -> "Pluie fine nécessitant un parapluie (1-2 mm/h)"
+            25 -> "Pluie soutenue, sol bien mouillé (2-5 mm/h)"
+            35 -> "Forte pluie formant des flaques (5-15 mm/h)"
+            45 -> "Pluie battante accompagnée de tonnerre (15-30 mm/h)"
+            55 -> "Averse violente, risque d'inondations locales (30-60 mm/h)"
+            else -> "Réflectivité maximale ; fort risque de supercellules et gros grêlons (60+ mm/h)"
+        }
+        AppLanguage.PORTUGUESE -> when (dbzValue) {
+            5 -> "Garoa muito leve ou chuvisco isolado (0,1-0,5 mm/h)"
+            15 -> "Chuva leve, recomenda-se guarda-chuva (1-2 mm/h)"
+            25 -> "Chuva constante, piso encharcado (2-5 mm/h)"
+            35 -> "Chuva forte formando poças (5-15 mm/h)"
+            45 -> "Chuva intensa com trovoadas (15-30 mm/h)"
+            55 -> "Aguaceiro violento, risco de alagamentos locais (30-60 mm/h)"
+            else -> "Refletividade máxima; alto risco de supercélulas e granizo grande (60+ mm/h)"
         }
     }
 }
@@ -660,27 +1002,44 @@ fun isLocationOrCountryInUnitedStates(country: String?, latitude: Double, longit
             trimmed.contains("米国") ||
             trimmed.contains("美国") ||
             trimmed.contains("美國") ||
+            trimmed.contains("미국") ||
             lower.contains("united states") ||
+            lower.contains("estados unidos") ||
+            lower.contains("états-unis") ||
+            lower.contains("etats-unis") ||
             Regex("\\bu\\.?s\\.?a\\.?\\b").containsMatchIn(lower) ||
             trimmed.equals("US", ignoreCase = true) ||
-            lower.contains("puerto rico")
+            trimmed.equals("EUA", ignoreCase = true) ||
+            trimmed.equals("EE.UU.", ignoreCase = true) ||
+            trimmed.equals("EEUU", ignoreCase = true) ||
+            lower.contains("puerto rico") ||
+            lower.contains("porto rico")
         if (mentionsUs) return true
 
         val isExplicitNeighborOrOtherCountry = lower.contains("canada") ||
+            lower.contains("canadá") ||
             trimmed.contains("カナダ") ||
             trimmed.contains("加拿大") ||
+            trimmed.contains("캐나다") ||
             trimmed.equals("CA", ignoreCase = true) ||
             lower.contains("mexico") ||
+            lower.contains("méxico") ||
+            lower.contains("mexique") ||
             trimmed.contains("メキシコ") ||
             trimmed.contains("墨西哥") ||
+            trimmed.contains("멕시코") ||
             trimmed.equals("MX", ignoreCase = true) ||
             lower.contains("cuba") ||
             lower.contains("bahamas") ||
             lower.contains("bermuda") ||
             lower.contains("russia") ||
+            lower.contains("rusia") ||
+            lower.contains("russie") ||
+            lower.contains("rússia") ||
             trimmed.contains("ロシア") ||
             trimmed.contains("俄罗斯") ||
             trimmed.contains("俄羅斯") ||
+            trimmed.contains("러시아") ||
             trimmed.equals("RU", ignoreCase = true)
         if (isExplicitNeighborOrOtherCountry) return false
     }

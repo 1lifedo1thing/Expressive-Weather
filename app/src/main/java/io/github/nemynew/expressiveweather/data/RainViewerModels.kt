@@ -81,7 +81,11 @@ fun isLocationOrCountryInJapan(country: String?, latitude: Double, longitude: Do
         val trimmed = country.trim()
         val lower = trimmed.lowercase()
         val mentionsJapan = trimmed.contains("日本") ||
+            trimmed.contains("일본") ||
             lower.contains("japan") ||
+            lower.contains("japón") ||
+            lower.contains("japon") ||
+            lower.contains("japão") ||
             trimmed.equals("JP", ignoreCase = true) ||
             trimmed.equals("JPN", ignoreCase = true)
         return mentionsJapan && isLocationInJapan(latitude, longitude)
@@ -119,6 +123,15 @@ data class RainViewerColorLevel(
 ) {
     fun intensityName(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> intensityName
+        AppLanguage.KOREAN -> when (dbzValue) {
+            15 -> "매우 약한 비·이슬비"
+            20 -> "약한 비"
+            25 -> "보통 비"
+            35 -> "강한 비"
+            45 -> "매우 강한 비"
+            50 -> "폭우"
+            else -> "극심한 뇌우·호우"
+        }
         AppLanguage.ENGLISH -> when (dbzValue) {
             15 -> "Faint / Drizzle"
             20 -> "Light Rain"
@@ -146,10 +159,46 @@ data class RainViewerColorLevel(
             50 -> "大暴雨"
             else -> "特大雷雨/風暴"
         }
+        AppLanguage.SPANISH -> when (dbzValue) {
+            15 -> "Débil / Llovizna"
+            20 -> "Lluvia débil"
+            25 -> "Lluvia moderada"
+            35 -> "Lluvia fuerte"
+            45 -> "Lluvia muy fuerte"
+            50 -> "Aguacero intenso"
+            else -> "Tormenta severa"
+        }
+        AppLanguage.FRENCH -> when (dbzValue) {
+            15 -> "Faible / Bruine"
+            20 -> "Pluie faible"
+            25 -> "Pluie modérée"
+            35 -> "Pluie forte"
+            45 -> "Pluie très forte"
+            50 -> "Averse torrentielle"
+            else -> "Orage violent"
+        }
+        AppLanguage.PORTUGUESE -> when (dbzValue) {
+            15 -> "Fraca / Garoa"
+            20 -> "Chuva fraca"
+            25 -> "Chuva moderada"
+            35 -> "Chuva forte"
+            45 -> "Chuva muito forte"
+            50 -> "Aguaceiro intenso"
+            else -> "Tempestade severa"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> description
+        AppLanguage.KOREAN -> when (dbzValue) {
+            15 -> "빗방울이 떨어지거나 매우 약한 이슬비 (0.1~1 mm/h)"
+            20 -> "우산이 필요한 약한 비 (1~2 mm/h)"
+            25 -> "꾸준히 내리며 발이 젖는 보통 비 (2~5 mm/h)"
+            35 -> "빗소리가 들리며 이어지는 강한 비 (5~15 mm/h)"
+            45 -> "양동이로 퍼붓듯 쏟아지는 매우 강한 비 (15~30 mm/h)"
+            50 -> "폭우 수준의 강수, 도로 침수 주의 (30~60 mm/h)"
+            else -> "낙뢰·돌풍·우박 위험이 있는 최대급 강수 강도 (60+ mm/h)"
+        }
         AppLanguage.ENGLISH -> when (dbzValue) {
             15 -> "Very faint rain or drizzle (0.1-1 mm/h)"
             20 -> "Light rain requiring an umbrella (1-2 mm/h)"
@@ -176,6 +225,33 @@ data class RainViewerColorLevel(
             45 -> "猶如倒水傾盆而下的急雨 (15~30 mm/h)"
             50 -> "暴雨如注，警惕低窪積水 (30~60 mm/h)"
             else -> "極強降水，存在強雷暴及短時大風風險 (60+ mm/h)"
+        }
+        AppLanguage.SPANISH -> when (dbzValue) {
+            15 -> "Lluvia muy débil o llovizna (0,1-1 mm/h)"
+            20 -> "Lluvia ligera, se recomienda paraguas (1-2 mm/h)"
+            25 -> "Lluvia constante que moja el calzado (2-5 mm/h)"
+            35 -> "Lluvia continua y audible (5-15 mm/h)"
+            45 -> "Lluvia torrencial, cae a cántaros (15-30 mm/h)"
+            50 -> "Aguacero violento, riesgo de anegamiento urbano (30-60 mm/h)"
+            else -> "Intensidad máxima con riesgo de tormentas severas y granizo (60+ mm/h)"
+        }
+        AppLanguage.FRENCH -> when (dbzValue) {
+            15 -> "Pluie très faible ou bruine (0,1-1 mm/h)"
+            20 -> "Pluie fine nécessitant un parapluie (1-2 mm/h)"
+            25 -> "Pluie soutenue, sol bien mouillé (2-5 mm/h)"
+            35 -> "Pluie continue et sonore (5-15 mm/h)"
+            45 -> "Pluie battante, averses intenses (15-30 mm/h)"
+            50 -> "Averse violente, risque de ruissellement urbain (30-60 mm/h)"
+            else -> "Intensité maximale avec risque d'orages violents et de grêle (60+ mm/h)"
+        }
+        AppLanguage.PORTUGUESE -> when (dbzValue) {
+            15 -> "Chuva muito fraca ou garoa (0,1-1 mm/h)"
+            20 -> "Chuva leve, recomenda-se guarda-chuva (1-2 mm/h)"
+            25 -> "Chuva constante, piso encharcado (2-5 mm/h)"
+            35 -> "Chuva forte e contínua (5-15 mm/h)"
+            45 -> "Chuva torrencial, cai com força (15-30 mm/h)"
+            50 -> "Aguaceiro violento, risco de alagamentos (30-60 mm/h)"
+            else -> "Intensidade máxima com risco de tempestades severas e granizo (60+ mm/h)"
         }
     }
 }

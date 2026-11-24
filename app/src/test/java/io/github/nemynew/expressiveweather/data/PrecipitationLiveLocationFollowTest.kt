@@ -186,6 +186,190 @@ class PrecipitationLiveLocationFollowTest {
         assertFalse(tonight.isLiveActive)
     }
 
+    @Test
+    fun testUserDismissalSuppressesRepeatedRainNotificationsForSameEvent() {
+        val now = 1_700_000_000_000L
+        val targetStart = now + 20 * 60 * 1000L // 20分後に降り始め
+        val approaching = PrecipitationNowcast(
+            status = RainStatus.RAIN_APPROACHING,
+            headline = "まもなく雨が降り始めます",
+            subText = "あと約20分",
+            targetTimestampMillis = targetStart,
+            minutesRemaining = 20,
+            isLiveActive = true
+        )
+        val approachingNextTick = approaching.copy(minutesRemaining = 19)
+        val rainingSameShower = PrecipitationNowcast(
+            status = RainStatus.RAINING,
+            headline = "雨が降っています",
+            subText = "あと約40分で止む見込み",
+            targetTimestampMillis = now + 60 * 60 * 1000L,
+            minutesRemaining = 40,
+            isLiveActive = true
+        )
+
+        val dismissal = PrecipitationLiveNotificationManager.createDismissalRecord(
+            cityName = "千代田区",
+            status = RainStatus.RAIN_APPROACHING,
+            targetTimestampMillis = targetStart,
+            nowMillis = now
+        )
+
+        // 消去直後〜1〜2分後の再更新（同一都市・接近中・同じ雨の降り始め）はすべて抑止される
+        assertTrue(
+            PrecipitationLiveNotificationManager.shouldSuppressNotification(
+                dismissal = dismissal,
+                nowcast = approachingNextTick,
+                cityName = "千代田区",
+                nowMillis = now + 60 * 1000L
+            )
+        )
+        assertTrue(
+            PrecipitationLiveNotificationManager.shouldSuppressNotification(
+                dismissal = dismissal,
+                nowcast = rainingSameShower,
+                cityName = "千代田区",
+                nowMillis = now + 25 * 60 * 1000L
+            )
+        )
+
+        // 別都市へ移動した場合は抑止されない
+        assertFalse(
+            PrecipitationLiveNotificationManager.shouldSuppressNotification(
+                dismissal = dismissal,
+                nowcast = approachingNextTick,
+                cityName = "大阪市",
+                nowMillis = now + 60 * 1000L
+            )
+        )
+
+        // 抑止期間（最低2時間）経過後は新しい雨雲接近で再び通知可能
+        assertFalse(
+            PrecipitationLiveNotificationManager.shouldSuppressNotification(
+                dismissal = dismissal,
+                nowcast = approaching,
+                cityName = "千代田区",
+                nowMillis = dismissal.suppressUntilMillis + 1L
+            )
+        )
+    }
+
+    @Test
+    fun testDismissalRecordBoundsAndJsonSerialization() {
+        val now = 1_700_000_000_000L
+        val untimed = PrecipitationLiveNotificationManager.createDismissalRecord(
+            cityName = "東京都",
+            status = RainStatus.RAINING,
+            targetTimestampMillis = null,
+            nowMillis = now
+        )
+        assertEquals(now + 3 * 60 * 60 * 1000L, untimed.suppressUntilMillis)
+
+        // 異常に遠い未来タイムスタンプでも最大6時間で上限クリップされる
+        val farFuture = PrecipitationLiveNotificationManager.createDismissalRecord(
+            cityName = "東京都",
+            status = RainStatus.RAIN_APPROACHING,
+            targetTimestampMillis = now + 48 * 60 * 60 * 1000L,
+            nowMillis = now
+        )
+        assertEquals(now + 6 * 60 * 60 * 1000L, farFuture.suppressUntilMillis)
+
+        val encoded = WeatherJsonSerializer.json.encodeToString(RainNotificationDismissal.serializer(), untimed)
+        val decoded = WeatherJsonSerializer.json.decodeFromString(RainNotificationDismissal.serializer(), encoded)
+        assertEquals(untimed, decoded)
+    }
+
+    @Test
+    fun testKikikuruAlertSignatureDeduplicationAndEscalationPolicy() {
+        val now = 1_700_000_000_000L
+        val warnA = MunicipalityWarningItem("03", "大雨警報", "発表", isWarning = true)
+        val warnB = MunicipalityWarningItem("04", "洪水警報", "発表", isWarning = true)
+
+        val alertOrder1 = MunicipalityAlertInfo(
+            municipalityCode = "1310100",
+            municipalityName = "千代田区",
+            alertLevel = AlertLevel.LEVEL_3,
+            activeWarnings = listOf(warnA, warnB)
+        )
+        val alertOrder2 = alertOrder1.copy(activeWarnings = listOf(warnB, warnA))
+        assertEquals(
+            KikikuruNotificationManager.buildAlertSignature(alertOrder1),
+            KikikuruNotificationManager.buildAlertSignature(alertOrder2)
+        )
+
+        val dismissalLv2 = KikikuruAlertDismissal(
+            municipalityCode = "1310100",
+            dismissedLevel = 2,
+            dismissedSignature = "1310100|lv=2",
+            dismissedAtMillis = now,
+            suppressUntilMillis = now + 3 * 60 * 60 * 1000L
+        )
+        val sameLevelAlert = alertOrder1.copy(alertLevel = AlertLevel.LEVEL_2)
+        val escalatedAlert = alertOrder1.copy(alertLevel = AlertLevel.LEVEL_3)
+        val otherMuniAlert = sameLevelAlert.copy(municipalityCode = "2710000", municipalityName = "大阪市")
+
+        // 同一自治体・同一レベル以下は再通知を抑止
+        assertTrue(KikikuruNotificationManager.shouldSuppressAlert(dismissalLv2, sameLevelAlert, now + 60_000L))
+        // レベル昇格時は安全のため抑止を解除して必ず再通知する
+        assertFalse(KikikuruNotificationManager.shouldSuppressAlert(dismissalLv2, escalatedAlert, now + 60_000L))
+        // 別自治体へ移動した場合は抑止しない
+        assertFalse(KikikuruNotificationManager.shouldSuppressAlert(dismissalLv2, otherMuniAlert, now + 60_000L))
+        // 抑止期限切れ後は再通知可能
+        assertFalse(KikikuruNotificationManager.shouldSuppressAlert(dismissalLv2, sameLevelAlert, dismissalLv2.suppressUntilMillis + 1L))
+    }
+
+    @Test
+    fun testNotificationsExcludeUnregisteredCitiesAndPlaceholderTokyo() = kotlinx.coroutines.runBlocking {
+        val osaka = City("osaka", "大阪市", "Osaka", "日本", 34.6937, 135.5023)
+        val sapporoUnregistered = City("sapporo", "札幌市", "Sapporo", "日本", 43.0618, 141.3545)
+        val gpsNagoya = City("current", "名古屋市", "Nagoya", "日本", 35.1815, 136.9066)
+
+        val repo = WeatherRepository()
+        // 未登録都市を閲覧（lastSelectedCity に保存）しただけでは通知対象にならない
+        repo.setLastSelectedCity(sapporoUnregistered)
+        assertNull(repo.resolveNotificationTargetCityOrNull(hasLocationPermission = false, liveGpsCity = null))
+        assertFalse(
+            WeatherRepository.isCityEligibleForNotifications(
+                city = sapporoUnregistered,
+                hasLocationPermission = false,
+                resolvedGpsCity = null,
+                savedCities = listOf(osaka)
+            )
+        )
+        // 未登録のデフォルト東京も通知対象にならない
+        assertFalse(
+            WeatherRepository.isCityEligibleForNotifications(
+                city = repo.defaultCity,
+                hasLocationPermission = false,
+                resolvedGpsCity = null,
+                savedCities = listOf(osaka)
+            )
+        )
+
+        // 登録済み都市は通知対象になる
+        repo.saveCity(osaka)
+        assertTrue(
+            WeatherRepository.isCityEligibleForNotifications(
+                city = osaka,
+                hasLocationPermission = false,
+                resolvedGpsCity = null,
+                savedCities = listOf(osaka)
+            )
+        )
+        assertEquals("大阪市", repo.resolveNotificationTargetCityOrNull(hasLocationPermission = false)?.name)
+
+        // 位置情報権限あり＋実測GPS都市は通知対象になる
+        assertTrue(
+            WeatherRepository.isCityEligibleForNotifications(
+                city = gpsNagoya,
+                hasLocationPermission = true,
+                resolvedGpsCity = gpsNagoya,
+                savedCities = listOf(osaka)
+            )
+        )
+        assertEquals("名古屋市", repo.resolveNotificationTargetCityOrNull(hasLocationPermission = true, liveGpsCity = gpsNagoya)?.name)
+    }
+
     private fun computeHaversineDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
         val r = 6371000.0 // 地球の半径 (メートル)
         val dLat = Math.toRadians(lat2 - lat1)

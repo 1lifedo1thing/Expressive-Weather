@@ -47,9 +47,13 @@ class RadarDetailActivity : ComponentActivity() {
         val language = if (hasHolder) RadarDataHolder.language else repo.getLanguage()
         val defaultCurrentLocation = when (language) {
             io.github.nemynew.expressiveweather.data.AppLanguage.JAPANESE -> "現在地"
+            io.github.nemynew.expressiveweather.data.AppLanguage.KOREAN -> "현재 위치"
             io.github.nemynew.expressiveweather.data.AppLanguage.ENGLISH -> "Current Location"
             io.github.nemynew.expressiveweather.data.AppLanguage.SIMPLIFIED_CHINESE -> "当前位置"
             io.github.nemynew.expressiveweather.data.AppLanguage.TRADITIONAL_CHINESE -> "當前位置"
+            io.github.nemynew.expressiveweather.data.AppLanguage.SPANISH -> "Ubicación actual"
+            io.github.nemynew.expressiveweather.data.AppLanguage.FRENCH -> "Position actuelle"
+            io.github.nemynew.expressiveweather.data.AppLanguage.PORTUGUESE -> "Localização atual"
         }
 
         val intentCityName = intent.getStringExtra("city_name")?.takeIf { it.isNotBlank() }
