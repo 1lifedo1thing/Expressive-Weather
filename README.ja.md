@@ -6,6 +6,7 @@
 
   <p>
     <a href="README.md">🇺🇸 English README</a> ·
+    <a href="#インストール方法">インストール方法</a> ·
     <a href="docs/ja/FEATURES.md">主な機能</a> ·
     <a href="docs/ja/BUILD.md">ビルド・セットアップ</a> ·
     <a href="docs/ja/DATA_SOURCES.md">データソース</a>
@@ -27,15 +28,6 @@
     <a href="LICENSE">
       <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License Apache-2.0" />
     </a>
-    <a href="https://github.com/nemy-new/Expressive-Weather/releases">
-      <img src="https://img.shields.io/badge/Download-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub Releases からダウンロード" />
-    </a>
-  </p>
-
-  <p>
-    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22io.github.nemynew.expressiveweather%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fnemy-new%2FExpressive-Weather%22%2C%22author%22%3A%22nemy-new%22%2C%22name%22%3A%22Expressive%20Weather%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%7D">
-      <img src="docs/images/badge_obtainium.png" alt="Get it on Obtainium" height="48" />
-    </a>
   </p>
 </div>
 
@@ -50,6 +42,23 @@
 </div>
 
 <br />
+
+---
+
+## インストール方法
+
+対応環境: **Android 7.0 (API 24) 以上**
+
+<p>
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22io.github.nemynew.expressiveweather%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fnemy-new%2FExpressive-Weather%22%2C%22author%22%3A%22nemy-new%22%2C%22name%22%3A%22Expressive%20Weather%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%7D">
+    <img src="docs/images/badge_obtainium.png" alt="Get it on Obtainium" height="48" />
+  </a>
+</p>
+
+- **Obtainium（自動アップデート対応・推奨）**: 上の **GET IT ON Obtainium** バッジをタップすると、[Obtainium](https://github.com/ImranR98/Obtainium) に本アプリをワンタップで追加できます（プレリリース購読設定済み）。
+- **APK を直接ダウンロード**: [**GitHub Releases**](https://github.com/nemy-new/Expressive-Weather/releases) から最新の `app-github-release.apk` をダウンロードしてインストールできます。
+
+> **Google Play ストアでの配布について**: 今後は [Google Play ストア](https://play.google.com/store) での配布も検討しています。公開状況や最新リリースは [GitHub Releases](https://github.com/nemy-new/Expressive-Weather/releases) をご確認ください。
 
 ---
 

@@ -6,6 +6,7 @@
 
   <p>
     <a href="README.ja.md">🇯🇵 日本語 README</a> ·
+    <a href="#installation">Installation</a> ·
     <a href="docs/FEATURES.md">Features</a> ·
     <a href="docs/BUILD.md">Build &amp; Setup</a> ·
     <a href="docs/DATA_SOURCES.md">Data Sources</a>
@@ -27,15 +28,6 @@
     <a href="LICENSE">
       <img src="https://img.shields.io/badge/License-Apache--2.0-blue?style=for-the-badge" alt="License Apache-2.0" />
     </a>
-    <a href="https://github.com/nemy-new/Expressive-Weather/releases">
-      <img src="https://img.shields.io/badge/Download-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="Download from GitHub Releases" />
-    </a>
-  </p>
-
-  <p>
-    <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22io.github.nemynew.expressiveweather%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fnemy-new%2FExpressive-Weather%22%2C%22author%22%3A%22nemy-new%22%2C%22name%22%3A%22Expressive%20Weather%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%7D">
-      <img src="docs/images/badge_obtainium.png" alt="Get it on Obtainium" height="48" />
-    </a>
   </p>
 </div>
 
@@ -50,6 +42,23 @@
 </div>
 
 <br />
+
+---
+
+## Installation
+
+Requires **Android 7.0 (API 24)** or later.
+
+<p>
+  <a href="https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22io.github.nemynew.expressiveweather%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2Fnemy-new%2FExpressive-Weather%22%2C%22author%22%3A%22nemy-new%22%2C%22name%22%3A%22Expressive%20Weather%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Atrue%7D%22%7D">
+    <img src="docs/images/badge_obtainium.png" alt="Get it on Obtainium" height="48" />
+  </a>
+</p>
+
+- **Obtainium (Recommended for automatic updates)**: Tap the **Get it on Obtainium** badge above to add Expressive Weather directly to [Obtainium](https://github.com/ImranR98/Obtainium) (pre-releases enabled).
+- **Direct APK Download**: Download the latest `app-github-release.apk` from [**GitHub Releases**](https://github.com/nemy-new/Expressive-Weather/releases).
+
+> **Google Play Store**: Distribution on the [Google Play Store](https://play.google.com/store) is also being considered for the future. Please check [GitHub Releases](https://github.com/nemy-new/Expressive-Weather/releases) for the latest availability and updates.
 
 ---
 
