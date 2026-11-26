@@ -239,8 +239,8 @@ fun SunMoonDetailScreen(
                         val sunX = (centerX + arcRadiusX * cos(currentAngleRad)).toFloat()
                         val sunY = (centerY - arcRadiusY * sin(currentAngleRad)).toFloat()
 
-                        val horizonColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f)
-                        val dashedArcColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.65f)
+                        val horizonColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.28f)
+                        val dashedArcColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
                         val activeSunArcColor = sunAccent
 
                         Canvas(modifier = Modifier.fillMaxSize()) {

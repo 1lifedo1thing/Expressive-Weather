@@ -93,8 +93,9 @@ fun RadarCardSection(
     val language = LocalAppLanguage.current
     val strings = LocalAppStrings.current
     val isAppDark = LocalDarkTheme.current
-    val cardColor = getFrostedCardColor(isFrostedGlassEnabled, atmosphere.isDark, MaterialTheme.colorScheme)
-    val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, atmosphere.isDark)
+    val isDark = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current
+    val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
+    val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
     val isSnowing = condition == WeatherCondition.SNOW
 
     val context = androidx.compose.ui.platform.LocalContext.current

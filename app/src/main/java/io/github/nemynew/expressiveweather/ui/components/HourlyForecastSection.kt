@@ -58,8 +58,9 @@ fun HourlyForecastSection(
     isFrostedGlassEnabled: Boolean = true,
     hazeState: dev.chrisbanes.haze.HazeState? = null
 ) {
-    val cardColor = getFrostedCardColor(isFrostedGlassEnabled, atmosphere.isDark, MaterialTheme.colorScheme)
-    val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, atmosphere.isDark)
+    val isDark = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current
+    val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
+    val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
     val isSnowing = condition == io.github.nemynew.expressiveweather.data.WeatherCondition.SNOW
 
     val cardShape = RoundedCornerShape(28.dp)

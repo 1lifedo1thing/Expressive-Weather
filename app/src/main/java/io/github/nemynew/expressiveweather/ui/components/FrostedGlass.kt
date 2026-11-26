@@ -37,12 +37,12 @@ fun getFrostedCardColor(
     val themeColor = colorScheme.primary
     val surfaceColor = if (isDark) colorScheme.surfaceContainerHigh else colorScheme.surfaceContainer
     return if (isFrosted) {
-        // テーマカラーをブレンドした上質なすりガラス半透明
+        // テーマカラーをブレンドした上質なすりガラス半透明（視認性と透過感のバランスを維持）
         val tintFactor = if (isDark) 0.14f else 0.10f
         val r = surfaceColor.red * (1f - tintFactor) + themeColor.red * tintFactor
         val g = surfaceColor.green * (1f - tintFactor) + themeColor.green * tintFactor
         val b = surfaceColor.blue * (1f - tintFactor) + themeColor.blue * tintFactor
-        Color(r, g, b, frostedAlpha ?: if (isDark) 0.82f else 0.86f)
+        Color(r, g, b, frostedAlpha ?: if (isDark) 0.68f else 0.72f)
     } else {
         val tintFactor = if (isDark) 0.08f else 0.06f
         val r = surfaceColor.red * (1f - tintFactor) + themeColor.red * tintFactor
@@ -66,7 +66,7 @@ fun getFrostedCardBorder(isFrosted: Boolean, isDark: Boolean): BorderStroke? = n
 fun getDetailCardColor(
     isDark: Boolean = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current,
     colorScheme: ColorScheme = MaterialTheme.colorScheme,
-    alpha: Float = if (isDark) 0.72f else 0.74f
+    alpha: Float = if (isDark) 0.70f else 0.74f
 ): Color = getFrostedCardColor(
     isFrosted = true,
     isDark = isDark,
@@ -76,8 +76,8 @@ fun getDetailCardColor(
 
 /**
  * Hazeによる実時間背景光学ぼかし効果を適用する Modifier
- * ぼかし強度 54.dp に加え、テーマカラーのティント（色合い）を Haze に適用して
- * すりガラスぼかしそのものにもテーマカラーが鮮明に反映されるようにする。
+ * ウルトラシン材質をベースに光学ぼかしとほのかなテーマカラーティントを重ね、
+ * 背後の空・雲・パーティクルが透明感を持って透けるすりガラス表現を実現する。
  */
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -85,20 +85,20 @@ fun Modifier.frostedGlassEffect(
     hazeState: HazeState?,
     isFrosted: Boolean,
     tintColor: Color = MaterialTheme.colorScheme.primary,
-    blurRadius: Dp = 14.dp,
+    blurRadius: Dp = 18.dp,
     shape: Shape? = null
 ): Modifier {
     if (!isFrosted || hazeState == null) return this
-    val isDark = isSystemInDarkTheme()
+    val isDark = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current
     val base = if (shape != null) this.clip(shape) else this
     return base.then(
         Modifier.hazeEffect(
             state = hazeState,
-            style = HazeMaterials.regular().copy(
+            style = HazeMaterials.ultraThin().copy(
                 blurRadius = blurRadius,
                 tints = listOf(
                     HazeTint(
-                        color = tintColor.copy(alpha = if (isDark) 0.18f else 0.14f)
+                        color = tintColor.copy(alpha = if (isDark) 0.12f else 0.06f)
                     )
                 )
             )

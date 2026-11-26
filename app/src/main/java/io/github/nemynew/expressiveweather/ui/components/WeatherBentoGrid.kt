@@ -235,6 +235,14 @@ fun WeatherBentoGrid(
                         else -> SnowTileShape.CIRCLE
                     }
 
+                    val tileOuterShape = when (card) {
+                        BentoCardType.UV,
+                        BentoCardType.AQI,
+                        BentoCardType.SUN_CYCLE,
+                        BentoCardType.MOON_PHASE -> RoundedCornerShape(44.dp)
+                        else -> CircleShape
+                    }
+
                     val latestRenderOffset by rememberUpdatedState(currentRenderOffset)
                     val tileOffsetProvider = remember(card.id) { { latestRenderOffset } }
 
@@ -249,11 +257,16 @@ fun WeatherBentoGrid(
                         .zIndex(if (isDragging) 100f else if (isSettling) 50f else 1f)
                         .snowTileAccumulation(
                             isSnowing = isSnowing,
-                            isDark = atmosphere.isDark,
+                            isDark = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current,
                             shape = snowShape,
                             cornerRadiusDp = 44.dp,
                             seed = card.ordinal * 17 + 7,
                             tileOffsetProvider = tileOffsetProvider
+                        )
+                        .frostedGlassEffect(
+                            hazeState = hazeState,
+                            isFrosted = isFrostedGlassEnabled,
+                            shape = tileOuterShape
                         )
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -389,7 +402,7 @@ fun WeatherBentoGrid(
                         tileSize = tileWidth,
                         modifier = cardModifier,
                         isFrostedGlassEnabled = isFrostedGlassEnabled,
-                        isDark = atmosphere.isDark,
+                        isDark = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current,
                         isColorful = isColorful,
                         windSpeedUnit = windSpeedUnit,
                         temperatureUnit = temperatureUnit
@@ -1211,7 +1224,8 @@ private fun SunCard(
     val markerSize = (22 * scale).dp
     val auraSize = (32 * scale).dp
 
-    val arcTrackColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.40f)
+    val arcTrackColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = if (isDark) 0.38f else 0.32f)
+    val arcActiveColor = sunColor.copy(alpha = if (isDark) 0.88f else 0.82f)
     val targetProgress = weather.sunSchedule.dayProgress.coerceIn(0f, 1f)
 
     // 太陽マーカーのアニメーション (日の出位置 0f から目標位置まで回転しながらエクスプレッシブに移動)
@@ -1312,37 +1326,53 @@ private fun SunCard(
                     val radiusY = cy - markerRadiusPx - with(density) { (3 * scale).dp.toPx() }
                     val cx = widthPx / 2f
 
-                    // 1. 半楕円アーク軌道の描画
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val strokeW = (3 * scale).dp.toPx()
+                    val curProgress = animProgress.value
 
-                        // 横長の半楕円アーク (startAngle 180° から sweep 180°)
+                    // 1. 半楕円アーク軌道の描画（全体トラック＋通過済み太陽軌跡）
+                    Canvas(modifier = Modifier.fillMaxSize()) {
+                        val strokeW = (3.5f * scale).dp.toPx()
+                        val arcTopLeft = Offset(cx - radiusX, cy - radiusY)
+                        val arcSize = Size(radiusX * 2f, radiusY * 2f)
+
+                        // 横長の半楕円アーク（全体トラック）
                         drawArc(
                             color = arcTrackColor,
                             startAngle = 180f,
                             sweepAngle = 180f,
                             useCenter = false,
-                            topLeft = Offset(cx - radiusX, cy - radiusY),
-                            size = Size(radiusX * 2f, radiusY * 2f),
+                            topLeft = arcTopLeft,
+                            size = arcSize,
                             style = Stroke(width = strokeW, cap = StrokeCap.Round)
                         )
 
+                        // 日の出から現在位置までの通過済み軌跡
+                        if (curProgress > 0.01f) {
+                            drawArc(
+                                color = arcActiveColor,
+                                startAngle = 180f,
+                                sweepAngle = 180f * curProgress,
+                                useCenter = false,
+                                topLeft = arcTopLeft,
+                                size = arcSize,
+                                style = Stroke(width = strokeW, cap = StrokeCap.Round)
+                            )
+                        }
+
                         // 日の出基準点 (180°)
                         drawCircle(
-                            color = arcTrackColor,
-                            radius = (2.5f * scale).dp.toPx(),
+                            color = if (curProgress > 0.01f) arcActiveColor else arcTrackColor,
+                            radius = (3f * scale).dp.toPx(),
                             center = Offset(cx - radiusX, cy)
                         )
                         // 日の入基準点 (360°)
                         drawCircle(
-                            color = arcTrackColor,
-                            radius = (2.5f * scale).dp.toPx(),
+                            color = if (curProgress >= 0.99f) arcActiveColor else arcTrackColor,
+                            radius = (3f * scale).dp.toPx(),
                             center = Offset(cx + radiusX, cy)
                         )
                     }
 
                     // 2. 太陽マーカーの現在位置計算 (半楕円上の座標)
-                    val curProgress = animProgress.value
                     val angleRad = (180f + curProgress * 180f) * (PI.toFloat() / 180f)
                     val sunCenterX = cx + radiusX * kotlin.math.cos(angleRad)
                     val sunCenterY = cy + radiusY * sin(angleRad)

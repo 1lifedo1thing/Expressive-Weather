@@ -90,7 +90,7 @@ fun DetailAtmosphereBackdrop(
             modifier = Modifier
                 .fillMaxSize()
                 .background(atmosphere.skyGradient)
-                .graphicsLayer { alpha = if (!isDay) 0.52f else 0.62f }
+                .graphicsLayer { alpha = if (!isDay) 0.56f else 0.66f }
         )
 
         // 2. Edge-to-Edge 天候動的パーティクル背景（雨・雪は鮮明、晴れ・曇りは柔らかくぼかし）
@@ -109,9 +109,9 @@ fun DetailAtmosphereBackdrop(
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        0.0f to themeSurface.copy(alpha = if (isDark) 0.52f else 0.36f),
-                        0.5f to themeContainer.copy(alpha = if (isDark) 0.58f else 0.44f),
-                        1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.68f else 0.54f)
+                        0.0f to themeSurface.copy(alpha = if (isDark) 0.48f else 0.32f),
+                        0.5f to themeContainer.copy(alpha = if (isDark) 0.54f else 0.40f),
+                        1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.64f else 0.50f)
                     )
                 )
         )
