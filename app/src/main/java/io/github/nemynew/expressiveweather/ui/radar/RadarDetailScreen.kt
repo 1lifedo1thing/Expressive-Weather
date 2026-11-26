@@ -108,6 +108,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.compose.foundation.Canvas
 import io.github.nemynew.expressiveweather.data.AppLanguage
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.data.JmaLayerCategory
 import io.github.nemynew.expressiveweather.data.JmaLayerType
 import io.github.nemynew.expressiveweather.data.isAllowedJapanRadarLayer
@@ -2433,6 +2434,7 @@ fun RadarDetailScreen(
                             ) {
                                 // USレーダー時は実況・外挿予測・予報の3層セグメントトラックを背景に描画
                                 if (dataSource == RadarDataSource.US_NEXRAD_HRRR && frames.size > 1) {
+                                    val radarAccentPalette = currentAccentPalette()
                                     Canvas(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -2452,7 +2454,7 @@ fun RadarDetailScreen(
                                         if (obsCount > 0) {
                                             val obsWidth = (obsCount / total) * w
                                             drawRect(
-                                                color = Color(0xFF2196F3).copy(alpha = 0.5f),
+                                                color = radarAccentPalette.radarObs.copy(alpha = 0.55f),
                                                 topLeft = androidx.compose.ui.geometry.Offset(currentX, 0f),
                                                 size = androidx.compose.ui.geometry.Size(obsWidth, h)
                                             )
@@ -2461,7 +2463,7 @@ fun RadarDetailScreen(
                                         if (extCount > 0) {
                                             val extWidth = (extCount / total) * w
                                             drawRect(
-                                                color = Color(0xFF00E676).copy(alpha = 0.75f),
+                                                color = radarAccentPalette.radarExtrap.copy(alpha = 0.78f),
                                                 topLeft = androidx.compose.ui.geometry.Offset(currentX, 0f),
                                                 size = androidx.compose.ui.geometry.Size(extWidth, h)
                                             )
@@ -2470,7 +2472,7 @@ fun RadarDetailScreen(
                                         if (fcstCount > 0) {
                                             val fcstWidth = (fcstCount / total) * w
                                             drawRect(
-                                                color = Color(0xFFB388FF).copy(alpha = 0.65f),
+                                                color = radarAccentPalette.radarForecast.copy(alpha = 0.65f),
                                                 topLeft = androidx.compose.ui.geometry.Offset(currentX, 0f),
                                                 size = androidx.compose.ui.geometry.Size(fcstWidth, h)
                                             )
@@ -2511,6 +2513,7 @@ fun RadarDetailScreen(
                         }
 
                         // スライダー下：時間レンジ表示
+                        val timelinePalette = currentAccentPalette()
                         if (dataSource == RadarDataSource.US_NEXRAD_HRRR && frames.size > 1) {
                             Row(
                                 modifier = Modifier
@@ -2532,7 +2535,7 @@ fun RadarDetailScreen(
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF64B5F6),
+                                    color = timelinePalette.radarObs,
                                     fontSize = 10.sp
                                 )
                                 Text(
@@ -2564,14 +2567,14 @@ fun RadarDetailScreen(
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF00E676),
+                                    color = timelinePalette.radarExtrap,
                                     fontSize = 10.sp
                                 )
                                 Text(
                                     text = "HRRR +18h",
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFB388FF),
+                                    color = timelinePalette.radarForecast,
                                     fontSize = 10.sp
                                 )
                             }
@@ -2689,7 +2692,7 @@ fun RadarDetailScreen(
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
-                                        color = Color(0xFF00E676),
+                                        color = timelinePalette.radarExtrap,
                                         fontSize = 10.sp
                                     )
                                 } else {

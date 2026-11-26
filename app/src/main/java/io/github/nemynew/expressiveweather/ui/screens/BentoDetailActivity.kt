@@ -57,6 +57,7 @@ class BentoDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) BentoDetailDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) BentoDetailDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) BentoDetailDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val initialWeather = BentoDetailDataHolder.weatherData ?: repo.getMemoryCachedWeatherOrNull(city)
 
         setContent {
@@ -80,6 +81,7 @@ class BentoDetailActivity : ComponentActivity() {
                 weatherCondition = weatherData?.condition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
 
@@ -120,6 +122,16 @@ class BentoDetailActivity : ComponentActivity() {
                         )
 
                         BentoCardType.SUN_CYCLE -> SunMoonDetailScreen(
+                            weather = weatherData,
+                            city = city,
+                            language = language,
+                            weatherAdaptiveThemeEnabled = weatherAdaptiveThemeEnabled,
+                            themePreset = themePreset,
+                            themeMode = themeMode,
+                            onBack = { finish() }
+                        )
+
+                        BentoCardType.MOON_PHASE -> MoonDetailScreen(
                             weather = weatherData,
                             city = city,
                             language = language,

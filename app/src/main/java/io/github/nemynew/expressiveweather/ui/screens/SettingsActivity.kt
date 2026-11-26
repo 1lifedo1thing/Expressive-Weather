@@ -97,7 +97,8 @@ class SettingsActivity : ComponentActivity() {
             val weatherAdaptiveThemeEnabled = themePreset == ThemePreset.WEATHER
             val themeMode = remember(settingsVersion) { repo.getThemeMode() }
             val isFrostedGlassEnabled = remember(settingsVersion) { repo.getFrostedGlassEnabled() }
-            val isColorfulShapesEnabled = remember(settingsVersion) { repo.getColorfulShapesEnabled() }
+            val accentColorMode = remember(settingsVersion) { repo.getAccentColorMode() }
+            val isColorfulShapesEnabled = accentColorMode.isColorful
             val hapticIntensity = remember(settingsVersion) { repo.getHapticIntensity() }
             val isWeatherHapticsEnabled = remember(settingsVersion) { repo.isWeatherHapticsEnabled() }
             val isRadarDebugZoomEnabled = remember(settingsVersion) { repo.getRadarDebugZoomEnabled() }
@@ -126,6 +127,7 @@ class SettingsActivity : ComponentActivity() {
                 themePreset = themePreset,
                 themeMode = themeMode,
                 isFrostedGlassEnabled = isFrostedGlassEnabled,
+                accentColorMode = accentColorMode,
                 isColorfulShapesEnabled = isColorfulShapesEnabled,
                 hapticIntensity = hapticIntensity,
                 isWeatherHapticsEnabled = isWeatherHapticsEnabled,
@@ -161,6 +163,10 @@ class SettingsActivity : ComponentActivity() {
                 onToggleFrostedGlass = {
                     repo.setFrostedGlassEnabled(it)
                     SettingsDataHolder.onToggleFrostedGlass?.invoke(it)
+                },
+                onSelectAccentColorMode = { mode ->
+                    repo.setAccentColorMode(mode)
+                    SettingsDataHolder.onSelectAccentColorMode?.invoke(mode)
                 },
                 onToggleColorfulShapes = {
                     repo.setColorfulShapesEnabled(it)

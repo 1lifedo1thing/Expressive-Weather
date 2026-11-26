@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.update
 import android.location.Location
 import kotlinx.coroutines.launch
 import io.github.nemynew.expressiveweather.data.local.LocationKeyNormalizer
+import io.github.nemynew.expressiveweather.theme.AccentColorMode
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.ui.components.BentoCardType
@@ -29,12 +30,13 @@ data class WeatherUiState(
     val selectedHour: HourlyForecast? = null,
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val windSpeedUnit: WindSpeedUnit = WindSpeedUnit.FOLLOW_LANGUAGE,
-    val weatherUpdateInterval: WeatherUpdateInterval = WeatherUpdateInterval.MINUTES_30,
+    val weatherUpdateInterval: WeatherUpdateInterval = WeatherUpdateInterval.DEFAULT,
     val language: AppLanguage = AppLanguage.JAPANESE,
     val weatherAdaptiveThemeEnabled: Boolean = true,
     val themePreset: ThemePreset = ThemePreset.WEATHER,
     val themeMode: ThemeMode = ThemeMode.WEATHER,
     val isFrostedGlassEnabled: Boolean = true,
+    val accentColorMode: AccentColorMode = AccentColorMode.CLASSIC_VIVID,
     val isColorfulShapesEnabled: Boolean = true,
     val isRadarDebugZoomEnabled: Boolean = false,
     val isRadarDebugSourceEnabled: Boolean = true,
@@ -85,6 +87,7 @@ class MainScreenViewModel(
             themePreset = repository.getThemePreset(),
             themeMode = repository.getThemeMode(),
             isFrostedGlassEnabled = repository.getFrostedGlassEnabled(),
+            accentColorMode = repository.getAccentColorMode(),
             isColorfulShapesEnabled = repository.getColorfulShapesEnabled(),
             isRadarDebugZoomEnabled = repository.getRadarDebugZoomEnabled(),
             isRadarDebugSourceEnabled = repository.getRadarDebugSourceEnabled(),
@@ -198,6 +201,7 @@ class MainScreenViewModel(
                 weatherAdaptiveThemeEnabled = preset == ThemePreset.WEATHER,
                 themeMode = repository.getThemeMode(),
                 isFrostedGlassEnabled = repository.getFrostedGlassEnabled(),
+                accentColorMode = repository.getAccentColorMode(),
                 isColorfulShapesEnabled = repository.getColorfulShapesEnabled(),
                 isRadarDebugZoomEnabled = repository.getRadarDebugZoomEnabled(),
                 isRadarDebugSourceEnabled = repository.getRadarDebugSourceEnabled(),
@@ -425,11 +429,22 @@ class MainScreenViewModel(
         setFrostedGlassEnabled(next)
     }
 
-    fun setColorfulShapesEnabled(enabled: Boolean) {
-        if (_uiState.value.isColorfulShapesEnabled != enabled) {
-            repository.setColorfulShapesEnabled(enabled)
-            _uiState.update { it.copy(isColorfulShapesEnabled = enabled) }
+    fun setAccentColorMode(mode: AccentColorMode) {
+        if (_uiState.value.accentColorMode != mode) {
+            repository.setAccentColorMode(mode)
+            _uiState.update {
+                it.copy(
+                    accentColorMode = mode,
+                    isColorfulShapesEnabled = mode.isColorful
+                )
+            }
         }
+    }
+
+    fun setColorfulShapesEnabled(enabled: Boolean) {
+        setAccentColorMode(
+            if (enabled) AccentColorMode.CLASSIC_VIVID else AccentColorMode.MATERIAL_YOU_TONAL
+        )
     }
 
     fun toggleColorfulShapesEnabled() {

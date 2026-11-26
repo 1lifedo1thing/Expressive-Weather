@@ -1,11 +1,17 @@
 package io.github.nemynew.expressiveweather.ui.screens
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,35 +23,43 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.Landscape
 import androidx.compose.material.icons.rounded.RemoveRedEye
-import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.nemynew.expressiveweather.R
+import java.util.Locale
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
+import io.github.nemynew.expressiveweather.theme.MaterialYouAccentPalette
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
 
 /**
  * 視程（Visibility）詳細画面 - Material 3 Expressive 準拠、多言語対応、枠線フリー
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun VisibilityDetailScreen(
     weather: WeatherData?,
@@ -60,8 +74,6 @@ fun VisibilityDetailScreen(
     val strings = language.strings
     val visibilityKm = weather?.visibilityKm ?: 10.0
 
-    val (visLabel, visColor, visDesc) = getVisibilityInfo(visibilityKm, language)
-
     DetailScaffold(
         title = strings.visibility,
         city = city,
@@ -74,7 +86,47 @@ fun VisibilityDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
-        // ================= 1. ヒーローセクション: 同心円スコープ & 視程距離 =================
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val isColorful = accentPalette.mode.isColorful
+        val (visLabel, _, visDesc) = getVisibilityInfo(visibilityKm, language, accentPalette)
+        val cookieShape = MaterialShapes.Cookie12Sided.toShape()
+        val lensColor = if (isColorful) accentPalette.visibility.accent else colorScheme.primary
+        val eyeIconColor = if (isColorful) accentPalette.visibility.accent else colorScheme.onSurface
+
+        val (visPillBg, visPillText) = remember(visibilityKm, isColorful, colorScheme, accentPalette) {
+            if (isColorful) {
+                val role = when {
+                    visibilityKm >= 20.0 -> accentPalette.visibility
+                    visibilityKm >= 10.0 -> accentPalette.aqi
+                    visibilityKm >= 5.0 -> accentPalette.severity(0)
+                    visibilityKm >= 2.0 -> accentPalette.severity(2)
+                    else -> accentPalette.severity(3)
+                }
+                role.accent to role.onAccent
+            } else {
+                when {
+                    visibilityKm >= 20.0 -> colorScheme.primary to colorScheme.onPrimary
+                    visibilityKm >= 10.0 -> colorScheme.primaryContainer to colorScheme.onPrimaryContainer
+                    visibilityKm >= 5.0 -> colorScheme.surfaceContainerHighest to colorScheme.onSurface
+                    visibilityKm >= 2.0 -> colorScheme.errorContainer to colorScheme.onErrorContainer
+                    else -> colorScheme.error to colorScheme.onError
+                }
+            }
+        }
+
+        val lensTransition = rememberInfiniteTransition(label = "DetailVisibilityPulse")
+        val lensScale by lensTransition.animateFloat(
+            initialValue = 0.96f,
+            targetValue = 1.04f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "DetailLensScale"
+        )
+
+        // ================= 1. ヒーローセクション: 視程タイルと同一の Cookie12Sided レンズ & 視程距離 =================
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
@@ -90,10 +142,10 @@ fun VisibilityDetailScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Rounded.Visibility,
+                        painter = painterResource(R.drawable.ic_fluent_eye_24),
                         contentDescription = null,
-                        tint = visColor,
-                        modifier = Modifier.size(24.dp)
+                        tint = eyeIconColor,
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -113,96 +165,65 @@ fun VisibilityDetailScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                // レーダースコープ風の同心円キャンバス
+                // 視程タイル (VisibilityCard) と同一の2層 Cookie12Sided レンズシェイプ + 視程数値
                 Box(
-                    modifier = Modifier.size(160.dp),
+                    modifier = Modifier.size(188.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Canvas(modifier = Modifier.size(150.dp)) {
-                        val center = Offset(size.width / 2, size.height / 2)
-                        val maxR = size.width / 2 - 6.dp.toPx()
+                    Surface(
+                        shape = cookieShape,
+                        color = lensColor.copy(alpha = if (isColorful) 0.22f else 0.14f),
+                        modifier = Modifier
+                            .fillMaxSize(0.93f)
+                            .graphicsLayer {
+                                scaleX = lensScale
+                                scaleY = lensScale
+                            }
+                    ) {}
+                    Surface(
+                        shape = cookieShape,
+                        color = lensColor.copy(alpha = if (isColorful) 0.45f else 0.28f),
+                        modifier = Modifier.fillMaxSize(0.76f)
+                    ) {}
 
-                        // 同心円グリッド (2km, 5km, 10km)
-                        drawCircle(
-                            color = Color.Gray.copy(alpha = 0.2f),
-                            radius = maxR,
-                            center = center,
-                            style = Stroke(1.5.dp.toPx())
-                        )
-                        drawCircle(
-                            color = Color.Gray.copy(alpha = 0.25f),
-                            radius = maxR * 0.65f,
-                            center = center,
-                            style = Stroke(1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(6f, 6f)))
-                        )
-                        drawCircle(
-                            color = Color.Gray.copy(alpha = 0.3f),
-                            radius = maxR * 0.35f,
-                            center = center,
-                            style = Stroke(1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f)))
-                        )
-
-                        // 十字ターゲットライン
-                        drawLine(
-                            color = Color.Gray.copy(alpha = 0.2f),
-                            start = Offset(center.x, 0f),
-                            end = Offset(center.x, size.height),
-                            strokeWidth = 1.dp.toPx()
-                        )
-                        drawLine(
-                            color = Color.Gray.copy(alpha = 0.2f),
-                            start = Offset(0f, center.y),
-                            end = Offset(size.width, center.y),
-                            strokeWidth = 1.dp.toPx()
-                        )
-
-                        // 視界領域の塗り
-                        val reachRatio = (visibilityKm / 10.0).coerceIn(0.1, 1.0).toFloat()
-                        drawCircle(
-                            color = visColor.copy(alpha = 0.18f),
-                            radius = maxR * reachRatio,
-                            center = center
-                        )
-                        drawCircle(
-                            color = visColor,
-                            radius = maxR * reachRatio,
-                            center = center,
-                            style = Stroke(2.dp.toPx())
-                        )
-                    }
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
                         Text(
-                            text = if (visibilityKm >= 10.0) "10+" else String.format(java.util.Locale.US, "%.1f", visibilityKm),
+                            text = String.format(Locale.US, "%.1f", visibilityKm),
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 38.sp,
+                            fontSize = 42.sp,
+                            lineHeight = 42.sp,
                             color = MaterialTheme.colorScheme.onSurface
                         )
+                        Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "km",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            fontFamily = GoogleSansFlex,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f),
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // M3 Expressive: 枠線なしトナルサーフェス
                 Surface(
                     shape = CircleShape,
-                    color = visColor.copy(alpha = 0.16f)
+                    color = visPillBg
                 ) {
                     Text(
                         text = visLabel,
-                        color = visColor,
+                        color = visPillText,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp)
+                        fontSize = 13.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                     )
                 }
 
@@ -577,7 +598,11 @@ private fun VisAdviceRow(
     }
 }
 
-private fun getVisibilityInfo(km: Double, language: AppLanguage): Triple<String, Color, String> {
+private fun getVisibilityInfo(
+    km: Double,
+    language: AppLanguage,
+    palette: MaterialYouAccentPalette
+): Triple<String, Color, String> {
     return when {
         km >= 10.0 -> Triple(
             when (language) {
@@ -590,7 +615,7 @@ private fun getVisibilityInfo(km: Double, language: AppLanguage): Triple<String,
                 AppLanguage.TRADITIONAL_CHINESE -> "視野極佳"
                 AppLanguage.JAPANESE -> "見通し極めて良好"
             },
-            Color(0xFF4CAF50),
+            palette.severity(0).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Completely unobstructed visibility extending to the farthest horizon."
                 AppLanguage.SPANISH -> "Visibilidad completamente despejada hasta el horizonte más lejano."
@@ -613,7 +638,7 @@ private fun getVisibilityInfo(km: Double, language: AppLanguage): Triple<String,
                 AppLanguage.TRADITIONAL_CHINESE -> "能見度良好"
                 AppLanguage.JAPANESE -> "良好"
             },
-            Color(0xFF03A9F4),
+            palette.visibility.accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Standard clear visibility. Slight haze may appear at great distances but causes no obstruction."
                 AppLanguage.SPANISH -> "Visibilidad clara normal. Puede haber una ligera bruma a gran distancia sin causar obstáculos."
@@ -636,7 +661,7 @@ private fun getVisibilityInfo(km: Double, language: AppLanguage): Triple<String,
                 AppLanguage.TRADITIONAL_CHINESE -> "輕度朦朧"
                 AppLanguage.JAPANESE -> "ややかすむ"
             },
-            Color(0xFFFF9800),
+            palette.severity(2).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Visibility somewhat decreased due to mist, humidity, or precipitation."
                 AppLanguage.SPANISH -> "Visibilidad algo reducida debido a neblina, humedad o precipitaciones."
@@ -659,7 +684,7 @@ private fun getVisibilityInfo(km: Double, language: AppLanguage): Triple<String,
                 AppLanguage.TRADITIONAL_CHINESE -> "視界不良 (大霧注意)"
                 AppLanguage.JAPANESE -> "視界不良 (霧注意)"
             },
-            Color(0xFFE53935),
+            palette.severity(3).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Heavy fog or intense rain limits forward view to under 1 km. Exercise extreme caution."
                 AppLanguage.SPANISH -> "La niebla densa o la lluvia intensa limitan la visibilidad a menos de 1 km. Extrema la precaución."

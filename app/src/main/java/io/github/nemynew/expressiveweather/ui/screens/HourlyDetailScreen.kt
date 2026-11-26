@@ -101,9 +101,8 @@ import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlexHeroTemp
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
-import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
-import io.github.nemynew.expressiveweather.ui.components.WeatherAtmosphereCanvas
 import io.github.nemynew.expressiveweather.ui.components.WeatherIconHelper
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
 import java.util.Locale
@@ -203,8 +202,6 @@ fun HourlyDetailScreen(
     val isSystemDark = isSystemInDarkTheme()
     val isDark = ThemeMode.resolveIsDark(themeMode, isDay, isSystemDark)
     val condition = weather.condition
-    val colorScheme = MaterialTheme.colorScheme
-    val atmosphere = getAtmosphereTheme(condition, colorScheme, isDay = isDay)
     val strings = language.strings
 
     val hourlyList = remember(weather) { weather.hourlyForecast.take(24) }
@@ -270,22 +267,36 @@ fun HourlyDetailScreen(
                         )
                     )
             ) {
-                // 天候の空色グラデーション（テーマカラーの上にブレンドして天候の空気感を維持）
+                // 1. Material You トーナルアンビエント背景
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(atmosphere.skyGradient)
-                        .graphicsLayer { alpha = if (!isDay) 0.35f else 0.45f }
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(0f, 0f),
+                                radius = 1400f
+                            )
+                        )
                 )
 
-                // 1. Edge-to-Edge 天候動的パーティクル背景
-                val hasCrispParticles = condition.isPrecipitating
-                WeatherAtmosphereCanvas(
-                    condition = condition,
-                    atmosphere = atmosphere,
+                // 2. Material You セカンダリアンビエント光彩
+                Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .then(if (hasCrispParticles) Modifier else Modifier.blur(26.dp))
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(1100f, 1800f),
+                                radius = 1400f
+                            )
+                        )
                 )
 
                 // 2. テーマカラーに沿ったフロストすりガラス拡散レイヤー
@@ -580,10 +591,11 @@ private fun SelectedHourHeroCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+                        val dayNightPalette = currentAccentPalette()
                         Icon(
                             imageVector = if (item.isDay) Icons.Rounded.WbSunny else Icons.Rounded.WbTwilight,
                             contentDescription = null,
-                            tint = if (item.isDay) Color(0xFFF9A825) else colorScheme.primary,
+                            tint = if (item.isDay) dayNightPalette.sun.accent else dayNightPalette.moon.accent,
                             modifier = Modifier.size(14.dp)
                         )
                         Text(
@@ -1305,14 +1317,14 @@ private fun HourlyInsightsSection(
             // 日の出・日の入り
             InsightCard(
                 title = when (language) {
-                    AppLanguage.JAPANESE -> "太陽の運行"
+                    AppLanguage.JAPANESE -> "日の出・日の入り"
                     AppLanguage.KOREAN -> "일출·일몰"
                     AppLanguage.SIMPLIFIED_CHINESE -> "日出与日落"
                     AppLanguage.TRADITIONAL_CHINESE -> "日出與日落"
-                    AppLanguage.ENGLISH -> "Sun Schedule"
-                    AppLanguage.SPANISH -> "Ciclo solar"
-                    AppLanguage.FRENCH -> "Soleil"
-                    AppLanguage.PORTUGUESE -> "Ciclo solar"
+                    AppLanguage.ENGLISH -> "Sunrise & Sunset"
+                    AppLanguage.SPANISH -> "Amanecer y atardecer"
+                    AppLanguage.FRENCH -> "Lever / Coucher"
+                    AppLanguage.PORTUGUESE -> "Nascer e pôr do sol"
                 },
                 mainText = "$sunrise / $sunset",
                 subText = when (language) {

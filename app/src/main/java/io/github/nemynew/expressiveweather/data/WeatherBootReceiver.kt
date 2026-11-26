@@ -4,18 +4,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import io.github.nemynew.expressiveweather.ui.widget.WeatherWidgetUpdater
 import io.github.nemynew.expressiveweather.ui.widget.WidgetRefreshWorker
 
 /**
  * 端末再起動 (BOOT_COMPLETED) およびアプリアップデート (MY_PACKAGE_REPLACED) 専用レシーバー。
  * Android 15+ の制約（BOOT_COMPLETED からの直接 FGS 起動禁止）を遵守するため、
- * FGS を直接起動せず WorkManager / AlarmManager のスケジュール再構築のみ行う。
+ * FGS を直接起動せず WorkManager / AlarmManager のスケジュール再構築と即時同期ワーカー投入のみ行う。
  */
 class WeatherBootReceiver : BroadcastReceiver() {
 
@@ -34,17 +29,13 @@ class WeatherBootReceiver : BroadcastReceiver() {
                 WidgetRefreshWorker.ensurePeriodicSchedule(appContext)
                 WidgetRefreshWorker.enqueueRefresh(appContext)
             }
-            val constraints = Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .build()
-            val immediateWork = OneTimeWorkRequestBuilder<WeatherUpdateWorker>()
-                .setConstraints(constraints)
-                .build()
-            WorkManager.getInstance(appContext).enqueueUniqueWork(
-                BOOT_SYNC_WORK_NAME,
-                ExistingWorkPolicy.REPLACE,
-                immediateWork
-            )
+            if (WeatherRepository.getWeatherUpdateInterval(appContext) != WeatherUpdateInterval.OFF) {
+                WeatherUpdateWorker.enqueueImmediateSync(
+                    context = appContext,
+                    isForced = true,
+                    source = WeatherUpdateWorker.SOURCE_BOOT
+                )
+            }
         } catch (e: Exception) {
             Log.e(TAG, "Boot reschedule failed: ${e.message}", e)
         } finally {
@@ -54,6 +45,5 @@ class WeatherBootReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "WeatherBootReceiver"
-        private const val BOOT_SYNC_WORK_NAME = "io.github.nemynew.expressiveweather.work.BOOT_WEATHER_SYNC"
     }
 }

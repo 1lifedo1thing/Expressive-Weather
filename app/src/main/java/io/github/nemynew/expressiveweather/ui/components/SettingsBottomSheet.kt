@@ -20,9 +20,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.BugReport
-import androidx.compose.material.icons.rounded.Build
-import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.rounded.Storage
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -157,16 +157,16 @@ fun SettingsBottomSheet(
                     SettingsPopupListItem(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "一般設定" else strings.generalSettingsTitle,
                         subtitle = when (currentLanguage) {
-                            AppLanguage.JAPANESE -> "言語・単位・通知など"
-                            AppLanguage.KOREAN -> "언어 · 단위 · 알림 등"
-                            AppLanguage.SIMPLIFIED_CHINESE -> "语言、单位与通知等"
-                            AppLanguage.TRADITIONAL_CHINESE -> "語言、單位與通知等"
-                            AppLanguage.SPANISH -> "Idioma, unidades, alertas, etc."
-                            AppLanguage.FRENCH -> "Langue, unités, alertes, etc."
-                            AppLanguage.PORTUGUESE -> "Idioma, unidades, alertas, etc."
-                            AppLanguage.ENGLISH -> "Language, units, alerts, etc."
+                            AppLanguage.JAPANESE -> "言語・単位・通知・ハプティクス"
+                            AppLanguage.KOREAN -> "언어 · 단위 · 알림 · 햅틱"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "语言、单位、通知与触感"
+                            AppLanguage.TRADITIONAL_CHINESE -> "語言、單位、通知與觸感"
+                            AppLanguage.SPANISH -> "Idioma, unidades, alertas y háptica"
+                            AppLanguage.FRENCH -> "Langue, unités, alertes et haptique"
+                            AppLanguage.PORTUGUESE -> "Idioma, unidades, alertas e tato"
+                            AppLanguage.ENGLISH -> "Language, units, alerts & haptics"
                         },
-                        leadingIcon = Icons.Rounded.Build,
+                        leadingIcon = Icons.Rounded.Tune,
                         iconBackground = colorScheme.primaryContainer,
                         iconTint = colorScheme.onPrimaryContainer,
                         trailingIcon = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
@@ -213,16 +213,16 @@ fun SettingsBottomSheet(
                     SettingsPopupListItem(
                         title = if (currentLanguage == AppLanguage.JAPANESE) "情報ソース" else strings.dataSourcesTitle,
                         subtitle = when (currentLanguage) {
-                            AppLanguage.JAPANESE -> "気象データ設定"
-                            AppLanguage.KOREAN -> "기상 데이터 설정"
-                            AppLanguage.SIMPLIFIED_CHINESE -> "气象数据源与缓存设置"
-                            AppLanguage.TRADITIONAL_CHINESE -> "氣象資料來源與快取設定"
-                            AppLanguage.SPANISH -> "Ajustes de datos meteorológicos"
-                            AppLanguage.FRENCH -> "Paramètres des données météo"
-                            AppLanguage.PORTUGUESE -> "Configurações de dados meteorológicos"
-                            AppLanguage.ENGLISH -> "Weather data settings"
+                            AppLanguage.JAPANESE -> "レーダー・世界の警報・キャッシュ"
+                            AppLanguage.KOREAN -> "레이더 · 글로벌 경보 · 캐시"
+                            AppLanguage.SIMPLIFIED_CHINESE -> "雷达、全球警报与缓存管理"
+                            AppLanguage.TRADITIONAL_CHINESE -> "雷達、全球警報與快取管理"
+                            AppLanguage.SPANISH -> "Radar, alertas globales y caché"
+                            AppLanguage.FRENCH -> "Radar, alertes mondiales et cache"
+                            AppLanguage.PORTUGUESE -> "Radar, alertas globais e cache"
+                            AppLanguage.ENGLISH -> "Radar, global alerts & cache"
                         },
-                        leadingIcon = Icons.Rounded.Info,
+                        leadingIcon = Icons.Rounded.Storage,
                         iconBackground = colorScheme.tertiaryContainer,
                         iconTint = colorScheme.onTertiaryContainer,
                         trailingIcon = Icons.AutoMirrored.Rounded.KeyboardArrowRight,

@@ -1,5 +1,6 @@
 package io.github.nemynew.expressiveweather.ui.components
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 import io.github.nemynew.expressiveweather.data.AlertLevel
@@ -221,5 +222,27 @@ object WeatherAlertColors {
         WeatherWarningType.SPECIAL_WARNING, WeatherWarningType.FOREIGN_WARNING -> SpecialWarning
         WeatherWarningType.WARNING, WeatherWarningType.DOMESTIC_WARNING -> Warning
         WeatherWarningType.ADVISORY -> Advisory
+    }
+
+    /**
+     * Material You ([ColorScheme]) のみで構成された [WeatherWarningCardColors] を返却（詳細画面用）。
+     */
+    @Suppress("DEPRECATION")
+    fun materialYouForWarningType(
+        type: WeatherWarningType,
+        colorScheme: ColorScheme
+    ): WeatherWarningCardColors = when (type) {
+        WeatherWarningType.SPECIAL_WARNING, WeatherWarningType.FOREIGN_WARNING -> WeatherWarningCardColors(
+            cardBg = colorScheme.errorContainer,
+            contentColor = colorScheme.onErrorContainer
+        )
+        WeatherWarningType.WARNING, WeatherWarningType.DOMESTIC_WARNING -> WeatherWarningCardColors(
+            cardBg = colorScheme.tertiaryContainer,
+            contentColor = colorScheme.onTertiaryContainer
+        )
+        WeatherWarningType.ADVISORY -> WeatherWarningCardColors(
+            cardBg = colorScheme.secondaryContainer,
+            contentColor = colorScheme.onSecondaryContainer
+        )
     }
 }

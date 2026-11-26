@@ -278,7 +278,8 @@ fun AlertDetailScreen(
                     JmaIndividualWarningCard(
                         item = item,
                         language = language,
-                        initiallyExpanded = true
+                        initiallyExpanded = true,
+                        useMaterialYouColors = true
                     )
                 }
             }
@@ -306,7 +307,8 @@ fun AlertDetailScreen(
                     NwsIndividualAlertCard(
                         alert = alert,
                         language = language,
-                        initiallyExpanded = true
+                        initiallyExpanded = true,
+                        useMaterialYouColors = true
                     )
                 }
             }
@@ -334,7 +336,8 @@ fun AlertDetailScreen(
                     MeteoAlarmIndividualAlertCard(
                         alert = alert,
                         language = language,
-                        initiallyExpanded = true
+                        initiallyExpanded = true,
+                        useMaterialYouColors = true
                     )
                 }
             }
@@ -362,7 +365,8 @@ fun AlertDetailScreen(
                     WmoIndividualAlertCard(
                         alert = alert,
                         language = language,
-                        initiallyExpanded = true
+                        initiallyExpanded = true,
+                        useMaterialYouColors = true
                     )
                 }
             }
@@ -390,7 +394,8 @@ fun AlertDetailScreen(
                     GdacsIndividualAlertCard(
                         alert = alert,
                         language = language,
-                        initiallyExpanded = true
+                        initiallyExpanded = true,
+                        useMaterialYouColors = true
                     )
                 }
             }

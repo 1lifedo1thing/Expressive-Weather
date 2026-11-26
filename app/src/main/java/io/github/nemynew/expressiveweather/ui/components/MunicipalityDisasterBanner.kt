@@ -403,6 +403,7 @@ internal fun JmaIndividualWarningCard(
     item: MunicipalityWarningItem,
     language: AppLanguage,
     initiallyExpanded: Boolean = false,
+    useMaterialYouColors: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
@@ -416,7 +417,11 @@ internal fun JmaIndividualWarningCard(
         item.isWarning -> WeatherWarningType.WARNING         // 橙色: 警戒 (#FFDBC9 / #341100)
         else -> WeatherWarningType.ADVISORY                  // 黄色: 注意 (#FFCA00 / #624E00)
     }
-    val colors = WeatherAlertColors.forWarningType(warningType)
+    val colors = if (useMaterialYouColors) {
+        WeatherAlertColors.materialYouForWarningType(warningType, MaterialTheme.colorScheme)
+    } else {
+        WeatherAlertColors.forWarningType(warningType)
+    }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (isDetailOpen) 180f else 0f,
@@ -623,10 +628,15 @@ internal fun NwsIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
     initiallyExpanded: Boolean = false,
+    useMaterialYouColors: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
-    val colors = WeatherAlertColors.forWarningType(alert.type)
+    val colors = if (useMaterialYouColors) {
+        WeatherAlertColors.materialYouForWarningType(alert.type, MaterialTheme.colorScheme)
+    } else {
+        WeatherAlertColors.forWarningType(alert.type)
+    }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (isDetailOpen) 180f else 0f,
@@ -801,10 +811,15 @@ internal fun WmoIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
     initiallyExpanded: Boolean = false,
+    useMaterialYouColors: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
-    val colors = WeatherAlertColors.forWarningType(alert.type)
+    val colors = if (useMaterialYouColors) {
+        WeatherAlertColors.materialYouForWarningType(alert.type, MaterialTheme.colorScheme)
+    } else {
+        WeatherAlertColors.forWarningType(alert.type)
+    }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (isDetailOpen) 180f else 0f,
@@ -924,10 +939,15 @@ fun MeteoAlarmIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
     initiallyExpanded: Boolean = false,
+    useMaterialYouColors: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
-    val colors = WeatherAlertColors.forWarningType(alert.type)
+    val colors = if (useMaterialYouColors) {
+        WeatherAlertColors.materialYouForWarningType(alert.type, MaterialTheme.colorScheme)
+    } else {
+        WeatherAlertColors.forWarningType(alert.type)
+    }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (isDetailOpen) 180f else 0f,
@@ -1237,10 +1257,15 @@ internal fun GdacsIndividualAlertCard(
     alert: GlobalAlertItem,
     language: AppLanguage,
     initiallyExpanded: Boolean = false,
+    useMaterialYouColors: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var isDetailOpen by remember { mutableStateOf(initiallyExpanded) }
-    val colors = WeatherAlertColors.forWarningType(alert.type)
+    val colors = if (useMaterialYouColors) {
+        WeatherAlertColors.materialYouForWarningType(alert.type, MaterialTheme.colorScheme)
+    } else {
+        WeatherAlertColors.forWarningType(alert.type)
+    }
 
     val arrowRotation by animateFloatAsState(
         targetValue = if (isDetailOpen) 180f else 0f,

@@ -51,6 +51,7 @@ class WindDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) WindDetailDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) WindDetailDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) WindDetailDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val initialWeather = WindDetailDataHolder.weatherData ?: repo.getMemoryCachedWeatherOrNull(city)
 
         setContent {
@@ -73,6 +74,7 @@ class WindDetailActivity : ComponentActivity() {
                 weatherCondition = weatherData?.condition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
                 Surface(

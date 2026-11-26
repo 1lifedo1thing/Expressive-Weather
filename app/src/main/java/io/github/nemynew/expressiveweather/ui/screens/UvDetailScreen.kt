@@ -1,9 +1,12 @@
 package io.github.nemynew.expressiveweather.ui.screens
 
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,33 +29,37 @@ import androidx.compose.material.icons.rounded.Shield
 import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.getLocalizedDayLabel
 import io.github.nemynew.expressiveweather.data.getLocalizedTimeLabel
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
+import io.github.nemynew.expressiveweather.theme.MaterialYouAccentPalette
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
 
@@ -60,6 +67,7 @@ import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
  * 紫外線（UV Index）詳細画面
  * Material 3 Expressive 準拠（枠線なし、トナルサーフェス、4言語対応）
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun UvDetailScreen(
     weather: WeatherData?,
@@ -75,8 +83,6 @@ fun UvDetailScreen(
     val uvIndex = weather?.uvIndex ?: 0
     val hourlyForecast = weather?.hourlyForecast ?: emptyList()
     val dailyForecast = weather?.dailyForecast ?: emptyList()
-
-    val (uvCategory, uvColor, uvAdvice) = getUvInfo(uvIndex, language)
 
     val currentUvLabel = when (language) {
         AppLanguage.JAPANESE -> "現在の紫外線指数"
@@ -134,7 +140,58 @@ fun UvDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
-        // ================= 1. ヒーローセクション: 円弧ゲージ & UV指数 =================
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val isColorful = accentPalette.mode.isColorful
+        val (uvCategory, uvColor, uvAdvice) = getUvInfo(uvIndex, language, accentPalette)
+        val sunnyShape = MaterialShapes.VerySunny.toShape()
+        val sunnyColor = if (isColorful) accentPalette.uv.accent else colorScheme.tertiaryContainer
+        val onSunnyColor = if (isColorful) accentPalette.uv.onAccent else colorScheme.onTertiaryContainer
+        val uvIconColor = if (isColorful) accentPalette.uv.accent else colorScheme.secondary
+
+        val (uvPillBg, uvPillText) = remember(uvIndex, isColorful, colorScheme, accentPalette) {
+            if (isColorful) {
+                val tier = when {
+                    uvIndex <= 2 -> 0
+                    uvIndex <= 5 -> 1
+                    uvIndex <= 7 -> 2
+                    uvIndex <= 10 -> 3
+                    else -> 4
+                }
+                val role = accentPalette.severity(tier)
+                role.accent to role.onAccent
+            } else {
+                when {
+                    uvIndex <= 2 -> colorScheme.surfaceContainerHighest to colorScheme.onSurface
+                    uvIndex <= 5 -> colorScheme.tertiaryContainer to colorScheme.onTertiaryContainer
+                    uvIndex <= 7 -> colorScheme.tertiary to colorScheme.onTertiary
+                    uvIndex <= 10 -> colorScheme.errorContainer to colorScheme.onErrorContainer
+                    else -> colorScheme.error to colorScheme.onError
+                }
+            }
+        }
+
+        val uvTransition = rememberInfiniteTransition(label = "DetailUvAnimation")
+        val sunnyRotation by uvTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 26000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "DetailUvRotate"
+        )
+        val sunnyPulse by uvTransition.animateFloat(
+            initialValue = 0.95f,
+            targetValue = 1.05f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2800, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "DetailUvScale"
+        )
+
+        // ================= 1. ヒーローセクション: 紫外線タイルと同一の VerySunny シェイプ & UV指数 =================
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
@@ -149,82 +206,67 @@ fun UvDetailScreen(
                     .padding(22.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = currentUvLabel,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = GoogleSansFlex
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_fluent_weather_sunny_high_24),
+                        contentDescription = null,
+                        tint = uvIconColor,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = currentUvLabel,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = GoogleSansFlex
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 半円円弧 UV ゲージ (0〜12+)
+                // 紫外線タイル (UvCard) と同一の回転・パルス VerySunny シェイプ + UV指数 & レベルバッジ
                 Box(
                     contentAlignment = Alignment.Center,
-                    modifier = Modifier.size(200.dp, 120.dp)
+                    modifier = Modifier.size(188.dp)
                 ) {
-                    val animatedProgress by animateFloatAsState(
-                        targetValue = (uvIndex / 12f).coerceIn(0f, 1f),
-                        animationSpec = tween(1000, easing = FastOutSlowInEasing),
-                        label = "UvGauge"
-                    )
-
-                    Canvas(modifier = Modifier.size(190.dp, 100.dp)) {
-                        val strokeWidth = 14.dp.toPx()
-                        val arcSize = Size(size.width - strokeWidth, (size.height * 2) - strokeWidth)
-                        val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
-
-                        // 背景アーク
-                        drawArc(
-                            color = Color.LightGray.copy(alpha = 0.25f),
-                            startAngle = 180f,
-                            sweepAngle = 180f,
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-                        )
-
-                        // カラフル進捗アーク
-                        val gradient = Brush.sweepGradient(
-                            0.5f to Color(0xFF4CAF50), // 緑 (低)
-                            0.65f to Color(0xFFFFEB3B), // 黄 (中)
-                            0.75f to Color(0xFFFF9800), // 橙 (強)
-                            0.88f to Color(0xFFF44336), // 赤 (非常)
-                            1.0f to Color(0xFF9C27B0)  // 紫 (極端)
-                        )
-                        drawArc(
-                            brush = gradient,
-                            startAngle = 180f,
-                            sweepAngle = 180f * animatedProgress,
-                            useCenter = false,
-                            topLeft = topLeft,
-                            size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-                        )
-                    }
+                    Surface(
+                        shape = sunnyShape,
+                        color = sunnyColor,
+                        modifier = Modifier
+                            .size(176.dp)
+                            .graphicsLayer {
+                                rotationZ = sunnyRotation
+                                scaleX = sunnyPulse
+                                scaleY = sunnyPulse
+                            }
+                    ) {}
 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(top = 18.dp)
+                        verticalArrangement = Arrangement.Center
                     ) {
                         Text(
                             text = uvIndex.toString(),
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 44.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            fontSize = 46.sp,
+                            lineHeight = 46.sp,
+                            color = onSunnyColor
                         )
+                        Spacer(modifier = Modifier.height(6.dp))
                         Surface(
                             shape = CircleShape,
-                            color = uvColor.copy(alpha = 0.16f)
+                            color = uvPillBg
                         ) {
                             Text(
                                 text = uvCategory,
-                                color = uvColor,
+                                color = uvPillText,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 12.sp,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 3.dp)
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                             )
                         }
                     }
@@ -354,7 +396,10 @@ fun UvDetailScreen(
                                 text = getLocalizedDayLabel(day.dayLabel, language),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Medium,
-                                modifier = Modifier.widthIn(min = 68.dp)
+                                maxLines = 1,
+                                softWrap = false,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                modifier = Modifier.width(82.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             // 水平プログレス
@@ -376,9 +421,12 @@ fun UvDetailScreen(
                             Spacer(modifier = Modifier.width(12.dp))
                             Text(
                                 text = "UV $dayUv",
-                                style = MaterialTheme.typography.labelLarge,
+                                style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
                                 fontWeight = FontWeight.Bold,
                                 color = dayColor,
+                                maxLines = 1,
+                                softWrap = false,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.End,
                                 modifier = Modifier.width(52.dp)
                             )
                         }
@@ -484,16 +532,23 @@ private fun UvProtectionItem(title: String, desc: String) {
     }
 }
 
-private fun getUvColor(uv: Int): Color = when {
-    uv <= 2 -> Color(0xFF4CAF50)
-    uv <= 5 -> Color(0xFFFFB300)
-    uv <= 7 -> Color(0xFFFF9800)
-    uv <= 10 -> Color(0xFFE53935)
-    else -> Color(0xFF8E24AA)
+@Composable
+private fun getUvColor(uv: Int): Color = getUvColor(uv, currentAccentPalette())
+
+private fun getUvColor(uv: Int, palette: MaterialYouAccentPalette): Color = when {
+    uv <= 2 -> palette.severity(0).accent
+    uv <= 5 -> palette.severity(1).accent
+    uv <= 7 -> palette.severity(2).accent
+    uv <= 10 -> palette.severity(3).accent
+    else -> palette.severity(4).accent
 }
 
-private fun getUvInfo(uv: Int, language: AppLanguage): Triple<String, Color, String> {
-    val color = getUvColor(uv)
+private fun getUvInfo(
+    uv: Int,
+    language: AppLanguage,
+    palette: MaterialYouAccentPalette
+): Triple<String, Color, String> {
+    val color = getUvColor(uv, palette)
     val label = when {
         uv <= 2 -> when (language) {
             AppLanguage.JAPANESE -> "弱い"

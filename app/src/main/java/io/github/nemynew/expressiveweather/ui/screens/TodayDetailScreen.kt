@@ -103,9 +103,8 @@ import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlexHeroTemp
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
-import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
-import io.github.nemynew.expressiveweather.ui.components.WeatherAtmosphereCanvas
 import io.github.nemynew.expressiveweather.ui.components.WeatherIconHelper
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
 import java.util.Locale
@@ -190,8 +189,6 @@ fun TodayDetailScreen(
     val isDay = weather.isDay
     val isSystemDark = isSystemInDarkTheme()
     val isDark = ThemeMode.resolveIsDark(themeMode, isDay, isSystemDark)
-    val colorScheme = MaterialTheme.colorScheme
-    val atmosphere = getAtmosphereTheme(dayCondition, colorScheme, isDay = isDay)
     val strings = language.strings
 
     // その日専用の時間別予報
@@ -228,33 +225,34 @@ fun TodayDetailScreen(
                         )
                     )
             ) {
-                // 天候の空色グラデーション
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(atmosphere.skyGradient)
-                        .graphicsLayer { alpha = if (!isDay) 0.35f else 0.45f }
-                )
-
-                // 1. Edge-to-Edge 動的パーティクル背景
-                val hasCrispParticles = dayCondition.isPrecipitating
-                WeatherAtmosphereCanvas(
-                    condition = dayCondition,
-                    atmosphere = atmosphere,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(if (hasCrispParticles) Modifier else Modifier.blur(26.dp))
-                )
-
-                // 2. テーマカラーに沿ったフロストすりガラス拡散レイヤー
+                // 1. Material You トーナルアンビエント背景
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            Brush.verticalGradient(
-                                0.0f to themeSurface.copy(alpha = if (isDark) 0.65f else 0.55f),
-                                0.5f to themeContainer.copy(alpha = if (isDark) 0.70f else 0.60f),
-                                1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.80f else 0.72f)
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(0f, 0f),
+                                radius = 1400f
+                            )
+                        )
+                )
+
+                // 2. Material You セカンダリアンビエント光彩
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(1100f, 1800f),
+                                radius = 1400f
                             )
                         )
                 )
@@ -266,11 +264,11 @@ fun TodayDetailScreen(
                         .background(
                             Brush.radialGradient(
                                 colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.14f else 0.10f),
+                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
                                     Color.Transparent
                                 ),
                                 center = Offset(0f, 0f),
-                                radius = 1400f
+                                radius = 1100f
                             )
                         )
                 )
@@ -799,7 +797,7 @@ private fun SunProgressMiniTracker(
 
         // アーチ線 Canvas
         val outlineColor = colorScheme.outlineVariant.copy(alpha = 0.4f)
-        val sunColor = Color(0xFFFFB74D)
+        val sunColor = currentAccentPalette().sun.accent
 
         Box(
             modifier = Modifier
@@ -1280,6 +1278,7 @@ private fun LifestyleAdvisorSection(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            val advicePalette = currentAccentPalette()
             LifestyleAdviceCard(
                 title = strings.clothingTitle,
                 advice = strings.clothingTip(tempForClothing),
@@ -1291,28 +1290,28 @@ private fun LifestyleAdvisorSection(
                 title = strings.umbrellaAdviceTitle,
                 advice = strings.umbrellaTip(precipProb, precipMm),
                 icon = Icons.Rounded.Umbrella,
-                accentColor = Color(0xFF42A5F5)
+                accentColor = advicePalette.precipitation.accent
             )
 
             LifestyleAdviceCard(
                 title = strings.laundryAdviceTitle,
                 advice = strings.laundryTip(humidity, precipProb),
                 icon = Icons.Rounded.DryCleaning,
-                accentColor = Color(0xFF26A69A)
+                accentColor = advicePalette.aqi.accent
             )
 
             LifestyleAdviceCard(
                 title = strings.uvAdviceTitle,
                 advice = strings.uvTip(uv),
                 icon = Icons.Rounded.LightMode,
-                accentColor = Color(0xFFFFB300)
+                accentColor = advicePalette.uv.accent
             )
 
             LifestyleAdviceCard(
                 title = strings.ventilationAdviceTitle,
                 advice = strings.ventilationTip(humidity, weather.airQuality.aqi),
                 icon = Icons.Rounded.Air,
-                accentColor = Color(0xFF7E57C2)
+                accentColor = advicePalette.pressure.accent
             )
         }
     }

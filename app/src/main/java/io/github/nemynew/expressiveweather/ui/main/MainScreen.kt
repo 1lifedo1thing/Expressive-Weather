@@ -312,6 +312,7 @@ fun MainScreen(
         weatherCondition = condition,
         weatherAdaptiveColor = uiState.weatherAdaptiveThemeEnabled,
         themePreset = uiState.themePreset,
+        accentColorMode = uiState.accentColorMode,
         language = uiState.language
     ) {
         val tiltState = rememberDeviceTiltState()

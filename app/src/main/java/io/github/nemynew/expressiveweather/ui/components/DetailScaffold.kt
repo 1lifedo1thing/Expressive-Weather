@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -51,7 +50,6 @@ import io.github.nemynew.expressiveweather.theme.ExpressiveWeatherTheme
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
-import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
 
 /**
  * 風詳細画面 (WindDetailScreen) と完全に共通の設計思想を持つプレミアム詳細画面 Scaffold:
@@ -59,7 +57,7 @@ import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
  * 1. statusBarsPadding に完全対応した固定フロストトップバー
  * 2. 弾性アニメーション (m3eBouncyClick) つきの丸い戻るボタン
  * 3. BlendMode.DstIn による「上部の滑らかに消えるやつ」(スクロール見切れグラデーションマスク)
- * 4. 天候動的パーティクル背景 (WeatherAtmosphereCanvas) ＋ テーマカラーフロストすりガラス拡散レイヤー
+ * 4. Material You トーナルアンビエント背景 ＋ テーマカラーフロストハイライト光彩層
  * 5. navigationBarsPadding に完全対応したフッター余白
  */
 @Composable
@@ -136,9 +134,6 @@ fun DetailScaffold(
         return
     }
 
-    val colorScheme = MaterialTheme.colorScheme
-    val atmosphere = getAtmosphereTheme(condition!!, colorScheme, isDay = isDay)
-
     ExpressiveWeatherTheme(
         darkTheme = isDark,
         weatherCondition = condition,
@@ -167,49 +162,50 @@ fun DetailScaffold(
                         )
                     )
             ) {
-                // 天候の空色グラデーション（テーマカラーの上にブレンドして天候の空気感を維持）
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(atmosphere.skyGradient)
-                        .graphicsLayer { alpha = if (!isDay) 0.35f else 0.45f }
-                )
-
-                // 1. Edge-to-Edge 天候動的パーティクル背景
-                val hasCrispParticles = condition.isPrecipitating
-                WeatherAtmosphereCanvas(
-                    condition = condition,
-                    atmosphere = atmosphere,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(if (hasCrispParticles) Modifier else Modifier.blur(26.dp))
-                )
-
-                // 2. テーマカラーに沿ったフロストすりガラス拡散レイヤー
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                0.0f to themeSurface.copy(alpha = if (isDark) 0.65f else 0.55f),
-                                0.5f to themeContainer.copy(alpha = if (isDark) 0.70f else 0.60f),
-                                1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.80f else 0.72f)
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層（すりガラスの質感とテーマカラーの美しい反射）
+                // 1. Material You トーナルアンビエント背景（primaryContainer / tertiaryContainer）
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
                             Brush.radialGradient(
                                 colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.14f else 0.10f),
+                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
                                     Color.Transparent
                                 ),
                                 center = Offset(0f, 0f),
                                 radius = 1400f
+                            )
+                        )
+                )
+
+                // 2. Material You セカンダリアンビエント光彩（tertiaryContainer）
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(1100f, 1800f),
+                                radius = 1400f
+                            )
+                        )
+                )
+
+                // 3. テーマカラーのフロストハイライト光彩層
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(0f, 0f),
+                                radius = 1100f
                             )
                         )
                 )

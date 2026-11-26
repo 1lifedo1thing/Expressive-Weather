@@ -1,11 +1,18 @@
 package io.github.nemynew.expressiveweather.ui.screens
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,18 +28,26 @@ import androidx.compose.material.icons.rounded.HealthAndSafety
 import androidx.compose.material.icons.rounded.Thermostat
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.TemperatureUnit
@@ -42,12 +57,14 @@ import io.github.nemynew.expressiveweather.data.getLocalizedTimeLabel
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
 
 /**
  * 体感温度（Feels Like / Comfort）詳細画面 - Material 3 Expressive 準拠、多言語対応、枠線フリー
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FeelsLikeDetailScreen(
     weather: WeatherData?,
@@ -120,7 +137,42 @@ fun FeelsLikeDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
-        // ================= 1. ヒーローセクション: 体感温度 & 実気温比較 =================
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val isColorful = accentPalette.mode.isColorful
+        val cloverShape = MaterialShapes.Cookie4Sided.toShape()
+        val cloverColor = if (isColorful) accentPalette.feelsLike.accent else colorScheme.tertiary
+        val tempIconColor = if (isColorful) accentPalette.feelsLike.accent else colorScheme.onSurface
+
+        val (comfortPillBg, comfortPillText) = remember(feelsLikeC, isColorful, colorScheme, accentPalette) {
+            if (isColorful) {
+                val role = accentPalette.temperature(feelsLikeC.toDouble())
+                role.accent to role.onAccent
+            } else {
+                when {
+                    feelsLikeC >= 35 -> colorScheme.error to colorScheme.onError
+                    feelsLikeC >= 28 -> colorScheme.errorContainer to colorScheme.onErrorContainer
+                    feelsLikeC >= 23 -> colorScheme.secondaryContainer to colorScheme.onSecondaryContainer
+                    feelsLikeC in 16..22 -> colorScheme.tertiary to colorScheme.onTertiary
+                    feelsLikeC in 10..15 -> colorScheme.tertiaryContainer to colorScheme.onTertiaryContainer
+                    feelsLikeC in 5..9 -> colorScheme.primaryContainer to colorScheme.onPrimaryContainer
+                    else -> colorScheme.surfaceContainerHighest to colorScheme.onSurface
+                }
+            }
+        }
+
+        val comfortTransition = rememberInfiniteTransition(label = "DetailComfortPulse")
+        val pulseScale by comfortTransition.animateFloat(
+            initialValue = 0.96f,
+            targetValue = 1.04f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2600, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "DetailComfortPulseScale"
+        )
+
+        // ================= 1. ヒーローセクション: 体感温度タイルと同一の Cookie4Sided クローバー & 実気温比較 =================
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
@@ -136,10 +188,10 @@ fun FeelsLikeDetailScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Rounded.Thermostat,
+                        painter = painterResource(R.drawable.ic_fluent_temperature_24),
                         contentDescription = null,
-                        tint = getTempColor(feelsLikeC),
-                        modifier = Modifier.size(24.dp)
+                        tint = tempIconColor,
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -159,29 +211,51 @@ fun FeelsLikeDetailScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = "${feelsLikeDisplay}°",
-                    fontFamily = GoogleSansFlex,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 54.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                // 体感温度タイル (ComfortCard) と同一の2層 Cookie4Sided クローバーシェイプ + 体感温度数値
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(188.dp)
+                ) {
+                    Surface(
+                        shape = cloverShape,
+                        color = cloverColor.copy(alpha = if (isColorful) 0.22f else 0.15f),
+                        modifier = Modifier
+                            .fillMaxSize(0.93f)
+                            .graphicsLayer {
+                                scaleX = pulseScale
+                                scaleY = pulseScale
+                            }
+                    ) {}
+                    Surface(
+                        shape = cloverShape,
+                        color = cloverColor.copy(alpha = if (isColorful) 0.48f else 0.32f),
+                        modifier = Modifier.fillMaxSize(0.76f)
+                    ) {}
 
-                Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "${feelsLikeDisplay}°",
+                        fontFamily = GoogleSansFlex,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 46.sp,
+                        lineHeight = 46.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
 
-                // M3 Expressive: 枠線なしトナルサーフェス
+                Spacer(modifier = Modifier.height(14.dp))
+
                 Surface(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.85f)
+                    color = comfortPillBg
                 ) {
                     Text(
                         text = diffText,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = comfortPillText,
                         fontWeight = FontWeight.Bold,
                         fontSize = 13.sp,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                     )
                 }
 
@@ -483,13 +557,9 @@ fun FeelsLikeDetailScreen(
     }
 }
 
-private fun getTempColor(tempC: Int): Color = when {
-    tempC >= 30 -> Color(0xFFE53935) // 猛暑・酷暑 (赤)
-    tempC >= 25 -> Color(0xFFFF9800) // 夏日 (橙)
-    tempC >= 18 -> Color(0xFF4CAF50) // 快適 (緑)
-    tempC >= 10 -> Color(0xFF03A9F4) // 涼しい (水色)
-    else -> Color(0xFF3F51B5)        // 寒い (青)
-}
+@Composable
+private fun getTempColor(tempC: Int): Color =
+    currentAccentPalette().temperature(tempC.toDouble()).accent
 
 private fun getFeelsLikeAnalysis(
     feelsLike: Int,

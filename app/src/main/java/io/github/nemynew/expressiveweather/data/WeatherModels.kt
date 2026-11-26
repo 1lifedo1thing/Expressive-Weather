@@ -33,8 +33,8 @@ enum class WeatherUpdateInterval(
     val labelFr: String,
     val labelPt: String
 ) {
-    MINUTES_15(15, "15分ごと", "Every 15 minutes", "15분마다", "每15分钟", "每15分鐘", "Cada 15 minutos", "Toutes les 15 minutes", "A cada 15 minutos"),
-    MINUTES_30(30, "30分ごと (おすすめ)", "Every 30 minutes (Recommended)", "30분마다 (권장)", "每30分钟 (推荐)", "每30分鐘 (推薦)", "Cada 30 minutos (Recomendado)", "Toutes les 30 minutes (Recommandé)", "A cada 30 minutos (Recomendado)"),
+    MINUTES_15(15, "15分ごと (おすすめ)", "Every 15 minutes (Recommended)", "15분마다 (권장)", "每15分钟 (推荐)", "每15分鐘 (推薦)", "Cada 15 minutos (Recomendado)", "Toutes les 15 minutes (Recommandé)", "A cada 15 minutos (Recomendado)"),
+    MINUTES_30(30, "30分ごと", "Every 30 minutes", "30분마다", "每30分钟", "每30分鐘", "Cada 30 minutos", "Toutes les 30 minutes", "A cada 30 minutos"),
     HOUR_1(60, "1時間ごと", "Every 1 hour", "1시간마다", "每1小时", "每1小時", "Cada hora", "Toutes les heures", "A cada 1 hora"),
     HOURS_2(120, "2時間ごと", "Every 2 hours", "2시간마다", "每2小时", "每2小時", "Cada 2 horas", "Toutes les 2 heures", "A cada 2 horas"),
     HOURS_3(180, "3時間ごと", "Every 3 hours", "3시간마다", "每3小时", "每3小時", "Cada 3 horas", "Toutes les 3 heures", "A cada 3 horas"),
@@ -53,8 +53,10 @@ enum class WeatherUpdateInterval(
     }
 
     companion object {
+        val DEFAULT: WeatherUpdateInterval = MINUTES_15
+
         fun fromMinutes(minutes: Int): WeatherUpdateInterval {
-            return entries.find { it.minutes == minutes } ?: MINUTES_30
+            return entries.find { it.minutes == minutes } ?: DEFAULT
         }
     }
 }

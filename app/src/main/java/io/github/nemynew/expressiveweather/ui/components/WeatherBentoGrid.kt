@@ -43,6 +43,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
@@ -63,6 +64,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
@@ -80,9 +82,13 @@ import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppStrings
+import io.github.nemynew.expressiveweather.data.MoonPhaseCalculator
+import io.github.nemynew.expressiveweather.data.MoonPhaseSimulator
+import io.github.nemynew.expressiveweather.data.MoonPhaseStage
 import io.github.nemynew.expressiveweather.data.TemperatureUnit
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.WindSpeedUnit
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.data.getLocalizedWindDirection
 import io.github.nemynew.expressiveweather.theme.WeatherAtmosphereTheme
 import io.github.nemynew.expressiveweather.ui.haptics.ExpressiveHapticPattern
@@ -223,7 +229,8 @@ fun WeatherBentoGrid(
                     val snowShape = when (card) {
                         BentoCardType.UV,
                         BentoCardType.AQI,
-                        BentoCardType.SUN_CYCLE -> SnowTileShape.ROUNDED_RECT
+                        BentoCardType.SUN_CYCLE,
+                        BentoCardType.MOON_PHASE -> SnowTileShape.ROUNDED_RECT
                         else -> SnowTileShape.CIRCLE
                     }
 
@@ -417,6 +424,7 @@ private fun BentoCardItem(
         BentoCardType.VISIBILITY -> VisibilityCard(weather = weather, tileSize = tileSize, modifier = modifier, isFrostedGlassEnabled = isFrostedGlassEnabled, isDark = isDark, isColorful = isColorful)
         BentoCardType.PRECIPITATION -> PrecipitationCard(weather = weather, tileSize = tileSize, modifier = modifier, isFrostedGlassEnabled = isFrostedGlassEnabled, isDark = isDark, isColorful = isColorful)
         BentoCardType.COMFORT -> ComfortCard(weather = weather, tileSize = tileSize, modifier = modifier, isFrostedGlassEnabled = isFrostedGlassEnabled, isDark = isDark, isColorful = isColorful, temperatureUnit = temperatureUnit)
+        BentoCardType.MOON_PHASE -> MoonPhaseCard(weather = weather, tileSize = tileSize, modifier = modifier, isFrostedGlassEnabled = isFrostedGlassEnabled, isDark = isDark, isColorful = isColorful)
     }
 }
 
@@ -445,8 +453,9 @@ private fun WindCard(
     val displayUnit = windSpeedUnit.getDisplayUnit(language)
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val arrowColor = if (isColorful) Color(0xFF00BCD4) else MaterialTheme.colorScheme.primary
-    val headerIconColor = if (isColorful) Color(0xFF00ACC1) else MaterialTheme.colorScheme.primary
+    val accentPalette = currentAccentPalette()
+    val arrowColor = if (isColorful) accentPalette.wind.accent else MaterialTheme.colorScheme.primary
+    val headerIconColor = if (isColorful) accentPalette.wind.accent else MaterialTheme.colorScheme.primary
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
     val outerArrowSize = tileSize * 0.68f
@@ -605,9 +614,10 @@ private fun UvCard(
     val sunnyShape = MaterialShapes.VerySunny.toShape()
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val sunnyColor = if (isColorful) Color(0xFFFFA000) else MaterialTheme.colorScheme.tertiaryContainer
-    val onSunnyColor = if (isColorful) Color(0xFF3E2723) else MaterialTheme.colorScheme.onTertiaryContainer
-    val uvIconColor = if (isColorful) Color(0xFFFF8F00) else MaterialTheme.colorScheme.tertiary
+    val accentPalette = currentAccentPalette()
+    val sunnyColor = if (isColorful) accentPalette.uv.accent else MaterialTheme.colorScheme.tertiaryContainer
+    val onSunnyColor = if (isColorful) accentPalette.uv.onAccent else MaterialTheme.colorScheme.onTertiaryContainer
+    val uvIconColor = if (isColorful) accentPalette.uv.accent else MaterialTheme.colorScheme.secondary
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
     val sunnySize = tileSize * 0.62f
@@ -698,15 +708,17 @@ private fun UvCard(
                     )
                     Spacer(modifier = Modifier.height((3 * scale).dp))
                     val themeColorScheme = MaterialTheme.colorScheme
-                    val (uvPillBg, uvPillText) = remember(weather.uvIndex, isColorful, themeColorScheme) {
+                    val (uvPillBg, uvPillText) = remember(weather.uvIndex, isColorful, themeColorScheme, accentPalette) {
                         if (isColorful) {
-                            when {
-                                weather.uvIndex <= 2 -> Color(0xFF388E3C) to Color.White // 低い: 穏やかなグリーン
-                                weather.uvIndex <= 5 -> Color(0xFFFFA000) to Color(0xFF2E1C00) // 普通: サニーアンバーゴールド
-                                weather.uvIndex <= 7 -> Color(0xFFE65100) to Color.White // 強い: 濃いコーラルオレンジ
-                                weather.uvIndex <= 10 -> Color(0xFFC62828) to Color.White // 非常に強い: 深紅
-                                else -> Color(0xFF6A1B9A) to Color.White // 極端: 濃密な紫
+                            val tier = when {
+                                weather.uvIndex <= 2 -> 0
+                                weather.uvIndex <= 5 -> 1
+                                weather.uvIndex <= 7 -> 2
+                                weather.uvIndex <= 10 -> 3
+                                else -> 4
                             }
+                            val role = accentPalette.severity(tier)
+                            role.accent to role.onAccent
                         } else {
                             when {
                                 weather.uvIndex <= 2 -> themeColorScheme.surfaceContainerHighest to themeColorScheme.onSurface
@@ -777,8 +789,9 @@ private fun AqiCard(
     val puffyShape = MaterialShapes.Puffy.toShape()
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val puffyColor = if (isColorful) Color(0xFF00BFA5) else MaterialTheme.colorScheme.secondary
-    val aqiIconColor = if (isColorful) Color(0xFF00BFA5) else MaterialTheme.colorScheme.secondary
+    val accentPalette = currentAccentPalette()
+    val puffyColor = if (isColorful) accentPalette.aqi.accent else MaterialTheme.colorScheme.secondary
+    val aqiIconColor = if (isColorful) accentPalette.aqi.accent else MaterialTheme.colorScheme.secondary
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
     val outerPuffySize = tileSize * 0.64f
@@ -881,15 +894,17 @@ private fun AqiCard(
                         lineHeight = (36 * scale).sp
                     )
                     val themeColorScheme = MaterialTheme.colorScheme
-                    val (aqiPillBg, aqiPillText) = remember(weather.airQuality.aqi, isColorful, themeColorScheme) {
+                    val (aqiPillBg, aqiPillText) = remember(weather.airQuality.aqi, isColorful, themeColorScheme, accentPalette) {
                         if (isColorful) {
-                            when {
-                                weather.airQuality.aqi <= 50 -> Color(0xFF00897B) to Color.White // 良い: 澄んだミントティール（青緑系・純度高）
-                                weather.airQuality.aqi <= 100 -> Color(0xFF00796B) to Color.White // 普通: 豊かなオーシャンティール（Puffy雲シェイプと完全調和する深みある青緑）
-                                weather.airQuality.aqi <= 150 -> Color(0xFF006155) to Color.White // 敏感に影響: 濃密スプルースティール（適度な重みのある青緑）
-                                weather.airQuality.aqi <= 200 -> Color(0xFF004D40) to Color.White // 不健康: ディープパインティール（警戒感のある濃青緑）
-                                else -> Color(0xFF00332B) to Color.White // 危険: 最も濃密なミッドナイトアビステール
+                            val tier = when {
+                                weather.airQuality.aqi <= 50 -> 0
+                                weather.airQuality.aqi <= 100 -> 1
+                                weather.airQuality.aqi <= 150 -> 2
+                                weather.airQuality.aqi <= 200 -> 3
+                                else -> 4
                             }
+                            val role = accentPalette.severity(tier)
+                            role.accent to role.onAccent
                         } else {
                             when {
                                 weather.airQuality.aqi <= 50 -> themeColorScheme.secondaryContainer to themeColorScheme.onSecondaryContainer
@@ -963,10 +978,11 @@ private fun HumidityCard(
     val pillShape = CircleShape
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val rippleColor = if (isColorful) Color(0xFF1E88E5) else MaterialTheme.colorScheme.primary
-    val rippleContainerColor = if (isColorful) (if (isDark) Color(0xFF1565C0) else Color(0xFFBBDEFB)) else MaterialTheme.colorScheme.primaryContainer
-    val onRippleColor = if (isColorful) (if (isDark) Color(0xFFE3F2FD) else Color(0xFF0D47A1)) else MaterialTheme.colorScheme.onPrimaryContainer
-    val humidityIconColor = if (isColorful) Color(0xFF1E88E5) else MaterialTheme.colorScheme.primary
+    val accentPalette = currentAccentPalette()
+    val rippleColor = if (isColorful) accentPalette.humidity.accent else MaterialTheme.colorScheme.secondary
+    val rippleContainerColor = if (isColorful) accentPalette.humidity.container else MaterialTheme.colorScheme.secondaryContainer
+    val onRippleColor = if (isColorful) accentPalette.humidity.onContainer else MaterialTheme.colorScheme.onSecondaryContainer
+    val humidityIconColor = if (isColorful) accentPalette.humidity.accent else MaterialTheme.colorScheme.secondary
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
     val outerWaveSize = tileSize * 0.66f
@@ -1121,15 +1137,16 @@ private fun HumidityCard(
                 else -> strings.humidityDry
             }
             val themeColorScheme = MaterialTheme.colorScheme
-            val (humidityPillBg, humidityPillText) = remember(weather.humidity, isColorful, themeColorScheme) {
+            val (humidityPillBg, humidityPillText) = remember(weather.humidity, isColorful, themeColorScheme, accentPalette) {
                 if (isColorful) {
-                    when {
-                        weather.humidity < 30 -> Color(0xFFE64A19) to Color.White // 超乾燥: 濃いコーラル警告オレンジ
-                        weather.humidity < 40 -> Color(0xFFFFA000) to Color(0xFF2E1C00) // 乾燥: 温かなアンバー
-                        weather.humidity <= 60 -> Color(0xFF2E7D32) to Color.White // 快適: 爽やかなエメラルドグリーン
-                        weather.humidity <= 75 -> Color(0xFF0288D1) to Color.White // 多湿: 瑞々しいオーシャンブルー
-                        else -> Color(0xFF1565C0) to Color.White // 超多湿: 濃密なロイヤルディープブルー
+                    val role = when {
+                        weather.humidity < 30 -> accentPalette.dryness(4)
+                        weather.humidity < 40 -> accentPalette.dryness(2)
+                        weather.humidity <= 60 -> accentPalette.dryness(1)
+                        weather.humidity <= 75 -> accentPalette.visibility
+                        else -> accentPalette.humidity
                     }
+                    role.accent to role.onAccent
                 } else {
                     when {
                         weather.humidity < 30 -> themeColorScheme.errorContainer to themeColorScheme.onErrorContainer
@@ -1180,9 +1197,11 @@ private fun SunCard(
     val sunnyShape = MaterialShapes.Sunny.toShape()
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val sunColor = if (isColorful) Color(0xFFFF6D00) else MaterialTheme.colorScheme.primary
-    val sunAuraColor = if (isColorful) Color(0xFFFF9E80).copy(alpha = 0.35f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
-    val sunIconColor = if (isColorful) Color(0xFFFF6D00) else MaterialTheme.colorScheme.primary
+    val accentPalette = currentAccentPalette()
+    val sunColor = if (isColorful) accentPalette.sun.accent else MaterialTheme.colorScheme.primary
+    val sunInnerDotColor = if (isColorful) accentPalette.sun.container else MaterialTheme.colorScheme.primaryContainer
+    val sunAuraColor = if (isColorful) accentPalette.sun.accent.copy(alpha = 0.28f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.22f)
+    val sunIconColor = if (isColorful) accentPalette.sun.accent else MaterialTheme.colorScheme.primary
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
     val trackHeight = tileSize * 0.38f
@@ -1196,7 +1215,13 @@ private fun SunCard(
     val animProgress = remember { Animatable(0f) }
     val animRotation = remember { Animatable(0f) }
 
-    LaunchedEffect(weather.sunSchedule.dayProgress, weather.sunSchedule.sunrise, weather.sunSchedule.sunset) {
+    LaunchedEffect(
+        weather.city.id,
+        weather.fetchedAtMillis,
+        weather.sunSchedule.dayProgress,
+        weather.sunSchedule.sunrise,
+        weather.sunSchedule.sunset
+    ) {
         animProgress.snapTo(0f)
         animRotation.snapTo(0f)
         launch {
@@ -1245,7 +1270,7 @@ private fun SunCard(
                     Icon(
                         painter = painterResource(R.drawable.ic_fluent_weather_sunny_24),
                         contentDescription = strings.sun,
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = sunIconColor,
                         modifier = Modifier.size((19 * scale).dp)
                     )
                     Spacer(modifier = Modifier.width((5 * scale).dp))
@@ -1328,7 +1353,7 @@ private fun SunCard(
                             }
                             .size(auraSize)
                             .background(
-                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.22f),
+                                color = sunAuraColor,
                                 shape = CircleShape
                             )
                     )
@@ -1345,13 +1370,13 @@ private fun SunCard(
                     ) {
                         Surface(
                             shape = sunnyShape,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = sunColor,
                             modifier = Modifier.fillMaxSize()
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Surface(
                                     shape = CircleShape,
-                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    color = sunInnerDotColor,
                                     modifier = Modifier.size((7 * scale).dp)
                                 ) {}
                             }
@@ -1431,10 +1456,11 @@ private fun PressureCard(
     val circleShape = MaterialShapes.Circle.toShape()
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val pressureColor = if (isColorful) Color(0xFF7C4DFF) else MaterialTheme.colorScheme.primary
-    val trackColor = pressureColor.copy(alpha = if (isColorful) 0.24f else 0.32f)
+    val accentPalette = currentAccentPalette()
+    val pressureColor = if (isColorful) accentPalette.pressure.accent else MaterialTheme.colorScheme.primary
+    val trackColor = pressureColor.copy(alpha = if (isColorful) 0.26f else 0.32f)
     val progressColor = pressureColor
-    val pressureIconColor = if (isColorful) Color(0xFF7C4DFF) else MaterialTheme.colorScheme.onSurface
+    val pressureIconColor = if (isColorful) accentPalette.pressure.accent else MaterialTheme.colorScheme.onSurface
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
 
@@ -1594,8 +1620,9 @@ private fun VisibilityCard(
     val pillShape = CircleShape
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val lensColor = if (isColorful) Color(0xFF00B0FF) else MaterialTheme.colorScheme.primary
-    val eyeIconColor = if (isColorful) Color(0xFF00B0FF) else MaterialTheme.colorScheme.onSurface
+    val accentPalette = currentAccentPalette()
+    val lensColor = if (isColorful) accentPalette.visibility.accent else MaterialTheme.colorScheme.primary
+    val eyeIconColor = if (isColorful) accentPalette.visibility.accent else MaterialTheme.colorScheme.onSurface
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
 
@@ -1702,15 +1729,16 @@ private fun VisibilityCard(
                                else if (weather.visibilityKm >= 5.0) strings.visibilityModerate
                                else strings.visibilityPoor
                 val themeColorScheme = MaterialTheme.colorScheme
-                val (visPillBg, visPillText) = remember(weather.visibilityKm, isColorful, themeColorScheme) {
+                val (visPillBg, visPillText) = remember(weather.visibilityKm, isColorful, themeColorScheme, accentPalette) {
                     if (isColorful) {
-                        when {
-                            weather.visibilityKm >= 20.0 -> Color(0xFF0097A7) to Color.White // 20km以上（超快晴）: 澄み切ったディープシアン（クッキー水色の上でも高コントラスト）
-                            weather.visibilityKm >= 10.0 -> Color(0xFF00838F) to Color.White // 10km以上（良好）: 豊かなダークシアン
-                            weather.visibilityKm >= 5.0 -> Color(0xFF00796B) to Color.White // 5km以上（普通）: ディープティール
-                            weather.visibilityKm >= 2.0 -> Color(0xFFE65100) to Color.White // 2km以上（かすみ）: 警告アンバーオレンジ
-                            else -> Color(0xFFC62828) to Color.White // 2km未満（濃霧・豪雨）: 危険警告レッド
+                        val role = when {
+                            weather.visibilityKm >= 20.0 -> accentPalette.visibility
+                            weather.visibilityKm >= 10.0 -> accentPalette.aqi
+                            weather.visibilityKm >= 5.0 -> accentPalette.severity(0)
+                            weather.visibilityKm >= 2.0 -> accentPalette.severity(2)
+                            else -> accentPalette.severity(3)
                         }
+                        role.accent to role.onAccent
                     } else {
                         when {
                             weather.visibilityKm >= 20.0 -> themeColorScheme.primary to themeColorScheme.onPrimary
@@ -1763,8 +1791,9 @@ private fun PrecipitationCard(
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
 
-    // 水面と文字のカラーパレット（水の中をしっかり塗りつぶし、縁取り線なし）
-    val precipWaveColor = if (isColorful) Color(0xFF0091EA) else MaterialTheme.colorScheme.primary
+    // 水面と文字のカラーパレット（選択アクセントモードに準拠）
+    val accentPalette = currentAccentPalette()
+    val precipWaveColor = if (isColorful) accentPalette.precipitation.accent else MaterialTheme.colorScheme.secondary
     val backWaveColor = precipWaveColor.copy(alpha = if (isColorful) 0.30f else 0.22f)
     val mainWaveColor = precipWaveColor.copy(alpha = if (isColorful) 0.52f else 0.38f)
     val waveTextColor = MaterialTheme.colorScheme.onSurface
@@ -1981,8 +2010,9 @@ private fun ComfortCard(
     val pillShape = CircleShape
     val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
     val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
-    val cloverColor = if (isColorful) Color(0xFFFF5252) else MaterialTheme.colorScheme.tertiary
-    val tempIconColor = if (isColorful) Color(0xFFFF5252) else MaterialTheme.colorScheme.onSurface
+    val accentPalette = currentAccentPalette()
+    val cloverColor = if (isColorful) accentPalette.feelsLike.accent else MaterialTheme.colorScheme.tertiary
+    val tempIconColor = if (isColorful) accentPalette.feelsLike.accent else MaterialTheme.colorScheme.onSurface
 
     val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
 
@@ -2080,17 +2110,10 @@ private fun ComfortCard(
                 }
 
                 val themeColorScheme = MaterialTheme.colorScheme
-                val (comfortPillBg, comfortPillText) = remember(weather.feelsLikeC, isColorful, themeColorScheme) {
+                val (comfortPillBg, comfortPillText) = remember(weather.feelsLikeC, isColorful, themeColorScheme, accentPalette) {
                     if (isColorful) {
-                        when {
-                            weather.feelsLikeC >= 35 -> Color(0xFFB71C1C) to Color.White // 猛暑 (35°C+): 最高警戒の深紅クリムゾンレッド
-                            weather.feelsLikeC >= 29 -> Color(0xFFD32F2F) to Color.White // 暑い (29〜34°C): 情熱的なスカーレットレッド
-                            weather.feelsLikeC >= 23 -> Color(0xFFF4511E) to Color.White // 暖かい (23〜28°C): 明るいウォームオレンジレッド
-                            weather.feelsLikeC in 16..22 -> Color(0xFFE64A19) to Color.White // 快適 (16〜22°C): 鮮やかで温もりのあるコーラルオレンジ（Clover赤シェイプと最も親和）
-                            weather.feelsLikeC in 10..15 -> Color(0xFFC74322) to Color.White // 涼しい (10〜15°C): 深みのあるバーントコーラル
-                            weather.feelsLikeC in 5..9 -> Color(0xFFA73E28) to Color.White // 寒い (5〜9°C): 落ち着いた煉瓦レッド
-                            else -> Color(0xFF8D3B2B) to Color.White // 極寒 (<=4°C): 重厚なテラコッタレッド
-                        }
+                        val role = accentPalette.temperature(weather.feelsLikeC.toDouble())
+                        role.accent to role.onAccent
                     } else {
                         when {
                             weather.feelsLikeC >= 35 -> themeColorScheme.error to themeColorScheme.onError
@@ -2117,6 +2140,299 @@ private fun ComfortCard(
                         textAlign = TextAlign.Center,
                         maxLines = 1,
                         modifier = Modifier.padding(horizontal = (12 * scale).dp, vertical = (4 * scale).dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 月の満ち欠けパネル (MoonPhaseCard):
+ * 外枠: Square (角丸正方形)
+ * 背景: コンパクトな紺色 MaterialColor（Material Indigo）の MaterialShapes.Clover8Leaf を2層重ねて裏に配置
+ * 中央: 高精細・月色トーンの立体月相ディスク (MoonPhaseDisc)
+ * 下部: 重複表記を避けたピルバッジ（満月・新月は月齢、途中位相は輝面比を表示）
+ */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun MoonPhaseCard(
+    weather: WeatherData,
+    tileSize: androidx.compose.ui.unit.Dp = 180.dp,
+    modifier: Modifier = Modifier,
+    isFrostedGlassEnabled: Boolean = true,
+    isDark: Boolean = false,
+    isColorful: Boolean = true
+) {
+    val context = LocalContext.current
+    val strings = LocalAppStrings.current
+    val language = LocalAppLanguage.current
+    val squareShape = RoundedCornerShape(44.dp)
+    val clover8Shape = MaterialShapes.Clover8Leaf.toShape()
+    val pillShape = CircleShape
+    val cardColor = getFrostedCardColor(isFrostedGlassEnabled, isDark, MaterialTheme.colorScheme)
+    val cardBorder = getFrostedCardBorder(isFrostedGlassEnabled, isDark)
+    val scale = (tileSize.value / 180f).coerceIn(0.85f, 1.45f)
+
+    LaunchedEffect(Unit) {
+        MoonPhaseSimulator.ensureLoaded(context)
+    }
+    val simulatedPhase by MoonPhaseSimulator.overridePhaseFraction.collectAsState()
+    val simulatedSouthern by MoonPhaseSimulator.overrideSouthernHemisphere.collectAsState()
+
+    val moonInfo = remember(language, weather.fetchedAtMillis, simulatedPhase) {
+        MoonPhaseCalculator.calculate(
+            language = language,
+            overridePhaseFraction = simulatedPhase
+        )
+    }
+    val isSouthernHemisphere = MoonPhaseSimulator.resolveIsSouthernHemisphere(
+        cityLatitude = weather.city.latitude,
+        overrideValue = simulatedSouthern
+    )
+
+    val infiniteTransition = rememberInfiniteTransition(label = "MoonCloverPulse")
+    val cloverPulse by infiniteTransition.animateFloat(
+        initialValue = 0.97f,
+        targetValue = 1.03f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3600, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "MoonCloverScale"
+    )
+
+    val initialRange = remember(moonInfo.phaseFraction) {
+        MoonPhaseCalculator.resolveEntranceAnimationRange(moonInfo.phaseFraction)
+    }
+    val animPhase = remember { Animatable(initialRange.first) }
+    val outerCloverScale = remember { Animatable(0.82f) }
+    val innerCloverScale = remember { Animatable(0.78f) }
+    val outerCloverRotation = remember { Animatable(-22.5f) }
+    val innerCloverRotation = remember { Animatable(15f) }
+    val moonScale = remember { Animatable(0.74f) }
+    val moonTilt = remember { Animatable(-10f) }
+    val badgeAlpha = remember { Animatable(0.45f) }
+    val badgeOffsetY = remember { Animatable(6f) }
+
+    // シミュレーターのスライダー連続ドラッグ時だけフルリセットを抑制し、
+    // 初回表示・都市切替・再読み込み (fetchedAtMillis)・南半球切替では 3 層シンクロ演出を再生する
+    val prevTriggerKey = remember { mutableStateOf<List<Any?>?>(null) }
+    val nonPhaseTriggerKey = listOf(
+        weather.city.id,
+        weather.city.latitude,
+        weather.fetchedAtMillis,
+        isSouthernHemisphere
+    )
+    LaunchedEffect(
+        weather.city.id,
+        weather.city.latitude,
+        weather.fetchedAtMillis,
+        isSouthernHemisphere,
+        simulatedPhase
+    ) {
+        val isSimulatorScrubOnly = prevTriggerKey.value == nonPhaseTriggerKey && simulatedPhase != null
+        prevTriggerKey.value = nonPhaseTriggerKey
+
+        if (isSimulatorScrubOnly) {
+            animPhase.animateTo(
+                targetValue = moonInfo.phaseFraction,
+                animationSpec = tween(durationMillis = 160, easing = FastOutSlowInEasing)
+            )
+            return@LaunchedEffect
+        }
+
+        val (startPhase, endPhase) = MoonPhaseCalculator.resolveEntranceAnimationRange(moonInfo.phaseFraction)
+        val cloverSpring = spring<Float>(dampingRatio = 0.62f, stiffness = 220f)
+        val moonSpring = spring<Float>(dampingRatio = 0.64f, stiffness = 250f)
+
+        animPhase.snapTo(startPhase)
+        outerCloverScale.snapTo(0.82f)
+        innerCloverScale.snapTo(0.78f)
+        outerCloverRotation.snapTo(if (isSouthernHemisphere) 22.5f else -22.5f)
+        innerCloverRotation.snapTo(if (isSouthernHemisphere) -15f else 15f)
+        moonScale.snapTo(0.74f)
+        moonTilt.snapTo(if (isSouthernHemisphere) 10f else -10f)
+        badgeAlpha.snapTo(0.45f)
+        badgeOffsetY.snapTo(6f)
+
+        launch {
+            animPhase.animateTo(
+                targetValue = endPhase,
+                animationSpec = tween(durationMillis = 950, easing = FastOutSlowInEasing)
+            )
+        }
+        launch { outerCloverScale.animateTo(1f, cloverSpring) }
+        launch { innerCloverScale.animateTo(1f, cloverSpring) }
+        launch { outerCloverRotation.animateTo(0f, cloverSpring) }
+        launch { innerCloverRotation.animateTo(0f, cloverSpring) }
+        launch { moonScale.animateTo(1f, moonSpring) }
+        launch { moonTilt.animateTo(0f, moonSpring) }
+        launch {
+            badgeAlpha.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 420, easing = FastOutSlowInEasing)
+            )
+        }
+        launch {
+            badgeOffsetY.animateTo(
+                targetValue = 0f,
+                animationSpec = spring(dampingRatio = 0.72f, stiffness = 320f)
+            )
+        }
+    }
+
+    // 裏に重ねる小さめの軽やかな半透明 8-leaf clover（選択アクセントモードに準拠）
+    val accentPalette = currentAccentPalette()
+    val outerCloverColor = if (isColorful) {
+        accentPalette.moon.accent.copy(alpha = if (isDark) 0.24f else 0.22f)
+    } else {
+        MaterialTheme.colorScheme.primary.copy(alpha = if (isDark) 0.18f else 0.16f)
+    }
+    val innerCloverColor = if (isColorful) {
+        accentPalette.moon.accent.copy(alpha = if (isDark) 0.42f else 0.40f)
+    } else {
+        MaterialTheme.colorScheme.primary.copy(alpha = if (isDark) 0.34f else 0.32f)
+    }
+
+    val moonDiscSize = tileSize * 0.41f
+
+    val headerIconTint = if (isColorful) {
+        accentPalette.moon.accent
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+    val pillBgColor = if (isColorful) {
+        accentPalette.moon.accent
+    } else {
+        MaterialTheme.colorScheme.secondaryContainer
+    }
+    val pillTextColor = if (isColorful) {
+        accentPalette.moon.onAccent
+    } else {
+        MaterialTheme.colorScheme.onSecondaryContainer
+    }
+
+    // 満月と100% / 新月と0% の意味重複を排除
+    val ageShortText = when (language) {
+        AppLanguage.JAPANESE -> "月齢${moonInfo.ageDays}"
+        AppLanguage.KOREAN -> "월령${moonInfo.ageDays}"
+        AppLanguage.SIMPLIFIED_CHINESE -> "月龄${moonInfo.ageDays}"
+        AppLanguage.TRADITIONAL_CHINESE -> "月齡${moonInfo.ageDays}"
+        AppLanguage.ENGLISH -> "${moonInfo.ageDays}d"
+        AppLanguage.SPANISH -> "${moonInfo.ageDays} d"
+        AppLanguage.FRENCH -> "${moonInfo.ageDays} j"
+        AppLanguage.PORTUGUESE -> "${moonInfo.ageDays} d"
+    }
+    val badgeText = when (moonInfo.stage) {
+        MoonPhaseStage.FULL_MOON, MoonPhaseStage.NEW_MOON -> "${moonInfo.phaseName} · $ageShortText"
+        else -> "${moonInfo.phaseName} · ${moonInfo.illumination}%"
+    }
+
+    Surface(
+        shape = squareShape,
+        color = cardColor,
+        border = cardBorder,
+        modifier = modifier.aspectRatio(1f)
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            // 背景: タイルいっぱいに広がる 2層 MaterialShapes.Clover8Leaf（逆回転＆スプリング展開＋呼吸パルス）
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Surface(
+                    shape = clover8Shape,
+                    color = outerCloverColor,
+                    modifier = Modifier
+                        .fillMaxSize(0.93f)
+                        .graphicsLayer {
+                            val combinedScale = outerCloverScale.value * cloverPulse
+                            scaleX = combinedScale
+                            scaleY = combinedScale
+                            rotationZ = outerCloverRotation.value
+                        }
+                ) {}
+                Surface(
+                    shape = clover8Shape,
+                    color = innerCloverColor,
+                    modifier = Modifier
+                        .fillMaxSize(0.76f)
+                        .graphicsLayer {
+                            scaleX = innerCloverScale.value
+                            scaleY = innerCloverScale.value
+                            rotationZ = innerCloverRotation.value
+                        }
+                ) {}
+            }
+
+            // 中央コンテンツ (縦並び: ヘッダー + 記号的月シンボル + ピルバッジ)
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.padding(horizontal = (12 * scale).dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_fluent_weather_moon_24),
+                        contentDescription = strings.moonPhase,
+                        tint = headerIconTint,
+                        modifier = Modifier.size((16 * scale).dp)
+                    )
+                    Spacer(modifier = Modifier.width((4 * scale).dp))
+                    Text(
+                        text = strings.moonPhase,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = (12.5f * scale).sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                Spacer(modifier = Modifier.height((4 * scale).dp))
+
+                MoonPhaseDisc(
+                    phaseFraction = animPhase.value,
+                    isSouthernHemisphere = isSouthernHemisphere,
+                    isColorful = isColorful,
+                    isDark = isDark,
+                    modifier = Modifier
+                        .size(moonDiscSize)
+                        .graphicsLayer {
+                            scaleX = moonScale.value
+                            scaleY = moonScale.value
+                            rotationZ = moonTilt.value
+                        }
+                )
+
+                Spacer(modifier = Modifier.height((5 * scale).dp))
+
+                Surface(
+                    shape = pillShape,
+                    color = pillBgColor,
+                    modifier = Modifier.graphicsLayer {
+                        alpha = badgeAlpha.value
+                        translationY = badgeOffsetY.value * density
+                    }
+                ) {
+                    Text(
+                        text = badgeText,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = pillTextColor,
+                        fontSize = (10.5f * scale).sp,
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(horizontal = (11 * scale).dp, vertical = (4 * scale).dp)
                     )
                 }
             }

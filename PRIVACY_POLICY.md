@@ -36,7 +36,7 @@ Expressive Weather is an open-source weather and severe-weather alert applicatio
 ### 3. Third-Party Services & Data Recipients
 To deliver weather data, maps, and warnings, the app sends HTTP requests directly from your device (including your IP address, standard request headers, and requested coordinates or tile indexes) to the following third-party services, each governed by its own privacy policy:
 
-- **Open-Meteo** (`api.open-meteo.com`, `air-quality-api.open-meteo.com`) — Weather & air quality forecasts
+- **Open-Meteo** (`api.open-meteo.com`, `air-quality-api.open-meteo.com`, `geocoding-api.open-meteo.com`) — Weather, air quality forecasts, and fallback city geocoding
 - **Japan Meteorological Agency (JMA)** (`www.jma.go.jp`) — Japan weather forecasts, nowcast/radar tiles, Kikikuru risk data, typhoon tracks, and warnings
 - **Geospatial Information Authority of Japan (GSI)** (`cyberjapandata.gsi.go.jp`, `disaportaldata.gsi.go.jp`) — Japan base maps and hazard overlays
 - **NOAA / National Weather Service (NWS)** (`api.weather.gov`) — US weather warnings
@@ -92,7 +92,7 @@ Expressive Weather はオープンソースの天気予報・防災情報アプ�
 ### 3. 外部送信先（サードパーティサービス）
 天気予報・地図・防災情報の取得のため、端末から以下の各提供元へ直接通信を行います（通信時には IP アドレス、リクエスト座標またはタイル座標等が各サービスへ送信され、各サービスのプライバシーポリシーが適用されます）：
 
-- **Open-Meteo**（天気予報・大気質）
+- **Open-Meteo**（天気予報・大気質・補助都市検索）
 - **気象庁 (JMA)**（日本の天気予報・降水ナウキャスト・キキクル・台風・警報）
 - **国土地理院 (GSI)**（日本域ウィジェット背景地図・ハザードオーバーレイ）
 - **NOAA / National Weather Service (NWS)**（米国気象警報）

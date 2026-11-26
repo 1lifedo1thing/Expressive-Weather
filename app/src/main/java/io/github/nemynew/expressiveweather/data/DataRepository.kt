@@ -12,6 +12,7 @@ import io.github.nemynew.expressiveweather.data.local.WeatherCacheEntity
 import io.github.nemynew.expressiveweather.data.local.WeatherDao
 import io.github.nemynew.expressiveweather.data.local.WeatherDatabase
 import io.github.nemynew.expressiveweather.theme.ThemeMode
+import io.github.nemynew.expressiveweather.theme.AccentColorMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.ui.components.BentoCardType
 import kotlinx.coroutines.CancellationException
@@ -341,7 +342,7 @@ class WeatherRepository(
 
         fun getWeatherUpdateInterval(context: Context): WeatherUpdateInterval {
             val prefs = context.applicationContext.getSharedPreferences("expressive_weather_prefs", Context.MODE_PRIVATE)
-            val minutes = prefs.getInt("weather_update_interval_minutes", WeatherUpdateInterval.MINUTES_30.minutes)
+            val minutes = prefs.getInt("weather_update_interval_minutes", WeatherUpdateInterval.DEFAULT.minutes)
             return WeatherUpdateInterval.fromMinutes(minutes)
         }
 
@@ -487,13 +488,27 @@ class WeatherRepository(
         notifySettingsChanged()
     }
 
+    fun getAccentColorMode(): AccentColorMode {
+        val savedId = getPrefString("accent_color_mode", null)
+        AccentColorMode.fromId(savedId)?.let { return it }
+        val legacyColorful = getPrefBoolean("colorful_shapes_enabled", true)
+        return if (legacyColorful) AccentColorMode.CLASSIC_VIVID else AccentColorMode.MATERIAL_YOU_TONAL
+    }
+
+    fun setAccentColorMode(mode: AccentColorMode) {
+        putPrefString("accent_color_mode", mode.id)
+        putPrefBoolean("colorful_shapes_enabled", mode.isColorful)
+        notifySettingsChanged()
+    }
+
     fun getColorfulShapesEnabled(): Boolean {
-        return getPrefBoolean("colorful_shapes_enabled", true)
+        return getAccentColorMode().isColorful
     }
 
     fun setColorfulShapesEnabled(enabled: Boolean) {
-        putPrefBoolean("colorful_shapes_enabled", enabled)
-        notifySettingsChanged()
+        setAccentColorMode(
+            if (enabled) AccentColorMode.CLASSIC_VIVID else AccentColorMode.MATERIAL_YOU_TONAL
+        )
     }
 
     fun getRadarDebugZoomEnabled(): Boolean {
@@ -577,7 +592,7 @@ class WeatherRepository(
     fun getWeatherUpdateInterval(): WeatherUpdateInterval {
         val ctx = context
         if (ctx != null) return Companion.getWeatherUpdateInterval(ctx)
-        val minutes = getPrefInt("weather_update_interval_minutes", WeatherUpdateInterval.MINUTES_30.minutes)
+        val minutes = getPrefInt("weather_update_interval_minutes", WeatherUpdateInterval.DEFAULT.minutes)
         return WeatherUpdateInterval.fromMinutes(minutes)
     }
 
@@ -1008,6 +1023,7 @@ class WeatherRepository(
             .filter { (wmoEnabled && !isWmoExcluded) || it.source != AlertSource.WMO }
             .filter { meteoEnabled || it.source != AlertSource.METEOALARM }
         return weather.copy(
+            city = city,
             fetchedAtMillis = fetchedAtMillis,
             dataSourceName = resolvedSource,
             globalAlerts = filteredAlerts,

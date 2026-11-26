@@ -45,6 +45,7 @@ enum class DetailMetricType {
     AIR_QUALITY,
     HUMIDITY,
     SUN_MOON,
+    MOON,
     PRESSURE,
     VISIBILITY,
     PRECIPITATION,
@@ -254,57 +255,90 @@ fun DetailDataSourceCard(
                 }
             }
             sourceSubtitle = when (language) {
-                AppLanguage.JAPANESE -> "相対湿度実測 ＆ マグナス・テテンス露点計算法"
-                AppLanguage.KOREAN -> "상대 습도 실측 및 마그누스-테텐스 이슬점 계산법"
-                AppLanguage.SIMPLIFIED_CHINESE -> "相对湿度实测与马格努斯-泰滕斯露点计算法"
-                AppLanguage.TRADITIONAL_CHINESE -> "相對濕度實測與馬格努斯-泰騰斯露點計算法"
-                AppLanguage.SPANISH -> "Humedad relativa y punto de rocío Magnus-Tetens"
-                AppLanguage.FRENCH -> "Humidité relative et point de rosée Magnus-Tetens"
-                AppLanguage.PORTUGUESE -> "Umidade relativa e ponto de orvalho Magnus-Tetens"
-                AppLanguage.ENGLISH -> "Relative Humidity & Magnus-Tetens Dew Point"
+                AppLanguage.JAPANESE -> "相対湿度実測・露点（Magnus-Tetens）・乾燥スコア（容積絶対湿度）"
+                AppLanguage.KOREAN -> "상대 습도 실측 · 이슬점(Magnus-Tetens) · 건조 지수(용적 절대습도)"
+                AppLanguage.SIMPLIFIED_CHINESE -> "相对湿度实测・露点（Magnus-Tetens）・干燥指数（容积绝对湿度）"
+                AppLanguage.TRADITIONAL_CHINESE -> "相對濕度實測・露點（Magnus-Tetens）・乾燥指數（容積絕對濕度）"
+                AppLanguage.SPANISH -> "Humedad relativa, punto de rocío e índice de sequedad (humedad absoluta)"
+                AppLanguage.FRENCH -> "Humidité relative, point de rosée et indice de sécheresse (humidité absolue)"
+                AppLanguage.PORTUGUESE -> "Umidade relativa, ponto de orvalho e índice de secura (umidade absoluta)"
+                AppLanguage.ENGLISH -> "Relative Humidity, Dew Point & Dryness Score (Volumetric Humidity)"
             }
             sourceDetail = when (language) {
-                AppLanguage.JAPANESE -> "地上気象観測センサーによる相対湿度実測値、および気温と水蒸気圧からマグナス・テテンスの精密気象熱力学計算式により露点温度を導出しています。"
-                AppLanguage.KOREAN -> "지상 기상 관측 센서의 상대 습도 실측값과 기온·수증기압을 바탕으로 마그누스-테텐스 정밀 기상 열역학 공식으로 이슬점 온도를 산출합니다."
-                AppLanguage.SIMPLIFIED_CHINESE -> "结合地面气象站实测相对湿度，基于热力学马格努斯-泰滕斯公式精确推导露点温度与水汽饱和度。"
-                AppLanguage.TRADITIONAL_CHINESE -> "結合地面氣象站實測相對濕度，基於熱力學馬格努斯-泰騰斯公式精確推導露點溫度與水汽飽和度。"
-                AppLanguage.SPANISH -> "Combina telemetría de humedad relativa en superficie con la fórmula termodinámica de Magnus-Tetens para calcular el punto de rocío."
-                AppLanguage.FRENCH -> "Associe les relevés d'humidité relative au sol à la formule thermodynamique de Magnus-Tetens pour calculer le point de rosée."
-                AppLanguage.PORTUGUESE -> "Combina medições de umidade relativa no solo com a formulação termodinâmica de Magnus-Tetens para calcular o ponto de orvalho."
-                AppLanguage.ENGLISH -> "Ground relative humidity telemetry paired with thermodynamic Magnus-Tetens formulation to derive dew point temperature."
+                AppLanguage.JAPANESE -> "地上観測の相対湿度・気温・風速をもとに、マグナス・テテンス式で露点温度と容積絶対湿度（g/m³）を導出しています。乾燥スコア（0〜100）は容積絶対湿度による基礎点（最大80点）に風速補正と相対湿度補正を加減算して算出しています。"
+                AppLanguage.KOREAN -> "지상 관측 상대 습도·기온·풍속을 바탕으로 마그누스-테텐스 공식으로 이슬점 온도와 용적 절대습도(g/m³)를 산출합니다. 건조 지수(0~100)는 용적 절대습도 기반 기초 점수(최대 80점)에 풍속 및 상대 습도 보정을 반영해 계산합니다."
+                AppLanguage.SIMPLIFIED_CHINESE -> "结合地面观测的相对湿度、气温与风速，基于马格努斯-泰滕斯公式推导露点温度与容积绝对湿度（g/m³）。干燥指数（0–100）以容积绝对湿度基础分（最高80分）叠加风速与相对湿度修正计算得出。"
+                AppLanguage.TRADITIONAL_CHINESE -> "結合地面觀測的相對濕度、氣溫與風速，基於馬格努斯-泰騰斯公式推導露點溫度與容積絕對濕度（g/m³）。乾燥指數（0–100）以容積絕對濕度基礎分（最高80分）疊加風速與相對濕度修正計算得出。"
+                AppLanguage.SPANISH -> "Combina humedad relativa, temperatura y viento en superficie mediante la fórmula de Magnus-Tetens para calcular el punto de rocío y la humedad absoluta volumétrica (g/m³). El índice de sequedad (0–100) suma una base volumétrica (hasta 80) con ajustes de viento y humedad relativa."
+                AppLanguage.FRENCH -> "Associe l'humidité relative, la température et le vent au sol via la formule de Magnus-Tetens pour calculer le point de rosée et l'humidité absolue volumétrique (g/m³). L'indice de sécheresse (0–100) combine une base volumétrique (max 80) avec des corrections de vent et d'humidité relative."
+                AppLanguage.PORTUGUESE -> "Combina umidade relativa, temperatura e vento na superfície pela fórmula de Magnus-Tetens para calcular o ponto de orvalho e a umidade absoluta volumétrica (g/m³). O índice de secura (0–100) soma uma base volumétrica (até 80) a ajustes de vento e umidade relativa."
+                AppLanguage.ENGLISH -> "Combines surface relative humidity, temperature, and wind speed using the Magnus-Tetens formulation to derive dew point and volumetric absolute humidity (g/m³). The Dryness Score (0–100) blends a volumetric humidity base (up to 80 pts) with wind and relative humidity corrections."
             }
         }
 
         DetailMetricType.SUN_MOON -> {
             sourceTitle = when (language) {
-                AppLanguage.JAPANESE -> "米国海洋大気庁 (NOAA) 天文計算式 ＆ 端末独自天体アルゴリズム"
-                AppLanguage.KOREAN -> "미국 해양대기청 (NOAA) 천문 계산식 및 기기 내 천체 알고리즘"
-                AppLanguage.SIMPLIFIED_CHINESE -> "美国国家海洋和大气管理局 (NOAA) 天文计算式"
-                AppLanguage.TRADITIONAL_CHINESE -> "美國國家海洋暨大氣總署 (NOAA) 天文計算式"
-                AppLanguage.SPANISH -> "Cálculos solares NOAA y algoritmos astronómicos"
-                AppLanguage.FRENCH -> "Calculs solaires NOAA et algorithmes astronomiques"
-                AppLanguage.PORTUGUESE -> "Cálculos solares NOAA e algoritmos astronômicos"
-                AppLanguage.ENGLISH -> "NOAA Solar Calculations & Astronomical Algorithms"
+                AppLanguage.JAPANESE -> "米国海洋大気庁 (NOAA) 太陽位置計算式 ＆ 気象予報API"
+                AppLanguage.KOREAN -> "미국 해양대기청 (NOAA) 태양 위치 계산식 및 기상 예보 API"
+                AppLanguage.SIMPLIFIED_CHINESE -> "美国国家海洋和大气管理局 (NOAA) 太阳位置计算式"
+                AppLanguage.TRADITIONAL_CHINESE -> "美國國家海洋暨大氣總署 (NOAA) 太陽位置計算式"
+                AppLanguage.SPANISH -> "Cálculos de posición solar NOAA"
+                AppLanguage.FRENCH -> "Calculs de position solaire NOAA"
+                AppLanguage.PORTUGUESE -> "Cálculos de posição solar NOAA"
+                AppLanguage.ENGLISH -> "NOAA Solar Position Calculations"
             }
             sourceSubtitle = when (language) {
-                AppLanguage.JAPANESE -> "緯度経度・大気差補正・コンウェイ月相計算法"
-                AppLanguage.KOREAN -> "위도·경도 기반 대기 굴절 보정 및 콘웨이 월령 알고리즘"
-                AppLanguage.SIMPLIFIED_CHINESE -> "经纬度太阳天顶角・大气折射修正・康威月相算法"
-                AppLanguage.TRADITIONAL_CHINESE -> "經緯度太陽天頂角・大氣折射修正・康威月相演算法"
-                AppLanguage.SPANISH -> "Coordenadas solares en el dispositivo y fase lunar de Conway"
-                AppLanguage.FRENCH -> "Coordonnées solaires locales et phase lunaire de Conway"
-                AppLanguage.PORTUGUESE -> "Coordenadas solares no dispositivo e fase lunar de Conway"
-                AppLanguage.ENGLISH -> "On-Device Solar Coordinates & Conway Moon Phase"
+                AppLanguage.JAPANESE -> "緯度経度・太陽高度角・大気差（約34'）補正"
+                AppLanguage.KOREAN -> "위도·경도 기반 태양 고도각 및 대기 굴절(약 34') 보정"
+                AppLanguage.SIMPLIFIED_CHINESE -> "经纬度太阳高度角・大气折射（约34'）修正"
+                AppLanguage.TRADITIONAL_CHINESE -> "經緯度太陽高度角・大氣折射（約34'）修正"
+                AppLanguage.SPANISH -> "Coordenadas solares locales y refracción atmosférica (~34')"
+                AppLanguage.FRENCH -> "Coordonnées solaires locales et réfraction atmosphérique (~34')"
+                AppLanguage.PORTUGUESE -> "Coordenadas solares locais e refração atmosférica (~34')"
+                AppLanguage.ENGLISH -> "Local Solar Geometry & Atmospheric Refraction (~34')"
             }
             sourceDetail = when (language) {
-                AppLanguage.JAPANESE -> "観測地点の緯度経度からNOAA太陽位置方程式、大気差補正（約34分角）、グリニッジ恒星時をもとに日の出・日の入り時刻および月齢・輝面比を端末独自に高精度演算しています。"
-                AppLanguage.KOREAN -> "관측 지점의 위도·경도와 그리니치 항성시를 바탕으로 NOAA 태양 위치 방정식, 대기 굴절 보정(약 34분각), 콘웨이 월령 계산법을 적용해 일출·일몰 시각과 달 위상을 기기에서 정밀 계산합니다."
-                AppLanguage.SIMPLIFIED_CHINESE -> "根据精确经纬度与格林尼治恒星时，运用NOAA太阳位置方程结合大气折射修正与康威月相算法进行端侧高精度天文演算。"
-                AppLanguage.TRADITIONAL_CHINESE -> "根據精確經緯度與格林尼治恆星時，運用NOAA太陽位置方程結合大氣折射修正與康威月相演算法進行端側高精度天文演算。"
-                AppLanguage.SPANISH -> "Calculado localmente mediante los algoritmos de posición solar de la NOAA con corrección de refracción atmosférica (~34 min de arco) y la fórmula de fase lunar de Conway."
-                AppLanguage.FRENCH -> "Calculé localement via les algorithmes solaires de la NOAA intégrant la réfraction atmosphérique (~34 minutes d'arc) et les formules de phase lunaire de Conway."
-                AppLanguage.PORTUGUESE -> "Calculado localmente pelos algoritmos de posição solar da NOAA considerando a refração atmosférica (~34 min de arco) e a fórmula de fase lunar de Conway."
-                AppLanguage.ENGLISH -> "Computed locally via NOAA solar position algorithms factoring atmospheric refraction (~34 arcmin) alongside Conway moon phase formulas."
+                AppLanguage.JAPANESE -> "観測地点の緯度経度・タイムゾーンからNOAA太陽位置方程式と大気差補正（約34分角）をもとに、日の出・日の入り時刻および昼の長さ（日照時間）を高精度に算出しています。"
+                AppLanguage.KOREAN -> "관측 지점의 위도·경도와 현지 시간대를 바탕으로 NOAA 태양 위치 방정식과 대기 굴절 보정(약 34분각)을 적용해 일출·일몰 시각과 낮 길이를 정밀 계산합니다."
+                AppLanguage.SIMPLIFIED_CHINESE -> "根据观测地经纬度与当地时区，结合NOAA太阳位置方程与大气折射修正（约34角分），精确计算日出日落时刻与昼长。"
+                AppLanguage.TRADITIONAL_CHINESE -> "根據觀測地經緯度與當地時區，結合NOAA太陽位置方程與大氣折射修正（約34角分），精確計算日出日落時刻與晝長。"
+                AppLanguage.SPANISH -> "Calculado a partir de las coordenadas y zona horaria locales mediante las ecuaciones de posición solar de la NOAA con corrección de refracción atmosférica (~34 min de arco)."
+                AppLanguage.FRENCH -> "Calculé à partir des coordonnées et du fuseau horaire locaux via les équations de position solaire de la NOAA intégrant la réfraction atmosphérique (~34 minutes d'arc)."
+                AppLanguage.PORTUGUESE -> "Calculado a partir das coordenadas e fuso horário locais pelas equações de posição solar da NOAA considerando a refração atmosférica (~34 min de arco)."
+                AppLanguage.ENGLISH -> "Computed from local coordinates and time zone using NOAA solar position equations with atmospheric refraction (~34 arcmin) to determine sunrise, sunset, and daylight duration."
+            }
+        }
+
+        DetailMetricType.MOON -> {
+            sourceTitle = when (language) {
+                AppLanguage.JAPANESE -> "端末内高精度天文計算（Meeus / USNO 基準）"
+                AppLanguage.KOREAN -> "기기 내 고정밀 천체 계산 (Meeus / USNO 기준)"
+                AppLanguage.SIMPLIFIED_CHINESE -> "端侧高精度天文演算（Meeus / USNO 标准）"
+                AppLanguage.TRADITIONAL_CHINESE -> "端側高精度天文演算（Meeus / USNO 標準）"
+                AppLanguage.SPANISH -> "Cálculo astronómico lunar local (Meeus / USNO)"
+                AppLanguage.FRENCH -> "Calcul astronomique lunaire local (Meeus / USNO)"
+                AppLanguage.PORTUGUESE -> "Cálculo astronômico lunar local (Meeus / USNO)"
+                AppLanguage.ENGLISH -> "On-Device Lunar Ephemeris (Meeus / USNO)"
+            }
+            sourceSubtitle = when (language) {
+                AppLanguage.JAPANESE -> "月黄経摂動・地平視差・月視半径・大気差（34'）補正"
+                AppLanguage.KOREAN -> "달 황경 섭동 · 지평 시차 · 시반경 · 대기 굴절(34') 보정"
+                AppLanguage.SIMPLIFIED_CHINESE -> "月球黄经摄动・地平视差・视半径・大气折射(34')修正"
+                AppLanguage.TRADITIONAL_CHINESE -> "月球黃經攝動・地平視差・視半徑・大氣折射(34')修正"
+                AppLanguage.SPANISH -> "Longitud eclíptica, paralaje horizontal y refracción (34')"
+                AppLanguage.FRENCH -> "Longitude écliptique, parallaxe horizontale et réfraction (34')"
+                AppLanguage.PORTUGUESE -> "Longitude eclíptica, paralaxe horizontal e refração (34')"
+                AppLanguage.ENGLISH -> "Lunar Ecliptic Perturbations, Parallax & Refraction (34')"
+            }
+            sourceDetail = when (language) {
+                AppLanguage.JAPANESE -> "観測地点の緯度経度と現地タイムゾーンから、月の黄経・黄緯・地平視差・視半径・大気差補正をもとに月の出・月の入り時刻、見かけ高度、月齢・輝面比を端末内でリアルタイム演算しています。"
+                AppLanguage.KOREAN -> "관측 지점의 위도·경도와 현지 시간대를 바탕으로 달의 황경·황위·지평 시차·시반경·대기 굴절 보정을 적용해 월출·월몰 시각, 겉보기 고도, 월령과 조도를 기기에서 실시간 계산합니다."
+                AppLanguage.SIMPLIFIED_CHINESE -> "根据观测地经纬度与当地时区，综合月球黄经黄纬、地平视差、视半径及大气折射修正，在设备端实时计算月出月落时刻、视高度及月龄受光比。"
+                AppLanguage.TRADITIONAL_CHINESE -> "根據觀測地經緯度與當地時區，綜合月球黃經黃緯、地平視差、視半徑及大氣折射修正，於裝置端即時計算月出月沒時刻、視高度與月齡受光比。"
+                AppLanguage.SPANISH -> "Calcula localmente la salida y puesta de la luna, su altitud aparente, edad lunar e iluminación a partir de las coordenadas del lugar, aplicando paralaje horizontal y refracción atmosférica."
+                AppLanguage.FRENCH -> "Calcule localement le lever et le coucher de la lune, sa hauteur apparente, son âge et son illumination à partir des coordonnées du lieu avec parallaxe horizontale et réfraction atmosphérique."
+                AppLanguage.PORTUGUESE -> "Calcula localmente o nascer e o pôr da lua, a altitude aparente, a idade lunar e a iluminação a partir das coordenadas do local com paralaxe horizontal e refração atmosférica."
+                AppLanguage.ENGLISH -> "Computes local moonrise, moonset, apparent altitude, lunar age, and illumination directly on-device from location coordinates using lunar perturbations, horizontal parallax, and atmospheric refraction."
             }
         }
 

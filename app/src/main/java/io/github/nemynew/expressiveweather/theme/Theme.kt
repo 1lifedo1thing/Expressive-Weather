@@ -111,6 +111,7 @@ fun ExpressiveWeatherTheme(
     weatherCondition: WeatherCondition? = null,
     weatherAdaptiveColor: Boolean = true,
     themePreset: ThemePreset = if (weatherAdaptiveColor) ThemePreset.WEATHER else ThemePreset.SYSTEM,
+    accentColorMode: AccentColorMode = LocalAccentColorMode.current,
     language: AppLanguage = LocalAppLanguage.current,
     content: @Composable () -> Unit
 ) {
@@ -158,9 +159,18 @@ fun ExpressiveWeatherTheme(
     }
 
     val expressHaptics = rememberExpressiveHaptics()
+    val accentPalette = remember(colorScheme, darkTheme, accentColorMode) {
+        MaterialYouHarmonizer.buildPalette(
+            colorScheme = colorScheme,
+            isDark = darkTheme,
+            mode = accentColorMode
+        )
+    }
 
     CompositionLocalProvider(
         LocalDarkTheme provides darkTheme,
+        LocalAccentColorMode provides accentColorMode,
+        LocalMaterialYouPalette provides accentPalette,
         LocalAppLanguage provides language,
         LocalConfiguration provides localizedConfiguration,
         LocalExpressiveHaptics provides expressHaptics,

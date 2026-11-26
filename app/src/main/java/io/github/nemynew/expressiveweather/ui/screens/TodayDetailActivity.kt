@@ -63,6 +63,7 @@ class TodayDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) TodayDetailDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) TodayDetailDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) TodayDetailDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val initialWeather = TodayDetailDataHolder.weatherData ?: repo.getMemoryCachedWeatherOrNull(city)
 
         setContent {
@@ -85,6 +86,7 @@ class TodayDetailActivity : ComponentActivity() {
                 weatherCondition = weatherData?.condition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
                 Surface(

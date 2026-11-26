@@ -42,6 +42,7 @@ import io.github.nemynew.expressiveweather.data.getLocalizedTimeLabel
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
 import java.util.Locale
@@ -68,7 +69,6 @@ fun PrecipitationDetailScreen(
     val dailyForecast = weather?.dailyForecast ?: emptyList()
 
     val isRaining = currentPrecip > 0.0 || (weather?.condition?.isPrecipitating == true)
-    val statusColor = if (isRaining) Color(0xFF1E88E5) else if (maxProb >= 50) Color(0xFF0288D1) else Color(0xFF4CAF50)
 
     DetailScaffold(
         title = strings.precipitation,
@@ -82,6 +82,13 @@ fun PrecipitationDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val statusColor = when {
+            isRaining -> accentPalette.precipitation.accent
+            maxProb >= 50 -> accentPalette.visibility.accent
+            else -> accentPalette.severity(0).accent
+        }
         // ================= 1. ヒーローセクション: 降水量 & 降水確率 =================
         Card(
             shape = RoundedCornerShape(28.dp),
@@ -370,7 +377,11 @@ fun PrecipitationDetailScreen(
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                     items(hourlyForecast.take(24)) { item ->
                         val prob = item.precipProb
-                        val probColor = if (prob >= 60) Color(0xFF1976D2) else if (prob >= 30) Color(0xFF03A9F4) else Color.LightGray
+                        val probColor = when {
+                            prob >= 60 -> accentPalette.precipitation.accent
+                            prob >= 30 -> accentPalette.visibility.accent
+                            else -> colorScheme.outlineVariant
+                        }
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.width(44.dp)
@@ -452,7 +463,10 @@ fun PrecipitationDetailScreen(
                                 text = getLocalizedDayLabel(day.dayLabel, language),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
-                                modifier = Modifier.widthIn(min = 68.dp)
+                                maxLines = 1,
+                                softWrap = false,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                modifier = Modifier.width(82.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
 
@@ -469,25 +483,33 @@ fun PrecipitationDetailScreen(
                                         .fillMaxWidth((prob / 100f).coerceIn(0.05f, 1f))
                                         .height(8.dp)
                                         .clip(CircleShape)
-                                        .background(if (prob >= 50) Color(0xFF1E88E5) else Color(0xFF03A9F4))
+                                        .background(if (prob >= 50) accentPalette.precipitation.accent else accentPalette.visibility.accent)
                                 )
                             }
 
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Spacer(modifier = Modifier.width(10.dp))
 
                             Text(
                                 text = "$prob%",
-                                style = MaterialTheme.typography.labelLarge,
+                                style = MaterialTheme.typography.labelLarge.copy(fontFeatureSettings = "tnum"),
                                 fontWeight = FontWeight.Bold,
-                                color = if (prob >= 50) Color(0xFF1E88E5) else MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.width(44.dp)
+                                color = if (prob >= 50) accentPalette.precipitation.accent else MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                softWrap = false,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                                modifier = Modifier.width(42.dp)
                             )
+
+                            Spacer(modifier = Modifier.width(4.dp))
 
                             Text(
                                 text = String.format(Locale.US, "%.1fmm", pSum),
-                                style = MaterialTheme.typography.labelMedium,
+                                style = MaterialTheme.typography.labelMedium.copy(fontFeatureSettings = "tnum"),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.width(52.dp)
+                                maxLines = 1,
+                                softWrap = false,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.End,
+                                modifier = Modifier.width(50.dp)
                             )
                         }
                     }

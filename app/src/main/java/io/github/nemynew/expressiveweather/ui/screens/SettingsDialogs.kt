@@ -2,6 +2,7 @@ package io.github.nemynew.expressiveweather.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,16 +25,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.nemynew.expressiveweather.BuildConfig
 import io.github.nemynew.expressiveweather.data.AppLanguage
+import io.github.nemynew.expressiveweather.data.MoonPhaseCalculator
+import io.github.nemynew.expressiveweather.data.MoonPhaseSimulator
+import io.github.nemynew.expressiveweather.data.MoonPhaseStage
 import io.github.nemynew.expressiveweather.data.WeatherCondition
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.ui.components.MoonPhaseDisc
 import io.github.nemynew.expressiveweather.ui.haptics.ExpressiveHapticPattern
 import io.github.nemynew.expressiveweather.ui.haptics.HapticCapabilitiesSnapshot
 import io.github.nemynew.expressiveweather.ui.haptics.HapticDeviceProfile
 import io.github.nemynew.expressiveweather.ui.haptics.LocalExpressiveHaptics
+import kotlin.math.abs
 
 @Composable
 fun <T> SingleChoiceDialog(
@@ -285,6 +292,426 @@ fun WeatherSimulationDialog(
         },
         shape = RoundedCornerShape(28.dp),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+    )
+}
+
+private data class MoonPhasePreset(
+    val stage: MoonPhaseStage,
+    val phaseFraction: Float
+)
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+fun MoonPhaseSimulationDialog(
+    language: AppLanguage,
+    onDismiss: () -> Unit,
+    closeText: String
+) {
+    val context = LocalContext.current
+    val expressHaptics = LocalExpressiveHaptics.current
+    val colorScheme = MaterialTheme.colorScheme
+
+    LaunchedEffect(Unit) {
+        MoonPhaseSimulator.ensureLoaded(context)
+    }
+
+    val simulatedPhase by MoonPhaseSimulator.overridePhaseFraction.collectAsState()
+    val simulatedSouthern by MoonPhaseSimulator.overrideSouthernHemisphere.collectAsState()
+
+    val liveMoonInfo = remember(language) {
+        MoonPhaseCalculator.calculate(language = language)
+    }
+    val activeMoonInfo = remember(language, simulatedPhase, liveMoonInfo) {
+        if (simulatedPhase != null) {
+            MoonPhaseCalculator.calculateForFraction(language, simulatedPhase!!)
+        } else {
+            liveMoonInfo
+        }
+    }
+    val sliderFraction = simulatedPhase ?: liveMoonInfo.phaseFraction
+    val clover8Shape = MaterialShapes.Clover8Leaf.toShape()
+
+    val presets = remember {
+        listOf(
+            MoonPhasePreset(MoonPhaseStage.NEW_MOON, 0.00f),
+            MoonPhasePreset(MoonPhaseStage.WAXING_CRESCENT, 0.125f),
+            MoonPhasePreset(MoonPhaseStage.FIRST_QUARTER, 0.25f),
+            MoonPhasePreset(MoonPhaseStage.WAXING_GIBBOUS, 0.375f),
+            MoonPhasePreset(MoonPhaseStage.FULL_MOON, 0.50f),
+            MoonPhasePreset(MoonPhaseStage.WANING_GIBBOUS, 0.625f),
+            MoonPhasePreset(MoonPhaseStage.THIRD_QUARTER, 0.75f),
+            MoonPhasePreset(MoonPhaseStage.WANING_CRESCENT, 0.875f)
+        )
+    }
+
+    val titleText = when (language) {
+        AppLanguage.JAPANESE -> "月の満ち欠けシミュレーター"
+        AppLanguage.KOREAN -> "달의 위상 시뮬레이터"
+        AppLanguage.SIMPLIFIED_CHINESE -> "月相模拟器"
+        AppLanguage.TRADITIONAL_CHINESE -> "月相模擬器"
+        AppLanguage.ENGLISH -> "Moon Phase Simulator"
+        AppLanguage.SPANISH -> "Simulador de fases lunares"
+        AppLanguage.FRENCH -> "Simulateur de phases lunaires"
+        AppLanguage.PORTUGUESE -> "Simulador de fases da lua"
+    }
+
+    val statusText = if (simulatedPhase != null) {
+        when (language) {
+            AppLanguage.JAPANESE -> "シミュレーション中"
+            AppLanguage.KOREAN -> "시뮬레이션 중"
+            AppLanguage.SIMPLIFIED_CHINESE -> "模拟中"
+            AppLanguage.TRADITIONAL_CHINESE -> "模擬中"
+            AppLanguage.ENGLISH -> "Simulating"
+            AppLanguage.SPANISH -> "Simulando"
+            AppLanguage.FRENCH -> "Simulation active"
+            AppLanguage.PORTUGUESE -> "Simulando"
+        }
+    } else {
+        when (language) {
+            AppLanguage.JAPANESE -> "現在の実際の月相"
+            AppLanguage.KOREAN -> "현재 실제 달 위상"
+            AppLanguage.SIMPLIFIED_CHINESE -> "当前真实月相"
+            AppLanguage.TRADITIONAL_CHINESE -> "目前真實月相"
+            AppLanguage.ENGLISH -> "Live astronomical phase"
+            AppLanguage.SPANISH -> "Fase astronómica real"
+            AppLanguage.FRENCH -> "Phase astronomique réelle"
+            AppLanguage.PORTUGUESE -> "Fase astronômica real"
+        }
+    }
+
+    val moonAgeLabel = when (language) {
+        AppLanguage.JAPANESE -> "月齢 ${activeMoonInfo.ageDays}"
+        AppLanguage.KOREAN -> "월령 ${activeMoonInfo.ageDays}"
+        AppLanguage.SIMPLIFIED_CHINESE -> "月龄 ${activeMoonInfo.ageDays}"
+        AppLanguage.TRADITIONAL_CHINESE -> "月齡 ${activeMoonInfo.ageDays}"
+        AppLanguage.ENGLISH -> "Age ${activeMoonInfo.ageDays}d"
+        AppLanguage.SPANISH -> "Edad ${activeMoonInfo.ageDays}d"
+        AppLanguage.FRENCH -> "Âge ${activeMoonInfo.ageDays} j"
+        AppLanguage.PORTUGUESE -> "Idade ${activeMoonInfo.ageDays}d"
+    }
+
+    val sliderHeaderLabel = when (language) {
+        AppLanguage.JAPANESE -> "月齢スライダー（0.0 〜 29.5日）"
+        AppLanguage.KOREAN -> "월령 슬라이더 (0.0 ~ 29.5일)"
+        AppLanguage.SIMPLIFIED_CHINESE -> "月龄滑块（0.0 ～ 29.5天）"
+        AppLanguage.TRADITIONAL_CHINESE -> "月齡滑桿（0.0 ～ 29.5天）"
+        AppLanguage.ENGLISH -> "Lunar cycle slider (0.0 – 29.5d)"
+        AppLanguage.SPANISH -> "Ciclo lunar (0,0 – 29,5 d)"
+        AppLanguage.FRENCH -> "Cycle lunaire (0,0 – 29,5 j)"
+        AppLanguage.PORTUGUESE -> "Ciclo lunar (0,0 – 29,5 d)"
+    }
+
+    val presetsHeaderLabel = when (language) {
+        AppLanguage.JAPANESE -> "主要8位相プリセット"
+        AppLanguage.KOREAN -> "주요 8위상 프리셋"
+        AppLanguage.SIMPLIFIED_CHINESE -> "8大月相预设"
+        AppLanguage.TRADITIONAL_CHINESE -> "8大月相預設"
+        AppLanguage.ENGLISH -> "8-phase presets"
+        AppLanguage.SPANISH -> "Preajustes de 8 fases"
+        AppLanguage.FRENCH -> "Préréglages des 8 phases"
+        AppLanguage.PORTUGUESE -> "Predefinições das 8 fases"
+    }
+
+    val southernLabel = when (language) {
+        AppLanguage.JAPANESE -> "南半球の見え方で表示"
+        AppLanguage.KOREAN -> "남반구 시점으로 표시"
+        AppLanguage.SIMPLIFIED_CHINESE -> "按南半球视角显示"
+        AppLanguage.TRADITIONAL_CHINESE -> "依南半球視角顯示"
+        AppLanguage.ENGLISH -> "Southern Hemisphere view"
+        AppLanguage.SPANISH -> "Vista del hemisferio sur"
+        AppLanguage.FRENCH -> "Vue hémisphère sud"
+        AppLanguage.PORTUGUESE -> "Visão do hemisfério sul"
+    }
+
+    val resetLabel = when (language) {
+        AppLanguage.JAPANESE -> "実際の月相に戻す"
+        AppLanguage.KOREAN -> "실제 달 위상으로 복원"
+        AppLanguage.SIMPLIFIED_CHINESE -> "恢复真实月相"
+        AppLanguage.TRADITIONAL_CHINESE -> "恢復真實月相"
+        AppLanguage.ENGLISH -> "Reset to live phase"
+        AppLanguage.SPANISH -> "Restaurar fase real"
+        AppLanguage.FRENCH -> "Revenir à la phase réelle"
+        AppLanguage.PORTUGUESE -> "Restaurar fase real"
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = titleText,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // ライブプレビュー（暗め紺色の 8-leaf clover + 高精細月相ディスク）
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    color = colorScheme.surfaceContainerLowest,
+                    border = BorderStroke(1.dp, colorScheme.outlineVariant.copy(alpha = 0.35f))
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 14.dp, horizontal = 12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier.size(134.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(134.dp)
+                                    .clip(clover8Shape)
+                                    .background(Color(0xFF5C6BC0).copy(alpha = 0.22f))
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .size(116.dp)
+                                    .clip(clover8Shape)
+                                    .background(Color(0xFF3F51B5).copy(alpha = 0.42f))
+                            )
+                            MoonPhaseDisc(
+                                phaseFraction = activeMoonInfo.phaseFraction,
+                                isSouthernHemisphere = simulatedSouthern == true,
+                                modifier = Modifier.size(86.dp)
+                            )
+                        }
+
+                        Text(
+                            text = activeMoonInfo.phaseName,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.onSurface
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (simulatedPhase != null) {
+                                    colorScheme.primaryContainer
+                                } else {
+                                    colorScheme.surfaceContainerHigh
+                                }
+                            ) {
+                                Text(
+                                    text = statusText,
+                                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+                                    color = if (simulatedPhase != null) {
+                                        colorScheme.onPrimaryContainer
+                                    } else {
+                                        colorScheme.onSurfaceVariant
+                                    },
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                                )
+                            }
+                            Text(
+                                text = "$moonAgeLabel · ${activeMoonInfo.illumination}%",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+
+                // 連続スライダー
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = sliderHeaderLabel,
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                            color = colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "${activeMoonInfo.illumination}%",
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                            color = colorScheme.primary
+                        )
+                    }
+                    Slider(
+                        value = sliderFraction,
+                        onValueChange = { value ->
+                            MoonPhaseSimulator.setSimulatedPhase(context, value)
+                        },
+                        valueRange = 0f..0.999f,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+
+                // 主要8位相プリセット（2列×4行・ミニ月プレビュー付き）
+                Text(
+                    text = presetsHeaderLabel,
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+                    color = colorScheme.onSurfaceVariant
+                )
+
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    presets.chunked(2).forEach { rowItems ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            rowItems.forEach { preset ->
+                                val presetInfo = remember(language, preset.phaseFraction) {
+                                    MoonPhaseCalculator.calculateForFraction(language, preset.phaseFraction)
+                                }
+                                val isSelected = simulatedPhase != null &&
+                                    (abs(simulatedPhase!! - preset.phaseFraction) < 0.03f ||
+                                        (preset.phaseFraction == 0f && simulatedPhase!! > 0.97f))
+
+                                Surface(
+                                    onClick = {
+                                        expressHaptics.play(ExpressiveHapticPattern.SOFT_TAP)
+                                        MoonPhaseSimulator.setSimulatedPhase(context, preset.phaseFraction)
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = if (isSelected) {
+                                        colorScheme.primaryContainer
+                                    } else {
+                                        colorScheme.surfaceContainerLow
+                                    },
+                                    border = if (isSelected) {
+                                        BorderStroke(1.2.dp, colorScheme.primary)
+                                    } else {
+                                        BorderStroke(0.8.dp, colorScheme.outlineVariant.copy(alpha = 0.35f))
+                                    }
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 8.dp, vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(28.dp)
+                                                .clip(CircleShape)
+                                                .background(Color(0xFF3F51B5).copy(alpha = 0.22f)),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            MoonPhaseDisc(
+                                                phaseFraction = preset.phaseFraction,
+                                                isSouthernHemisphere = simulatedSouthern == true,
+                                                modifier = Modifier.size(22.dp)
+                                            )
+                                        }
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                text = presetInfo.phaseName,
+                                                style = MaterialTheme.typography.labelMedium.copy(
+                                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
+                                                ),
+                                                color = if (isSelected) {
+                                                    colorScheme.onPrimaryContainer
+                                                } else {
+                                                    colorScheme.onSurface
+                                                },
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                            Text(
+                                                text = "${presetInfo.illumination}%",
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = if (isSelected) {
+                                                    colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                                } else {
+                                                    colorScheme.onSurfaceVariant
+                                                },
+                                                maxLines = 1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 南半球表示切替（ON で南半球固定、OFF で都市の緯度に自動追従）
+                val isSouthernToggleOn = simulatedSouthern == true
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable {
+                            val next = !isSouthernToggleOn
+                            expressHaptics.toggle(next)
+                            MoonPhaseSimulator.setSimulatedSouthernHemisphere(context, if (next) true else null)
+                        }
+                        .padding(horizontal = 4.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = southernLabel,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = colorScheme.onSurface,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Switch(
+                        checked = isSouthernToggleOn,
+                        onCheckedChange = { checked ->
+                            expressHaptics.toggle(checked)
+                            MoonPhaseSimulator.setSimulatedSouthernHemisphere(context, if (checked) true else null)
+                        }
+                    )
+                }
+
+                HorizontalDivider(
+                    color = colorScheme.outlineVariant.copy(alpha = 0.3f)
+                )
+
+                // 実際の月相に戻す
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .clickable {
+                            expressHaptics.play(ExpressiveHapticPattern.EXPRESSIVE_BOUNCE)
+                            MoonPhaseSimulator.clear(context)
+                        }
+                        .padding(vertical = 8.dp, horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.RestartAlt,
+                        contentDescription = null,
+                        tint = colorScheme.tertiary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = resetLabel,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                        color = colorScheme.tertiary
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(closeText)
+            }
+        },
+        shape = RoundedCornerShape(28.dp),
+        containerColor = colorScheme.surfaceContainerHigh
     )
 }
 

@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import io.github.nemynew.expressiveweather.data.TemperatureUnit
 import io.github.nemynew.expressiveweather.data.getLocalizedDayLabel
 import io.github.nemynew.expressiveweather.data.getLocalizedLabel
 import io.github.nemynew.expressiveweather.theme.WeatherAtmosphereTheme
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 
 /**
  * 週間天気予報セクション (WeeklyForecastSection):
@@ -115,13 +117,22 @@ private fun DailyChartContent(
     val density = LocalDensity.current
     val scrollState = rememberScrollState()
 
-    // デバイステーマカラー
-    val onSurface = MaterialTheme.colorScheme.onSurface
-    val onSurfaceVariant = MaterialTheme.colorScheme.onSurfaceVariant
-    val highTempColor = MaterialTheme.colorScheme.primary
-    val lowTempColor = MaterialTheme.colorScheme.secondary
-    val guideColor = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f)
-    val dotSurfaceColor = MaterialTheme.colorScheme.surface
+    // デバイステーマカラー & 選択アクセントパレット
+    val colorScheme = MaterialTheme.colorScheme
+    val accentPalette = currentAccentPalette()
+    val onSurface = colorScheme.onSurface
+    val onSurfaceVariant = colorScheme.onSurfaceVariant
+    val highTempColor = colorScheme.primary
+    val lowTempColor = colorScheme.secondary
+    val colorfulHighStart = accentPalette.weeklyMaxGradient[0]
+    val colorfulHighMid = accentPalette.weeklyMaxGradient[1]
+    val colorfulHighEnd = accentPalette.weeklyMaxGradient[2]
+    val colorfulLowStart = accentPalette.weeklyMinGradient[0]
+    val colorfulLowMid = accentPalette.weeklyMinGradient[1]
+    val colorfulLowEnd = accentPalette.weeklyMinGradient[2]
+    val colorfulPrecipColor = accentPalette.precipitation.accent
+    val guideColor = colorScheme.outlineVariant.copy(alpha = 0.35f)
+    val dotSurfaceColor = colorScheme.surface
 
     val overallMaxTemp = dailyList.maxOfOrNull { it.maxTempC } ?: 30
     val overallMinTemp = dailyList.minOfOrNull { it.minTempC } ?: 10
@@ -204,7 +215,7 @@ private fun DailyChartContent(
                                 text = "${temperatureUnit.convert(day.maxTempC)}°",
                                 fontSize = maxTempFontSize,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isColorful) Color(0xFFFF5722) else onSurface
+                                color = if (isColorful) colorfulHighStart else onSurface
                             )
                         }
                     }
@@ -289,8 +300,8 @@ private fun DailyChartContent(
                         val areaBrush = if (isColorful) {
                             Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFFFF7043).copy(alpha = 0.30f),
-                                    Color(0xFF00B0FF).copy(alpha = 0.12f)
+                                    colorfulHighStart.copy(alpha = 0.30f),
+                                    colorfulLowStart.copy(alpha = 0.14f)
                                 ),
                                 startY = 0f,
                                 endY = size.height
@@ -319,13 +330,13 @@ private fun DailyChartContent(
                             )
                         }
 
-                        // 最高気温ライン（カラフル時: 鮮烈な暖色サンバーストグラデーション）
+                        // 最高気温ライン（カラフル時: Material You tertiary → error グラデーション）
                         val maxBrush = if (isColorful) {
                             Brush.horizontalGradient(
                                 colors = listOf(
-                                    Color(0xFFFF3D00),
-                                    Color(0xFFFF9100),
-                                    Color(0xFFFFD600)
+                                    colorfulHighStart,
+                                    colorfulHighMid,
+                                    colorfulHighEnd
                                 )
                             )
                         } else {
@@ -337,13 +348,13 @@ private fun DailyChartContent(
                             style = Stroke(width = 3.2.dp.toPx(), cap = StrokeCap.Round)
                         )
 
-                        // 最低気温ライン（カラフル時: 鮮烈なクールアクアグラデーション）
+                        // 最低気温ライン（カラフル時: Material You primary → secondary グラデーション）
                         val minBrush = if (isColorful) {
                             Brush.horizontalGradient(
                                 colors = listOf(
-                                    Color(0xFF00E5FF),
-                                    Color(0xFF2979FF),
-                                    Color(0xFF7C4DFF)
+                                    colorfulLowStart,
+                                    colorfulLowMid,
+                                    colorfulLowEnd
                                 )
                             )
                         } else {
@@ -357,8 +368,8 @@ private fun DailyChartContent(
 
                         // データポイントのドット
                         for (i in 0 until nPoints) {
-                            val maxDotColor = if (isColorful) Color(0xFFFF5722) else highTempColor
-                            val minDotColor = if (isColorful) Color(0xFF00B0FF) else lowTempColor
+                            val maxDotColor = if (isColorful) colorfulHighStart else highTempColor
+                            val minDotColor = if (isColorful) colorfulLowStart else lowTempColor
 
                             // 最高気温ドット
                             drawCircle(
@@ -406,13 +417,13 @@ private fun DailyChartContent(
                                 text = "${temperatureUnit.convert(day.minTempC)}°",
                                 fontSize = minTempFontSize,
                                 fontWeight = FontWeight.Medium,
-                                color = if (isColorful) Color(0xFF0288D1) else onSurfaceVariant
+                                color = if (isColorful) colorfulLowStart else onSurfaceVariant
                             )
 
                             Spacer(modifier = Modifier.height(6.dp))
 
                             if (day.precipProb > 0) {
-                                val precipColor = if (isColorful) Color(0xFF00B0FF) else highTempColor
+                                val precipColor = if (isColorful) colorfulPrecipColor else colorScheme.secondary
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.Center

@@ -19,7 +19,8 @@ enum class BentoCardType(
     PRESSURE("pressure", "気圧", false),
     VISIBILITY("visibility", "視程", false),
     PRECIPITATION("precipitation", "降水情報", false),
-    COMFORT("comfort", "体感温度", false);
+    COMFORT("comfort", "体感温度", false),
+    MOON_PHASE("moon_phase", "月の満ち欠け", false);
 
     companion object {
         val DEFAULT_ORDER = listOf(
@@ -27,7 +28,7 @@ enum class BentoCardType(
             AQI, HUMIDITY,
             SUN_CYCLE, PRESSURE,
             VISIBILITY, PRECIPITATION,
-            COMFORT
+            COMFORT, MOON_PHASE
         )
     }
 
@@ -42,6 +43,7 @@ enum class BentoCardType(
             VISIBILITY -> strings.visibility
             PRECIPITATION -> strings.precipitation
             COMFORT -> strings.feelsLikeCard
+            MOON_PHASE -> strings.moonPhase
         }
     }
 }

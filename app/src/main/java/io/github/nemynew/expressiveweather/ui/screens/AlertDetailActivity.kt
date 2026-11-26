@@ -59,6 +59,7 @@ class AlertDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) AlertDetailDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) AlertDetailDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) AlertDetailDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val initialWeather = AlertDetailDataHolder.weatherData ?: repo.getMemoryCachedWeatherOrNull(city)
         val holderAlertInfo = AlertDetailDataHolder.alertInfo
         val holderJmaWarnings = AlertDetailDataHolder.jmaWarnings
@@ -90,6 +91,7 @@ class AlertDetailActivity : ComponentActivity() {
                 weatherCondition = weatherData?.condition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
                 Surface(

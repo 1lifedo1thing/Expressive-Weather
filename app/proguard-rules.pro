@@ -49,6 +49,13 @@
 # Google Maps / Play Services
 -keep class com.google.android.gms.maps.** { *; }
 
+# Keep enum names used with valueOf() / .name for SharedPreferences persistence and Intent extras
+-keep enum io.github.nemynew.expressiveweather.ui.components.BentoCardType { *; }
+-keep enum io.github.nemynew.expressiveweather.data.TemperatureUnit { *; }
+-keep enum io.github.nemynew.expressiveweather.data.WindSpeedUnit { *; }
+-keep enum io.github.nemynew.expressiveweather.data.AlertSource { *; }
+-keep enum io.github.nemynew.expressiveweather.data.RainStatus { *; }
+
 # Keep AndroidX NotificationCompat promoted notification reflection targets
 -keepclassmembers class androidx.core.app.NotificationCompat$Builder {
     public androidx.core.app.NotificationCompat$Builder setShortCriticalText(java.lang.CharSequence);

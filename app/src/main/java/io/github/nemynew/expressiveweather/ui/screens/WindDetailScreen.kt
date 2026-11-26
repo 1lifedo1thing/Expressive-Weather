@@ -46,6 +46,7 @@ import androidx.compose.material.icons.rounded.Umbrella
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -91,9 +92,8 @@ import io.github.nemynew.expressiveweather.theme.ExpressiveWeatherTheme
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
-import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
-import io.github.nemynew.expressiveweather.ui.components.WeatherAtmosphereCanvas
 import io.github.nemynew.expressiveweather.ui.components.DetailDataSourceCard
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
@@ -168,8 +168,6 @@ fun WindDetailScreen(
     val isSystemDark = isSystemInDarkTheme()
     val isDark = ThemeMode.resolveIsDark(themeMode, isDay, isSystemDark)
     val condition = weather.condition
-    val colorScheme = MaterialTheme.colorScheme
-    val atmosphere = getAtmosphereTheme(condition, colorScheme, isDay = isDay)
     val strings = language.strings
     val wind = weather.windDetails
 
@@ -200,49 +198,50 @@ fun WindDetailScreen(
                         )
                     )
             ) {
-                // 天候の空色グラデーション（テーマカラーの上にブレンドして天候の空気感を維持）
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(atmosphere.skyGradient)
-                        .graphicsLayer { alpha = if (!isDay) 0.35f else 0.45f }
-                )
-
-                // 1. Edge-to-Edge 天候動的パーティクル背景
-                val hasCrispParticles = condition.isPrecipitating
-                WeatherAtmosphereCanvas(
-                    condition = condition,
-                    atmosphere = atmosphere,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .then(if (hasCrispParticles) Modifier else Modifier.blur(26.dp))
-                )
-
-                // 2. テーマカラーに沿ったフロストすりガラス拡散レイヤー
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                0.0f to themeSurface.copy(alpha = if (isDark) 0.65f else 0.55f),
-                                0.5f to themeContainer.copy(alpha = if (isDark) 0.70f else 0.60f),
-                                1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.80f else 0.72f)
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層（すりガラスの質感とテーマカラーの美しい反射）
+                // 1. Material You トーナルアンビエント背景
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
                             Brush.radialGradient(
                                 colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.14f else 0.10f),
+                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
                                     Color.Transparent
                                 ),
                                 center = Offset(0f, 0f),
                                 radius = 1400f
+                            )
+                        )
+                )
+
+                // 2. Material You セカンダリアンビエント光彩
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(1100f, 1800f),
+                                radius = 1400f
+                            )
+                        )
+                )
+
+                // 3. テーマカラーのフロストハイライト光彩層
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.radialGradient(
+                                colors = listOf(
+                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
+                                    Color.Transparent
+                                ),
+                                center = Offset(0f, 0f),
+                                radius = 1100f
                             )
                         )
                 )
@@ -400,6 +399,7 @@ fun WindDetailScreen(
 /**
  * ヒーローセクション: 物理スプリング回転コンパス + デジタル風速 + 突風分析カード
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun HeroWindSection(
     wind: io.github.nemynew.expressiveweather.data.WindDetails,
@@ -408,6 +408,11 @@ private fun HeroWindSection(
 ) {
     val colorScheme = MaterialTheme.colorScheme
     val strings = LocalAppStrings.current
+    val accentPalette = currentAccentPalette()
+    val isColorful = accentPalette.mode.isColorful
+    val arrowShape = MaterialShapes.Arrow.toShape()
+    val arrowColor = if (isColorful) accentPalette.wind.accent else colorScheme.primary
+    val headerIconColor = if (isColorful) accentPalette.wind.accent else colorScheme.primary
     val windMs = wind.windSpeedMs
     val gustsMs = wind.windGustsMs
     val localizedDir = getLocalizedWindDirection(wind.windDegree, language)
@@ -430,165 +435,102 @@ private fun HeroWindSection(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(22.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // メイン行: コンパスダイヤル + 風速/風向
+            // ヘッダー: 風タイル (WindCard) と同一のアイコン + タイトル
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                // コンパスダイヤル
+                Icon(
+                    painter = painterResource(R.drawable.ic_fluent_weather_squalls_24),
+                    contentDescription = strings.wind,
+                    tint = headerIconColor,
+                    modifier = Modifier.size(22.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = strings.wind,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = GoogleSansFlex,
+                    color = colorScheme.onSurface
+                )
+            }
+
+            // 風タイル (WindCard) と同一の2層回転 Arrow シェイプ + 中央の風速・風向表示
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.size(188.dp)
+            ) {
                 Box(
-                    modifier = Modifier.size(136.dp),
-                    contentAlignment = Alignment.Center
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(180.dp)
+                        .rotate(animatedWindDegree)
                 ) {
-                    val dialColor = colorScheme.outlineVariant.copy(alpha = 0.5f)
-                    val primaryColor = colorScheme.primary
-                    val onSurfaceColor = colorScheme.onSurface
-
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val center = Offset(size.width / 2f, size.height / 2f)
-                        val radius = size.width / 2f - 6.dp.toPx()
-
-                        // 外枠サークル
-                        drawCircle(
-                            color = dialColor,
-                            radius = radius,
-                            center = center,
-                            style = Stroke(width = 1.5.dp.toPx())
-                        )
-
-                        // 16方位の目盛り
-                        for (i in 0 until 16) {
-                            val angleRad = Math.toRadians((i * 22.5) - 90.0)
-                            val isMajor = (i % 4 == 0)
-                            val tickLength = if (isMajor) 9.dp.toPx() else 5.dp.toPx()
-                            val strokeWidth = if (isMajor) 2.dp.toPx() else 1.dp.toPx()
-                            val strokeColor = if (i == 0) primaryColor else dialColor
-
-                            val startX = center.x + ((radius - tickLength) * cos(angleRad)).toFloat()
-                            val startY = center.y + ((radius - tickLength) * sin(angleRad)).toFloat()
-                            val endX = center.x + (radius * cos(angleRad)).toFloat()
-                            val endY = center.y + (radius * sin(angleRad)).toFloat()
-
-                            drawLine(
-                                color = strokeColor,
-                                start = Offset(startX, startY),
-                                end = Offset(endX, endY),
-                                strokeWidth = strokeWidth,
-                                cap = StrokeCap.Round
-                            )
-                        }
-                    }
-
-                    // 北 (N) ラベル
-                    Text(
-                        text = "N",
-                        fontFamily = GoogleSansFlex,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
-                        color = colorScheme.primary,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .padding(top = 10.dp)
-                    )
-
-                    // 回転する風向矢印ニードル
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .rotate(animatedWindDegree),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxHeight()
-                        ) {
-                            Spacer(modifier = Modifier.height(18.dp))
-                            Icon(
-                                imageVector = Icons.Rounded.Navigation,
-                                contentDescription = null,
-                                tint = Color(0xFFFF7043),
-                                modifier = Modifier.size(24.dp)
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-
-                    // 中央の度数表示バッジ
                     Surface(
-                        shape = CircleShape,
-                        color = colorScheme.surfaceContainerHighest,
-                        modifier = Modifier.size(46.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Text(
-                                text = "${wind.windDegree.toInt()}°",
-                                fontFamily = GoogleSansFlex,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 12.sp,
-                                color = onSurfaceColor
-                            )
-                        }
-                    }
+                        shape = arrowShape,
+                        color = arrowColor.copy(alpha = if (isColorful) 0.24f else 0.18f),
+                        modifier = Modifier.size(180.dp)
+                    ) {}
+                    Surface(
+                        shape = arrowShape,
+                        color = arrowColor.copy(alpha = if (isColorful) 0.50f else 0.36f),
+                        modifier = Modifier.size(154.dp)
+                    ) {}
                 }
 
-                Spacer(modifier = Modifier.width(20.dp))
-
-                // 風速・風向・階級テキスト
                 Column(
-                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = localizedDir,
-                        fontFamily = GoogleSansFlex,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 20.sp,
-                        color = colorScheme.onSurface
-                    )
-
-                    Spacer(modifier = Modifier.height(2.dp))
-
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(
                             text = windSpeedUnit.formatValueFromMs(windMs, language),
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 44.sp,
+                            fontSize = 42.sp,
                             color = colorScheme.onSurface,
-                            lineHeight = 44.sp
+                            lineHeight = 42.sp
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = windSpeedUnit.getDisplayUnit(language),
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Medium,
-                            fontSize = 17.sp,
-                            color = colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(bottom = 6.dp)
+                            fontSize = 16.sp,
+                            color = colorScheme.onSurface.copy(alpha = 0.85f),
+                            modifier = Modifier.padding(bottom = 4.dp)
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    // 風力階級バッジ
-                    val beaufort = wind.beaufortScale
-                    val beaufortName = beaufort.getName(language)
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = colorScheme.primaryContainer.copy(alpha = 0.8f)
-                    ) {
-                        Text(
-                            text = "$beaufortName (${strings.beaufortScaleLevel(beaufort.level)})",
-                            fontFamily = GoogleSansFlex,
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 12.sp,
-                            color = colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(3.dp))
+                    Text(
+                        text = "$localizedDir · ${wind.windDegree.toInt()}°",
+                        fontFamily = GoogleSansFlex,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 13.sp,
+                        color = colorScheme.onSurface
+                    )
                 }
+            }
+
+            // 風力階級バッジ
+            val beaufort = wind.beaufortScale
+            val beaufortName = beaufort.getName(language)
+            Surface(
+                shape = CircleShape,
+                color = if (isColorful) accentPalette.wind.container else colorScheme.primaryContainer.copy(alpha = 0.85f)
+            ) {
+                Text(
+                    text = "$beaufortName (${strings.beaufortScaleLevel(beaufort.level)})",
+                    fontFamily = GoogleSansFlex,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                    color = if (isColorful) accentPalette.wind.onContainer else colorScheme.onPrimaryContainer,
+                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 5.dp)
+                )
             }
 
             // 突風サブカード
@@ -618,7 +560,7 @@ private fun HeroWindSection(
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 12.sp,
-                            color = Color(0xFFFF7043)
+                            color = accentPalette.sunset.accent
                         )
                     }
 
@@ -685,16 +627,17 @@ private fun HourlyWindForecastSection(
                 )
 
                 if (peakTime.isNotEmpty()) {
+                    val gustRole = currentAccentPalette().sunset
                     Surface(
                         shape = RoundedCornerShape(10.dp),
-                        color = Color(0xFFFF7043).copy(alpha = 0.14f)
+                        color = gustRole.container
                     ) {
                         Text(
                             text = "Max ${windSpeedUnit.format(peakSpeedKmH, language)} ($peakTime)",
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
                             fontSize = 11.sp,
-                            color = Color(0xFFFF7043),
+                            color = gustRole.onContainer,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                         )
                     }
@@ -839,8 +782,8 @@ private fun DailyWindForecastSection(
                             .padding(vertical = 2.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // 曜日 & 日付（改行を絶対にしないように十分な幅を確保 & maxLines=1, softWrap=false）
-                        Column(modifier = Modifier.width(76.dp)) {
+                        // 曜日 & 日付（改行を絶対にしないように十分な固定幅を確保 & maxLines=1, softWrap=false）
+                        Column(modifier = Modifier.width(82.dp)) {
                             Text(
                                 text = dayLabel,
                                 fontFamily = GoogleSansFlex,
@@ -848,7 +791,8 @@ private fun DailyWindForecastSection(
                                 fontSize = 14.sp,
                                 color = colorScheme.onSurface,
                                 maxLines = 1,
-                                softWrap = false
+                                softWrap = false,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                             )
                             Text(
                                 text = day.dateLabel,
@@ -870,7 +814,7 @@ private fun DailyWindForecastSection(
                             Icon(
                                 imageVector = Icons.Rounded.North,
                                 contentDescription = null,
-                                tint = Color(0xFFFF7043),
+                                tint = currentAccentPalette().sunset.accent,
                                 modifier = Modifier
                                     .size(16.dp)
                                     .rotate(day.dominantWindDegree)
@@ -910,8 +854,8 @@ private fun DailyWindForecastSection(
                                     .background(
                                         Brush.horizontalGradient(
                                             listOf(
-                                                colorScheme.primary,
-                                                Color(0xFFFF7043).copy(alpha = 0.45f)
+                                                currentAccentPalette().wind.accent,
+                                                currentAccentPalette().sunset.accent.copy(alpha = 0.55f)
                                             )
                                         )
                                     )

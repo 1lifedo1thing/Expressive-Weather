@@ -106,6 +106,7 @@ class RadarDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) RadarDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) RadarDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) RadarDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val isDay = if (hasHolder) RadarDataHolder.isDay else (repo.getMemoryCachedWeatherOrNull(fallbackCity)?.isDay ?: true)
         val showZoomBadge = if (hasHolder) RadarDataHolder.isRadarDebugZoomEnabled else repo.getRadarDebugZoomEnabled()
         val showAllJapanLayers = if (hasHolder) RadarDataHolder.showAllJapanRadarLayers else repo.getShowAllJapanRadarLayers()
@@ -130,6 +131,7 @@ class RadarDetailActivity : ComponentActivity() {
                 weatherCondition = weatherCondition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
                 Surface(

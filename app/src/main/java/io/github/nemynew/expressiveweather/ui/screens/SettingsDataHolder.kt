@@ -5,6 +5,7 @@ import io.github.nemynew.expressiveweather.data.TemperatureUnit
 import io.github.nemynew.expressiveweather.data.WindSpeedUnit
 import io.github.nemynew.expressiveweather.data.WeatherCondition
 import io.github.nemynew.expressiveweather.data.WeatherData
+import io.github.nemynew.expressiveweather.theme.AccentColorMode
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 
@@ -17,11 +18,12 @@ object SettingsDataHolder {
     var language: AppLanguage = AppLanguage.JAPANESE
     var temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS
     var windSpeedUnit: WindSpeedUnit = WindSpeedUnit.FOLLOW_LANGUAGE
-    var weatherUpdateInterval: io.github.nemynew.expressiveweather.data.WeatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.MINUTES_30
+    var weatherUpdateInterval: io.github.nemynew.expressiveweather.data.WeatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.DEFAULT
     var weatherAdaptiveThemeEnabled: Boolean = true
     var themePreset: ThemePreset = ThemePreset.WEATHER
     var themeMode: ThemeMode = ThemeMode.WEATHER
     var isFrostedGlassEnabled: Boolean = true
+    var accentColorMode: AccentColorMode = AccentColorMode.CLASSIC_VIVID
     var isColorfulShapesEnabled: Boolean = true
     var isRadarDebugZoomEnabled: Boolean = false
     var isRadarDebugSourceEnabled: Boolean = true
@@ -44,6 +46,7 @@ object SettingsDataHolder {
     var onSelectThemePreset: ((ThemePreset) -> Unit)? = null
     var onSelectThemeMode: ((ThemeMode) -> Unit)? = null
     var onToggleFrostedGlass: ((Boolean) -> Unit)? = null
+    var onSelectAccentColorMode: ((AccentColorMode) -> Unit)? = null
     var onToggleColorfulShapes: ((Boolean) -> Unit)? = null
     var onToggleRadarDebugZoom: ((Boolean) -> Unit)? = null
     var onToggleRadarDebugSource: ((Boolean) -> Unit)? = null
@@ -80,12 +83,13 @@ object SettingsDataHolder {
         language: AppLanguage,
         temperatureUnit: TemperatureUnit,
         windSpeedUnit: WindSpeedUnit = WindSpeedUnit.FOLLOW_LANGUAGE,
-        weatherUpdateInterval: io.github.nemynew.expressiveweather.data.WeatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.MINUTES_30,
+        weatherUpdateInterval: io.github.nemynew.expressiveweather.data.WeatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.DEFAULT,
         weatherAdaptiveThemeEnabled: Boolean = true,
         themePreset: ThemePreset = ThemePreset.WEATHER,
         themeMode: ThemeMode = ThemeMode.WEATHER,
         isFrostedGlassEnabled: Boolean = true,
-        isColorfulShapesEnabled: Boolean = true,
+        accentColorMode: AccentColorMode = AccentColorMode.CLASSIC_VIVID,
+        isColorfulShapesEnabled: Boolean = accentColorMode.isColorful,
         isRadarDebugZoomEnabled: Boolean = false,
         isRadarDebugSourceEnabled: Boolean = true,
         isShowAllJapanRadarLayersEnabled: Boolean = false,
@@ -105,6 +109,7 @@ object SettingsDataHolder {
         onSelectThemePreset: ((ThemePreset) -> Unit)? = null,
         onSelectThemeMode: ((ThemeMode) -> Unit)? = null,
         onToggleFrostedGlass: ((Boolean) -> Unit)? = null,
+        onSelectAccentColorMode: ((AccentColorMode) -> Unit)? = null,
         onToggleColorfulShapes: ((Boolean) -> Unit)? = null,
         onToggleRadarDebugZoom: ((Boolean) -> Unit)? = null,
         onToggleRadarDebugSource: ((Boolean) -> Unit)? = null,
@@ -138,6 +143,7 @@ object SettingsDataHolder {
         this.themePreset = themePreset
         this.themeMode = themeMode
         this.isFrostedGlassEnabled = isFrostedGlassEnabled
+        this.accentColorMode = accentColorMode
         this.isColorfulShapesEnabled = isColorfulShapesEnabled
         this.isRadarDebugZoomEnabled = isRadarDebugZoomEnabled
         this.isRadarDebugSourceEnabled = isRadarDebugSourceEnabled
@@ -158,6 +164,7 @@ object SettingsDataHolder {
         this.onSelectThemePreset = onSelectThemePreset
         this.onSelectThemeMode = onSelectThemeMode
         this.onToggleFrostedGlass = onToggleFrostedGlass
+        this.onSelectAccentColorMode = onSelectAccentColorMode
         this.onToggleColorfulShapes = onToggleColorfulShapes
         this.onToggleRadarDebugZoom = onToggleRadarDebugZoom
         this.onToggleRadarDebugSource = onToggleRadarDebugSource
@@ -188,11 +195,12 @@ object SettingsDataHolder {
         language = AppLanguage.JAPANESE
         temperatureUnit = TemperatureUnit.CELSIUS
         windSpeedUnit = WindSpeedUnit.FOLLOW_LANGUAGE
-        weatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.MINUTES_30
+        weatherUpdateInterval = io.github.nemynew.expressiveweather.data.WeatherUpdateInterval.DEFAULT
         weatherAdaptiveThemeEnabled = true
         themePreset = ThemePreset.WEATHER
         themeMode = ThemeMode.WEATHER
         isFrostedGlassEnabled = true
+        accentColorMode = AccentColorMode.CLASSIC_VIVID
         isColorfulShapesEnabled = true
         isRadarDebugZoomEnabled = false
         isRadarDebugSourceEnabled = true
@@ -213,6 +221,7 @@ object SettingsDataHolder {
         onSelectThemePreset = null
         onSelectThemeMode = null
         onToggleFrostedGlass = null
+        onSelectAccentColorMode = null
         onToggleColorfulShapes = null
         onToggleRadarDebugZoom = null
         onToggleRadarDebugSource = null

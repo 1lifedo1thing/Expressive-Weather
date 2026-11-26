@@ -1,10 +1,12 @@
 package io.github.nemynew.expressiveweather.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.WeatherCondition
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 
 /**
  * Microsoft Fluent UI System Icons による天気状態アイコンヘルパー
@@ -39,14 +41,16 @@ object WeatherIconHelper {
 
     @Composable
     fun getConditionIconTint(condition: WeatherCondition): Color {
+        val colorScheme = MaterialTheme.colorScheme
+        val palette = currentAccentPalette()
         return when (condition) {
-            WeatherCondition.CLEAR -> Color(0xFFFFA000)
-            WeatherCondition.FEW_CLOUDS -> Color(0xFFFFB300)
-            WeatherCondition.CLOUDY -> Color(0xFF78909C)
-            WeatherCondition.RAIN, WeatherCondition.HEAVY_RAIN -> Color(0xFF0288D1)
-            WeatherCondition.THUNDERSTORM -> Color(0xFF7E57C2)
-            WeatherCondition.SNOW -> Color(0xFF4FC3F7)
-            WeatherCondition.FOG -> Color(0xFF90A4AE)
+            WeatherCondition.CLEAR -> palette.sun.accent
+            WeatherCondition.FEW_CLOUDS -> palette.uv.accent
+            WeatherCondition.CLOUDY -> colorScheme.onSurfaceVariant
+            WeatherCondition.RAIN, WeatherCondition.HEAVY_RAIN -> palette.precipitation.accent
+            WeatherCondition.THUNDERSTORM -> palette.pressure.accent
+            WeatherCondition.SNOW -> palette.visibility.accent
+            WeatherCondition.FOG -> colorScheme.onSurfaceVariant
         }
     }
 }

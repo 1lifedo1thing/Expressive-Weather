@@ -15,10 +15,13 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import io.github.nemynew.expressiveweather.BuildConfig
+import io.github.nemynew.expressiveweather.data.BackgroundSchedulePolicy
+import io.github.nemynew.expressiveweather.data.WeatherRepository
 import io.github.nemynew.expressiveweather.data.WeatherUpdateReceiver
 import kotlinx.coroutines.CancellationException
 import java.util.concurrent.TimeUnit
@@ -33,19 +36,27 @@ class WidgetRefreshWorker(
 
     override suspend fun doWork(): Result {
         val targetWidgetId = inputData.getInt(KEY_APP_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
+        var succeeded = false
         return try {
             val specificId = if (targetWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) targetWidgetId else null
             WeatherWidgetUpdater.refreshWidgetsFromNetwork(applicationContext, specificWidgetId = specificId)
+            succeeded = true
             Result.success()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             Log.e(TAG, "WidgetRefreshWorker failed: ${e.message}", e)
             WeatherWidgetUpdater.updateAllFromCache(applicationContext)
-            if (runAttemptCount < 2) Result.retry() else Result.failure()
+            if (runAttemptCount < BackgroundSchedulePolicy.WIDGET_WORKER_MAX_ATTEMPTS) Result.retry() else Result.failure()
         } finally {
             if (WeatherWidgetUpdater.getActiveWidgets(applicationContext).isNotEmpty()) {
-                ensureNextWidgetAlarmScheduled(applicationContext)
+                if (succeeded) {
+                    scheduleNextWidgetAlarm(applicationContext)
+                } else {
+                    ensureNextWidgetAlarmScheduled(applicationContext)
+                }
+            } else {
+                cancelWidgetAlarm(applicationContext)
             }
         }
     }
@@ -56,8 +67,7 @@ class WidgetRefreshWorker(
         private const val UNIQUE_WORK_PREFIX = "io.github.nemynew.expressiveweather.widget.REFRESH_"
         private const val PERIODIC_WIDGET_WORK_NAME = "io.github.nemynew.expressiveweather.widget.PERIODIC_REFRESH"
         private const val REQUEST_CODE_WIDGET_ALARM = 4003
-        const val WIDGET_REFRESH_INTERVAL_MINUTES = 10L
-        private const val WIDGET_REFRESH_INTERVAL_MS = WIDGET_REFRESH_INTERVAL_MINUTES * 60L * 1000L
+        const val WIDGET_REFRESH_INTERVAL_MINUTES = BackgroundSchedulePolicy.GITHUB_WIDGET_ALARM_INTERVAL_MINUTES
 
         fun ensurePeriodicSchedule(context: Context) {
             val appCtx = context.applicationContext
@@ -68,20 +78,44 @@ class WidgetRefreshWorker(
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-            // WorkManager 最短 15 分周期をバックアップ層として維持し、10 分精度は AlarmManager 層で駆動
+            // WorkManager 最短 15 分周期 (flex 5 分) を永続バックアップ層として維持
             val request = PeriodicWorkRequestBuilder<WidgetRefreshWorker>(
                 15L, TimeUnit.MINUTES,
                 5L, TimeUnit.MINUTES
             )
                 .setConstraints(constraints)
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5L, TimeUnit.MINUTES)
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    BackgroundSchedulePolicy.WORKER_BACKOFF_INITIAL_SECONDS,
+                    TimeUnit.SECONDS
+                )
                 .build()
             WorkManager.getInstance(appCtx).enqueueUniquePeriodicWork(
                 PERIODIC_WIDGET_WORK_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 request
             )
-            ensureNextWidgetAlarmScheduled(appCtx)
+            syncWidgetAlarmWithWeatherSchedule(appCtx)
+        }
+
+        /**
+         * 天気定期更新の頻度と連動し、Play 版では 15 分天気アラームと統合（重複起床ゼロ）、
+         * 天気更新が 30 分以上/OFF の場合のみウィジェット専用 15 分アラームを維持する。
+         */
+        fun syncWidgetAlarmWithWeatherSchedule(context: Context) {
+            val appCtx = context.applicationContext
+            val hasWidgets = WeatherWidgetUpdater.getActiveWidgets(appCtx).isNotEmpty()
+            val weatherInterval = WeatherRepository.getWeatherUpdateInterval(appCtx)
+            val shouldRunDedicatedAlarm = BackgroundSchedulePolicy.shouldScheduleDedicatedWidgetAlarm(
+                isPlayDistribution = BuildConfig.IS_PLAY_DISTRIBUTION,
+                weatherInterval = weatherInterval,
+                hasActiveWidgets = hasWidgets
+            )
+            if (shouldRunDedicatedAlarm) {
+                ensureNextWidgetAlarmScheduled(appCtx)
+            } else {
+                cancelWidgetAlarm(appCtx)
+            }
         }
 
         private fun createWidgetAlarmPendingIntent(context: Context, flags: Int): PendingIntent? {
@@ -105,27 +139,35 @@ class WidgetRefreshWorker(
 
         fun scheduleNextWidgetAlarm(context: Context) {
             val appCtx = context.applicationContext
-            // Google Play 版では Android Vitals の Excessive Wakeups 対策として WorkManager 周期更新へ一本化
-            if (BuildConfig.IS_PLAY_DISTRIBUTION) {
-                cancelWidgetAlarm(appCtx)
-                return
-            }
-            if (WeatherWidgetUpdater.getActiveWidgets(appCtx).isEmpty()) {
+            val hasWidgets = WeatherWidgetUpdater.getActiveWidgets(appCtx).isNotEmpty()
+            val weatherInterval = WeatherRepository.getWeatherUpdateInterval(appCtx)
+            if (!BackgroundSchedulePolicy.shouldScheduleDedicatedWidgetAlarm(
+                    isPlayDistribution = BuildConfig.IS_PLAY_DISTRIBUTION,
+                    weatherInterval = weatherInterval,
+                    hasActiveWidgets = hasWidgets
+                )
+            ) {
                 cancelWidgetAlarm(appCtx)
                 return
             }
             try {
                 val alarmManager = appCtx.getSystemService(Context.ALARM_SERVICE) as? AlarmManager ?: return
                 val pendingIntent = createWidgetAlarmPendingIntent(appCtx, PendingIntent.FLAG_UPDATE_CURRENT) ?: return
-                val triggerAtMillis = System.currentTimeMillis() + WIDGET_REFRESH_INTERVAL_MS
+                val intervalMinutes = BackgroundSchedulePolicy.resolveWidgetAlarmIntervalMinutes(BuildConfig.IS_PLAY_DISTRIBUTION)
+                val delayMillis = BackgroundSchedulePolicy.computeAlarmDelayMillis(
+                    requestedDelayMillis = intervalMinutes * 60_000L,
+                    isPlayDistribution = BuildConfig.IS_PLAY_DISTRIBUTION
+                )
+                val triggerAtMillis = System.currentTimeMillis() + delayMillis
                 AlarmManagerCompat.setAndAllowWhileIdle(
                     alarmManager,
                     AlarmManager.RTC_WAKEUP,
                     triggerAtMillis,
                     pendingIntent
                 )
+                Log.d(TAG, "Scheduled widget wakeup alarm in ${delayMillis / 1000}s (play=${BuildConfig.IS_PLAY_DISTRIBUTION})")
             } catch (e: Exception) {
-                Log.w(TAG, "Failed to schedule 10m widget alarm: ${e.message}")
+                Log.w(TAG, "Failed to schedule widget alarm: ${e.message}")
             }
         }
 
@@ -139,7 +181,7 @@ class WidgetRefreshWorker(
                     pendingIntent.cancel()
                 }
             } catch (e: Exception) {
-                Log.w(TAG, "Error cancelling 10m widget alarm: ${e.message}")
+                Log.w(TAG, "Error cancelling widget alarm: ${e.message}")
             }
         }
 
@@ -158,10 +200,17 @@ class WidgetRefreshWorker(
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-            val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
+            val builder = OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
                 .setInputData(input)
                 .setConstraints(constraints)
-                .build()
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    BackgroundSchedulePolicy.WORKER_BACKOFF_INITIAL_SECONDS,
+                    TimeUnit.SECONDS
+                )
+            if (BackgroundSchedulePolicy.shouldUseExpeditedWork()) {
+                builder.setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            }
             val workName = if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 "$UNIQUE_WORK_PREFIX$appWidgetId"
             } else {
@@ -170,7 +219,7 @@ class WidgetRefreshWorker(
             WorkManager.getInstance(appCtx).enqueueUniqueWork(
                 workName,
                 ExistingWorkPolicy.REPLACE,
-                request
+                builder.build()
             )
         }
     }

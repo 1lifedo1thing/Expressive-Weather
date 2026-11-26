@@ -58,6 +58,7 @@ class HourlyDetailActivity : ComponentActivity() {
         val weatherAdaptiveThemeEnabled = if (hasHolder) HourlyDetailDataHolder.weatherAdaptiveThemeEnabled else repo.isWeatherAdaptiveThemeEnabled()
         val themePreset = if (hasHolder) HourlyDetailDataHolder.themePreset else repo.getThemePreset()
         val themeMode = if (hasHolder) HourlyDetailDataHolder.themeMode else repo.getThemeMode()
+        val accentColorMode = repo.getAccentColorMode()
         val initialWeather = HourlyDetailDataHolder.weatherData ?: repo.getMemoryCachedWeatherOrNull(city)
 
         setContent {
@@ -80,6 +81,7 @@ class HourlyDetailActivity : ComponentActivity() {
                 weatherCondition = weatherData?.condition,
                 weatherAdaptiveColor = weatherAdaptiveThemeEnabled,
                 themePreset = themePreset,
+                accentColorMode = accentColorMode,
                 language = language
             ) {
                 Surface(

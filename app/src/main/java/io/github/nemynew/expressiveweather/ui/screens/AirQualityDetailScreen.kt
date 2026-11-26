@@ -1,7 +1,11 @@
 package io.github.nemynew.expressiveweather.ui.screens
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,27 +28,36 @@ import androidx.compose.material.icons.rounded.Masks
 import androidx.compose.material.icons.rounded.Window
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.AirQuality
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
+import io.github.nemynew.expressiveweather.theme.MaterialYouAccentPalette
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
 
@@ -52,6 +65,7 @@ import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
  * 空気質（Air Quality / AQI）詳細画面
  * Material 3 Expressive 準拠（枠線なし、トナルサーフェス、4言語対応）
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AirQualityDetailScreen(
     weather: WeatherData?,
@@ -74,34 +88,6 @@ fun AirQualityDetailScreen(
     )
     val isAvailable = airQuality.isAvailable
     val aqi = airQuality.aqi
-
-    val (aqiStatus, aqiColor, aqiSummary) = if (isAvailable) {
-        getAqiInfo(aqi, language)
-    } else {
-        Triple(
-            when (language) {
-                AppLanguage.JAPANESE -> "データなし"
-                AppLanguage.KOREAN -> "데이터 없음"
-                AppLanguage.SIMPLIFIED_CHINESE -> "暂无数据"
-                AppLanguage.TRADITIONAL_CHINESE -> "暫無資料"
-                AppLanguage.ENGLISH -> "Unavailable"
-                AppLanguage.SPANISH -> "No disponible"
-                AppLanguage.FRENCH -> "Indisponible"
-                AppLanguage.PORTUGUESE -> "Indisponível"
-            },
-            Color(0xFF9E9E9E),
-            when (language) {
-                AppLanguage.JAPANESE -> "現在この地域の大気質観測データは取得できません。"
-                AppLanguage.KOREAN -> "현재 이 지역의 대기질 관측 데이터를 불러올 수 없습니다."
-                AppLanguage.SIMPLIFIED_CHINESE -> "当前暂无法获取该地区的空气质量监测数据。"
-                AppLanguage.TRADITIONAL_CHINESE -> "目前暫無法取得該地區的空氣品質監測資料。"
-                AppLanguage.ENGLISH -> "Air quality observation data is currently unavailable for this location."
-                AppLanguage.SPANISH -> "Los datos de calidad del aire no están disponibles actualmente para esta ubicación."
-                AppLanguage.FRENCH -> "Les données de qualité de l'air sont actuellement indisponibles pour ce lieu."
-                AppLanguage.PORTUGUESE -> "Os dados de qualidade do ar não estão disponíveis no momento para este local."
-            }
-        )
-    }
 
     val aqiHeaderLabel = when (language) {
         AppLanguage.JAPANESE -> "大気質指数 (AQI)"
@@ -148,7 +134,86 @@ fun AirQualityDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
-        // ================= 1. ヒーローセクション: AQI スコア & スケールバー =================
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val isColorful = accentPalette.mode.isColorful
+        val puffyShape = MaterialShapes.Puffy.toShape()
+        val puffyColor = if (isColorful) accentPalette.aqi.accent else colorScheme.secondary
+        val aqiIconColor = if (isColorful) accentPalette.aqi.accent else colorScheme.secondary
+
+        val (aqiStatus, aqiColor, aqiSummary) = if (isAvailable) {
+            getAqiInfo(aqi, language, accentPalette)
+        } else {
+            Triple(
+                when (language) {
+                    AppLanguage.JAPANESE -> "データなし"
+                    AppLanguage.KOREAN -> "데이터 없음"
+                    AppLanguage.SIMPLIFIED_CHINESE -> "暂无数据"
+                    AppLanguage.TRADITIONAL_CHINESE -> "暫無資料"
+                    AppLanguage.ENGLISH -> "Unavailable"
+                    AppLanguage.SPANISH -> "No disponible"
+                    AppLanguage.FRENCH -> "Indisponible"
+                    AppLanguage.PORTUGUESE -> "Indisponível"
+                },
+                colorScheme.outline,
+                when (language) {
+                    AppLanguage.JAPANESE -> "現在この地域の大気質観測データは取得できません。"
+                    AppLanguage.KOREAN -> "현재 이 지역의 대기질 관측 데이터를 불러올 수 없습니다."
+                    AppLanguage.SIMPLIFIED_CHINESE -> "当前暂无法获取该地区的空气质量监测数据。"
+                    AppLanguage.TRADITIONAL_CHINESE -> "目前暫無法取得該地區的空氣品質監測資料。"
+                    AppLanguage.ENGLISH -> "Air quality observation data is currently unavailable for this location."
+                    AppLanguage.SPANISH -> "Los datos de calidad del aire no están disponibles actualmente para esta ubicación."
+                    AppLanguage.FRENCH -> "Les données de qualité de l'air sont actuellement indisponibles pour ce lieu."
+                    AppLanguage.PORTUGUESE -> "Os dados de qualidade do ar não estão disponíveis no momento para este local."
+                }
+            )
+        }
+
+        val (aqiPillBg, aqiPillText) = remember(aqi, isAvailable, isColorful, colorScheme, accentPalette) {
+            if (!isAvailable) {
+                colorScheme.surfaceContainerHighest to colorScheme.onSurfaceVariant
+            } else if (isColorful) {
+                val tier = when {
+                    aqi <= 50 -> 0
+                    aqi <= 100 -> 1
+                    aqi <= 150 -> 2
+                    aqi <= 200 -> 3
+                    else -> 4
+                }
+                val role = accentPalette.severity(tier)
+                role.accent to role.onAccent
+            } else {
+                when {
+                    aqi <= 50 -> colorScheme.secondaryContainer to colorScheme.onSecondaryContainer
+                    aqi <= 100 -> colorScheme.secondary to colorScheme.onSecondary
+                    aqi <= 150 -> colorScheme.primaryContainer to colorScheme.onPrimaryContainer
+                    aqi <= 200 -> colorScheme.errorContainer to colorScheme.onErrorContainer
+                    else -> colorScheme.error to colorScheme.onError
+                }
+            }
+        }
+
+        val puffyTransition = rememberInfiniteTransition(label = "DetailAqiAnimation")
+        val floatY by puffyTransition.animateFloat(
+            initialValue = -3f,
+            targetValue = 3f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "DetailAqiFloatY"
+        )
+        val aqiScale by puffyTransition.animateFloat(
+            initialValue = 0.95f,
+            targetValue = 1.05f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 3600, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "DetailAqiScale"
+        )
+
+        // ================= 1. ヒーローセクション: 空気質タイルと同一の Puffy シェイプ & スケールバー =================
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
@@ -168,10 +233,10 @@ fun AirQualityDetailScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Air,
+                        painter = painterResource(R.drawable.ic_fluent_weather_duststorm_24),
                         contentDescription = null,
-                        tint = aqiColor,
-                        modifier = Modifier.size(24.dp)
+                        tint = aqiIconColor,
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -182,28 +247,57 @@ fun AirQualityDetailScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(18.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Text(
-                    text = if (isAvailable) aqi.toString() else "--",
-                    fontFamily = GoogleSansFlex,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 52.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                // 空気質タイル (AqiCard) と同一の2層浮遊・脈動 Puffy シェイプ + AQI数値
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.size(188.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(180.dp)
+                            .graphicsLayer {
+                                translationY = floatY * 2.5f
+                                scaleX = aqiScale
+                                scaleY = aqiScale
+                            }
+                    ) {
+                        Surface(
+                            shape = puffyShape,
+                            color = puffyColor.copy(alpha = if (isColorful) 0.24f else 0.18f),
+                            modifier = Modifier.size(180.dp)
+                        ) {}
+                        Surface(
+                            shape = puffyShape,
+                            color = puffyColor.copy(alpha = if (isColorful) 0.50f else 0.35f),
+                            modifier = Modifier.size(156.dp)
+                        ) {}
+                    }
 
-                Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = if (isAvailable) aqi.toString() else "--",
+                        fontFamily = GoogleSansFlex,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 46.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
 
                 Surface(
                     shape = CircleShape,
-                    color = aqiColor.copy(alpha = 0.16f)
+                    color = aqiPillBg
                 ) {
                     Text(
                         text = aqiStatus,
-                        color = aqiColor,
+                        color = aqiPillText,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 4.dp)
+                        fontSize = 13.sp,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 5.dp)
                     )
                 }
 
@@ -511,7 +605,8 @@ private fun PollutantCard(
     isGood: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val tagColor = if (isGood) Color(0xFF4CAF50) else Color(0xFFFF9800)
+    val accentPalette = currentAccentPalette()
+    val tagColor = if (isGood) accentPalette.severity(0).accent else accentPalette.severity(2).accent
     Surface(
         shape = RoundedCornerShape(18.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
@@ -584,13 +679,17 @@ private fun AqiAdviceRow(
     }
 }
 
-private fun getAqiInfo(aqi: Int, language: AppLanguage): Triple<String, Color, String> {
+private fun getAqiInfo(
+    aqi: Int,
+    language: AppLanguage,
+    palette: MaterialYouAccentPalette
+): Triple<String, Color, String> {
     val color = when {
-        aqi <= 50 -> Color(0xFF4CAF50)
-        aqi <= 100 -> Color(0xFFFFB300)
-        aqi <= 150 -> Color(0xFFFF9800)
-        aqi <= 200 -> Color(0xFFE53935)
-        else -> Color(0xFF8E24AA)
+        aqi <= 50 -> palette.severity(0).accent
+        aqi <= 100 -> palette.severity(1).accent
+        aqi <= 150 -> palette.severity(2).accent
+        aqi <= 200 -> palette.severity(3).accent
+        else -> palette.severity(4).accent
     }
 
     val label = when {

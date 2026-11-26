@@ -1,7 +1,11 @@
 package io.github.nemynew.expressiveweather.ui.screens
 
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -10,6 +14,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +29,6 @@ import androidx.compose.material.icons.automirrored.rounded.TrendingDown
 import androidx.compose.material.icons.automirrored.rounded.TrendingFlat
 import androidx.compose.material.icons.rounded.Compress
 import androidx.compose.material.icons.rounded.HealthAndSafety
-import androidx.compose.material.icons.rounded.Speed
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -33,6 +37,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,20 +46,24 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.github.nemynew.expressiveweather.R
 import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.getLocalizedTimeLabel
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
+import io.github.nemynew.expressiveweather.theme.MaterialYouAccentPalette
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
-import kotlin.math.cos
-import kotlin.math.sin
+import java.util.Locale
 
 /**
  * 気圧（Pressure）詳細画面 - Material 3 Expressive 準拠、多言語対応、枠線フリー
@@ -74,8 +83,6 @@ fun PressureDetailScreen(
     val pressure = weather?.pressureHpa ?: 1013
     val hourlyForecast = weather?.hourlyForecast ?: emptyList()
 
-    val (pressureState, stateColor, trendDesc, isWarning) = getPressureAnalysis(pressure, language)
-
     DetailScaffold(
         title = strings.pressure,
         city = city,
@@ -88,7 +95,12 @@ fun PressureDetailScreen(
         onBack = onBack,
         modifier = modifier
     ) {
-        // ================= 1. ヒーローセクション: バロメーターダイヤル & 現在気圧 =================
+        val colorScheme = MaterialTheme.colorScheme
+        val accentPalette = currentAccentPalette()
+        val (pressureState, stateColor, trendDesc, isWarning) = getPressureAnalysis(pressure, language, accentPalette)
+        val pressureColor = accentPalette.pressure.accent
+        val gaugeTrackColor = pressureColor.copy(alpha = if (accentPalette.mode.isColorful) 0.26f else 0.32f)
+        // ================= 1. ヒーローセクション: 気圧タイルと同一のバロメーターゲージ & 現在気圧 =================
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
@@ -104,10 +116,10 @@ fun PressureDetailScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        imageVector = Icons.Rounded.Speed,
+                        painter = painterResource(R.drawable.ic_atmospheric_pressure),
                         contentDescription = null,
-                        tint = stateColor,
-                        modifier = Modifier.size(24.dp)
+                        tint = pressureColor,
+                        modifier = Modifier.size(22.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -129,72 +141,89 @@ fun PressureDetailScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // 円形ダイヤルメーター
+                // 気圧タイル (PressureCard) と同一の円形アークメーター (970〜1050 hPa・135°〜270°・微小パルス)
                 Box(
-                    modifier = Modifier.size(170.dp),
+                    modifier = Modifier.size(184.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // 960hPa〜1050hPa をスケールとしてマッピング
-                    val normalizedProgress = ((pressure - 960f) / (1050f - 960f)).coerceIn(0f, 1f)
-                    val animatedAngle by animateFloatAsState(
-                        targetValue = 135f + (270f * normalizedProgress),
-                        animationSpec = tween(1100, easing = FastOutSlowInEasing),
-                        label = "BarometerGauge"
+                    val minPressure = 970f
+                    val maxPressure = 1050f
+                    val targetProgress = ((pressure - minPressure) / (maxPressure - minPressure)).coerceIn(0.04f, 1f)
+                    val animatedProgress by animateFloatAsState(
+                        targetValue = targetProgress,
+                        animationSpec = tween(durationMillis = 1200, easing = FastOutSlowInEasing),
+                        label = "BarometerGaugeProgress"
+                    )
+                    val infiniteTransition = rememberInfiniteTransition(label = "DetailPressurePulseAnimation")
+                    val pulseScale by infiniteTransition.animateFloat(
+                        initialValue = 0.996f,
+                        targetValue = 1.004f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(durationMillis = 3000, easing = FastOutSlowInEasing),
+                            repeatMode = RepeatMode.Reverse
+                        ),
+                        label = "DetailPressurePulseScale"
                     )
 
-                    Canvas(modifier = Modifier.size(160.dp)) {
-                        val strokeWidth = 10.dp.toPx()
-                        val arcSize = Size(size.width - strokeWidth, size.height - strokeWidth)
-                        val topLeft = Offset(strokeWidth / 2, strokeWidth / 2)
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp)
+                            .graphicsLayer {
+                                scaleX = pulseScale
+                                scaleY = pulseScale
+                            }
+                    ) {
+                        val strokeWidthPx = 13.dp.toPx()
+                        val halfStroke = strokeWidthPx / 2f
+                        val arcSize = Size(
+                            width = size.width - strokeWidthPx,
+                            height = size.height - strokeWidthPx
+                        )
+                        val topLeft = Offset(halfStroke, halfStroke)
+                        val startAngle = 135f
+                        val totalSweep = 270f
 
-                        // 背景アーク (135度から270度分のスイープ)
+                        // 背景トラック（タイルと同一）
                         drawArc(
-                            color = Color.LightGray.copy(alpha = 0.25f),
-                            startAngle = 135f,
-                            sweepAngle = 270f,
+                            color = gaugeTrackColor,
+                            startAngle = startAngle,
+                            sweepAngle = totalSweep,
                             useCenter = false,
                             topLeft = topLeft,
                             size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                            style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
                         )
 
-                        // 進捗アーク
+                        // アクティブプログレス（タイルと同一）
                         drawArc(
-                            color = stateColor,
-                            startAngle = 135f,
-                            sweepAngle = (animatedAngle - 135f).coerceAtLeast(1f),
+                            color = pressureColor,
+                            startAngle = startAngle,
+                            sweepAngle = totalSweep * animatedProgress,
                             useCenter = false,
                             topLeft = topLeft,
                             size = arcSize,
-                            style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
-                        )
-
-                        // 指針の先端マーカー
-                        val angleRad = Math.toRadians(animatedAngle.toDouble())
-                        val r = size.width / 2 - 18.dp.toPx()
-                        val pointerX = (size.width / 2 + r * cos(angleRad)).toFloat()
-                        val pointerY = (size.height / 2 + r * sin(angleRad)).toFloat()
-
-                        drawCircle(
-                            color = stateColor,
-                            radius = 6.dp.toPx(),
-                            center = Offset(pointerX, pointerY)
+                            style = Stroke(width = strokeWidthPx, cap = StrokeCap.Round)
                         )
                     }
 
+                    val formattedPressure = remember(pressure) {
+                        String.format(Locale.US, "%,d", pressure)
+                    }
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "$pressure",
+                            text = formattedPressure,
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
                             fontSize = 38.sp,
+                            letterSpacing = (-0.5).sp,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = "hPa",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.85f)
                         )
                     }
                 }
@@ -301,7 +330,7 @@ fun PressureDetailScreen(
                                         .fillMaxWidth()
                                         .height(barHeight.dp)
                                         .clip(CircleShape)
-                                        .background(if (itemPressure >= 1013) Color(0xFF4CAF50) else Color(0xFFFF9800))
+                                        .background(if (itemPressure >= 1013) accentPalette.severity(0).accent else accentPalette.severity(2).accent)
                                 )
                             }
                             Spacer(modifier = Modifier.height(6.dp))
@@ -330,7 +359,7 @@ fun PressureDetailScreen(
                     Icon(
                         imageVector = Icons.Rounded.HealthAndSafety,
                         contentDescription = null,
-                        tint = if (isWarning) Color(0xFFFF9800) else Color(0xFF4CAF50),
+                        tint = if (isWarning) accentPalette.severity(2).accent else accentPalette.severity(0).accent,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -469,7 +498,11 @@ private fun PressureAdviceRow(
     }
 }
 
-private fun getPressureAnalysis(pressure: Int, language: AppLanguage): Quadruple<String, Color, String, Boolean> {
+private fun getPressureAnalysis(
+    pressure: Int,
+    language: AppLanguage,
+    palette: MaterialYouAccentPalette
+): Quadruple<String, Color, String, Boolean> {
     return when {
         pressure >= 1018 -> Quadruple(
             when (language) {
@@ -482,7 +515,7 @@ private fun getPressureAnalysis(pressure: Int, language: AppLanguage): Quadruple
                 AppLanguage.TRADITIONAL_CHINESE -> "受高氣壓控制"
                 AppLanguage.JAPANESE -> "高気圧に覆われています"
             },
-            Color(0xFF4CAF50),
+            palette.severity(0).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Atmospheric pressure is high and stable. Expect sunny weather with no pressure-induced discomfort."
                 AppLanguage.SPANISH -> "La presión atmosférica es alta y estable. Se espera tiempo soleado sin molestias por presión."
@@ -506,7 +539,7 @@ private fun getPressureAnalysis(pressure: Int, language: AppLanguage): Quadruple
                 AppLanguage.TRADITIONAL_CHINESE -> "處於標準氣壓附近"
                 AppLanguage.JAPANESE -> "標準気圧付近で安定"
             },
-            Color(0xFF03A9F4),
+            palette.pressure.accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Fluctuating around normal pressure (1013 hPa); minimal bodily stress expected."
                 AppLanguage.SPANISH -> "Oscila en torno a la presión normal (1013 hPa); se espera un impacto mínimo en el organismo."
@@ -530,7 +563,7 @@ private fun getPressureAnalysis(pressure: Int, language: AppLanguage): Quadruple
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓略微偏低"
                 AppLanguage.JAPANESE -> "気圧やや低め"
             },
-            Color(0xFFFF9800),
+            palette.severity(2).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Pressure is slightly depressed. Sensitive individuals may experience mild headaches or fatigue."
                 AppLanguage.SPANISH -> "La presión está algo baja. Las personas sensibles pueden notar ligeros dolores de cabeza o cansancio."
@@ -554,7 +587,7 @@ private fun getPressureAnalysis(pressure: Int, language: AppLanguage): Quadruple
                 AppLanguage.TRADITIONAL_CHINESE -> "低氣壓接近 (注意)"
                 AppLanguage.JAPANESE -> "低気圧接近中 (警戒)"
             },
-            Color(0xFFE53935),
+            palette.severity(3).accent,
             when (language) {
                 AppLanguage.ENGLISH -> "Pressure is significantly reduced. May trigger headaches, joint stiffness, and lethargy; prioritize rest."
                 AppLanguage.SPANISH -> "La presión es significativamente baja. Puede provocar dolor de cabeza, rigidez articular y decaimiento; prioriza el descanso."

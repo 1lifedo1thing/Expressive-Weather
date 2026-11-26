@@ -63,6 +63,7 @@ import io.github.nemynew.expressiveweather.data.isLocationOrCountryInJapan
 import io.github.nemynew.expressiveweather.data.isLocationOrCountryInUnitedStates
 import io.github.nemynew.expressiveweather.theme.LocalDarkTheme
 import io.github.nemynew.expressiveweather.theme.WeatherAtmosphereTheme
+import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.SnowTileShape
 import io.github.nemynew.expressiveweather.ui.components.frostedGlassEffect
 import io.github.nemynew.expressiveweather.ui.components.getFrostedCardBorder
@@ -349,7 +350,7 @@ fun RadarCardSection(
                     .fillMaxWidth()
                     .height(190.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .background(if (isAppDark) Color(0xFF121822) else MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             ) {
                 val frames = allFrames
                 val host = radarData?.host ?: "https://tilecache.rainviewer.com"
@@ -386,7 +387,7 @@ fun RadarCardSection(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(if (isAppDark) Color(0xFF121822) else MaterialTheme.colorScheme.surfaceContainerHighest),
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
                         contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator(
@@ -401,7 +402,7 @@ fun RadarCardSection(
                 if (showSourceBadge) {
                     Surface(
                         shape = RoundedCornerShape(topStart = 8.dp),
-                        color = if (isAppDark) Color(0xCC121822) else MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.85f),
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.88f),
                         modifier = Modifier.align(Alignment.BottomEnd)
                     ) {
                         Text(
@@ -428,7 +429,7 @@ fun RadarCardSection(
                                 }
                                 RadarDataSource.RAIN_VIEWER -> "RainViewer"
                             },
-                            color = if (isAppDark) Color.White.copy(alpha = 0.75f) else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -490,7 +491,8 @@ fun RadarCardSection(
 
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    // フレーム進行インジケーター（実況=灰/青、外挿予測=エメラルド、HRRR予報=シアン）
+                    // フレーム進行インジケーター（選択アクセントモードに準拠）
+                    val accentPalette = currentAccentPalette()
                     val framesCount = allFrames.size
                     if (framesCount > 0) {
                         Row(
@@ -511,8 +513,8 @@ fun RadarCardSection(
                                         .background(
                                             color = when {
                                                 isActive -> MaterialTheme.colorScheme.primary
-                                                isExtrap -> Color(0xFF00E676).copy(alpha = 0.75f)
-                                                isForecast -> Color(0xFF00E5FF).copy(alpha = 0.5f)
+                                                isExtrap -> accentPalette.radarExtrap.copy(alpha = 0.85f)
+                                                isForecast -> accentPalette.radarForecast.copy(alpha = 0.65f)
                                                 else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
                                             },
                                             shape = CircleShape

@@ -19,6 +19,7 @@ import io.github.nemynew.expressiveweather.data.local.LocationKeyNormalizer
 import io.github.nemynew.expressiveweather.data.local.WeatherDatabase
 import io.github.nemynew.expressiveweather.ui.widget.WeatherWidgetUpdater
 import io.github.nemynew.expressiveweather.ui.widget.WidgetPreferences
+import io.github.nemynew.expressiveweather.ui.widget.WidgetRefreshWorker
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -128,9 +129,10 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         }
 
         scheduleWorkManager(interval)
-        scheduleNextAlarm()
+        ensureAlarmScheduled()
         registerBackgroundLocationUpdates()
         startPeriodicUpdate()
+        WidgetRefreshWorker.syncWidgetAlarmWithWeatherSchedule(context)
     }
 
     /**
@@ -139,7 +141,16 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
     fun restart() {
         periodicJob?.cancel()
         periodicJob = null
-        scheduleAll()
+        val interval = weatherRepository.getWeatherUpdateInterval()
+        if (interval == WeatherUpdateInterval.OFF) {
+            cancelAll()
+            return
+        }
+        scheduleWorkManager(interval)
+        scheduleNextAlarm()
+        registerBackgroundLocationUpdates()
+        startPeriodicUpdate()
+        WidgetRefreshWorker.syncWidgetAlarmWithWeatherSchedule(context)
     }
 
     /**
@@ -150,6 +161,8 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         Log.d(TAG, "Cancelling all weather background updates (Setting: OFF).")
         try {
             WorkManager.getInstance(context).cancelUniqueWork(WeatherUpdateWorker.UNIQUE_WORK_NAME)
+            WorkManager.getInstance(context).cancelUniqueWork(WeatherUpdateWorker.IMMEDIATE_SYNC_WORK_NAME)
+            WorkManager.getInstance(context).cancelUniqueWork(WeatherUpdateWorker.LOCATION_SYNC_WORK_NAME)
         } catch (e: Exception) {
             Log.w(TAG, "Error cancelling WorkManager work: ${e.message}")
         }
@@ -157,6 +170,16 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
         unregisterBackgroundLocationUpdates()
         periodicJob?.cancel()
         periodicJob = null
+        WidgetRefreshWorker.syncWidgetAlarmWithWeatherSchedule(context)
+    }
+
+    /**
+     * WorkManager 定期ジョブが設定通りに維持されていることを保証（Alarm 側からの自己修復用）
+     */
+    fun ensureWorkManagerScheduled() {
+        val interval = weatherRepository.getWeatherUpdateInterval()
+        if (interval == WeatherUpdateInterval.OFF) return
+        scheduleWorkManager(interval)
     }
 
     /**
@@ -164,8 +187,8 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
      */
     private fun scheduleWorkManager(interval: WeatherUpdateInterval) {
         try {
-            val intervalMinutes = interval.minutes.toLong()
-            val flexMinutes = (intervalMinutes / 3).coerceAtLeast(5L)
+            val intervalMinutes = BackgroundSchedulePolicy.computePeriodicIntervalMinutes(interval)
+            val flexMinutes = BackgroundSchedulePolicy.computePeriodicFlexMinutes(intervalMinutes)
 
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -176,7 +199,11 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                 flexMinutes, TimeUnit.MINUTES
             )
                 .setConstraints(constraints)
-                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 5, TimeUnit.MINUTES)
+                .setBackoffCriteria(
+                    BackoffPolicy.EXPONENTIAL,
+                    BackgroundSchedulePolicy.WORKER_BACKOFF_INITIAL_SECONDS,
+                    TimeUnit.SECONDS
+                )
                 .build()
 
             WorkManager.getInstance(context).enqueueUniquePeriodicWork(
@@ -184,14 +211,43 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                 ExistingPeriodicWorkPolicy.UPDATE,
                 workRequest
             )
-            Log.d(TAG, "Enqueued WorkManager PeriodicWorkRequest: every ${interval.minutes}m (flex: ${flexMinutes}m)")
+            Log.d(TAG, "Enqueued WorkManager PeriodicWorkRequest: every ${intervalMinutes}m (flex: ${flexMinutes}m)")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to enqueue WorkManager periodic request: ${e.message}", e)
         }
     }
 
     /**
-     * Layer 2: AlarmManager の Doze貫通アラームをスケジュール
+     * 既存のアラームが無い場合のみスケジュールする（プロセス再起動時の過剰再設定を防止）
+     */
+    fun ensureAlarmScheduled() {
+        val interval = weatherRepository.getWeatherUpdateInterval()
+        if (interval == WeatherUpdateInterval.OFF) {
+            cancelAlarm()
+            return
+        }
+        try {
+            val intent = Intent(context, WeatherUpdateReceiver::class.java).apply {
+                action = WeatherUpdateReceiver.ACTION_ALARM_WEATHER_UPDATE
+            }
+            val existing = PendingIntent.getBroadcast(
+                context,
+                REQUEST_CODE_ALARM,
+                intent,
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
+            )
+            if (existing == null) {
+                scheduleNextAlarm()
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Failed checking existing weather alarm: ${e.message}")
+            scheduleNextAlarm()
+        }
+    }
+
+    /**
+     * Layer 2: AlarmManager の Doze貫通アラーム (非厳密・権限不要) をスケジュール
+     * Google Play 版では Android Vitals 過剰ウェイクアップ対策として最短 15 分間隔 (= 最大 4回/時) を強制する。
      */
     fun scheduleNextAlarm(customDelayMillis: Long? = null) {
         val interval = weatherRepository.getWeatherUpdateInterval()
@@ -212,7 +268,11 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            val delayMillis = customDelayMillis ?: (interval.minutes * 60 * 1000L)
+            val requestedDelay = customDelayMillis ?: (interval.minutes * 60 * 1000L)
+            val delayMillis = BackgroundSchedulePolicy.computeAlarmDelayMillis(
+                requestedDelayMillis = requestedDelay,
+                isPlayDistribution = BuildConfig.IS_PLAY_DISTRIBUTION
+            )
             val triggerAtMillis = System.currentTimeMillis() + delayMillis
 
             AlarmManagerCompat.setAndAllowWhileIdle(
@@ -221,7 +281,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
                 triggerAtMillis,
                 pendingIntent
             )
-            Log.d(TAG, "Scheduled next AlarmManager wakeup in ${delayMillis / 1000}s (at $triggerAtMillis)")
+            Log.d(TAG, "Scheduled next AlarmManager wakeup in ${delayMillis / 1000}s (at $triggerAtMillis, play=${BuildConfig.IS_PLAY_DISTRIBUTION})")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to schedule AlarmManager: ${e.message}", e)
         }
@@ -289,6 +349,12 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
             val interval = weatherRepository.getWeatherUpdateInterval()
             if (interval == WeatherUpdateInterval.OFF) return@launch
 
+            // 権限付与直後（例: バックグラウンド位置情報の許可後に設定画面から戻った時）や
+            // OEM 省電力で解除されたスケジュールをフォアグラウンド復帰時に確実に再武装する
+            ensureWorkManagerScheduled()
+            ensureAlarmScheduled()
+            registerBackgroundLocationUpdates()
+
             val now = System.currentTimeMillis()
             val last = getLastUpdateTime()
             val staleThreshold = (interval.minutes * 60 * 1000L * 0.80).toLong().coerceAtLeast(2 * 60 * 1000L)
@@ -296,7 +362,10 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
             if (now - last >= staleThreshold) {
                 Log.d(TAG, "App foregrounded: Cache is stale (${(now - last) / 1000}s old). Triggering immediate background update.")
                 try {
-                    performBackgroundWeatherUpdate(isForced = true)
+                    val ok = performBackgroundWeatherUpdate(isForced = true)
+                    if (ok) {
+                        scheduleNextAlarm()
+                    }
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
@@ -328,7 +397,7 @@ class WeatherBackgroundUpdateManager private constructor(private val context: Co
 
         val now = System.currentTimeMillis()
         val lastUpdate = getLastUpdateTime()
-        val minThrottlingGap = (interval.minutes * 60 * 1000L * 0.60).toLong().coerceAtLeast(3 * 60 * 1000L)
+        val minThrottlingGap = BackgroundSchedulePolicy.computeMinThrottlingGapMillis(interval)
 
         if (!isForced && (now - lastUpdate) < minThrottlingGap) {
             Log.d(TAG, "Skipping redundant background update: updated recently (${(now - lastUpdate) / 1000}s ago < ${minThrottlingGap / 1000}s threshold).")
