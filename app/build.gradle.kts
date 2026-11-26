@@ -29,7 +29,7 @@ val appVersionCode: Int = (project.findProperty("VERSION_CODE")?.toString()
     ?: System.getenv("VERSION_CODE"))
     ?.toIntOrNull()
     ?.coerceAtLeast(1)
-    ?: 4
+    ?: 5
 
 val appVersionName: String = (project.findProperty("VERSION_NAME")?.toString()
     ?: System.getenv("VERSION_NAME"))
