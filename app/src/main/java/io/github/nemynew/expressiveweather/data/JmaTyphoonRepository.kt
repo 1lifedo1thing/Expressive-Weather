@@ -431,6 +431,7 @@ object JmaTyphoonRepository {
         val directionsKo = listOf("북", "북북동", "북동", "동북동", "동", "동남동", "남동", "남남동", "남", "남남서", "남서", "서남서", "서", "서북서", "북서", "북북서")
         val directionsEn = listOf("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
         val directionsRomance = listOf("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSO", "SO", "OSO", "O", "ONO", "NO", "NNO")
+        val directionsRu = listOf("С", "ССВ", "СВ", "ВСВ", "В", "ВЮВ", "ЮВ", "ЮЮВ", "Ю", "ЮЮЗ", "ЮЗ", "ЗЮЗ", "З", "ЗСЗ", "СЗ", "ССЗ")
 
         val index = ((bearing + 11.25) / 22.5).toInt() % 16
         return when (language) {
@@ -442,6 +443,7 @@ object JmaTyphoonRepository {
             AppLanguage.SPANISH,
             AppLanguage.FRENCH,
             AppLanguage.PORTUGUESE -> directionsRomance[index]
+            AppLanguage.RUSSIAN -> directionsRu[index]
         }
     }
 

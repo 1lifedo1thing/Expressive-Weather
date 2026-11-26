@@ -10,7 +10,8 @@ enum class AppLanguage(val code: String, val displayName: String) {
     ENGLISH("en", "English"),
     SPANISH("es", "Español"),
     FRENCH("fr", "Français"),
-    PORTUGUESE("pt", "Português");
+    PORTUGUESE("pt", "Português"),
+    RUSSIAN("ru", "Русский");
 
     val strings: AppStrings
         get() = when (this) {
@@ -22,6 +23,7 @@ enum class AppLanguage(val code: String, val displayName: String) {
             SPANISH -> SpanishStrings
             FRENCH -> FrenchStrings
             PORTUGUESE -> PortugueseStrings
+            RUSSIAN -> RussianStrings
         }
 
     val locale: java.util.Locale
@@ -31,9 +33,10 @@ enum class AppLanguage(val code: String, val displayName: String) {
             SIMPLIFIED_CHINESE -> java.util.Locale.SIMPLIFIED_CHINESE
             TRADITIONAL_CHINESE -> java.util.Locale.TRADITIONAL_CHINESE
             ENGLISH -> java.util.Locale.US
-            SPANISH -> java.util.Locale("es", "ES")
+            SPANISH -> java.util.Locale.forLanguageTag("es-ES")
             FRENCH -> java.util.Locale.FRANCE
-            PORTUGUESE -> java.util.Locale("pt", "BR")
+            PORTUGUESE -> java.util.Locale.forLanguageTag("pt-BR")
+            RUSSIAN -> java.util.Locale.forLanguageTag("ru-RU")
         }
 
     val composeLocale: androidx.compose.ui.text.intl.Locale
@@ -60,7 +63,8 @@ enum class AppLanguage(val code: String, val displayName: String) {
                 (code.startsWith("en", ignoreCase = true) && it == ENGLISH) ||
                 (code.startsWith("es", ignoreCase = true) && it == SPANISH) ||
                 (code.startsWith("fr", ignoreCase = true) && it == FRENCH) ||
-                (code.startsWith("pt", ignoreCase = true) && it == PORTUGUESE)
+                (code.startsWith("pt", ignoreCase = true) && it == PORTUGUESE) ||
+                (code.startsWith("ru", ignoreCase = true) && it == RUSSIAN)
             } ?: JAPANESE
         }
     }
@@ -2343,6 +2347,262 @@ val PortugueseStrings = AppStrings(
     retry = "Tentar novamente"
 )
 
+val RussianStrings = AppStrings(
+    appName = "Expressive Weather",
+    selectLocation = "Выбрать место",
+    currentLocation = "Текущее местоположение",
+    currentLocationWithCity = { city -> "Текущее местоположение ($city)" },
+    savedLocations = "Сохранённые места",
+    savedCities = "Сохранённые города",
+    addLocation = "Добавить место",
+    currentlyViewing = "Сейчас открыто",
+    noSavedLocations = "Нет сохранённых мест",
+    recentSearches = "Недавние поиски",
+    searchCityPlaceholder = "Поиск города...",
+    searchingCities = "Поиск городов...",
+    noCitiesFound = "Города не найдены",
+    close = "Закрыть",
+    cancel = "Отмена",
+    removeSaved = "Удалить",
+    selected = "Выбрано",
+
+    feelsLike = { temp -> "Ощущается $temp°" },
+    high = { temp -> "Макс: $temp°" },
+    low = { temp -> "Мин: $temp°" },
+    updated = { time -> "Обновлено: $time" },
+    justNow = "Только что",
+    minutesAgo = { mins -> "$mins мин назад" },
+    hoursAgo = { hours -> "$hours ч назад" },
+    daysAgo = { days -> "$days дн. назад" },
+    cachedDataBadge = { relative -> "Кэш: $relative" },
+    weatherDataSource = "Данные о погоде: Open-Meteo",
+    lastUpdatedRelative = { time, relative -> "Обновлено: $time ($relative)" },
+    cachedDataRelative = { time, relative -> "Кэш: $time ($relative)" },
+    pullToRefreshHint = "Нажмите для обновления",
+    hourlyForecast = "Почасовой прогноз",
+    tapForDetails = "Подробнее",
+    now = "Сейчас",
+    sevenDayForecast = "Прогноз на 7 дней",
+    today = "Сегодня",
+    tomorrow = "Завтра",
+
+    wind = "Ветер",
+    uvIndex = "УФ-индекс",
+    airQuality = "Качество воздуха",
+    humidity = "Влажность",
+    sun = "Солнце",
+    moonPhase = "Фаза Луны",
+    pressure = "Давление",
+    visibility = "Видимость",
+    precipitation = "Осадки",
+    dailyPrecipitationSum = "Осадки за сутки",
+    todayTotalPrecip = "Всего за 24 ч",
+    feelsLikeCard = "Ощущается",
+
+    windGusts = { gusts -> String.format(java.util.Locale.US, "Порывы: %.1f м/с", gusts) },
+    uvDailyMax = { max -> "Макс. УФ сегодня: $max" },
+    uvAdvice = "Рекомендуется защита от солнца",
+    uvLevelLow = "Низкий",
+    uvLevelModerate = "Умеренный",
+    uvLevelHigh = "Высокий",
+    uvLevelVeryHigh = "Очень высокий",
+    uvLevelExtreme = "Экстремальный",
+
+    aqiLevelGood = "Хорошее",
+    aqiLevelModerate = "Умеренное",
+    aqiLevelSensitive = "Для чувствительных",
+    aqiLevelUnhealthy = "Вредное",
+    aqiLevelHazardous = "Опасное",
+
+    humidityDry = "Сухо",
+    humidityComfortable = "Комфортно",
+    humidityHumid = "Влажно",
+    dewPoint = { dp -> "Точка росы $dp°C" },
+
+    sunrise = "Восход",
+    sunset = "Закат",
+    daylightDuration = { duration -> "Световой день $duration" },
+
+    pressureLow = "Низкое",
+    pressureNormal = "Нормальное",
+    pressureHigh = "Высокое",
+
+    visibilityClear = "Ясная",
+    visibilityGood = "Хорошая",
+    visibilityMisty = "Дымка",
+    visibilityFoggy = "Туман",
+    visibilityExcellent = "Отличная видимость",
+    visibilityModerate = "Умеренная видимость",
+    visibilityPoor = "Плохая видимость",
+
+    maxPrecipChance = { prob -> "Макс. вер. $prob%" },
+    noPrecipitation = "Без осадков",
+    rainPrecip = "Дождь",
+    snowPrecip = "Снег",
+
+    tempDiff = { diff -> if (diff >= 0) "+$diff° к темп." else "$diff° к темп." },
+    tempSame = "Как фактическая",
+    feelsHot = "Жарко",
+    feelsWarm = "Тепло",
+    feelsComfortable = "Комфортно",
+    feelsCool = "Прохладно",
+    feelsCold = "Холодно",
+    feelsChilly = "Свежо",
+
+    windDetailsTitle = "Подробнее о ветре",
+    windSpeedAndDirection = "Скорость и направление",
+    windDirectionLabel = "Направление",
+    windSpeedLabel = "Средний ветер",
+    windGustsLabel = "Макс. порывы",
+    windGustsMultiplier = { mult -> "%.1fx от среднего".format(mult) },
+    hourlyWindTitle = "Ветер на 24 часа",
+    dailyWindTitle = "Прогноз ветра на 7 дней",
+    beaufortScaleTitle = "Шкала Бофорта",
+    beaufortScaleLevel = { lvl -> "Балл $lvl" },
+    lifeInsightsTitle = "Влияние на повседневность",
+    laundryTitle = "Сушка белья",
+    umbrellaTitle = "Зонт",
+    cyclingTitle = "Велосипед",
+    outdoorTitle = "Прогулки и окна",
+    peakWindNotice = { time, spd -> "Порывы до %.1f м/с около $time".format(spd) },
+    dominantWind = "Преобладающий ветер",
+    maxWind = "Макс. ветер",
+    maxGusts = "Макс. порывы",
+
+    todayWeatherTitle = "Погода на сегодня",
+    todayOverview = "Текущие условия и обзор дня",
+    interactive24hChartTitle = "График по часам",
+    interactive24hChartSubtitle = "Проведите по графику для деталей",
+    touchScrubberGuide = "Коснитесь или проведите по графику для почасовых данных",
+    precipitationAndProbability = "Осадки и вероятность",
+    daypartsTitle = "По времени суток",
+    morningTitle = "Утро (6:00 - 12:00)",
+    afternoonTitle = "День (12:00 - 18:00)",
+    eveningTitle = "Вечер (18:00 - 24:00)",
+    overnightTitle = "Ночь (0:00 - 6:00)",
+    lifestyleAdvisorTitle = "Индексы комфорта",
+    clothingTitle = "Одежда",
+    clothingTip = { temp ->
+        when {
+            temp >= 26 -> "В жару подойдёт лёгкая дышащая одежда"
+            temp >= 20 -> "Рубашка с длинным рукавом или лёгкая кофта; прихватите накидку"
+            temp >= 15 -> "Подойдёт свитер, кардиган или лёгкая куртка"
+            temp >= 10 -> "Для комфорта понадобится куртка или пальто"
+            else -> "Рекомендуется тёплое пальто, шарф и многослойная одежда"
+        }
+    },
+    umbrellaAdviceTitle = "Зонт",
+    umbrellaTip = { prob, mm ->
+        when {
+            prob >= 60 || mm >= 2.0 -> "Возьмите сегодня крепкий зонт или дождевик"
+            prob >= 30 || mm > 0.0 -> "На всякий случай положите в сумку складной зонт"
+            else -> "Зонт сегодня не понадобится. Хорошего дня"
+        }
+    },
+    laundryAdviceTitle = "Сушка белья",
+    laundryTip = { humidity, rainProb ->
+        when {
+            rainProb >= 40 -> "Из-за риска дождя лучше сушить бельё в помещении"
+            humidity <= 50 -> "Быстро высохнет! Отличная погода даже для плотных вещей"
+            humidity <= 70 -> "Можно сушить на улице, но следите за погодой во второй половине дня"
+            else -> "Высокая влажность. Лучше сушить дома или в сушильной машине"
+        }
+    },
+    uvAdviceTitle = "Защита от УФ",
+    uvTip = { uv ->
+        when {
+            uv >= 8 -> "Очень высокий УФ! Обязательны солнцезащитный крем, очки и головной убор"
+            uv >= 6 -> "Высокий УФ. Держитесь в тени днём и используйте солнцезащитный крем"
+            uv >= 3 -> "Умеренное солнце. При долгом пребывании на улице нужна защита от УФ"
+            else -> "Низкий УФ-индекс. Особые меры защиты не требуются"
+        }
+    },
+    ventilationAdviceTitle = "Проветривание и комфорт",
+    ventilationTip = { humidity, aqi ->
+        when {
+            aqi > 100 -> "Качество воздуха снижено. Проветривайте недолго"
+            humidity in 40..60 -> "Свежий и комфортный воздух! Отличное время для проветривания"
+            humidity > 70 -> "На улице душно и влажно. После проветривания используйте осушитель или кондиционер"
+            else -> "Воздух немного суховат. В помещении стоит включить увлажнитель"
+        }
+    },
+    detailedMetricsTitle = "Подробные показатели",
+    dewPointLabel = "Точка росы",
+    sunScheduleTitle = "Солнце",
+    sunRemaining = { remain -> "$remain до заката" },
+    daylightLabel = "Световой день",
+
+    settingsTitle = "Настройки",
+    settingsSubtitle = "Параметры и системные настройки",
+    tempUnitTitle = "Единица температуры",
+    tempUnitSubtitle = { symbol, isC -> "Сейчас: $symbol (${if (isC) "Цельсий" else "Фаренгейт"})" },
+    windSpeedUnitTitle = "Единица скорости ветра",
+    windSpeedUnitSubtitle = { unit -> "Сейчас: $unit" },
+    windSpeedMatchLanguage = "По языку",
+    refreshTitle = "Обновить данные о погоде",
+    refreshSubtitle = { isRef -> if (isRef) "Получение актуальных данных..." else "Синхронизировать наблюдения и прогноз" },
+    resetLocationTitle = "Вернуться к текущему месту",
+    resetLocationSubtitle = "Использовать GPS или город по умолчанию",
+    languageTitle = "Язык",
+    languageSubtitle = "Изменить язык приложения",
+    changeLanguageTitle = "Сменить язык",
+    currentLanguageSection = "Текущий язык",
+    availableLanguagesSection = "Доступные языки",
+    weatherThemeTitle = "Адаптивная тема погоды",
+    weatherThemeSubtitle = { enabled -> if (enabled) "Цвета приложения подстраиваются под текущую погоду" else "Используются системные цвета" },
+    themePresetTitle = "Цвет и пресет темы",
+    themePresetSubtitle = { name, isAdaptive -> if (isAdaptive) "Подстраивается под погоду ($name)" else "Зафиксировано: $name" },
+    themePresetDialogTitle = "Выбор цвета темы",
+    themePresetDialogSubtitle = "Выберите фиксированный цвет или адаптивный режим погоды",
+    appearanceTitle = "Оформление",
+    appearanceSubtitle = "Настройки цвета и темы",
+    generalSettingsTitle = "Основные настройки",
+    generalSettingsSubtitle = "Язык и единицы (температура и ветер)",
+    dataSourcesTitle = "Источники данных",
+    dataSourcesSubtitle = "Поставщики прогнозов и дополнительные источники",
+    dataSourcesSectionTitle = "Поставщик данных о погоде",
+    dataAndSyncTitle = "Данные и синхронизация",
+    aboutTitle = "О приложении",
+    syncNowTitle = "Синхронизировать сейчас",
+    syncNowSubtitle = "Загрузить свежие наблюдения и прогноз",
+    clearCacheConfirmMessage = "Кэшированные данные о погоде будут удалены. Новые данные загрузятся при следующем обновлении.",
+    dataSourcesOpenMeteoDesc = "Японское метеорологическое агентство (JMA) и Open-Meteo\nВ Японии данные поступают напрямую от JMA (станции AMeDAS и официальные прогнозы). Для остальных стран мира используется глобальный API Open-Meteo.",
+    dataSourcesFutureNotice = "Для Японии автоматически используется JMA, а для остальных стран мира — Open-Meteo.",
+    sourceActiveBadge = "Активно",
+    sourceComingSoonBadge = "Скоро",
+    sourceJmaTitle = "Японское метеорологическое агентство (JMA)",
+    sourceJmaDesc = "Региональный радар высокого разрешения и мезомасштабная численная модель (MSM) в Японии.",
+    sourceEcmwfTitle = "ECMWF (Европейский центр прогнозов)",
+    sourceEcmwfDesc = "Ведущая глобальная численная модель среднесрочных прогнозов погоды (IFS).",
+    sourceNoaaTitle = "NOAA GFS (Global Forecast System)",
+    sourceNoaaDesc = "Глобальная модель прогноза погоды Национальной метеослужбы США.",
+    appVersionTitle = "Версия",
+    appVersionValue = "1.0 (Expressive Edition)",
+    debugSettingsTitle = "Настройки отладки",
+    debugSettingsSubtitle = "Симуляция погодных анимаций и инструменты кэша",
+    debugSimulationTitle = "Атмосферная симуляция",
+    debugSimulationSubtitle = "Проверка анимаций фона, облаков, дождя, грозы, снега и тумана",
+    backgroundPreviewTitle = "Атмосферная симуляция",
+    backgroundPreviewSubtitle = "Проверка анимаций фона, облаков, дождя, грозы, снега и тумана",
+    debugResetPreview = "Вернуться к реальной погоде",
+    clearCacheTitle = "Очистить кэш",
+    clearCacheSubtitle = "Удалить кэшированные данные о погоде и локальную базу",
+    clearCacheSuccess = "Кэш успешно очищен",
+    forceRefreshTitle = "Принудительная синхронизация",
+    forceRefreshSubtitle = "Загрузить свежие данные напрямую с сервера",
+    systemDiagnosticsTitle = "Диагностика системы",
+    tabAll = "Все",
+    tabAppearance = "Оформление",
+    tabGeneral = "Основные",
+    tabSources = "Источники",
+    tabDebug = "Отладка",
+
+    loadingWeather = "Загрузка данных о погоде...",
+    loadingLocation = "Определение местоположения...",
+    errorOccurred = "Произошла ошибка",
+    retry = "Повторить"
+)
+
 val LocalAppStrings = staticCompositionLocalOf { JapaneseStrings }
 val LocalAppLanguage = staticCompositionLocalOf { AppLanguage.JAPANESE }
 
@@ -2447,6 +2707,25 @@ fun getLocalizedWindDirection(direction: String, language: AppLanguage): String 
             "北北西" -> "NNO"
             else -> direction
         }
+        AppLanguage.RUSSIAN -> when (direction) {
+            "北" -> "С"
+            "北北東" -> "ССВ"
+            "北東" -> "СВ"
+            "東北東" -> "ВСВ"
+            "東" -> "В"
+            "東南東" -> "ВЮВ"
+            "南東" -> "ЮВ"
+            "南南東" -> "ЮЮВ"
+            "南" -> "Ю"
+            "南南西" -> "ЮЮЗ"
+            "南西" -> "ЮЗ"
+            "西南西" -> "ЗЮЗ"
+            "西" -> "З"
+            "西北西" -> "ЗСЗ"
+            "北西" -> "СЗ"
+            "北北西" -> "ССЗ"
+            else -> direction
+        }
     }
 }
 
@@ -2471,15 +2750,15 @@ fun getLocalizedWindDirection(degree: Float, language: AppLanguage): String {
 fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
     val trimmed = dayLabel.trim().removeSuffix(".")
     val dayKey = when {
-        trimmed.equals("Today", ignoreCase = true) || trimmed == "今日" || trimmed == "今天" || trimmed == "오늘" || trimmed.equals("Hoy", ignoreCase = true) || trimmed.equals("Aujourd'hui", ignoreCase = true) || trimmed.equals("Hoje", ignoreCase = true) -> "TODAY"
-        trimmed.equals("Tomorrow", ignoreCase = true) || trimmed == "明日" || trimmed == "明天" || trimmed == "내일" || trimmed.equals("Mañana", ignoreCase = true) || trimmed.equals("Manana", ignoreCase = true) || trimmed.equals("Demain", ignoreCase = true) || trimmed.equals("Amanhã", ignoreCase = true) || trimmed.equals("Amanha", ignoreCase = true) -> "TOMORROW"
-        trimmed.startsWith("Mon", ignoreCase = true) || trimmed.startsWith("月") || trimmed == "周一" || trimmed == "週一" || trimmed == "星期一" || trimmed == "禮拜一" || trimmed == "월" || trimmed == "월요일" || trimmed.startsWith("Lun", ignoreCase = true) || trimmed.startsWith("Seg", ignoreCase = true) -> "MON"
-        trimmed.startsWith("Tue", ignoreCase = true) || trimmed.startsWith("火") || trimmed == "周二" || trimmed == "週二" || trimmed == "星期二" || trimmed == "禮拜二" || trimmed == "화" || trimmed == "화요일" || trimmed.startsWith("Mar", ignoreCase = true) || trimmed.startsWith("Ter", ignoreCase = true) -> "TUE"
-        trimmed.startsWith("Wed", ignoreCase = true) || trimmed.startsWith("水") || trimmed == "周三" || trimmed == "週三" || trimmed == "星期三" || trimmed == "禮拜三" || trimmed == "수" || trimmed == "수요일" || trimmed.startsWith("Mié", ignoreCase = true) || trimmed.startsWith("Mie", ignoreCase = true) || trimmed.startsWith("Mer", ignoreCase = true) || trimmed.startsWith("Qua", ignoreCase = true) -> "WED"
-        trimmed.startsWith("Thu", ignoreCase = true) || trimmed.startsWith("木") || trimmed == "周四" || trimmed == "週四" || trimmed == "星期四" || trimmed == "禮拜四" || trimmed == "목" || trimmed == "목요일" || trimmed.startsWith("Jue", ignoreCase = true) || trimmed.startsWith("Jeu", ignoreCase = true) || trimmed.startsWith("Qui", ignoreCase = true) -> "THU"
-        trimmed.startsWith("Fri", ignoreCase = true) || trimmed.startsWith("金") || trimmed == "周五" || trimmed == "週五" || trimmed == "星期五" || trimmed == "禮拜五" || trimmed == "금" || trimmed == "금요일" || trimmed.startsWith("Vie", ignoreCase = true) || trimmed.startsWith("Ven", ignoreCase = true) || trimmed.startsWith("Sex", ignoreCase = true) -> "FRI"
-        trimmed.startsWith("Sat", ignoreCase = true) || trimmed.startsWith("土") || trimmed == "周六" || trimmed == "週六" || trimmed == "星期六" || trimmed == "禮拜六" || trimmed == "토" || trimmed == "토요일" || trimmed.startsWith("Sáb", ignoreCase = true) || trimmed.startsWith("Sab", ignoreCase = true) || trimmed.startsWith("Sam", ignoreCase = true) -> "SAT"
-        trimmed.startsWith("Sun", ignoreCase = true) || trimmed.startsWith("日") || trimmed == "周日" || trimmed == "週日" || trimmed == "星期日" || trimmed == "星期天" || trimmed == "周天" || trimmed == "週天" || trimmed == "禮拜天" || trimmed == "禮拜日" || trimmed == "일" || trimmed == "일요일" || trimmed.startsWith("Dom", ignoreCase = true) || trimmed.startsWith("Dim", ignoreCase = true) -> "SUN"
+        trimmed.equals("Today", ignoreCase = true) || trimmed == "今日" || trimmed == "今天" || trimmed == "오늘" || trimmed.equals("Hoy", ignoreCase = true) || trimmed.equals("Aujourd'hui", ignoreCase = true) || trimmed.equals("Hoje", ignoreCase = true) || trimmed.equals("Сегодня", ignoreCase = true) -> "TODAY"
+        trimmed.equals("Tomorrow", ignoreCase = true) || trimmed == "明日" || trimmed == "明天" || trimmed == "내일" || trimmed.equals("Mañana", ignoreCase = true) || trimmed.equals("Manana", ignoreCase = true) || trimmed.equals("Demain", ignoreCase = true) || trimmed.equals("Amanhã", ignoreCase = true) || trimmed.equals("Amanha", ignoreCase = true) || trimmed.equals("Завтра", ignoreCase = true) -> "TOMORROW"
+        trimmed.startsWith("Mon", ignoreCase = true) || trimmed.startsWith("月") || trimmed == "周一" || trimmed == "週一" || trimmed == "星期一" || trimmed == "禮拜一" || trimmed == "월" || trimmed == "월요일" || trimmed.startsWith("Lun", ignoreCase = true) || trimmed.startsWith("Seg", ignoreCase = true) || trimmed.equals("Пн", ignoreCase = true) || trimmed.startsWith("Пон", ignoreCase = true) -> "MON"
+        trimmed.startsWith("Tue", ignoreCase = true) || trimmed.startsWith("火") || trimmed == "周二" || trimmed == "週二" || trimmed == "星期二" || trimmed == "禮拜二" || trimmed == "화" || trimmed == "화요일" || trimmed.startsWith("Mar", ignoreCase = true) || trimmed.startsWith("Ter", ignoreCase = true) || trimmed.equals("Вт", ignoreCase = true) || trimmed.startsWith("Вто", ignoreCase = true) -> "TUE"
+        trimmed.startsWith("Wed", ignoreCase = true) || trimmed.startsWith("水") || trimmed == "周三" || trimmed == "週三" || trimmed == "星期三" || trimmed == "禮拜三" || trimmed == "수" || trimmed == "수요일" || trimmed.startsWith("Mié", ignoreCase = true) || trimmed.startsWith("Mie", ignoreCase = true) || trimmed.startsWith("Mer", ignoreCase = true) || trimmed.startsWith("Qua", ignoreCase = true) || trimmed.equals("Ср", ignoreCase = true) || trimmed.startsWith("Сре", ignoreCase = true) -> "WED"
+        trimmed.startsWith("Thu", ignoreCase = true) || trimmed.startsWith("木") || trimmed == "周四" || trimmed == "週四" || trimmed == "星期四" || trimmed == "禮拜四" || trimmed == "목" || trimmed == "목요일" || trimmed.startsWith("Jue", ignoreCase = true) || trimmed.startsWith("Jeu", ignoreCase = true) || trimmed.startsWith("Qui", ignoreCase = true) || trimmed.equals("Чт", ignoreCase = true) || trimmed.startsWith("Чет", ignoreCase = true) -> "THU"
+        trimmed.startsWith("Fri", ignoreCase = true) || trimmed.startsWith("金") || trimmed == "周五" || trimmed == "週五" || trimmed == "星期五" || trimmed == "禮拜五" || trimmed == "금" || trimmed == "금요일" || trimmed.startsWith("Vie", ignoreCase = true) || trimmed.startsWith("Ven", ignoreCase = true) || trimmed.startsWith("Sex", ignoreCase = true) || trimmed.equals("Пт", ignoreCase = true) || trimmed.startsWith("Пят", ignoreCase = true) -> "FRI"
+        trimmed.startsWith("Sat", ignoreCase = true) || trimmed.startsWith("土") || trimmed == "周六" || trimmed == "週六" || trimmed == "星期六" || trimmed == "禮拜六" || trimmed == "토" || trimmed == "토요일" || trimmed.startsWith("Sáb", ignoreCase = true) || trimmed.startsWith("Sab", ignoreCase = true) || trimmed.startsWith("Sam", ignoreCase = true) || trimmed.equals("Сб", ignoreCase = true) || trimmed.startsWith("Суб", ignoreCase = true) -> "SAT"
+        trimmed.startsWith("Sun", ignoreCase = true) || trimmed.startsWith("日") || trimmed == "周日" || trimmed == "週日" || trimmed == "星期日" || trimmed == "星期天" || trimmed == "周天" || trimmed == "週天" || trimmed == "禮拜天" || trimmed == "禮拜日" || trimmed == "일" || trimmed == "일요일" || trimmed.startsWith("Dom", ignoreCase = true) || trimmed.startsWith("Dim", ignoreCase = true) || trimmed.equals("Вс", ignoreCase = true) || trimmed.startsWith("Вос", ignoreCase = true) -> "SUN"
         else -> null
     }
 
@@ -2582,6 +2861,18 @@ fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
             "SUN" -> "Dom"
             else -> dayLabel
         }
+        AppLanguage.RUSSIAN -> when (dayKey) {
+            "TODAY" -> "Сегодня"
+            "TOMORROW" -> "Завтра"
+            "MON" -> "Пн"
+            "TUE" -> "Вт"
+            "WED" -> "Ср"
+            "THU" -> "Чт"
+            "FRI" -> "Пт"
+            "SAT" -> "Сб"
+            "SUN" -> "Вс"
+            else -> dayLabel
+        }
     }
 }
 
@@ -2590,7 +2881,7 @@ fun getLocalizedDayLabel(dayLabel: String, language: AppLanguage): String {
  */
 fun getLocalizedTimeLabel(timeLabel: String, language: AppLanguage): String {
     val trimmed = timeLabel.trim()
-    if (trimmed == "現在" || trimmed.equals("now", ignoreCase = true) || trimmed == "现在" || trimmed == "현재" || trimmed.equals("ahora", ignoreCase = true) || trimmed.equals("maintenant", ignoreCase = true) || trimmed.equals("agora", ignoreCase = true)) {
+    if (trimmed == "現在" || trimmed.equals("now", ignoreCase = true) || trimmed == "现在" || trimmed == "현재" || trimmed.equals("ahora", ignoreCase = true) || trimmed.equals("maintenant", ignoreCase = true) || trimmed.equals("agora", ignoreCase = true) || trimmed.equals("сейчас", ignoreCase = true)) {
         return when (language) {
             AppLanguage.JAPANESE -> "現在"
             AppLanguage.KOREAN -> "현재"
@@ -2600,6 +2891,7 @@ fun getLocalizedTimeLabel(timeLabel: String, language: AppLanguage): String {
             AppLanguage.SPANISH -> "Ahora"
             AppLanguage.FRENCH -> "Maintenant"
             AppLanguage.PORTUGUESE -> "Agora"
+            AppLanguage.RUSSIAN -> "Сейчас"
         }
     }
     return timeLabel
@@ -2669,6 +2961,16 @@ fun WeatherCondition.getLocalizedLabel(language: AppLanguage): String {
             WeatherCondition.THUNDERSTORM -> "Tempestade"
             WeatherCondition.SNOW -> "Neve"
             WeatherCondition.FOG -> "Neblina"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            WeatherCondition.CLEAR -> "Ясно"
+            WeatherCondition.FEW_CLOUDS -> "Переменная облачность"
+            WeatherCondition.CLOUDY -> "Облачно"
+            WeatherCondition.RAIN -> "Дождь"
+            WeatherCondition.HEAVY_RAIN -> "Сильный дождь"
+            WeatherCondition.THUNDERSTORM -> "Гроза"
+            WeatherCondition.SNOW -> "Снег"
+            WeatherCondition.FOG -> "Туман"
         }
     }
 }
@@ -2745,6 +3047,16 @@ fun WeatherCondition.getLocalizedTagline(language: AppLanguage): String {
             WeatherCondition.THUNDERSTORM -> "Tempo instável. Atenção para raios e rajadas de vento"
             WeatherCondition.SNOW -> "Neve caindo suavemente. Agasalhe-se bem e tenha cuidado"
             WeatherCondition.FOG -> "Neblina com visibilidade reduzida. Dirija com atenção"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            WeatherCondition.CLEAR -> "Ясное небо и приятное солнце в течение всего дня"
+            WeatherCondition.FEW_CLOUDS -> "Мягкие лучи солнца пробиваются сквозь лёгкие облака"
+            WeatherCondition.CLOUDY -> "Пасмурное небо, спокойная и умеренная погода"
+            WeatherCondition.RAIN -> "Идёт дождь. Не забудьте взять с собой зонт"
+            WeatherCondition.HEAVY_RAIN -> "Идёт сильный дождь. Будьте осторожны в пути"
+            WeatherCondition.THUNDERSTORM -> "Неустойчивая погода. Остерегайтесь грозы и порывов ветра"
+            WeatherCondition.SNOW -> "Идёт снег. Одевайтесь теплее и будьте осторожны на дорогах"
+            WeatherCondition.FOG -> "Туман и сниженная видимость. Будьте внимательны за рулём"
         }
     }
 }
@@ -3333,6 +3645,149 @@ object EuropeanCityDictionary {
         translate(nameJa, nameEn, enToPt, jaToPt)
 }
 
+/**
+ * 主要都市のロシア語辞書
+ */
+object RussianCityDictionary {
+    private val jaToRu = mapOf(
+        "東京都" to "Токио",
+        "東京" to "Токио",
+        "大阪市" to "Осака",
+        "大阪" to "Осака",
+        "横浜市" to "Иокогама",
+        "横浜" to "Иокогама",
+        "名古屋市" to "Нагоя",
+        "名古屋" to "Нагоя",
+        "札幌市" to "Саппоро",
+        "札幌" to "Саппоро",
+        "福岡市" to "Фукуока",
+        "福岡" to "Фукуока",
+        "神戸市" to "Кобе",
+        "神戸" to "Кобе",
+        "京都市" to "Киото",
+        "京都" to "Киото",
+        "さいたま市" to "Сайтама",
+        "さいたま" to "Сайтама",
+        "埼玉" to "Сайтама",
+        "広島市" to "Хиросима",
+        "広島" to "Хиросима",
+        "仙台市" to "Сэндай",
+        "仙台" to "Сэндай",
+        "千葉市" to "Тиба",
+        "千葉" to "Тиба",
+        "那覇市" to "Наха",
+        "那覇" to "Наха",
+        "沖縄" to "Окинава",
+        "金沢市" to "Канадзава",
+        "金沢" to "Канадзава",
+        "長崎市" to "Нагасаки",
+        "長崎" to "Нагасаки",
+        "熊本市" to "Кумамото",
+        "熊本" to "Кумамото",
+        "鹿児島市" to "Кагосима",
+        "鹿児島" to "Кагосима",
+        "千代田区" to "Тиёда",
+        "新宿区" to "Синдзюку",
+        "渋谷区" to "Сибуя",
+        "港区" to "Минато",
+        "中央区" to "Тюо",
+        "モスクワ" to "Москва",
+        "サンクトペテルブルク" to "Санкт-Петербург",
+        "ウラジオストク" to "Владивосток",
+        "ノヴォシビルスク" to "Новосибирск",
+        "エカテリンブルク" to "Екатеринбург",
+        "カザン" to "Казань",
+        "ソチ" to "Сочи"
+    )
+
+    private val enToRu = mapOf(
+        "Tokyo" to "Токио",
+        "Osaka" to "Осака",
+        "Kyoto" to "Киото",
+        "Yokohama" to "Иокогама",
+        "Nagoya" to "Нагоя",
+        "Sapporo" to "Саппоро",
+        "Fukuoka" to "Фукуока",
+        "Kobe" to "Кобе",
+        "Saitama" to "Сайтама",
+        "Hiroshima" to "Хиросима",
+        "Sendai" to "Сэндай",
+        "Chiba" to "Тиба",
+        "Naha" to "Наха",
+        "Okinawa" to "Окинава",
+        "Moscow" to "Москва",
+        "Saint Petersburg" to "Санкт-Петербург",
+        "Novosibirsk" to "Новосибирск",
+        "Yekaterinburg" to "Екатеринбург",
+        "Kazan" to "Казань",
+        "Nizhny Novgorod" to "Нижний Новгород",
+        "Vladivostok" to "Владивосток",
+        "Sochi" to "Сочи",
+        "Kaliningrad" to "Калининград",
+        "Krasnoyarsk" to "Красноярск",
+        "Samara" to "Самара",
+        "Rostov-on-Don" to "Ростов-на-Дону",
+        "Ufa" to "Уфа",
+        "Omsk" to "Омск",
+        "Chelyabinsk" to "Челябинск",
+        "Krasnodar" to "Краснодар",
+        "Irkutsk" to "Иркутск",
+        "Khabarovsk" to "Хабаровск",
+        "London" to "Лондон",
+        "Paris" to "Париж",
+        "Berlin" to "Берлин",
+        "Munich" to "Мюнхен",
+        "Rome" to "Рим",
+        "Milan" to "Милан",
+        "Madrid" to "Мадрид",
+        "Barcelona" to "Барселона",
+        "Lisbon" to "Лиссабон",
+        "Amsterdam" to "Амстердам",
+        "Brussels" to "Брюссель",
+        "Vienna" to "Вена",
+        "Prague" to "Прага",
+        "Warsaw" to "Варшава",
+        "Stockholm" to "Стокгольм",
+        "Helsinki" to "Хельсинки",
+        "Athens" to "Афины",
+        "Istanbul" to "Стамбул",
+        "New York" to "Нью-Йорк",
+        "Los Angeles" to "Лос-Анджелес",
+        "San Francisco" to "Сан-Франциско",
+        "Chicago" to "Чикаго",
+        "Miami" to "Майами",
+        "Seattle" to "Сиэтл",
+        "Toronto" to "Торонто",
+        "Vancouver" to "Ванкувер",
+        "Beijing" to "Пекин",
+        "Shanghai" to "Шанхай",
+        "Hong Kong" to "Гонконг",
+        "Taipei" to "Тайбэй",
+        "Seoul" to "Сеул",
+        "Busan" to "Пусан",
+        "Singapore" to "Сингапур",
+        "Bangkok" to "Бангкок",
+        "Dubai" to "Дубай",
+        "Sydney" to "Сидней",
+        "Melbourne" to "Мельбурн",
+        "Cairo" to "Каир",
+        "Mexico City" to "Мехико",
+        "Sao Paulo" to "Сан-Паулу"
+    )
+
+    private fun containsCyrillic(text: String): Boolean =
+        text.any { ch -> ch in '\u0400'..'\u04FF' }
+
+    fun translateToRussian(nameJa: String, nameEn: String): String {
+        if (containsCyrillic(nameJa)) return nameJa
+        if (containsCyrillic(nameEn)) return nameEn
+        return jaToRu[nameJa]
+            ?: enToRu[nameEn]
+            ?: jaToRu[nameJa.removeSuffix("市").removeSuffix("区").removeSuffix("町").removeSuffix("村")]
+            ?: if (nameEn.isNotBlank()) nameEn else nameJa
+    }
+}
+
 fun City.localizedName(language: AppLanguage): String {
     return when (language) {
         AppLanguage.JAPANESE -> name
@@ -3343,6 +3798,7 @@ fun City.localizedName(language: AppLanguage): String {
         AppLanguage.SPANISH -> EuropeanCityDictionary.translateToSpanish(name, nameEn)
         AppLanguage.FRENCH -> EuropeanCityDictionary.translateToFrench(name, nameEn)
         AppLanguage.PORTUGUESE -> EuropeanCityDictionary.translateToPortuguese(name, nameEn)
+        AppLanguage.RUSSIAN -> RussianCityDictionary.translateToRussian(name, nameEn)
     }
 }
 
@@ -3356,6 +3812,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Japonés"
         AppLanguage.FRENCH -> "Japonais"
         AppLanguage.PORTUGUESE -> "Japonês"
+        AppLanguage.RUSSIAN -> "Японский"
     }
     AppLanguage.KOREAN -> when (language) {
         AppLanguage.JAPANESE -> "韓国語"
@@ -3366,6 +3823,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Coreano"
         AppLanguage.FRENCH -> "Coréen"
         AppLanguage.PORTUGUESE -> "Coreano"
+        AppLanguage.RUSSIAN -> "Корейский"
     }
     AppLanguage.ENGLISH -> when (language) {
         AppLanguage.JAPANESE -> "English"
@@ -3376,6 +3834,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Inglés"
         AppLanguage.FRENCH -> "Anglais"
         AppLanguage.PORTUGUESE -> "Inglês"
+        AppLanguage.RUSSIAN -> "Английский"
     }
     AppLanguage.SIMPLIFIED_CHINESE -> when (language) {
         AppLanguage.JAPANESE -> "中国語 (簡体字)"
@@ -3386,6 +3845,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Chino (simplificado)"
         AppLanguage.FRENCH -> "Chinois (simplifié)"
         AppLanguage.PORTUGUESE -> "Chinês (simplificado)"
+        AppLanguage.RUSSIAN -> "Китайский (упрощённый)"
     }
     AppLanguage.TRADITIONAL_CHINESE -> when (language) {
         AppLanguage.JAPANESE -> "中国語 (繁体字)"
@@ -3396,6 +3856,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Chino (tradicional)"
         AppLanguage.FRENCH -> "Chinois (traditionnel)"
         AppLanguage.PORTUGUESE -> "Chinês (tradicional)"
+        AppLanguage.RUSSIAN -> "Китайский (традиционный)"
     }
     AppLanguage.SPANISH -> when (language) {
         AppLanguage.JAPANESE -> "スペイン語"
@@ -3406,6 +3867,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Español"
         AppLanguage.FRENCH -> "Espagnol"
         AppLanguage.PORTUGUESE -> "Espanhol"
+        AppLanguage.RUSSIAN -> "Испанский"
     }
     AppLanguage.FRENCH -> when (language) {
         AppLanguage.JAPANESE -> "フランス語"
@@ -3416,6 +3878,7 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Francés"
         AppLanguage.FRENCH -> "Français"
         AppLanguage.PORTUGUESE -> "Francês"
+        AppLanguage.RUSSIAN -> "Французский"
     }
     AppLanguage.PORTUGUESE -> when (language) {
         AppLanguage.JAPANESE -> "ポルトガル語"
@@ -3426,6 +3889,18 @@ fun AppLanguage.getDisplayNameIn(language: AppLanguage): String = when (this) {
         AppLanguage.SPANISH -> "Portugués"
         AppLanguage.FRENCH -> "Portugais"
         AppLanguage.PORTUGUESE -> "Português"
+        AppLanguage.RUSSIAN -> "Португальский"
+    }
+    AppLanguage.RUSSIAN -> when (language) {
+        AppLanguage.JAPANESE -> "ロシア語"
+        AppLanguage.KOREAN -> "러시아어"
+        AppLanguage.ENGLISH -> "Russian"
+        AppLanguage.SIMPLIFIED_CHINESE -> "俄语"
+        AppLanguage.TRADITIONAL_CHINESE -> "俄語"
+        AppLanguage.SPANISH -> "Ruso"
+        AppLanguage.FRENCH -> "Russe"
+        AppLanguage.PORTUGUESE -> "Russo"
+        AppLanguage.RUSSIAN -> "Русский"
     }
 }
 

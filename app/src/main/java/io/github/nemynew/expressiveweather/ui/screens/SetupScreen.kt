@@ -213,6 +213,14 @@ internal fun getPopularSetupCities(language: AppLanguage): List<City> {
             City(id = "tokyo", name = "Tóquio", nameEn = "Tokyo", country = "Japão", latitude = 35.6762, longitude = 139.6503),
             City(id = "new_york", name = "Nova York", nameEn = "New York", country = "Estados Unidos", latitude = 40.7128, longitude = -74.0060)
         )
+        AppLanguage.RUSSIAN -> listOf(
+            City(id = "moscow", name = "Москва", nameEn = "Moscow", country = "Россия", latitude = 55.7558, longitude = 37.6173),
+            City(id = "saint_petersburg", name = "Санкт-Петербург", nameEn = "Saint Petersburg", country = "Россия", latitude = 59.9343, longitude = 30.3351),
+            City(id = "novosibirsk", name = "Новосибирск", nameEn = "Novosibirsk", country = "Россия", latitude = 55.0084, longitude = 82.9357),
+            City(id = "yekaterinburg", name = "Екатеринбург", nameEn = "Yekaterinburg", country = "Россия", latitude = 56.8389, longitude = 60.6057),
+            City(id = "tokyo", name = "Токио", nameEn = "Tokyo", country = "Япония", latitude = 35.6762, longitude = 139.6503),
+            City(id = "new_york", name = "Нью-Йорк", nameEn = "New York", country = "США", latitude = 40.7128, longitude = -74.0060)
+        )
     }
 }
 
@@ -312,6 +320,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "No se pudo guardar la ciudad. Inténtalo de nuevo."
             AppLanguage.FRENCH -> "Impossible d'enregistrer la ville. Veuillez réessayer."
             AppLanguage.PORTUGUESE -> "Não foi possível salvar a cidade. Tente novamente."
+            AppLanguage.RUSSIAN -> "Не удалось сохранить город. Попробуйте ещё раз."
         }
     }
 
@@ -417,7 +426,7 @@ fun SetupScreen(
         isSearching = false
     }
 
-    // UI文言（8言語対応）
+    // UI文言（9言語対応）
     val welcomeText = remember(currentLanguage) {
         when (currentLanguage) {
             AppLanguage.JAPANESE -> "ようこそ"
@@ -428,6 +437,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Bienvenido"
             AppLanguage.FRENCH -> "Bienvenue"
             AppLanguage.PORTUGUESE -> "Bem-vindo"
+            AppLanguage.RUSSIAN -> "Добро пожаловать"
         }
     }
 
@@ -441,6 +451,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Clima en vivo, radar de lluvia y alertas de un vistazo"
             AppLanguage.FRENCH -> "Météo en direct, radar de pluie et alertes en un coup d'œil"
             AppLanguage.PORTUGUESE -> "Clima ao vivo, radar de chuva e alertas num relance"
+            AppLanguage.RUSSIAN -> "Погода, радар осадков и оповещения на одном экране"
         }
     }
 
@@ -454,6 +465,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Usar ubicación actual"
             AppLanguage.FRENCH -> "Utiliser la position actuelle"
             AppLanguage.PORTUGUESE -> "Usar localização atual"
+            AppLanguage.RUSSIAN -> "Текущее местоположение"
         }
     }
 
@@ -467,6 +479,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Buscar y añadir ciudad"
             AppLanguage.FRENCH -> "Rechercher et ajouter une ville"
             AppLanguage.PORTUGUESE -> "Buscar e adicionar cidade"
+            AppLanguage.RUSSIAN -> "Найти и добавить город"
         }
     }
 
@@ -480,6 +493,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Escribe una ciudad (ej. Madrid, Ciudad de México)"
             AppLanguage.FRENCH -> "Saisir une ville (ex. Paris, Lyon, Montréal)"
             AppLanguage.PORTUGUESE -> "Digite uma cidade (ex. São Paulo, Lisboa)"
+            AppLanguage.RUSSIAN -> "Введите город (напр. Москва, Токио)"
         }
     }
 
@@ -493,6 +507,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Búsquedas recientes"
             AppLanguage.FRENCH -> "Recherches récentes"
             AppLanguage.PORTUGUESE -> "Buscas recentes"
+            AppLanguage.RUSSIAN -> "Недавние поиски"
         }
     }
 
@@ -506,6 +521,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Ciudades populares"
             AppLanguage.FRENCH -> "Villes populaires"
             AppLanguage.PORTUGUESE -> "Cidades populares"
+            AppLanguage.RUSSIAN -> "Популярные города"
         }
     }
 
@@ -519,6 +535,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Obteniendo ubicación actual..."
             AppLanguage.FRENCH -> "Localisation en cours..."
             AppLanguage.PORTUGUESE -> "Obtendo localização atual..."
+            AppLanguage.RUSSIAN -> "Определение местоположения..."
         }
     }
 
@@ -532,6 +549,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "No se encontraron ciudades"
             AppLanguage.FRENCH -> "Aucune ville trouvée"
             AppLanguage.PORTUGUESE -> "Nenhuma cidade encontrada"
+            AppLanguage.RUSSIAN -> "Города не найдены"
         }
     }
 
@@ -545,6 +563,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Buscando..."
             AppLanguage.FRENCH -> "Recherche en cours..."
             AppLanguage.PORTUGUESE -> "Buscando..."
+            AppLanguage.RUSSIAN -> "Поиск..."
         }
     }
 
@@ -558,6 +577,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "La ubicación solo se usa para obtener el clima y el radar"
             AppLanguage.FRENCH -> "Votre position sert uniquement à récupérer la météo et le radar"
             AppLanguage.PORTUGUESE -> "A localização é usada apenas para obter o clima e o radar"
+            AppLanguage.RUSSIAN -> "Геолокация используется только для погоды и радара"
         }
     }
 
@@ -571,6 +591,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Política de privacidad"
             AppLanguage.FRENCH -> "Politique de confidentialité"
             AppLanguage.PORTUGUESE -> "Política de privacidade"
+            AppLanguage.RUSSIAN -> "Политика конфиденциальности"
         }
     }
 
@@ -584,6 +605,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Cerrar"
             AppLanguage.FRENCH -> "Fermer"
             AppLanguage.PORTUGUESE -> "Fechar"
+            AppLanguage.RUSSIAN -> "Закрыть"
         }
     }
 
@@ -597,6 +619,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Borrar búsqueda"
             AppLanguage.FRENCH -> "Effacer la recherche"
             AppLanguage.PORTUGUESE -> "Limpar busca"
+            AppLanguage.RUSSIAN -> "Очистить поиск"
         }
     }
 
@@ -610,6 +633,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Cerrar búsqueda"
             AppLanguage.FRENCH -> "Fermer la recherche"
             AppLanguage.PORTUGUESE -> "Fechar busca"
+            AppLanguage.RUSSIAN -> "Закрыть поиск"
         }
     }
 
@@ -623,6 +647,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Cambiar idioma"
             AppLanguage.FRENCH -> "Changer de langue"
             AppLanguage.PORTUGUESE -> "Alterar idioma"
+            AppLanguage.RUSSIAN -> "Сменить язык"
         }
     }
 
@@ -636,6 +661,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Reintentar"
             AppLanguage.FRENCH -> "Réessayer"
             AppLanguage.PORTUGUESE -> "Tentar novamente"
+            AppLanguage.RUSSIAN -> "Повторить"
         }
     }
 
@@ -649,6 +675,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Buscar ciudad"
             AppLanguage.FRENCH -> "Rechercher une ville"
             AppLanguage.PORTUGUESE -> "Buscar cidade"
+            AppLanguage.RUSSIAN -> "Найти город"
         }
     }
 
@@ -662,6 +689,7 @@ fun SetupScreen(
             AppLanguage.SPANISH -> "Abrir ajustes de la app"
             AppLanguage.FRENCH -> "Ouvrir les paramètres"
             AppLanguage.PORTUGUESE -> "Abrir configurações do app"
+            AppLanguage.RUSSIAN -> "Открыть настройки"
         }
     }
 
@@ -1037,6 +1065,7 @@ fun SetupScreen(
                                 AppLanguage.SPANISH -> "Se denegó el permiso de ubicación. Puedes buscar una ciudad en su lugar."
                                 AppLanguage.FRENCH -> "L'autorisation de localisation a été refusée. Vous pouvez rechercher une ville à la place."
                                 AppLanguage.PORTUGUESE -> "A permissão de localização foi negada. Você pode buscar uma cidade."
+                                AppLanguage.RUSSIAN -> "Доступ к геолокации запрещён. Вы можете найти город через поиск."
                             }
                             SetupLocationFeedback.PERMISSION_PERMANENTLY_DENIED -> when (currentLanguage) {
                                 AppLanguage.JAPANESE -> "位置情報が端末設定でオフになっています。アプリ設定から許可するか、地名検索をご利用ください。"
@@ -1047,6 +1076,7 @@ fun SetupScreen(
                                 AppLanguage.SPANISH -> "El acceso a la ubicación está desactivado en los ajustes del sistema. Actívalo en los ajustes de la app o busca una ciudad."
                                 AppLanguage.FRENCH -> "L'accès à la localisation est désactivé dans les paramètres système. Activez-le dans les paramètres ou recherchez une ville."
                                 AppLanguage.PORTUGUESE -> "O acesso à localização está desativado nas configurações do sistema. Ative nas configurações do app ou busque uma cidade."
+                                AppLanguage.RUSSIAN -> "Доступ к геолокации отключён в настройках системы. Включите его в настройках приложения или найдите город."
                             }
                             SetupLocationFeedback.LOCATION_UNAVAILABLE -> when (currentLanguage) {
                                 AppLanguage.JAPANESE -> "現在地を取得できませんでした。位置情報サービスを確認して再試行するか、地名検索をご利用ください。"
@@ -1057,6 +1087,7 @@ fun SetupScreen(
                                 AppLanguage.SPANISH -> "No se pudo obtener tu ubicación actual. Comprueba los servicios de ubicación y reintenta, o busca una ciudad."
                                 AppLanguage.FRENCH -> "Impossible d'obtenir votre position actuelle. Vérifiez les services de localisation et réessayez, ou recherchez une ville."
                                 AppLanguage.PORTUGUESE -> "Não foi possível obter sua localização atual. Verifique os serviços de localização e tente novamente, ou busque uma cidade."
+                                AppLanguage.RUSSIAN -> "Не удалось определить местоположение. Проверьте службы геолокации и повторите попытку или найдите город."
                             }
                             SetupLocationFeedback.LOCATION_ERROR -> locationErrorDetail?.takeIf { it.isNotBlank() }
                                 ?: when (currentLanguage) {
@@ -1068,6 +1099,7 @@ fun SetupScreen(
                                     AppLanguage.SPANISH -> "Ocurrió un error al obtener tu ubicación. Reintenta o busca una ciudad."
                                     AppLanguage.FRENCH -> "Une erreur s'est produite lors de la localisation. Réessayez ou recherchez une ville."
                                     AppLanguage.PORTUGUESE -> "Ocorreu um erro ao obter sua localização. Tente novamente ou busque uma cidade."
+                                    AppLanguage.RUSSIAN -> "Произошла ошибка при определении местоположения. Повторите попытку или найдите город."
                                 }
                             SetupLocationFeedback.NONE -> ""
                         }

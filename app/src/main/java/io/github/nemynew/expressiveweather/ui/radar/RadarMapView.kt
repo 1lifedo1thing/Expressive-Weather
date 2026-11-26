@@ -754,6 +754,7 @@ private fun ZoomLevelBadge(
                 AppLanguage.SPANISH -> "🔍 Zoom: %.2f (Nv %d)"
                 AppLanguage.FRENCH -> "🔍 Zoom : %.2f (Niv. %d)"
                 AppLanguage.PORTUGUESE -> "🔍 Zoom: %.2f (Nv %d)"
+                            AppLanguage.RUSSIAN -> "🔍 Масштаб: %.2f (Ур. %d)"
             }
             Text(
                 text = zoomFormat.format(currentZoom, currentZoom.toInt()),

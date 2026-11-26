@@ -169,6 +169,7 @@ fun WeatherFooterStatusSection(
                         AppLanguage.SPANISH -> "Actualizar"
                         AppLanguage.FRENCH -> "Actualiser"
                         AppLanguage.PORTUGUESE -> "Atualizar"
+                        AppLanguage.RUSSIAN -> "Обновить"
                         AppLanguage.ENGLISH -> "Refresh"
                     },
                     tint = colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
@@ -217,6 +218,7 @@ fun WeatherFooterStatusSection(
                             AppLanguage.SPANISH -> "Todas las fuentes de datos"
                             AppLanguage.FRENCH -> "Toutes les sources de données"
                             AppLanguage.PORTUGUESE -> "Todas as fontes de dados"
+                            AppLanguage.RUSSIAN -> "Все источники данных"
                             AppLanguage.ENGLISH -> "All Data Sources & Attribution"
                         },
                         style = MaterialTheme.typography.labelSmall.copy(
@@ -238,6 +240,7 @@ fun WeatherFooterStatusSection(
                         AppLanguage.SPANISH -> if (isSourcesExpanded) "Contraer" else "Expandir"
                         AppLanguage.FRENCH -> if (isSourcesExpanded) "Réduire" else "Développer"
                         AppLanguage.PORTUGUESE -> if (isSourcesExpanded) "Recolher" else "Expandir"
+                        AppLanguage.RUSSIAN -> if (isSourcesExpanded) "Свернуть" else "Развернуть"
                         AppLanguage.ENGLISH -> if (isSourcesExpanded) "Collapse" else "Expand"
                     },
                     tint = colorScheme.onSurfaceVariant.copy(alpha = 0.75f),
@@ -349,6 +352,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
         AppLanguage.SPANISH -> "ONU / CE GDACS"
         AppLanguage.FRENCH -> "ONU / CE GDACS"
         AppLanguage.PORTUGUESE -> "ONU / CE GDACS"
+        AppLanguage.RUSSIAN -> "ООН / ЕК GDACS"
         AppLanguage.ENGLISH -> "UN / EC GDACS"
     }
     return if (isJapan) {
@@ -362,6 +366,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Observaciones (Temp./Hum./Viento/Lluvia)"
                     AppLanguage.FRENCH -> "Observations (Temp./Hum./Vent/Pluie)"
                     AppLanguage.PORTUGUESE -> "Observações (Temp./Umid./Vento/Chuva)"
+                    AppLanguage.RUSSIAN -> "Наблюдения (Темп./Влажн./Ветер/Осадки)"
                     AppLanguage.ENGLISH -> "Observations (Temp/Humidity/Wind/Rain)"
                 },
                 source = when (language) {
@@ -372,6 +377,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "JMA AMeDAS (Directo)"
                     AppLanguage.FRENCH -> "JMA AMeDAS (Direct)"
                     AppLanguage.PORTUGUESE -> "JMA AMeDAS (Direto)"
+                    AppLanguage.RUSSIAN -> "JMA AMeDAS (Напрямую)"
                     AppLanguage.ENGLISH -> "JMA AMeDAS (Direct)"
                 },
                 detail = when (language) {
@@ -382,6 +388,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Mediciones directas en tiempo real (temperatura, humedad, presión, viento, lluvia, máximas/mínimas) de ~1.300 estaciones AMeDAS en todo Japón."
                     AppLanguage.FRENCH -> "Mesures directes en temps réel (température, humidité, pression, vent, pluie, min./max.) issues d'environ 1 300 stations AMeDAS au Japon."
                     AppLanguage.PORTUGUESE -> "Medições diretas em tempo real (temperatura, umidade, pressão, vento, chuva, máximas/mínimas) de ~1.300 estações AMeDAS no Japão."
+                    AppLanguage.RUSSIAN -> "Прямые измерения в реальном времени (температура, влажность, давление, ветер, осадки, макс./мин.) с ~1300 станций AMeDAS в Японии."
                     AppLanguage.ENGLISH -> "Real-time direct measurements (temperature, humidity, pressure, wind, rain, highs/lows) from ~1,300 AMeDAS stations nationwide."
                 },
                 icon = Icons.Rounded.Thermostat,
@@ -396,6 +403,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Pronósticos (Por hora y 7 días)"
                     AppLanguage.FRENCH -> "Prévisions (Horaires et 7 jours)"
                     AppLanguage.PORTUGUESE -> "Previsões (Horária e 7 dias)"
+                    AppLanguage.RUSSIAN -> "Прогнозы (Почасовой и на 7 дней)"
                     AppLanguage.ENGLISH -> "Forecasts (Hourly & 7-Day)"
                 },
                 source = when (language) {
@@ -406,6 +414,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Pronósticos oficiales JMA"
                     AppLanguage.FRENCH -> "Prévisions officielles JMA"
                     AppLanguage.PORTUGUESE -> "Previsões oficiais JMA"
+                    AppLanguage.RUSSIAN -> "Официальные прогнозы JMA"
                     AppLanguage.ENGLISH -> "JMA Official Forecasts"
                 },
                 detail = when (language) {
@@ -416,6 +425,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Pronósticos regionales por prefectura, probabilidades de precipitación cada 6 horas y códigos de pronóstico a 7 días con índices de fiabilidad."
                     AppLanguage.FRENCH -> "Prévisions régionales par préfecture, probabilités de précipitations sur 6 heures et tendances à 7 jours avec indices de fiabilité."
                     AppLanguage.PORTUGUESE -> "Previsões regionais por província, probabilidades de chuva a cada 6 horas e previsão para 7 dias com índices de confiabilidade."
+                    AppLanguage.RUSSIAN -> "Региональные прогнозы по префектурам, вероятность осадков каждые 6 часов и прогноз на 7 дней с оценкой надёжности."
                     AppLanguage.ENGLISH -> "Direct regional prefectural forecasts, 6-hour precipitation probabilities, and 7-day outlook codes with reliability ratings."
                 },
                 icon = Icons.Rounded.CalendarMonth,
@@ -430,6 +440,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas y sinopsis meteorológica"
                     AppLanguage.FRENCH -> "Alertes et bulletin météo"
                     AppLanguage.PORTUGUESE -> "Alertas e sinopse meteorológica"
+                    AppLanguage.RUSSIAN -> "Предупреждения и синоптический обзор"
                     AppLanguage.ENGLISH -> "Warnings & Weather Synopsis"
                 },
                 source = when (language) {
@@ -440,6 +451,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas de desastres JMA"
                     AppLanguage.FRENCH -> "Alertes catastrophes JMA"
                     AppLanguage.PORTUGUESE -> "Alertas de desastres JMA"
+                    AppLanguage.RUSSIAN -> "Оповещения о бедствиях JMA"
                     AppLanguage.ENGLISH -> "JMA Disaster Alerts"
                 },
                 detail = when (language) {
@@ -450,6 +462,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Resúmenes sinópticos de meteorólogos y alertas de emergencia, advertencias y avisos a nivel municipal."
                     AppLanguage.FRENCH -> "Bulletins synoptiques des prévisionnistes et alertes d'urgence, vigilances et avis au niveau municipal."
                     AppLanguage.PORTUGUESE -> "Resumos sinóticos de meteorologistas e alertas de emergência, avisos e advertências em nível municipal."
+                    AppLanguage.RUSSIAN -> "Синоптические сводки метеорологов и экстренные предупреждения и оповещения на муниципальном уровне."
                     AppLanguage.ENGLISH -> "Direct forecaster synoptic overviews and municipality-level emergency, warning, and advisory alerts."
                 },
                 icon = Icons.Rounded.WarningAmber,
@@ -464,6 +477,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas globales de desastres"
                     AppLanguage.FRENCH -> "Alertes mondiales de catastrophes"
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres"
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения о бедствиях"
                     AppLanguage.ENGLISH -> "Global Disaster Alerts"
                 },
                 source = gdacsSourceLabel,
@@ -475,6 +489,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Integración directa con el Sistema Global de Alerta y Coordinación de Desastres de la ONU/CE para ciclones, terremotos e inundaciones graves."
                     AppLanguage.FRENCH -> "Intégration directe avec le système mondial d'alerte aux catastrophes ONU/CE pour les cyclones, séismes et inondations majeurs."
                     AppLanguage.PORTUGUESE -> "Integração direta com o Sistema Global de Alerta de Desastres da ONU/CE para ciclones, terremotos e enchentes graves."
+                    AppLanguage.RUSSIAN -> "Прямая интеграция с Глобальной системой оповещения ООН/ЕК (GDACS) о циклонах, землетрясениях и крупных наводнениях."
                     AppLanguage.ENGLISH -> "Direct integration with UN/EC Global Disaster Alert and Coordination System for major cyclones, earthquakes, and floods."
                 },
                 icon = Icons.Rounded.Public,
@@ -489,6 +504,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Radar, Kikikuru y satélite"
                     AppLanguage.FRENCH -> "Radar, Kikikuru et satellite"
                     AppLanguage.PORTUGUESE -> "Radar, Kikikuru e satélite"
+                    AppLanguage.RUSSIAN -> "Радар, Kikikuru и спутник"
                     AppLanguage.ENGLISH -> "Radar, Kikikuru & Satellite"
                 },
                 source = when (language) {
@@ -499,6 +515,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Nowcast alta resolución JMA"
                     AppLanguage.FRENCH -> "Nowcast haute résolution JMA"
                     AppLanguage.PORTUGUESE -> "Nowcast alta resolução JMA"
+                    AppLanguage.RUSSIAN -> "Высокоточный наукаст JMA"
                     AppLanguage.ENGLISH -> "JMA High-Res Nowcast"
                 },
                 detail = when (language) {
@@ -509,6 +526,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Nowcast de precipitación de alta resolución de JMA (malla de 250 m), mapas de riesgo Kikikuru e imágenes del satélite Himawari."
                     AppLanguage.FRENCH -> "Nowcast de précipitations haute résolution de JMA (maille 250 m), cartes de risques Kikikuru et imagerie satellite Himawari."
                     AppLanguage.PORTUGUESE -> "Nowcast de precipitação de alta resolução da JMA (malha de 250 m), mapas de risco Kikikuru e imagens do satélite Himawari."
+                    AppLanguage.RUSSIAN -> "Высокоточный наукаст осадков JMA (сетка 250 м), карты рисков Kikikuru и снимки спутника Himawari."
                     AppLanguage.ENGLISH -> "Direct JMA high-resolution precipitation nowcast (250m mesh), Kikikuru hazard distributions, and Himawari satellite imagery."
                 },
                 icon = Icons.Rounded.Radar,
@@ -523,6 +541,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calidad del aire (AQI / PM2.5 / PM10)"
                     AppLanguage.FRENCH -> "Qualité de l'air (AQI / PM2.5 / PM10)"
                     AppLanguage.PORTUGUESE -> "Qualidade do ar (AQI / PM2.5 / PM10)"
+                    AppLanguage.RUSSIAN -> "Качество воздуха (AQI / PM2.5 / PM10)"
                     AppLanguage.ENGLISH -> "Air Quality (AQI / PM2.5 / PM10)"
                 },
                 source = "Open-Meteo Air Quality",
@@ -534,6 +553,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Complementado mediante los modelos globales de química atmosférica de Open-Meteo para US AQI, PM2.5, PM10, NO2 y ozono."
                     AppLanguage.FRENCH -> "Complété via les modèles mondiaux de chimie atmosphérique d'Open-Meteo pour US AQI, PM2.5, PM10, NO2 et ozone."
                     AppLanguage.PORTUGUESE -> "Complementado pelos modelos globais de química atmosférica da Open-Meteo para US AQI, PM2.5, PM10, NO2 e ozônio."
+                    AppLanguage.RUSSIAN -> "Дополнено глобальными моделями атмосферной химии Open-Meteo для US AQI, PM2.5, PM10, NO2 и озона."
                     AppLanguage.ENGLISH -> "Supplemented via Open-Meteo global atmospheric chemistry models for US AQI, PM2.5, PM10, NO2, and Ozone."
                 },
                 icon = Icons.Rounded.Air,
@@ -548,6 +568,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Predicción inmediata de lluvia"
                     AppLanguage.FRENCH -> "Prévision immédiate de pluie"
                     AppLanguage.PORTUGUESE -> "Previsão imediata de chuva"
+                    AppLanguage.RUSSIAN -> "Краткосрочный прогноз дождя"
                     AppLanguage.ENGLISH -> "Precipitation Nowcast Prediction"
                 },
                 source = when (language) {
@@ -558,6 +579,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "JMA y Open-Meteo (Híbrido)"
                     AppLanguage.FRENCH -> "JMA et Open-Meteo (Hybride)"
                     AppLanguage.PORTUGUESE -> "JMA e Open-Meteo (Híbrido)"
+                    AppLanguage.RUSSIAN -> "JMA и Open-Meteo (Гибрид)"
                     AppLanguage.ENGLISH -> "JMA & Open-Meteo (Hybrid)"
                 },
                 detail = when (language) {
@@ -568,6 +590,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Análisis híbrido que combina boletines sinópticos de JMA con pasos de precipitación cada 15 minutos de Open-Meteo."
                     AppLanguage.FRENCH -> "Analyse hybride combinant les bulletins synoptiques de JMA et les prévisions de précipitations par pas de 15 minutes d'Open-Meteo."
                     AppLanguage.PORTUGUESE -> "Análise híbrida combinando boletins sinóticos da JMA e previsões de precipitação a cada 15 minutos da Open-Meteo."
+                    AppLanguage.RUSSIAN -> "Гибридный анализ, объединяющий синоптические сводки JMA и 15-минутные шаги осадков Open-Meteo."
                     AppLanguage.ENGLISH -> "Hybrid analysis combining JMA synoptic weather bulletins and Open-Meteo 15-minute precipitation steps."
                 },
                 icon = Icons.Rounded.Umbrella,
@@ -582,6 +605,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Amanecer / Atardecer y arco solar"
                     AppLanguage.FRENCH -> "Lever / Coucher et course du soleil"
                     AppLanguage.PORTUGUESE -> "Nascer / Pôr do sol e arco solar"
+                    AppLanguage.RUSSIAN -> "Восход / Закат и солнечная дуга"
                     AppLanguage.ENGLISH -> "Sunrise / Sunset & Solar Transit"
                 },
                 source = when (language) {
@@ -592,6 +616,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Algoritmo NOAA (En el dispositivo)"
                     AppLanguage.FRENCH -> "Algorithme NOAA (Local)"
                     AppLanguage.PORTUGUESE -> "Algoritmo NOAA (No dispositivo)"
+                    AppLanguage.RUSSIAN -> "Алгоритм NOAA (На устройстве)"
                     AppLanguage.ENGLISH -> "NOAA Algorithm (On-device)"
                 },
                 detail = when (language) {
@@ -602,6 +627,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calculado íntegramente en el dispositivo mediante fórmulas astronómicas solares de la NOAA para amanecer, atardecer y arco solar precisos."
                     AppLanguage.FRENCH -> "Calculé entièrement sur l'appareil via les formules astronomiques solaires de la NOAA pour le lever, le coucher et la course du soleil."
                     AppLanguage.PORTUGUESE -> "Calculado inteiramente no dispositivo pelas fórmulas astronômicas solares da NOAA para nascer, pôr do sol e arco solar precisos."
+                    AppLanguage.RUSSIAN -> "Вычисляется локально на устройстве по астрономическим формулам NOAA для точного восхода, заката и дуги солнца."
                     AppLanguage.ENGLISH -> "Calculated entirely on-device via NOAA Solar Calculation astronomical formulas for precision sunrise, sunset, and solar arc."
                 },
                 icon = Icons.Rounded.WbSunny,
@@ -619,6 +645,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Observaciones y pronósticos"
                     AppLanguage.FRENCH -> "Observations et prévisions"
                     AppLanguage.PORTUGUESE -> "Observações e previsões"
+                    AppLanguage.RUSSIAN -> "Наблюдения и прогнозы"
                     AppLanguage.ENGLISH -> "Weather Observations & Forecasts"
                 },
                 source = when (language) {
@@ -629,6 +656,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Open-Meteo NWP Global"
                     AppLanguage.FRENCH -> "Open-Meteo NWP Mondial"
                     AppLanguage.PORTUGUESE -> "Open-Meteo NWP Global"
+                    AppLanguage.RUSSIAN -> "Open-Meteo Global NWP"
                     AppLanguage.ENGLISH -> "Open-Meteo Global NWP"
                 },
                 detail = when (language) {
@@ -639,6 +667,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Datos meteorológicos de alta resolución que combinan los modelos NOAA GFS, HRRR y ECMWF."
                     AppLanguage.FRENCH -> "Données météo haute résolution combinant les modèles NOAA GFS, HRRR et ECMWF."
                     AppLanguage.PORTUGUESE -> "Dados meteorológicos de alta resolução combinando os modelos NOAA GFS, HRRR e ECMWF."
+                    AppLanguage.RUSSIAN -> "Высокоточные погодные данные, объединяющие модели NOAA GFS, HRRR и ECMWF."
                     AppLanguage.ENGLISH -> "High-resolution seamless weather blending NOAA GFS, HRRR, and ECMWF models."
                 },
                 icon = Icons.Rounded.Thermostat,
@@ -653,6 +682,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas y avisos meteorológicos"
                     AppLanguage.FRENCH -> "Alertes et vigilances météo"
                     AppLanguage.PORTUGUESE -> "Alertas e avisos meteorológicos"
+                    AppLanguage.RUSSIAN -> "Метеопредупреждения и оповещения"
                     AppLanguage.ENGLISH -> "Weather Warnings & Watches"
                 },
                 source = when (language) {
@@ -663,6 +693,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "NOAA NWS Oficial"
                     AppLanguage.FRENCH -> "NOAA NWS Officiel"
                     AppLanguage.PORTUGUESE -> "NOAA NWS Oficial"
+                    AppLanguage.RUSSIAN -> "NOAA NWS (Официально)"
                     AppLanguage.ENGLISH -> "NOAA NWS Official"
                 },
                 detail = when (language) {
@@ -673,6 +704,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas activas en tiempo real (tornado, inundación repentina, tormenta invernal, calor) desde la API oficial del NOAA NWS."
                     AppLanguage.FRENCH -> "Alertes actives en temps réel (tornade, crue éclair, tempête hivernale, canicule) via l'API officielle du NOAA NWS."
                     AppLanguage.PORTUGUESE -> "Alertas ativos em tempo real (tornado, enxurrada, tempestade de inverno, calor) da API oficial do NOAA NWS."
+                    AppLanguage.RUSSIAN -> "Активные оповещения в реальном времени (торнадо, паводки, зимние штормы, жара) из официального API NOAA NWS."
                     AppLanguage.ENGLISH -> "Direct real-time active weather alerts (Tornado, Flash Flood, Winter Storm, Heat) from NOAA National Weather Service API."
                 },
                 icon = Icons.Rounded.CrisisAlert,
@@ -687,6 +719,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas globales de desastres"
                     AppLanguage.FRENCH -> "Alertes mondiales de catastrophes"
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres"
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения о бедствиях"
                     AppLanguage.ENGLISH -> "Global Disaster Alerts"
                 },
                 source = gdacsSourceLabel,
@@ -698,6 +731,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas globales de desastres (rojo/naranja) para huracanes, terremotos e inundaciones graves mediante ONU/CE GDACS."
                     AppLanguage.FRENCH -> "Alertes mondiales de catastrophes (rouge/orange) pour ouragans, séismes et inondations graves via ONU/CE GDACS."
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres (vermelho/laranja) para furacões, terremotos e enchentes graves via ONU/CE GDACS."
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения о бедствиях (красный/оранжевый уровень) об ураганах, землетрясениях и наводнениях через ООН/ЕК GDACS."
                     AppLanguage.ENGLISH -> "Global disaster alerts (Red/Orange) for severe hurricanes, earthquakes, and floods via UN/EC GDACS."
                 },
                 icon = Icons.Rounded.Public,
@@ -712,6 +746,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Radar de precipitación"
                     AppLanguage.FRENCH -> "Radar de précipitations"
                     AppLanguage.PORTUGUESE -> "Radar de precipitação"
+                    AppLanguage.RUSSIAN -> "Радар осадков"
                     AppLanguage.ENGLISH -> "Precipitation Radar"
                 },
                 source = "NOAA MRMS / RainViewer",
@@ -723,6 +758,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Radar de alta resolución mediante NOAA Multi-Radar Multi-Sensor (MRMS) y el compuesto global RainViewer."
                     AppLanguage.FRENCH -> "Radar haute résolution via NOAA Multi-Radar Multi-Sensor (MRMS) et la mosaïque mondiale RainViewer."
                     AppLanguage.PORTUGUESE -> "Radar de alta resolução via NOAA Multi-Radar Multi-Sensor (MRMS) e composto global RainViewer."
+                    AppLanguage.RUSSIAN -> "Высокоточный радар NOAA MRMS и глобальный композитный радар RainViewer."
                     AppLanguage.ENGLISH -> "High-resolution radar via NOAA Multi-Radar Multi-Sensor (MRMS) and global composite RainViewer."
                 },
                 icon = Icons.Rounded.Radar,
@@ -737,6 +773,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calidad del aire (AQI / PM2.5 / PM10)"
                     AppLanguage.FRENCH -> "Qualité de l'air (AQI / PM2.5 / PM10)"
                     AppLanguage.PORTUGUESE -> "Qualidade do ar (AQI / PM2.5 / PM10)"
+                    AppLanguage.RUSSIAN -> "Качество воздуха (AQI / PM2.5 / PM10)"
                     AppLanguage.ENGLISH -> "Air Quality (AQI / PM2.5 / PM10)"
                 },
                 source = "Open-Meteo Air Quality",
@@ -748,6 +785,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Modelos globales de química atmosférica que ofrecen US AQI, PM2.5 y partículas en tiempo real."
                     AppLanguage.FRENCH -> "Modèles mondiaux de chimie atmosphérique fournissant US AQI, PM2.5 et particules en temps réel."
                     AppLanguage.PORTUGUESE -> "Modelos globais de química atmosférica fornecendo US AQI, PM2.5 e partículas em tempo real."
+                    AppLanguage.RUSSIAN -> "Глобальные модели атмосферной химии с данными US AQI, PM2.5 и частиц в реальном времени."
                     AppLanguage.ENGLISH -> "Global atmospheric chemistry models delivering real-time US AQI, PM2.5, and particulate tracking."
                 },
                 icon = Icons.Rounded.Air,
@@ -762,6 +800,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Nowcast de precipitación"
                     AppLanguage.FRENCH -> "Nowcast de précipitations"
                     AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
+                    AppLanguage.RUSSIAN -> "Наукаст осадков"
                     AppLanguage.ENGLISH -> "Precipitation Nowcast"
                 },
                 source = "Open-Meteo 15-Min Forecast",
@@ -773,6 +812,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Modelo de precipitación en intervalos de 15 minutos que predice con precisión el inicio y fin de la lluvia."
                     AppLanguage.FRENCH -> "Modèle de précipitations par intervalles de 15 minutes prédisant précisément le début et la fin de la pluie."
                     AppLanguage.PORTUGUESE -> "Modelo de precipitação em intervalos de 15 minutos prevendo com precisão o início e o fim da chuva."
+                    AppLanguage.RUSSIAN -> "Модель осадков с шагом 15 минут, точно прогнозирующая начало и окончание дождя."
                     AppLanguage.ENGLISH -> "Precision 15-minute interval precipitation model forecasting exact rain start and stop times."
                 },
                 icon = Icons.Rounded.Umbrella,
@@ -787,6 +827,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Amanecer / Atardecer y arco solar"
                     AppLanguage.FRENCH -> "Lever / Coucher et course du soleil"
                     AppLanguage.PORTUGUESE -> "Nascer / Pôr do sol e arco solar"
+                    AppLanguage.RUSSIAN -> "Восход / Закат и солнечная дуга"
                     AppLanguage.ENGLISH -> "Sunrise / Sunset & Solar Transit"
                 },
                 source = when (language) {
@@ -797,6 +838,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Algoritmo NOAA (En el dispositivo)"
                     AppLanguage.FRENCH -> "Algorithme NOAA (Local)"
                     AppLanguage.PORTUGUESE -> "Algoritmo NOAA (No dispositivo)"
+                    AppLanguage.RUSSIAN -> "Алгоритм NOAA (На устройстве)"
                     AppLanguage.ENGLISH -> "NOAA Algorithm (On-device)"
                 },
                 detail = when (language) {
@@ -807,6 +849,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calculado íntegramente en el dispositivo mediante fórmulas astronómicas solares de la NOAA para amanecer, atardecer y arco solar precisos."
                     AppLanguage.FRENCH -> "Calculé entièrement sur l'appareil via les formules astronomiques solaires de la NOAA pour le lever, le coucher et la course du soleil."
                     AppLanguage.PORTUGUESE -> "Calculado inteiramente no dispositivo pelas fórmulas astronômicas solares da NOAA para nascer, pôr do sol e arco solar precisos."
+                    AppLanguage.RUSSIAN -> "Вычисляется локально на устройстве по астрономическим формулам NOAA для точного восхода, заката и дуги солнца."
                     AppLanguage.ENGLISH -> "Calculated entirely on-device via NOAA Solar Calculation astronomical formulas for precision sunrise, sunset, and solar arc."
                 },
                 icon = Icons.Rounded.WbSunny,
@@ -824,6 +867,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Observaciones y pronósticos"
                     AppLanguage.FRENCH -> "Observations et prévisions"
                     AppLanguage.PORTUGUESE -> "Observações e previsões"
+                    AppLanguage.RUSSIAN -> "Наблюдения и прогнозы"
                     AppLanguage.ENGLISH -> "Weather Observations & Forecasts"
                 },
                 source = when (language) {
@@ -834,6 +878,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Open-Meteo NWP Global"
                     AppLanguage.FRENCH -> "Open-Meteo NWP Mondial"
                     AppLanguage.PORTUGUESE -> "Open-Meteo NWP Global"
+                    AppLanguage.RUSSIAN -> "Open-Meteo Global NWP"
                     AppLanguage.ENGLISH -> "Open-Meteo Global NWP"
                 },
                 detail = when (language) {
@@ -844,6 +889,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Datos meteorológicos de alta resolución que combinan los modelos globales ECMWF, NOAA GFS y DWD ICON."
                     AppLanguage.FRENCH -> "Données météo haute résolution combinant les modèles mondiaux ECMWF, NOAA GFS et DWD ICON."
                     AppLanguage.PORTUGUESE -> "Dados meteorológicos de alta resolução combinando os modelos globais ECMWF, NOAA GFS e DWD ICON."
+                    AppLanguage.RUSSIAN -> "Высокоточные погодные данные, объединяющие глобальные модели ECMWF, NOAA GFS и DWD ICON."
                     AppLanguage.ENGLISH -> "High-resolution seamless weather blending ECMWF, NOAA GFS, and DWD ICON global models."
                 },
                 icon = Icons.Rounded.Thermostat,
@@ -858,6 +904,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas globales de desastres"
                     AppLanguage.FRENCH -> "Alertes mondiales de catastrophes"
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres"
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения о бедствиях"
                     AppLanguage.ENGLISH -> "Global Disaster Alerts"
                 },
                 source = gdacsSourceLabel,
@@ -869,6 +916,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Alertas globales de desastres en tiempo real para ciclones, terremotos e inundaciones graves mediante ONU/CE GDACS."
                     AppLanguage.FRENCH -> "Alertes mondiales en temps réel pour les cyclones, séismes et inondations graves via ONU/CE GDACS."
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres em tempo real para ciclones, terremotos e enchentes graves via ONU/CE GDACS."
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения в реальном времени о циклонах, землетрясениях и крупных наводнениях через ООН/ЕК GDACS."
                     AppLanguage.ENGLISH -> "Real-time global disaster alerts for severe cyclones, earthquakes, and floods via UN/EC GDACS."
                 },
                 icon = Icons.Rounded.Public,
@@ -883,6 +931,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calidad del aire (AQI / PM2.5 / PM10)"
                     AppLanguage.FRENCH -> "Qualité de l'air (AQI / PM2.5 / PM10)"
                     AppLanguage.PORTUGUESE -> "Qualidade do ar (AQI / PM2.5 / PM10)"
+                    AppLanguage.RUSSIAN -> "Качество воздуха (AQI / PM2.5 / PM10)"
                     AppLanguage.ENGLISH -> "Air Quality (AQI / PM2.5 / PM10)"
                 },
                 source = "Open-Meteo Air Quality",
@@ -894,6 +943,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Modelos globales de química atmosférica que ofrecen US AQI, AQI europeo, PM2.5 y partículas en tiempo real."
                     AppLanguage.FRENCH -> "Modèles mondiaux de chimie atmosphérique fournissant US AQI, AQI européen, PM2.5 et particules en temps réel."
                     AppLanguage.PORTUGUESE -> "Modelos globais de química atmosférica fornecendo US AQI, AQI europeu, PM2.5 e partículas em tempo real."
+                    AppLanguage.RUSSIAN -> "Глобальные модели атмосферной химии с данными US AQI, European AQI, PM2.5 и частиц в реальном времени."
                     AppLanguage.ENGLISH -> "Global atmospheric chemistry models delivering real-time US AQI, European AQI, PM2.5, and particulate tracking."
                 },
                 icon = Icons.Rounded.Air,
@@ -908,6 +958,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Radar de precipitación"
                     AppLanguage.FRENCH -> "Radar de précipitations"
                     AppLanguage.PORTUGUESE -> "Radar de precipitação"
+                    AppLanguage.RUSSIAN -> "Радар осадков"
                     AppLanguage.ENGLISH -> "Precipitation Radar"
                 },
                 source = when (language) {
@@ -918,6 +969,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Radar compuesto RainViewer"
                     AppLanguage.FRENCH -> "Radar composite RainViewer"
                     AppLanguage.PORTUGUESE -> "Radar composto RainViewer"
+                    AppLanguage.RUSSIAN -> "Композитный радар RainViewer"
                     AppLanguage.ENGLISH -> "RainViewer Composite Radar"
                 },
                 detail = when (language) {
@@ -928,6 +980,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Imágenes compuestas globales de radar de precipitación mediante mosaicos multirradar de RainViewer."
                     AppLanguage.FRENCH -> "Imagerie radar composite mondiale des précipitations via les tuiles multi-radars RainViewer."
                     AppLanguage.PORTUGUESE -> "Imagens compostas globais de radar de precipitação via blocos multirradar RainViewer."
+                    AppLanguage.RUSSIAN -> "Глобальные композитные снимки радара осадков на основе тайлов RainViewer."
                     AppLanguage.ENGLISH -> "Global composite precipitation radar imagery via RainViewer multi-radar tiles."
                 },
                 icon = Icons.Rounded.Radar,
@@ -942,6 +995,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Nowcast de precipitación"
                     AppLanguage.FRENCH -> "Nowcast de précipitations"
                     AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
+                    AppLanguage.RUSSIAN -> "Наукаст осадков"
                     AppLanguage.ENGLISH -> "Precipitation Nowcast"
                 },
                 source = "Open-Meteo 15-Min Forecast",
@@ -953,6 +1007,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Modelo de precipitación en intervalos de 15 minutos que predice con precisión el inicio y fin de la lluvia."
                     AppLanguage.FRENCH -> "Modèle de précipitations par intervalles de 15 minutes prédisant précisément le début et la fin de la pluie."
                     AppLanguage.PORTUGUESE -> "Modelo de precipitação em intervalos de 15 minutos prevendo com precisão o início e o fim da chuva."
+                    AppLanguage.RUSSIAN -> "Модель осадков с шагом 15 минут, точно прогнозирующая начало и окончание дождя."
                     AppLanguage.ENGLISH -> "Precision 15-minute interval precipitation model forecasting exact rain start and stop times."
                 },
                 icon = Icons.Rounded.Umbrella,
@@ -967,6 +1022,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Amanecer / Atardecer y arco solar"
                     AppLanguage.FRENCH -> "Lever / Coucher et course du soleil"
                     AppLanguage.PORTUGUESE -> "Nascer / Pôr do sol e arco solar"
+                    AppLanguage.RUSSIAN -> "Восход / Закат и солнечная дуга"
                     AppLanguage.ENGLISH -> "Sunrise / Sunset & Solar Transit"
                 },
                 source = when (language) {
@@ -977,6 +1033,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Algoritmo NOAA (En el dispositivo)"
                     AppLanguage.FRENCH -> "Algorithme NOAA (Local)"
                     AppLanguage.PORTUGUESE -> "Algoritmo NOAA (No dispositivo)"
+                    AppLanguage.RUSSIAN -> "Алгоритм NOAA (На устройстве)"
                     AppLanguage.ENGLISH -> "NOAA Algorithm (On-device)"
                 },
                 detail = when (language) {
@@ -987,6 +1044,7 @@ private fun getDataSourcesList(isJapan: Boolean, isUs: Boolean, language: AppLan
                     AppLanguage.SPANISH -> "Calculado íntegramente en el dispositivo mediante fórmulas astronómicas solares de la NOAA para amanecer, atardecer y arco solar precisos."
                     AppLanguage.FRENCH -> "Calculé entièrement sur l'appareil via les formules astronomiques solaires de la NOAA pour le lever, le coucher et la course du soleil."
                     AppLanguage.PORTUGUESE -> "Calculado inteiramente no dispositivo pelas fórmulas astronômicas solares da NOAA para nascer, pôr do sol e arco solar precisos."
+                    AppLanguage.RUSSIAN -> "Вычисляется локально на устройстве по астрономическим формулам NOAA для точного восхода, заката и дуги солнца."
                     AppLanguage.ENGLISH -> "Calculated entirely on-device via NOAA Solar Calculation astronomical formulas for precision sunrise, sunset, and solar arc."
                 },
                 icon = Icons.Rounded.WbSunny,

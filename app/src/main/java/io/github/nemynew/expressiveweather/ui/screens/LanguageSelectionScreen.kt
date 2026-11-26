@@ -66,6 +66,7 @@ fun LanguageSelectionScreen(
             AppLanguage.SPANISH,
             AppLanguage.FRENCH,
             AppLanguage.PORTUGUESE,
+            AppLanguage.RUSSIAN,
             AppLanguage.KOREAN,
             AppLanguage.SIMPLIFIED_CHINESE,
             AppLanguage.TRADITIONAL_CHINESE,

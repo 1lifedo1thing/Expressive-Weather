@@ -62,6 +62,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 
 /**
  * 紫外線（UV Index）詳細画面
@@ -93,6 +94,7 @@ fun UvDetailScreen(
         AppLanguage.SPANISH -> "Índice UV actual"
         AppLanguage.FRENCH -> "Indice UV actuel"
         AppLanguage.PORTUGUESE -> "Índice UV atual"
+        AppLanguage.RUSSIAN -> "Текущий УФ-индекс"
     }
 
     val hourlyUvTitle = when (language) {
@@ -104,6 +106,7 @@ fun UvDetailScreen(
         AppLanguage.SPANISH -> "Índice UV por hora"
         AppLanguage.FRENCH -> "Indice UV horaire"
         AppLanguage.PORTUGUESE -> "Índice UV por hora"
+        AppLanguage.RUSSIAN -> "УФ-индекс по часам"
     }
 
     val dailyUvTitle = when (language) {
@@ -115,6 +118,7 @@ fun UvDetailScreen(
         AppLanguage.SPANISH -> "Previsión UV a 7 días"
         AppLanguage.FRENCH -> "Prévisions UV sur 7 jours"
         AppLanguage.PORTUGUESE -> "Previsão UV para 7 dias"
+        AppLanguage.RUSSIAN -> "Прогноз УФ на 7 дней"
     }
 
     val guideTitle = when (language) {
@@ -126,6 +130,7 @@ fun UvDetailScreen(
         AppLanguage.SPANISH -> "Guía de protección solar (OMS)"
         AppLanguage.FRENCH -> "Guide de protection solaire (OMS)"
         AppLanguage.PORTUGUESE -> "Guia de proteção solar (OMS)"
+        AppLanguage.RUSSIAN -> "Защита от солнца (ВОЗ)"
     }
 
     DetailScaffold(
@@ -195,7 +200,7 @@ fun UvDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -289,7 +294,7 @@ fun UvDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -316,14 +321,18 @@ fun UvDetailScreen(
                 LazyRow(
                     horizontalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    val maxUv = dailyForecast.firstOrNull()?.uvMax?.toInt() ?: (weather?.uvIndex ?: 5)
+                    val maxUv = maxOf(
+                        dailyForecast.firstOrNull()?.uvMax?.let { kotlin.math.round(it).toInt() } ?: (weather?.uvIndex ?: 0),
+                        weather?.uvIndex ?: 0
+                    )
                     items(hourlyForecast.take(24)) { item ->
-                        val itemUv = if (item.hour in 6..18) {
-                            val factor = kotlin.math.sin(Math.PI * (item.hour - 6) / 12.0)
-                            kotlin.math.round(maxUv * factor).toInt().coerceAtLeast(0)
-                        } else {
-                            0
-                        }
+                        val itemUv = item.uvIndex?.let { kotlin.math.round(it).toInt().coerceAtLeast(0) }
+                            ?: if (item.hour in 6..18) {
+                                val factor = kotlin.math.sin(Math.PI * (item.hour - 6) / 12.0)
+                                kotlin.math.round(maxUv * factor).toInt().coerceAtLeast(0)
+                            } else {
+                                0
+                            }
                         val itemColor = getUvColor(itemUv)
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -370,7 +379,7 @@ fun UvDetailScreen(
             Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                    containerColor = getDetailCardColor()
                 ),
                 elevation = CardDefaults.cardElevation(0.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -439,7 +448,7 @@ fun UvDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -472,6 +481,7 @@ fun UvDetailScreen(
                     AppLanguage.SPANISH -> "Aplicación de protector solar" to if (uvIndex >= 6) "Aplica protector solar de amplio espectro FPS 50+ cada 2 horas." else "Un FPS 30 suele ser suficiente para actividades habituales al aire libre."
                     AppLanguage.FRENCH -> "Application de crème solaire" to if (uvIndex >= 6) "Appliquez une crème solaire large spectre SPF 50+ toutes les 2 heures." else "Un SPF 30 suffit généralement pour les activités extérieures courantes."
                     AppLanguage.PORTUGUESE -> "Uso de protetor solar" to if (uvIndex >= 6) "Aplique protetor solar de amplo espectro FPS 50+ a cada 2 horas." else "FPS 30 geralmente é suficiente para atividades rotineiras ao ar livre."
+                    AppLanguage.RUSSIAN -> "Солнцезащитный крем" to if (uvIndex >= 6) "Наносите крем широкого спектра SPF 50+ каждые 2 часа." else "Для обычных прогулок обычно достаточно SPF 30."
                 }
 
                 val (sunglassTitle, sunglassDesc) = when (language) {
@@ -483,6 +493,7 @@ fun UvDetailScreen(
                     AppLanguage.SPANISH -> "Gafas de sol y sombrero" to "Usa gafas de sol con filtro UV y un sombrero de ala ancha para proteger los ojos y el cuero cabelludo."
                     AppLanguage.FRENCH -> "Lunettes de soleil et chapeau" to "Portez des lunettes de soleil anti-UV et un chapeau à larges bords pour protéger vos yeux et votre cuir chevelu."
                     AppLanguage.PORTUGUESE -> "Óculos de sol e chapéu" to "Use óculos de sol com proteção UV e chapéu de aba larga para proteger os olhos e o couro cabeludo."
+                    AppLanguage.RUSSIAN -> "Очки и головной убор" to "Носите очки с УФ-фильтром и шляпу с широкими полями для защиты глаз и кожи головы."
                 }
 
                 val (shadeTitle, shadeDesc) = when (language) {
@@ -494,6 +505,7 @@ fun UvDetailScreen(
                     AppLanguage.SPANISH -> "Busca la sombra" to "La radiación UV alcanza su pico entre las 10:00 y las 14:00; busca sombra siempre que puedas."
                     AppLanguage.FRENCH -> "Restez à l'ombre" to "Les rayons UV atteignent leur pic entre 10 h et 14 h ; privilégiez l'ombre dès que possible."
                     AppLanguage.PORTUGUESE -> "Procure sombra" to "A radiação UV atinge o pico entre 10h e 14h; procure sombra sempre que possível."
+                    AppLanguage.RUSSIAN -> "Держитесь в тени" to "Пик УФ-излучения приходится на 10:00–14:00 — по возможности оставайтесь в тени."
                 }
 
                 UvProtectionItem(title = sunscreenTitle, desc = sunscreenDesc)
@@ -559,6 +571,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Bajo"
             AppLanguage.FRENCH -> "Faible"
             AppLanguage.PORTUGUESE -> "Baixo"
+            AppLanguage.RUSSIAN -> "Низкий"
         }
         uv <= 5 -> when (language) {
             AppLanguage.JAPANESE -> "中程度"
@@ -569,6 +582,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Moderado"
             AppLanguage.FRENCH -> "Modéré"
             AppLanguage.PORTUGUESE -> "Moderado"
+            AppLanguage.RUSSIAN -> "Умеренный"
         }
         uv <= 7 -> when (language) {
             AppLanguage.JAPANESE -> "強い"
@@ -579,6 +593,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Alto"
             AppLanguage.FRENCH -> "Élevé"
             AppLanguage.PORTUGUESE -> "Alto"
+            AppLanguage.RUSSIAN -> "Высокий"
         }
         uv <= 10 -> when (language) {
             AppLanguage.JAPANESE -> "非常に強い"
@@ -589,6 +604,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Muy alto"
             AppLanguage.FRENCH -> "Très élevé"
             AppLanguage.PORTUGUESE -> "Muito alto"
+            AppLanguage.RUSSIAN -> "Очень высокий"
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "極端に強い"
@@ -599,6 +615,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Extremo"
             AppLanguage.FRENCH -> "Extrême"
             AppLanguage.PORTUGUESE -> "Extremo"
+            AppLanguage.RUSSIAN -> "Экстремальный"
         }
     }
 
@@ -612,6 +629,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Riesgo solar mínimo. Es seguro estar al aire libre con precauciones básicas."
             AppLanguage.FRENCH -> "Risque solaire minimal. Vous pouvez profiter de l'extérieur avec des précautions habituelles."
             AppLanguage.PORTUGUESE -> "Risco solar mínimo. É seguro ficar ao ar livre com precauções básicas."
+            AppLanguage.RUSSIAN -> "Минимальный риск. Можно спокойно находиться на улице с обычными мерами."
         }
         uv <= 5 -> when (language) {
             AppLanguage.JAPANESE -> "日中は日焼け止めや帽子などを着用して対策を行いましょう。"
@@ -622,6 +640,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Riesgo solar moderado. Usa gafas de sol, sombrero y protector solar."
             AppLanguage.FRENCH -> "Risque solaire modéré. Portez lunettes de soleil, chapeau et crème solaire."
             AppLanguage.PORTUGUESE -> "Risco solar moderado. Use óculos de sol, chapéu e protetor solar."
+            AppLanguage.RUSSIAN -> "Умеренный риск. Используйте очки, головной убор и солнцезащитный крем."
         }
         uv <= 7 -> when (language) {
             AppLanguage.JAPANESE -> "肌への影響が強くなります。長袖の着用、日傘や日陰の利用を推奨します。"
@@ -632,6 +651,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Alto riesgo de daño solar. Cúbrete, lleva sombrero y busca sombra al mediodía."
             AppLanguage.FRENCH -> "Risque élevé. Couvrez-vous, portez un chapeau et restez à l'ombre à la mi-journée."
             AppLanguage.PORTUGUESE -> "Alto risco solar. Cubra-se, use chapéu e procure sombra ao meio-dia."
+            AppLanguage.RUSSIAN -> "Высокий риск. Прикрывайте кожу, носите головной убор и ищите тень днём."
         }
         uv <= 10 -> when (language) {
             AppLanguage.JAPANESE -> "極力直射日光を避け、外出時は徹底したUV対策を行ってください。"
@@ -642,6 +662,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Riesgo muy alto. Reduce al mínimo la exposición solar entre las 10:00 y las 16:00."
             AppLanguage.FRENCH -> "Risque très élevé. Limitez l'exposition au soleil entre 10 h et 16 h."
             AppLanguage.PORTUGUESE -> "Risco muito alto. Minimize a exposição ao sol entre 10h e 16h."
+            AppLanguage.RUSSIAN -> "Очень высокий риск. Ограничьте пребывание на солнце с 10:00 до 16:00."
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "危険なレベルです。日中の不要不急な屋外活動はできるだけ控えてください。"
@@ -652,6 +673,7 @@ private fun getUvInfo(
             AppLanguage.SPANISH -> "Riesgo extremo. Extrema las precauciones; la piel sin protección puede quemarse en minutos."
             AppLanguage.FRENCH -> "Risque extrême. Prenez toutes les précautions ; la peau non protégée peut brûler en quelques minutes."
             AppLanguage.PORTUGUESE -> "Risco extremo. Tome todas as precauções; a pele desprotegida pode queimar em minutos."
+            AppLanguage.RUSSIAN -> "Экстремальный риск. Примите все меры защиты: незащищённая кожа обгорает за минуты."
         }
     }
 

@@ -52,6 +52,7 @@ object JmaWeatherParser {
         var windSpeedMs = 2.5
         var windDegree = 90.0f
         var windDirectionText = "東"
+        var hasAmedasWindDirection = false
         var windGustsKmH = 12.0
         var precip1h = 0.0
         var precip24h = 0.0
@@ -85,7 +86,8 @@ object JmaWeatherParser {
 
                     val wDir = latestObj.optJSONArray("windDirection")?.optInt(0) ?: 0
                     windDirectionText = getWindDirection16Text(wDir)
-                    windDegree = wDir * 22.5f
+                    windDegree = normalizeAmedasWindDegree(wDir)
+                    hasAmedasWindDirection = wDir in 1..16
 
                     val gVal = latestObj.optJSONArray("gust")?.optDouble(0)
                     if (gVal != null && !gVal.isNaN()) {
@@ -291,8 +293,15 @@ object JmaWeatherParser {
         val maxTempC = maxOf(observedMax ?: (currentTemp + 1), expectedTodayMax ?: (currentTemp + 4))
 
         val supplementaryHourly = supplementaryHighResJson?.optJSONObject("hourly")
+        val supplementaryDaily = supplementaryHighResJson?.optJSONObject("daily")
         val supplementaryTimes = supplementaryHourly?.optJSONArray("time")
         val supplementaryHumidities = supplementaryHourly?.optJSONArray("relative_humidity_2m")
+        val supplementaryUvIndices = supplementaryHourly?.optJSONArray("uv_index")
+        val supplementaryWindDirections = supplementaryHourly?.optJSONArray("wind_direction_10m")
+        val supplementaryDailyTimes = supplementaryDaily?.optJSONArray("time")
+        val supplementaryDailyUvMax = supplementaryDaily?.optJSONArray("uv_index_max")
+        val supplementaryDailyWindDirDominant = supplementaryDaily?.optJSONArray("wind_direction_10m_dominant")
+
         val supplementaryHumidityByHour = buildMap<String, Int> {
             if (supplementaryTimes != null && supplementaryHumidities != null) {
                 for (index in 0 until minOf(supplementaryTimes.length(), supplementaryHumidities.length())) {
@@ -304,12 +313,89 @@ object JmaWeatherParser {
         val supplementaryHumidityByDate = supplementaryHumidityByHour.entries
             .groupBy { it.key.substringBefore('T') }
             .mapValues { (_, entries) -> entries.map { it.value }.average().roundToInt() }
+
+        val supplementaryUvByHour = buildMap<String, Double> {
+            if (supplementaryTimes != null && supplementaryUvIndices != null) {
+                for (index in 0 until minOf(supplementaryTimes.length(), supplementaryUvIndices.length())) {
+                    val value = supplementaryUvIndices.optDouble(index, Double.NaN)
+                    if (value.isFinite() && value >= 0.0) put(supplementaryTimes.optString(index).take(13), value)
+                }
+            }
+        }
+        val supplementaryUvMaxByDate = buildMap<String, Double> {
+            if (supplementaryDailyTimes != null && supplementaryDailyUvMax != null) {
+                for (index in 0 until minOf(supplementaryDailyTimes.length(), supplementaryDailyUvMax.length())) {
+                    val value = supplementaryDailyUvMax.optDouble(index, Double.NaN)
+                    if (value.isFinite() && value >= 0.0) put(supplementaryDailyTimes.optString(index).take(10), value)
+                }
+            }
+            supplementaryUvByHour.entries
+                .groupBy { it.key.substringBefore('T') }
+                .forEach { (dateKey, entries) ->
+                    if (!containsKey(dateKey)) {
+                        entries.maxOfOrNull { it.value }?.let { put(dateKey, it) }
+                    }
+                }
+        }
+
+        val supplementaryWindDirByHour = buildMap<String, Float> {
+            if (supplementaryTimes != null && supplementaryWindDirections != null) {
+                for (index in 0 until minOf(supplementaryTimes.length(), supplementaryWindDirections.length())) {
+                    val value = supplementaryWindDirections.optDouble(index, Double.NaN)
+                    if (value.isFinite()) {
+                        put(supplementaryTimes.optString(index).take(13), normalizeWindDegree(value))
+                    }
+                }
+            }
+        }
+        val supplementaryDailyWindDirByDate = buildMap<String, Float> {
+            if (supplementaryDailyTimes != null && supplementaryDailyWindDirDominant != null) {
+                for (index in 0 until minOf(supplementaryDailyTimes.length(), supplementaryDailyWindDirDominant.length())) {
+                    val value = supplementaryDailyWindDirDominant.optDouble(index, Double.NaN)
+                    if (value.isFinite()) {
+                        put(supplementaryDailyTimes.optString(index).take(10), normalizeWindDegree(value))
+                    }
+                }
+            }
+            supplementaryWindDirByHour.entries
+                .groupBy { it.key.substringBefore('T') }
+                .forEach { (dateKey, entries) ->
+                    if (!containsKey(dateKey)) {
+                        circularMeanWindDegree(entries.map { it.value })?.let { put(dateKey, it) }
+                    }
+                }
+        }
+
         val humidityHourFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH", Locale.US).apply { timeZone = japanTimeZone }
         val humidityDateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { timeZone = japanTimeZone }
         fun hourlyHumidityAt(date: Date): Int? =
             supplementaryHumidityByHour[humidityHourFormatter.format(date)]
         fun dailyHumidityAverageAt(date: Date): Int? =
             supplementaryHumidityByDate[humidityDateFormatter.format(date)]
+        fun hourlyUvAt(date: Date, isDayHour: Boolean, hourCondition: WeatherCondition): Double {
+            val fromApi = supplementaryUvByHour[humidityHourFormatter.format(date)]
+            if (fromApi != null) return fromApi
+            return if (isDayHour) estimateSolarUv(city.latitude, date, japanTimeZone, hourCondition) else 0.0
+        }
+        fun dailyUvMaxAt(date: Date, dayCondition: WeatherCondition): Double {
+            val fromApi = supplementaryUvMaxByDate[humidityDateFormatter.format(date)]
+            if (fromApi != null) return fromApi
+            return estimateDailyPeakSolarUv(city.latitude, date, japanTimeZone, dayCondition)
+        }
+        fun hourlyWindDegreeAt(step: Int, date: Date): Float =
+            resolveHourlyWindDegree(
+                step = step,
+                hourKey = humidityHourFormatter.format(date),
+                hourlyWindDirByKey = supplementaryWindDirByHour,
+                fallbackCurrentDegree = windDegree,
+                hasAmedasWindDirection = hasAmedasWindDirection
+            )
+        fun dailyWindDegreeAt(date: Date): Float =
+            resolveDailyWindDegree(
+                dateKey = humidityDateFormatter.format(date),
+                dailyWindDirByDate = supplementaryDailyWindDirByDate,
+                fallbackCurrentDegree = windDegree
+            )
 
         // =========================================================
         // 3. 日出・日没・日長計算 (NOAA Solar Equation)
@@ -437,6 +523,7 @@ object JmaWeatherParser {
             }
 
             val hDewPoint = hTemp - ((100 - hHum) / 5)
+            val hUv = hourlyUvAt(hCal.time, hIsDay, hCondition)
 
             hourlyForecast.add(
                 HourlyForecast(
@@ -449,7 +536,8 @@ object JmaWeatherParser {
                     windSpeedKmH = hWind,
                     dewPointC = hDewPoint,
                     isDay = hIsDay,
-                    precipitationMm = hPrecipMm
+                    precipitationMm = hPrecipMm,
+                    uvIndex = hUv
                 )
             )
 
@@ -459,7 +547,7 @@ object JmaWeatherParser {
                     hour = hHour,
                     windSpeedKmH = hWind,
                     windGustsKmH = hGust,
-                    windDegree = windDegree
+                    windDegree = hourlyWindDegreeAt(step, hCal.time)
                 )
             )
         }
@@ -484,7 +572,7 @@ object JmaWeatherParser {
                 minTempC = minTempC,
                 maxTempC = maxTempC,
                 precipProb = todayMaxPop,
-                uvMax = 4.0,
+                uvMax = dailyUvMaxAt(d0Date, d0Condition),
                 precipitationSumMm = precip24h,
                 windSpeedMaxKmH = windGustsKmH,
                 hourlyForecast = hourlyForecast.take(24),
@@ -502,7 +590,7 @@ object JmaWeatherParser {
                 dateLabel = monthDayFormat.format(d0Date),
                 windSpeedMaxKmH = windSpeedKmH,
                 windGustsMaxKmH = windGustsKmH,
-                dominantWindDegree = windDegree
+                dominantWindDegree = dailyWindDegreeAt(d0Date)
             )
         )
 
@@ -565,7 +653,7 @@ object JmaWeatherParser {
                                 minTempC = dMin,
                                 maxTempC = dMax,
                                 precipProb = dPop,
-                                uvMax = 4.0,
+                                uvMax = dailyUvMaxAt(dCal.time, dCond),
                                 precipitationSumMm = 0.0,
                                 windSpeedMaxKmH = windSpeedKmH,
                                 hourlyForecast = emptyList(),
@@ -584,7 +672,7 @@ object JmaWeatherParser {
                                 dateLabel = dDateStr,
                                 windSpeedMaxKmH = windSpeedKmH,
                                 windGustsMaxKmH = windGustsKmH,
-                                dominantWindDegree = windDegree
+                                dominantWindDegree = dailyWindDegreeAt(dCal.time)
                             )
                         )
                         f1ParsedDays++
@@ -608,7 +696,7 @@ object JmaWeatherParser {
                     minTempC = minTempC,
                     maxTempC = maxTempC,
                     precipProb = 20,
-                    uvMax = 4.0,
+                    uvMax = dailyUvMaxAt(dCal.time, condition),
                     precipitationSumMm = 0.0,
                     windSpeedMaxKmH = windSpeedKmH,
                     hourlyForecast = emptyList(),
@@ -620,6 +708,17 @@ object JmaWeatherParser {
                     pressureHpa = 1013
                 )
             )
+            if (dailyWindList.size < dailyForecast.size) {
+                dailyWindList.add(
+                    DailyWindItem(
+                        dayLabel = dLabel,
+                        dateLabel = dDateStr,
+                        windSpeedMaxKmH = windSpeedKmH,
+                        windGustsMaxKmH = windGustsKmH,
+                        dominantWindDegree = dailyWindDegreeAt(dCal.time)
+                    )
+                )
+            }
         }
 
         // =========================================================
@@ -704,6 +803,23 @@ object JmaWeatherParser {
             jmaMinutelySeries = jmaMinutelySeries
         )
 
+        val currentUvIndex = resolveCurrentUvIndex(
+            hourlyUvByKey = supplementaryUvByHour,
+            hourKey = humidityHourFormatter.format(calNow.time),
+            isDay = isDay,
+            latitude = city.latitude,
+            date = calNow.time,
+            timeZone = japanTimeZone,
+            condition = condition
+        )
+        val currentUvLabel = when {
+            currentUvIndex <= 2 -> "弱い"
+            currentUvIndex <= 5 -> "普通"
+            currentUvIndex <= 7 -> "強い"
+            currentUvIndex <= 10 -> "非常に強い"
+            else -> "極端に強い"
+        }
+
         return WeatherData(
             city = city,
             currentTempC = currentTemp,
@@ -714,8 +830,8 @@ object JmaWeatherParser {
             conditionSummary = condition.tagline,
             conditionName = todayWeatherText,
             humidity = humidity,
-            uvIndex = 4,
-            uvLabel = "普通",
+            uvIndex = currentUvIndex,
+            uvLabel = currentUvLabel,
             windSpeedKmH = windSpeedKmH,
             windDirection = windDirectionText,
             windDegree = windDegree,
@@ -1119,6 +1235,107 @@ object JmaWeatherParser {
             ozone = ozone,
             nitrogenDioxide = no2
         )
+    }
+
+    internal fun normalizeAmedasWindDegree(code: Int): Float {
+        if (code !in 1..16) return 0f
+        return (code * 22.5f) % 360f
+    }
+
+    internal fun normalizeWindDegree(degree: Double): Float {
+        if (!degree.isFinite()) return 0f
+        return (((degree % 360.0) + 360.0) % 360.0).toFloat()
+    }
+
+    internal fun circularMeanWindDegree(degrees: List<Float>): Float? {
+        if (degrees.isEmpty()) return null
+        var sinSum = 0.0
+        var cosSum = 0.0
+        for (deg in degrees) {
+            if (!deg.isFinite()) continue
+            val rad = Math.toRadians(deg.toDouble())
+            sinSum += kotlin.math.sin(rad)
+            cosSum += kotlin.math.cos(rad)
+        }
+        if (kotlin.math.hypot(sinSum, cosSum) < 1e-6) return degrees.firstOrNull()?.let { normalizeWindDegree(it.toDouble()) }
+        val meanDeg = Math.toDegrees(kotlin.math.atan2(sinSum, cosSum))
+        return normalizeWindDegree(meanDeg)
+    }
+
+    internal fun resolveHourlyWindDegree(
+        step: Int,
+        hourKey: String,
+        hourlyWindDirByKey: Map<String, Float>,
+        fallbackCurrentDegree: Float,
+        hasAmedasWindDirection: Boolean = true
+    ): Float {
+        if (step == 0 && hasAmedasWindDirection) {
+            return normalizeWindDegree(fallbackCurrentDegree.toDouble())
+        }
+        return hourlyWindDirByKey[hourKey] ?: normalizeWindDegree(fallbackCurrentDegree.toDouble())
+    }
+
+    internal fun resolveDailyWindDegree(
+        dateKey: String,
+        dailyWindDirByDate: Map<String, Float>,
+        fallbackCurrentDegree: Float
+    ): Float {
+        return dailyWindDirByDate[dateKey] ?: normalizeWindDegree(fallbackCurrentDegree.toDouble())
+    }
+
+    internal fun resolveCurrentUvIndex(
+        hourlyUvByKey: Map<String, Double>,
+        hourKey: String,
+        isDay: Boolean,
+        latitude: Double,
+        date: Date,
+        timeZone: TimeZone,
+        condition: WeatherCondition
+    ): Int {
+        val fromApi = hourlyUvByKey[hourKey]?.takeIf { it.isFinite() && it >= 0.0 }
+        val resolved = fromApi ?: if (isDay) estimateSolarUv(latitude, date, timeZone, condition) else 0.0
+        return resolved.roundToInt().coerceAtLeast(0)
+    }
+
+    internal fun estimateSolarUv(
+        latitude: Double,
+        date: Date,
+        timeZone: TimeZone,
+        condition: WeatherCondition
+    ): Double {
+        val cal = Calendar.getInstance(timeZone).apply { time = date }
+        val dayOfYear = cal.get(Calendar.DAY_OF_YEAR)
+        val hourFloat = cal.get(Calendar.HOUR_OF_DAY) + cal.get(Calendar.MINUTE) / 60.0
+        val declRad = Math.toRadians(23.44 * sin(2.0 * Math.PI * (dayOfYear - 81) / 365.0))
+        val latRad = Math.toRadians(latitude.coerceIn(-89.9, 89.9))
+        val hourAngleRad = Math.toRadians((hourFloat - 12.0) * 15.0)
+        val sinAlt = sin(latRad) * sin(declRad) + cos(latRad) * cos(declRad) * cos(hourAngleRad)
+        if (sinAlt <= 0.0) return 0.0
+        val clearSkyUv = 12.5 * Math.pow(sinAlt, 1.3)
+        val cloudFactor = when (condition) {
+            WeatherCondition.CLEAR -> 1.0
+            WeatherCondition.FEW_CLOUDS -> 0.85
+            WeatherCondition.CLOUDY, WeatherCondition.FOG -> 0.5
+            WeatherCondition.RAIN, WeatherCondition.HEAVY_RAIN,
+            WeatherCondition.THUNDERSTORM, WeatherCondition.SNOW -> 0.25
+        }
+        return (clearSkyUv * cloudFactor).coerceIn(0.0, 12.0)
+    }
+
+    private fun estimateDailyPeakSolarUv(
+        latitude: Double,
+        date: Date,
+        timeZone: TimeZone,
+        condition: WeatherCondition
+    ): Double {
+        val noonCal = Calendar.getInstance(timeZone).apply {
+            time = date
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        return estimateSolarUv(latitude, noonCal.time, timeZone, condition)
     }
 
     private data class Quad<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

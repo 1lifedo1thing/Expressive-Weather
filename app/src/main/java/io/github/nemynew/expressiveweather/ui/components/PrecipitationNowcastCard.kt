@@ -103,6 +103,7 @@ fun PrecipitationNowcastCard(
         AppLanguage.SPANISH -> "Abrir radar de precipitación"
         AppLanguage.FRENCH -> "Ouvrir le radar de précipitations"
         AppLanguage.PORTUGUESE -> "Abrir radar de precipitação"
+        AppLanguage.RUSSIAN -> "Открыть радар осадков"
         AppLanguage.JAPANESE -> "雨雲レーダーを開く"
     }
 
@@ -166,6 +167,7 @@ fun PrecipitationNowcastCard(
                             AppLanguage.SPANISH -> "VISTA DE PRUEBA"
                             AppLanguage.FRENCH -> "APERÇU TEST"
                             AppLanguage.PORTUGUESE -> "PRÉVIA DE TESTE"
+                            AppLanguage.RUSSIAN -> "ТЕСТОВЫЙ ПРОСМОТР"
                             AppLanguage.JAPANESE -> "テスト表示"
                         }
                         Surface(
@@ -229,6 +231,7 @@ fun PrecipitationNowcastCard(
                                     AppLanguage.SPANISH -> "Empieza"
                                     AppLanguage.FRENCH -> "Début"
                                     AppLanguage.PORTUGUESE -> "Começa"
+                                    AppLanguage.RUSSIAN -> "Начало"
                                     AppLanguage.JAPANESE -> "降り始め"
                                 }
                                 nowcast.isPeak -> when (language) {
@@ -239,6 +242,7 @@ fun PrecipitationNowcastCard(
                                     AppLanguage.SPANISH -> "Pico"
                                     AppLanguage.FRENCH -> "Pic"
                                     AppLanguage.PORTUGUESE -> "Pico"
+                                    AppLanguage.RUSSIAN -> "Пик"
                                     AppLanguage.JAPANESE -> "ピーク"
                                 }
                                 mins > 90 -> when (language) {
@@ -249,6 +253,7 @@ fun PrecipitationNowcastCard(
                                     AppLanguage.SPANISH -> "Duración"
                                     AppLanguage.FRENCH -> "Durée"
                                     AppLanguage.PORTUGUESE -> "Duração"
+                                    AppLanguage.RUSSIAN -> "Длительн."
                                     AppLanguage.JAPANESE -> "継続予想"
                                 }
                                 else -> when (language) {
@@ -259,6 +264,7 @@ fun PrecipitationNowcastCard(
                                     AppLanguage.SPANISH -> "Termina"
                                     AppLanguage.FRENCH -> "Fin"
                                     AppLanguage.PORTUGUESE -> "Termina"
+                                    AppLanguage.RUSSIAN -> "Конец"
                                     AppLanguage.JAPANESE -> "降り止み"
                                 }
                             }
@@ -281,6 +287,7 @@ fun PrecipitationNowcastCard(
                                         AppLanguage.SPANISH -> "~"
                                         AppLanguage.FRENCH -> "~"
                                         AppLanguage.PORTUGUESE -> "~"
+                                        AppLanguage.RUSSIAN -> "~"
                                         AppLanguage.JAPANESE -> "約"
                                     }
                                 } else {
@@ -292,6 +299,7 @@ fun PrecipitationNowcastCard(
                                         AppLanguage.SPANISH -> "en "
                                         AppLanguage.FRENCH -> "dans "
                                         AppLanguage.PORTUGUESE -> "em "
+                                        AppLanguage.RUSSIAN -> "через "
                                         AppLanguage.JAPANESE -> "あと"
                                     }
                                 }
@@ -314,6 +322,7 @@ fun PrecipitationNowcastCard(
                                         AppLanguage.SPANISH -> "h"
                                         AppLanguage.FRENCH -> "h"
                                         AppLanguage.PORTUGUESE -> "h"
+                                        AppLanguage.RUSSIAN -> "ч"
                                         AppLanguage.JAPANESE -> "時間"
                                     }
                                     Text(
@@ -339,6 +348,7 @@ fun PrecipitationNowcastCard(
                                         AppLanguage.SPANISH -> "min"
                                         AppLanguage.FRENCH -> "min"
                                         AppLanguage.PORTUGUESE -> "min"
+                                        AppLanguage.RUSSIAN -> "мин"
                                         AppLanguage.JAPANESE -> "分"
                                     }
                                     Text(
@@ -371,6 +381,7 @@ fun PrecipitationNowcastCard(
                                 AppLanguage.SPANISH -> "Duración"
                                 AppLanguage.FRENCH -> "Durée"
                                 AppLanguage.PORTUGUESE -> "Duração"
+                                AppLanguage.RUSSIAN -> "Длительн."
                                 AppLanguage.JAPANESE -> "継続予想"
                             }
                             Text(
@@ -388,6 +399,7 @@ fun PrecipitationNowcastCard(
                                 AppLanguage.SPANISH -> "6h+"
                                 AppLanguage.FRENCH -> "6h+"
                                 AppLanguage.PORTUGUESE -> "6h+"
+                                AppLanguage.RUSSIAN -> "6 ч+"
                                 AppLanguage.JAPANESE -> "6時間+"
                             }
                             Text(
@@ -412,6 +424,7 @@ fun PrecipitationNowcastCard(
                                 AppLanguage.SPANISH -> "Prob. lluvia"
                                 AppLanguage.FRENCH -> "Risque pluie"
                                 AppLanguage.PORTUGUESE -> "Prob. chuva"
+                                AppLanguage.RUSSIAN -> "Шанс дождя"
                                 AppLanguage.JAPANESE -> "降水確率"
                             }
                             Text(
@@ -525,6 +538,7 @@ fun PrecipitationTimelineChart(
                 AppLanguage.SPANISH -> "Tendencia de lluvia (60 min)"
                 AppLanguage.FRENCH -> "Tendance pluie (60 min)"
                 AppLanguage.PORTUGUESE -> "Tendência de chuva (60 min)"
+                AppLanguage.RUSSIAN -> "Осадки на 60 мин"
                 AppLanguage.JAPANESE -> "今後60分間の雨雲推移"
             }
             Row(
@@ -555,6 +569,7 @@ fun PrecipitationTimelineChart(
                     AppLanguage.SPANISH -> "Pico ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                     AppLanguage.FRENCH -> "Pic ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                     AppLanguage.PORTUGUESE -> "Pico ~${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
+                    AppLanguage.RUSSIAN -> "Пик ~${String.format(Locale.US, "%.1f", peakPrecip)} мм/ч"
                     AppLanguage.JAPANESE -> "最大 約${String.format(Locale.US, "%.1f", peakPrecip)} mm/h"
                 }
                 Surface(
@@ -766,6 +781,7 @@ fun PrecipitationTimelineChart(
                 AppLanguage.SPANISH -> "Ahora"
                 AppLanguage.FRENCH -> "Maint."
                 AppLanguage.PORTUGUESE -> "Agora"
+                AppLanguage.RUSSIAN -> "Сейчас"
                 AppLanguage.JAPANESE -> "現在"
             }
             val labelSuffix = when (language) {
@@ -776,6 +792,7 @@ fun PrecipitationTimelineChart(
                 AppLanguage.SPANISH -> "m"
                 AppLanguage.FRENCH -> "m"
                 AppLanguage.PORTUGUESE -> "m"
+                AppLanguage.RUSSIAN -> "м"
                 AppLanguage.JAPANESE -> "分"
             }
             val timeLabels = listOf(labelNow, "15$labelSuffix", "30$labelSuffix", "45$labelSuffix", "60$labelSuffix")
@@ -817,6 +834,7 @@ fun PrecipitationTimelineChart(
                         AppLanguage.SPANISH -> "Fuente: Agencia Meteorológica de Japón (JMA)"
                         AppLanguage.FRENCH -> "Source : Agence météorologique du Japon (JMA)"
                         AppLanguage.PORTUGUESE -> "Fonte: Agência Meteorológica do Japão (JMA)"
+                        AppLanguage.RUSSIAN -> "Источник: Японское метеорологическое агентство (JMA)"
                         AppLanguage.JAPANESE -> "情報源: 気象庁 高解像度降水ナウキャスト"
                     }
                 }
@@ -829,6 +847,7 @@ fun PrecipitationTimelineChart(
                         AppLanguage.SPANISH -> "Fuente: Servicio Meteorológico Nacional (NOAA/NWS)"
                         AppLanguage.FRENCH -> "Source : National Weather Service (NOAA/NWS)"
                         AppLanguage.PORTUGUESE -> "Fonte: Serviço Nacional de Meteorologia (NOAA/NWS)"
+                        AppLanguage.RUSSIAN -> "Источник: Национальная метеослужба США (NOAA/NWS)"
                         AppLanguage.JAPANESE -> "情報源: 米国気象局 高解像度数値予報 (NOAA/NWS)"
                     }
                 }
@@ -841,6 +860,7 @@ fun PrecipitationTimelineChart(
                         AppLanguage.SPANISH -> "Fuente: ECMWF / Servicios Met. Europeos (vía Open-Meteo)"
                         AppLanguage.FRENCH -> "Source : ECMWF / Services météo européens (via Open-Meteo)"
                         AppLanguage.PORTUGUESE -> "Fonte: ECMWF / Serviços Met. Europeus (via Open-Meteo)"
+                        AppLanguage.RUSSIAN -> "Источник: ECMWF / Метеослужбы Европы (через Open-Meteo)"
                         AppLanguage.JAPANESE -> "情報源: 欧州中期予報センター (ECMWF) / 各気象機関"
                     }
                 }
@@ -853,6 +873,7 @@ fun PrecipitationTimelineChart(
                         AppLanguage.SPANISH -> "Fuente: Modelos numéricos ECMWF y NOAA (vía Open-Meteo)"
                         AppLanguage.FRENCH -> "Source : Modèles numériques ECMWF & NOAA (via Open-Meteo)"
                         AppLanguage.PORTUGUESE -> "Fonte: Modelos numéricos ECMWF e NOAA (via Open-Meteo)"
+                        AppLanguage.RUSSIAN -> "Источник: Модели ECMWF и NOAA (через Open-Meteo)"
                         AppLanguage.JAPANESE -> "情報源: ECMWF・NOAA 国際数値気象モデル"
                     }
                 }

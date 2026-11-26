@@ -65,6 +65,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Peligro inminente"
             AppLanguage.FRENCH -> "Danger imminent"
             AppLanguage.PORTUGUESE -> "Perigo iminente"
+            AppLanguage.RUSSIAN -> "Экстренная угроза"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_4 -> when (language) {
@@ -75,6 +76,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Peligro"
             AppLanguage.FRENCH -> "Danger"
             AppLanguage.PORTUGUESE -> "Perigo"
+            AppLanguage.RUSSIAN -> "Опасность"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_3 -> when (language) {
@@ -85,6 +87,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Alerta"
             AppLanguage.FRENCH -> "Alerte"
             AppLanguage.PORTUGUESE -> "Alerta"
+            AppLanguage.RUSSIAN -> "Предупреждение"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_2 -> when (language) {
@@ -95,6 +98,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Aviso"
             AppLanguage.FRENCH -> "Vigilance"
             AppLanguage.PORTUGUESE -> "Aviso"
+            AppLanguage.RUSSIAN -> "Внимание"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_1 -> when (language) {
@@ -105,6 +109,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Precaución temprana"
             AppLanguage.FRENCH -> "Attention précoce"
             AppLanguage.PORTUGUESE -> "Atenção inicial"
+            AppLanguage.RUSSIAN -> "Раннее внимание"
             AppLanguage.JAPANESE -> title
         }
         LEVEL_0 -> when (language) {
@@ -115,6 +120,7 @@ enum class AlertLevel(
             AppLanguage.SPANISH -> "Normal"
             AppLanguage.FRENCH -> "Normal"
             AppLanguage.PORTUGUESE -> "Normal"
+            AppLanguage.RUSSIAN -> "Норма"
             AppLanguage.JAPANESE -> title
         }
     }
@@ -140,6 +146,7 @@ enum class DisasterType(
     val labelEs: String,
     val labelFr: String,
     val labelPt: String,
+    val labelRu: String,
     val shortLabelJa: String,
     val shortLabelEn: String,
     val shortLabelKo: String,
@@ -148,6 +155,7 @@ enum class DisasterType(
     val shortLabelEs: String,
     val shortLabelFr: String,
     val shortLabelPt: String,
+    val shortLabelRu: String,
     val radarLayerId: String,
     val priority: Int
 ) {
@@ -161,6 +169,7 @@ enum class DisasterType(
         labelEs = "Lluvia intensa",
         labelFr = "Fortes pluies",
         labelPt = "Chuva intensa",
+        labelRu = "Сильный дождь",
         shortLabelJa = "大雨",
         shortLabelEn = "Rain",
         shortLabelKo = "호우",
@@ -169,6 +178,7 @@ enum class DisasterType(
         shortLabelEs = "Lluvia",
         shortLabelFr = "Pluie",
         shortLabelPt = "Chuva",
+        shortLabelRu = "Дождь",
         radarLayerId = "hrpns",
         priority = 1
     ),
@@ -182,6 +192,7 @@ enum class DisasterType(
         labelEs = "Deslizamiento",
         labelFr = "Glissement de terrain",
         labelPt = "Deslizamento",
+        labelRu = "Оползни",
         shortLabelJa = "土砂",
         shortLabelEn = "Landslide",
         shortLabelKo = "산사태",
@@ -190,6 +201,7 @@ enum class DisasterType(
         shortLabelEs = "Deslave",
         shortLabelFr = "Glissement",
         shortLabelPt = "Deslizamento",
+        shortLabelRu = "Оползень",
         radarLayerId = "landslide",
         priority = 2
     ),
@@ -203,6 +215,7 @@ enum class DisasterType(
         labelEs = "Anegamiento",
         labelFr = "Inondation",
         labelPt = "Alagamento",
+        labelRu = "Подтопление",
         shortLabelJa = "浸水",
         shortLabelEn = "Inundation",
         shortLabelKo = "침수",
@@ -211,6 +224,7 @@ enum class DisasterType(
         shortLabelEs = "Anegamiento",
         shortLabelFr = "Inondation",
         shortLabelPt = "Alagamento",
+        shortLabelRu = "Подтопление",
         radarLayerId = "inundation",
         priority = 3
     ),
@@ -224,6 +238,7 @@ enum class DisasterType(
         labelEs = "Inundación",
         labelFr = "Crue",
         labelPt = "Inundação",
+        labelRu = "Наводнение",
         shortLabelJa = "洪水",
         shortLabelEn = "Flood",
         shortLabelKo = "홍수",
@@ -232,6 +247,7 @@ enum class DisasterType(
         shortLabelEs = "Inundación",
         shortLabelFr = "Crue",
         shortLabelPt = "Inundação",
+        shortLabelRu = "Паводок",
         radarLayerId = "flood",
         priority = 4
     ),
@@ -245,6 +261,7 @@ enum class DisasterType(
         labelEs = "Vientos fuertes",
         labelFr = "Vents violents",
         labelPt = "Ventos fortes",
+        labelRu = "Штормовой ветер",
         shortLabelJa = "暴風",
         shortLabelEn = "Wind",
         shortLabelKo = "강풍",
@@ -253,6 +270,7 @@ enum class DisasterType(
         shortLabelEs = "Viento",
         shortLabelFr = "Vent",
         shortLabelPt = "Vento",
+        shortLabelRu = "Ветер",
         radarLayerId = "hrpns",
         priority = 5
     );
@@ -266,6 +284,7 @@ enum class DisasterType(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
     }
 
     fun getShortLabel(language: AppLanguage): String = when (language) {
@@ -277,6 +296,7 @@ enum class DisasterType(
         AppLanguage.SPANISH -> shortLabelEs
         AppLanguage.FRENCH -> shortLabelFr
         AppLanguage.PORTUGUESE -> shortLabelPt
+        AppLanguage.RUSSIAN -> shortLabelRu
     }
 }
 
@@ -302,6 +322,7 @@ data class KikikuruDisasterDetail(
             AppLanguage.SPANISH -> "Nivel de alerta $levelNum: $levelTitle"
             AppLanguage.FRENCH -> "Niveau d'alerte $levelNum : $levelTitle"
             AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum: $levelTitle"
+            AppLanguage.RUSSIAN -> "Уровень тревоги $levelNum: $levelTitle"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle"
         }
         return "$prefix ($typeLabel)"

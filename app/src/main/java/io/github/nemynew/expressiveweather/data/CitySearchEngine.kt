@@ -43,6 +43,7 @@ object CitySearchEngine {
                 AppLanguage.SPANISH -> localizeCountryToSpanish(countryJa, countryEn)
                 AppLanguage.FRENCH -> localizeCountryToFrench(countryJa, countryEn)
                 AppLanguage.PORTUGUESE -> localizeCountryToPortuguese(countryJa, countryEn)
+                AppLanguage.RUSSIAN -> localizeCountryToRussian(countryJa, countryEn)
                 else -> countryJa
             }
             return City(
@@ -145,6 +146,38 @@ object CitySearchEngine {
             "Thailand" -> "Tailândia"
             "Australia" -> "Austrália"
             "Canada" -> "Canadá"
+            else -> countryEn.ifBlank { countryJa }
+        }
+    }
+
+    private fun localizeCountryToRussian(countryJa: String, countryEn: String): String {
+        if (countryEn == "Japan") return "Япония"
+        if (countryEn.startsWith("Japan ")) return "Япония · " + countryEn.removePrefix("Japan ")
+        if (countryEn == "South Korea") return "Южная Корея"
+        if (countryEn.startsWith("South Korea ")) return "Южная Корея · " + countryEn.removePrefix("South Korea ")
+        if (countryEn == "United States Hawaii") return "США · Гавайи"
+        return when (countryEn) {
+            "Russia" -> "Россия"
+            "United States" -> "США"
+            "United Kingdom" -> "Великобритания"
+            "France" -> "Франция"
+            "Italy" -> "Италия"
+            "Germany" -> "Германия"
+            "Spain" -> "Испания"
+            "Mexico" -> "Мексика"
+            "Argentina" -> "Аргентина"
+            "Colombia" -> "Колумбия"
+            "Peru" -> "Перу"
+            "Chile" -> "Чили"
+            "Brazil" -> "Бразилия"
+            "Portugal" -> "Португалия"
+            "Taiwan" -> "Тайвань"
+            "China" -> "Китай"
+            "Hong Kong" -> "Гонконг"
+            "Singapore" -> "Сингапур"
+            "Thailand" -> "Таиланд"
+            "Australia" -> "Австралия"
+            "Canada" -> "Канада"
             else -> countryEn.ifBlank { countryJa }
         }
     }
@@ -364,7 +397,15 @@ object CitySearchEngine {
         MasterCity("ホノルル", "Honolulu", "アメリカ合衆国 ハワイ", "United States Hawaii", 21.3069, -157.8583, listOf("ホノルル", "ハワイ", "honolulu", "hawaii", "hawái", "havaí", "호놀룰루", "하와이")),
         MasterCity("トロント", "Toronto", "カナダ", "Canada", 43.6532, -79.3832, listOf("トロント", "toronto", "토론토")),
         MasterCity("モントリオール", "Montreal", "カナダ", "Canada", 45.5017, -73.5673, listOf("モントリオール", "montréal", "montreal", "몬트리올")),
-        MasterCity("バンクーバー", "Vancouver", "カナダ", "Canada", 49.2827, -123.1207, listOf("バンクーバー", "vancouver", "밴쿠버"))
+        MasterCity("バンクーバー", "Vancouver", "カナダ", "Canada", 49.2827, -123.1207, listOf("バンクーバー", "vancouver", "밴쿠버", "ванкувер")),
+        // --- ロシア 主要都市 ---
+        MasterCity("モスクワ", "Moscow", "ロシア", "Russia", 55.7558, 37.6173, listOf("モスクワ", "もすくわ", "moscow", "moskva", "москва", "모스크바")),
+        MasterCity("サンクトペテルブルク", "Saint Petersburg", "ロシア", "Russia", 59.9343, 30.3351, listOf("サンクトペテルブルク", "saint petersburg", "st petersburg", "санкт-петербург", "питер", "상트페테르부르크")),
+        MasterCity("ノヴォシビルスク", "Novosibirsk", "ロシア", "Russia", 55.0084, 82.9357, listOf("ノヴォシビルスク", "novosibirsk", "новосибирск")),
+        MasterCity("エカテリンブルク", "Yekaterinburg", "ロシア", "Russia", 56.8389, 60.6057, listOf("エカテリンブルク", "yekaterinburg", "екатеринбург")),
+        MasterCity("カザン", "Kazan", "ロシア", "Russia", 55.7961, 49.1064, listOf("カザン", "kazan", "казань")),
+        MasterCity("ソチ", "Sochi", "ロシア", "Russia", 43.5855, 39.7231, listOf("ソチ", "sochi", "сочи")),
+        MasterCity("ウラジオストク", "Vladivostok", "ロシア", "Russia", 43.1155, 131.8855, listOf("ウラジオストク", "vladivostok", "владивосток", "블라디보스토크"))
     )
 
     /**
@@ -529,6 +570,7 @@ object CitySearchEngine {
             AppLanguage.SPANISH -> Locale("es", "ES")
             AppLanguage.FRENCH -> Locale.FRANCE
             AppLanguage.PORTUGUESE -> Locale("pt", "BR")
+            AppLanguage.RUSSIAN -> Locale.forLanguageTag("ru-RU")
             AppLanguage.JAPANESE -> Locale.JAPAN
         }
         val primaryGeocoder = Geocoder(context, primaryLocale)
@@ -562,6 +604,7 @@ object CitySearchEngine {
                             AppLanguage.SPANISH -> "Desconocido"
                             AppLanguage.FRENCH -> "Inconnu"
                             AppLanguage.PORTUGUESE -> "Desconhecido"
+                            AppLanguage.RUSSIAN -> "Неизвестно"
                             AppLanguage.JAPANESE -> "日本"
                         }
                         val localCountry = addr.countryName ?: (addr.adminArea ?: defaultCountry)
@@ -649,6 +692,7 @@ object CitySearchEngine {
             AppLanguage.SPANISH -> "Ubicación desconocida"
             AppLanguage.FRENCH -> "Lieu inconnu"
             AppLanguage.PORTUGUESE -> "Local desconhecido"
+            AppLanguage.RUSSIAN -> "Неизвестное место"
             AppLanguage.JAPANESE -> "不明な地域"
         }
         return addr.locality
@@ -677,6 +721,7 @@ object CitySearchEngine {
             AppLanguage.SPANISH -> "es"
             AppLanguage.FRENCH -> "fr"
             AppLanguage.PORTUGUESE -> "pt"
+            AppLanguage.RUSSIAN -> "ru"
             AppLanguage.JAPANESE -> "ja"
         }
 

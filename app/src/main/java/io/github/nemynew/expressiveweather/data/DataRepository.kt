@@ -1354,6 +1354,7 @@ class WeatherRepository(
                 AppLanguage.SPANISH -> "default"
                 AppLanguage.FRENCH -> "fr"
                 AppLanguage.PORTUGUESE -> "default"
+                AppLanguage.RUSSIAN -> "default"
             }
             val photonResults = PhotonGeocodingService.search(
                 query = trimmed,
@@ -1502,7 +1503,7 @@ class WeatherRepository(
 
         val maxTemp = dailyMaxList.optDouble(0, currentTemp.toDouble()).takeIf { it.isFinite() }?.roundToInt() ?: currentTemp
         val minTemp = dailyMinList.optDouble(0, currentTemp.toDouble()).takeIf { it.isFinite() }?.roundToInt() ?: currentTemp
-        val uvIndex = uvMaxList?.optDouble(0, 4.0)?.takeIf { it.isFinite() }?.roundToInt() ?: 4
+        val todayUvMaxFallback = uvMaxList?.optDouble(0, Double.NaN)?.takeIf { it.isFinite() }?.coerceAtLeast(0.0)
         val precipSumToday = dailyPrecipSumList?.optDouble(0, 0.0)?.takeIf { it.isFinite() } ?: 0.0
         val precipProbToday = dailyPrecipList?.optInt(0, 0) ?: 0
 
@@ -1525,9 +1526,19 @@ class WeatherRepository(
         val hourlyDewPoints = hourly.optJSONArray("dew_point_2m")
         val hourlyVisibilities = hourly.optJSONArray("visibility")
         val hourlyPrecipMms = hourly.optJSONArray("precipitation")
+        val hourlyUvIndices = hourly.optJSONArray("uv_index")
         val hourlyIsDays = hourly.optJSONArray("is_day")
 
         val currentHourIndex = findCurrentHourIndex(hourlyTimes, cityTimeZone)
+        val currentHourlyUv = hourlyUvIndices?.optDouble(currentHourIndex, Double.NaN)
+            ?.takeIf { it.isFinite() }
+            ?.coerceAtLeast(0.0)
+        val uvIndex = when {
+            currentHourlyUv != null -> currentHourlyUv.roundToInt()
+            !isDay -> 0
+            todayUvMaxFallback != null -> todayUvMaxFallback.roundToInt()
+            else -> 0
+        }
         val hourlyForecast = mutableListOf<HourlyForecast>()
         val hourlyWindList = mutableListOf<HourlyWindItem>()
         val maxHourCount = 24.coerceAtMost((hourlyTimes.length() - currentHourIndex).coerceAtLeast(0))
@@ -1553,6 +1564,7 @@ class WeatherRepository(
             val hDew = hourlyDewPoints?.optDouble(idx, (hTemp - 3).toDouble())?.takeIf { it.isFinite() }?.roundToInt() ?: (hTemp - 3)
             val hIsDay = (hourlyIsDays?.optInt(idx, if (parseHourInt(timeIso) in 6..18) 1 else 0) ?: 1) == 1
             val hPrecipMm = hourlyPrecipMms?.optDouble(idx, 0.0)?.takeIf { it.isFinite() } ?: 0.0
+            val hUv = hourlyUvIndices?.optDouble(idx, Double.NaN)?.takeIf { it.isFinite() }?.coerceAtLeast(0.0)
 
             if (hGust > peakWindGust) {
                 peakWindGust = hGust
@@ -1570,7 +1582,8 @@ class WeatherRepository(
                     windSpeedKmH = hWind,
                     dewPointC = hDew,
                     isDay = hIsDay,
-                    precipitationMm = hPrecipMm
+                    precipitationMm = hPrecipMm,
+                    uvIndex = hUv
                 )
             )
 
@@ -1607,7 +1620,7 @@ class WeatherRepository(
             val dMin = dailyMinList.optDouble(i, currentTemp.toDouble()).takeIf { it.isFinite() }?.roundToInt() ?: currentTemp
             val dCode = dailyCodeList.optInt(i, weatherCode)
             val dPrecip = dailyPrecipList?.optInt(i, 0) ?: 0
-            val dUv = uvMaxList?.optDouble(i, 4.0)?.takeIf { it.isFinite() } ?: 4.0
+            val dUv = uvMaxList?.optDouble(i, Double.NaN)?.takeIf { it.isFinite() }?.coerceAtLeast(0.0) ?: 0.0
             val dPrecipSum = dailyPrecipSumList?.optDouble(i, 0.0)?.takeIf { it.isFinite() } ?: 0.0
             val dWindMax = dailyWindMaxList?.optDouble(i, 12.0)?.takeIf { it.isFinite() } ?: 12.0
             val dWindGustMax = dailyWindGustsMaxList?.optDouble(i, dWindMax * 1.35)?.takeIf { it.isFinite() } ?: (dWindMax * 1.35)

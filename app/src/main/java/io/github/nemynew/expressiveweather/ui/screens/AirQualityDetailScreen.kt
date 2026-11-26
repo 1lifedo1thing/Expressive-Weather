@@ -60,6 +60,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 
 /**
  * 空気質（Air Quality / AQI）詳細画面
@@ -98,6 +99,7 @@ fun AirQualityDetailScreen(
         AppLanguage.SPANISH -> "Índice de calidad del aire (ICA)"
         AppLanguage.FRENCH -> "Indice de qualité de l'air (IQA)"
         AppLanguage.PORTUGUESE -> "Índice de qualidade do ar (IQA)"
+        AppLanguage.RUSSIAN -> "Индекс качества воздуха (AQI)"
     }
 
     val pollutantsTitle = when (language) {
@@ -109,6 +111,7 @@ fun AirQualityDetailScreen(
         AppLanguage.SPANISH -> "Contaminantes principales"
         AppLanguage.FRENCH -> "Principaux polluants mesurés"
         AppLanguage.PORTUGUESE -> "Principais poluentes medidos"
+        AppLanguage.RUSSIAN -> "Основные загрязнители"
     }
 
     val adviceSectionTitle = when (language) {
@@ -120,6 +123,7 @@ fun AirQualityDetailScreen(
         AppLanguage.SPANISH -> "Recomendaciones de salud y aire"
         AppLanguage.FRENCH -> "Conseils santé et qualité de l'air"
         AppLanguage.PORTUGUESE -> "Recomendações de saúde e ar"
+        AppLanguage.RUSSIAN -> "Рекомендации по здоровью"
     }
 
     DetailScaffold(
@@ -154,6 +158,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "No disponible"
                     AppLanguage.FRENCH -> "Indisponible"
                     AppLanguage.PORTUGUESE -> "Indisponível"
+                    AppLanguage.RUSSIAN -> "Нет данных"
                 },
                 colorScheme.outline,
                 when (language) {
@@ -165,6 +170,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "Los datos de calidad del aire no están disponibles actualmente para esta ubicación."
                     AppLanguage.FRENCH -> "Les données de qualité de l'air sont actuellement indisponibles pour ce lieu."
                     AppLanguage.PORTUGUESE -> "Os dados de qualidade do ar não estão disponíveis no momento para este local."
+                    AppLanguage.RUSSIAN -> "Данные о качестве воздуха для этого места сейчас недоступны."
                 }
             )
         }
@@ -217,7 +223,7 @@ fun AirQualityDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -343,6 +349,7 @@ fun AirQualityDetailScreen(
                             AppLanguage.SPANISH -> "50 (Buena)"
                             AppLanguage.FRENCH -> "50 (Bon)"
                             AppLanguage.PORTUGUESE -> "50 (Bom)"
+                            AppLanguage.RUSSIAN -> "50 (Хор.)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(when (language) {
                             AppLanguage.JAPANESE -> "100 (普)"
@@ -353,6 +360,7 @@ fun AirQualityDetailScreen(
                             AppLanguage.SPANISH -> "100 (Mod)"
                             AppLanguage.FRENCH -> "100 (Mod)"
                             AppLanguage.PORTUGUESE -> "100 (Mod)"
+                            AppLanguage.RUSSIAN -> "100 (Умер.)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(when (language) {
                             AppLanguage.JAPANESE -> "150 (注意)"
@@ -363,6 +371,7 @@ fun AirQualityDetailScreen(
                             AppLanguage.SPANISH -> "150 (Sens)"
                             AppLanguage.FRENCH -> "150 (Sens)"
                             AppLanguage.PORTUGUESE -> "150 (Sens)"
+                            AppLanguage.RUSSIAN -> "150 (Чувств.)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("200+", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
@@ -385,7 +394,7 @@ fun AirQualityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -409,6 +418,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "Partículas finas"
                     AppLanguage.FRENCH -> "Particules fines"
                     AppLanguage.PORTUGUESE -> "Partículas finas"
+                    AppLanguage.RUSSIAN -> "Мелкие частицы"
                 }
 
                 val pm10Sub = when (language) {
@@ -420,6 +430,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "Partículas inhalables"
                     AppLanguage.FRENCH -> "Particules inhalables"
                     AppLanguage.PORTUGUESE -> "Partículas inaláveis"
+                    AppLanguage.RUSSIAN -> "Крупные частицы"
                 }
 
                 val o3Sub = when (language) {
@@ -431,6 +442,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "Ozono troposférico"
                     AppLanguage.FRENCH -> "Ozone de surface"
                     AppLanguage.PORTUGUESE -> "Ozônio superficial"
+                    AppLanguage.RUSSIAN -> "Приземный озон"
                 }
 
                 val no2Sub = when (language) {
@@ -442,6 +454,7 @@ fun AirQualityDetailScreen(
                     AppLanguage.SPANISH -> "Dióxido de nitrógeno"
                     AppLanguage.FRENCH -> "Dioxyde d'azote"
                     AppLanguage.PORTUGUESE -> "Dióxido de nitrogênio"
+                    AppLanguage.RUSSIAN -> "Диоксид азота"
                 }
 
                 Row(
@@ -502,7 +515,7 @@ fun AirQualityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -536,6 +549,7 @@ fun AirQualityDetailScreen(
                         AppLanguage.SPANISH -> "No hay datos de calidad del aire disponibles para esta ubicación, por lo que no es posible mostrar recomendaciones de ventilación, actividad exterior o mascarilla."
                         AppLanguage.FRENCH -> "Les données de qualité de l'air étant indisponibles pour ce lieu, il est impossible d'afficher des conseils sur l'aération, les activités extérieures ou le masque."
                         AppLanguage.PORTUGUESE -> "Os dados de qualidade do ar não estão disponíveis para este local, portanto não é possível exibir recomendações de ventilação, atividades ao ar livre ou uso de máscara."
+                        AppLanguage.RUSSIAN -> "Данные о качестве воздуха для этого места недоступны, поэтому рекомендации по проветриванию, прогулкам и маскам не могут быть показаны."
                     }
                     Text(
                         text = unavailableAdvice,
@@ -552,6 +566,7 @@ fun AirQualityDetailScreen(
                         AppLanguage.SPANISH -> "Ventilación interior" to if (aqi <= 50) "El aire es fresco e ideal para abrir las ventanas y ventilar." else "Mantén las ventanas cerradas y usa un purificador de aire si es posible."
                         AppLanguage.FRENCH -> "Aération intérieure" to if (aqi <= 50) "L'air est frais et idéal pour ouvrir les fenêtres." else "Gardez les fenêtres fermées et utilisez un purificateur d'air si nécessaire."
                         AppLanguage.PORTUGUESE -> "Ventilação interna" to if (aqi <= 50) "O ar está limpo e ideal para abrir as janelas." else "Mantenha as janelas fechadas e use um purificador de ar se necessário."
+                        AppLanguage.RUSSIAN -> "Проветривание" to if (aqi <= 50) "Воздух чистый — отлично подходит для проветривания." else "Держите окна закрытыми и при возможности используйте очиститель воздуха."
                     }
 
                     val (outdoorTitle, outdoorDesc) = when (language) {
@@ -563,6 +578,7 @@ fun AirQualityDetailScreen(
                         AppLanguage.SPANISH -> "Actividad exterior" to if (aqi <= 100) "Excelentes condiciones para hacer ejercicio y actividades al aire libre." else "Reduce el esfuerzo intenso o prolongado al aire libre."
                         AppLanguage.FRENCH -> "Activité extérieure" to if (aqi <= 100) "Conditions idéales pour le sport et les loisirs en plein air." else "Limitez les efforts intenses ou prolongés en extérieur."
                         AppLanguage.PORTUGUESE -> "Atividades ao ar livre" to if (aqi <= 100) "Ótimas condições para exercícios e lazer ao ar livre." else "Reduza esforços intensos ou prolongados ao ar livre."
+                        AppLanguage.RUSSIAN -> "Активность на улице" to if (aqi <= 100) "Отличные условия для прогулок и спорта на свежем воздухе." else "Ограничьте длительные и интенсивные нагрузки на улице."
                     }
 
                     val (maskTitle, maskDesc) = when (language) {
@@ -574,6 +590,7 @@ fun AirQualityDetailScreen(
                         AppLanguage.SPANISH -> "Uso de mascarilla" to if (aqi <= 50) "No es necesario usar mascarilla." else "Se recomienda mascarilla filtrante para personas sensibles al salir."
                         AppLanguage.FRENCH -> "Port du masque" to if (aqi <= 50) "Le port du masque n'est pas nécessaire." else "Les personnes sensibles devraient envisager un masque filtrant à l'extérieur."
                         AppLanguage.PORTUGUESE -> "Uso de máscara" to if (aqi <= 50) "Não é necessário usar máscara." else "Pessoas sensíveis devem considerar usar máscara com filtro ao sair."
+                        AppLanguage.RUSSIAN -> "Защитная маска" to if (aqi <= 50) "Маска не требуется." else "Чувствительным людям стоит использовать защитную маску на улице."
                     }
 
                     AqiAdviceRow(
@@ -702,6 +719,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Buena"
             AppLanguage.FRENCH -> "Bonne"
             AppLanguage.PORTUGUESE -> "Boa"
+            AppLanguage.RUSSIAN -> "Хорошее"
         }
         aqi <= 100 -> when (language) {
             AppLanguage.JAPANESE -> "普通"
@@ -712,6 +730,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Moderada"
             AppLanguage.FRENCH -> "Modérée"
             AppLanguage.PORTUGUESE -> "Moderada"
+            AppLanguage.RUSSIAN -> "Умеренное"
         }
         aqi <= 150 -> when (language) {
             AppLanguage.JAPANESE -> "敏感な人に影響"
@@ -722,6 +741,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Perjudicial para grupos sensibles"
             AppLanguage.FRENCH -> "Mauvaise pour les personnes sensibles"
             AppLanguage.PORTUGUESE -> "Ruim para grupos sensíveis"
+            AppLanguage.RUSSIAN -> "Вредно для чувствительных"
         }
         aqi <= 200 -> when (language) {
             AppLanguage.JAPANESE -> "不健康"
@@ -732,6 +752,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Insalubre"
             AppLanguage.FRENCH -> "Mauvaise"
             AppLanguage.PORTUGUESE -> "Insalubre"
+            AppLanguage.RUSSIAN -> "Вредное"
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "極めて不健康"
@@ -742,6 +763,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Peligrosa"
             AppLanguage.FRENCH -> "Dangereuse"
             AppLanguage.PORTUGUESE -> "Perigosa"
+            AppLanguage.RUSSIAN -> "Опасное"
         }
     }
 
@@ -755,6 +777,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "La calidad del aire es satisfactoria y presenta poco o ningún riesgo."
             AppLanguage.FRENCH -> "La qualité de l'air est satisfaisante et présente peu ou pas de risque."
             AppLanguage.PORTUGUESE -> "A qualidade do ar é satisfatória e oferece pouco ou nenhum risco."
+            AppLanguage.RUSSIAN -> "Качество воздуха отличное, риска для здоровья практически нет."
         }
         aqi <= 100 -> when (language) {
             AppLanguage.JAPANESE -> "空気質は許容範囲内です。極端に敏感な方以外は問題ありません。"
@@ -765,6 +788,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "La calidad del aire es aceptable para la mayoría de las personas."
             AppLanguage.FRENCH -> "La qualité de l'air est acceptable pour la plupart des personnes."
             AppLanguage.PORTUGUESE -> "A qualidade do ar é aceitável para a maioria das pessoas."
+            AppLanguage.RUSSIAN -> "Качество воздуха приемлемое для большинства людей."
         }
         aqi <= 150 -> when (language) {
             AppLanguage.JAPANESE -> "呼吸器系に持病のある方や高齢者・子供は長時間の外出に注意してください。"
@@ -775,6 +799,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Los grupos sensibles pueden experimentar efectos en la salud."
             AppLanguage.FRENCH -> "Les personnes sensibles peuvent ressentir des effets sur leur santé."
             AppLanguage.PORTUGUESE -> "Pessoas de grupos sensíveis podem sentir efeitos na saúde."
+            AppLanguage.RUSSIAN -> "Чувствительные группы могут испытывать дискомфорт."
         }
         aqi <= 200 -> when (language) {
             AppLanguage.JAPANESE -> "すべての人が影響を感じる可能性があります。屋外での長時間の運動はお控えください。"
@@ -785,6 +810,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Toda la población puede verse afectada; limita el esfuerzo al aire libre."
             AppLanguage.FRENCH -> "Tout le monde peut ressentir des effets ; limitez les efforts en extérieur."
             AppLanguage.PORTUGUESE -> "Todos podem sentir efeitos na saúde; limite esforços ao ar livre."
+            AppLanguage.RUSSIAN -> "Возможно влияние на здоровье у всех; ограничьте нагрузки на улице."
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "健康被害のリスクが高まっています。屋内で空気清浄機を使用して過ごしてください。"
@@ -795,6 +821,7 @@ private fun getAqiInfo(
             AppLanguage.SPANISH -> "Alerta sanitaria: riesgo grave para toda la población. Permanece en interiores."
             AppLanguage.FRENCH -> "Alerte sanitaire : risque grave pour tous. Restez à l'intérieur."
             AppLanguage.PORTUGUESE -> "Alerta de saúde: risco grave para todos. Permaneça em ambientes fechados."
+            AppLanguage.RUSSIAN -> "Опасно для здоровья: серьёзный риск для всех. Оставайтесь в помещении."
         }
     }
 

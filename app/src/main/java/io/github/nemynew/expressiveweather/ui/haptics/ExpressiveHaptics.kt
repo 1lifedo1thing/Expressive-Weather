@@ -41,6 +41,7 @@ enum class HapticDeviceProfile(
     val labelEs: String,
     val labelFr: String,
     val labelPt: String,
+    val labelRu: String,
     val labelEn: String
 ) {
     /** Google Pixel 等のプリミティブ完全対応 LRA (線形共振アクチュエータ) */
@@ -53,6 +54,7 @@ enum class HapticDeviceProfile(
         "LRA de alta definición (primitivas)",
         "LRA haute définition (primitives)",
         "LRA de alta definição (primitivas)",
+        "Высокоточный LRA (примитивы)",
         "High-Def LRA (Composition Primitives)"
     ),
 
@@ -66,6 +68,7 @@ enum class HapticDeviceProfile(
         "LRA HD Samsung Galaxy",
         "LRA HD Samsung Galaxy",
         "LRA HD Samsung Galaxy",
+        "Samsung Galaxy HD LRA",
         "Samsung Galaxy HD LRA"
     ),
 
@@ -79,6 +82,7 @@ enum class HapticDeviceProfile(
         "Onda con control de amplitud",
         "Forme d'onde à amplitude contrôlée",
         "Forma de onda com controle de amplitude",
+        "Волновая форма с контролем амплитуды",
         "Amplitude-Controlled Waveform"
     ),
 
@@ -92,6 +96,7 @@ enum class HapticDeviceProfile(
         "Pulso temporizado (ERM)",
         "Impulsion temporisée (ERM)",
         "Pulso temporizado (ERM)",
+        "Временной импульс (ERM)",
         "Timed Pulse (ERM)"
     ),
 
@@ -105,6 +110,7 @@ enum class HapticDeviceProfile(
         "Sin hardware de vibración",
         "Aucun matériel de vibration",
         "Sem hardware de vibração",
+        "Нет вибромотора",
         "No Vibrator Hardware"
     )
     ;
@@ -117,6 +123,7 @@ enum class HapticDeviceProfile(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
         AppLanguage.ENGLISH -> labelEn
     }
 }

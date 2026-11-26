@@ -38,6 +38,7 @@ import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.components.GdacsIndividualAlertCard
 import io.github.nemynew.expressiveweather.ui.components.JmaIndividualWarningCard
 import io.github.nemynew.expressiveweather.ui.components.NwsIndividualAlertCard
@@ -81,6 +82,7 @@ fun AlertDetailScreen(
         AppLanguage.SPANISH -> "Alertas y avisos meteorológicos"
         AppLanguage.FRENCH -> "Alertes et vigilances météo"
         AppLanguage.PORTUGUESE -> "Alertas e avisos meteorológicos"
+        AppLanguage.RUSSIAN -> "Предупреждения и оповещения"
     }
 
     // 1. 気象庁 (JMA) の有効な警報一覧
@@ -178,6 +180,7 @@ fun AlertDetailScreen(
                                 AppLanguage.SPANISH -> "No hay alertas meteorológicas activas"
                                 AppLanguage.FRENCH -> "Aucune alerte météo en cours"
                                 AppLanguage.PORTUGUESE -> "Nenhum alerta meteorológico ativo no momento"
+                                AppLanguage.RUSSIAN -> "Активных предупреждений нет"
                             },
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
@@ -194,6 +197,7 @@ fun AlertDetailScreen(
                                 AppLanguage.SPANISH -> "Supervisión continua de alertas oficiales de JMA, NOAA/NWS, OMM y GDACS."
                                 AppLanguage.FRENCH -> "Surveillance continue des alertes officielles de la JMA, NOAA/NWS, OMM et GDACS."
                                 AppLanguage.PORTUGUESE -> "Monitoramento contínuo de alertas oficiais da JMA, NOAA/NWS, OMM e GDACS."
+                                AppLanguage.RUSSIAN -> "Постоянный мониторинг официальных оповещений JMA, NOAA/NWS, ВМО и GDACS."
                             },
                             fontSize = 12.5.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -213,13 +217,14 @@ fun AlertDetailScreen(
                     AppLanguage.SPANISH -> "Alertas de la Agencia Meteorológica de Japón"
                     AppLanguage.FRENCH -> "Alertes de l'Agence météorologique du Japon"
                     AppLanguage.PORTUGUESE -> "Alertas da Agência Meteorológica do Japão"
+                    AppLanguage.RUSSIAN -> "Оповещения Метеоагентства Японии"
                 }
                 val jmaSourceBadge = when (language) {
                     AppLanguage.JAPANESE -> "気象庁 (JMA)"
                     AppLanguage.KOREAN -> "일본 기상청 (JMA)"
                     AppLanguage.SIMPLIFIED_CHINESE -> "日本气象厅 (JMA)"
                     AppLanguage.TRADITIONAL_CHINESE -> "日本氣象廳 (JMA)"
-                    AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> "JMA"
+                    AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE, AppLanguage.RUSSIAN -> "JMA"
                 }
 
                 AlertSourceSectionHeader(
@@ -235,7 +240,7 @@ fun AlertDetailScreen(
                             .clip(RoundedCornerShape(18.dp)),
                         shape = RoundedCornerShape(18.dp),
                         colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.85f),
+                            containerColor = getDetailCardColor(),
                             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -295,6 +300,7 @@ fun AlertDetailScreen(
                     AppLanguage.SPANISH -> "Alertas del Servicio Meteorológico de EE. UU."
                     AppLanguage.FRENCH -> "Alertes du National Weather Service (É.-U.)"
                     AppLanguage.PORTUGUESE -> "Alertas do Serviço Meteorológico dos EUA"
+                    AppLanguage.RUSSIAN -> "Оповещения Метеослужбы США (NWS)"
                 }
                 val nwsSourceBadge = "NOAA / NWS"
 
@@ -324,6 +330,7 @@ fun AlertDetailScreen(
                     AppLanguage.SPANISH -> "Avisos meteorológicos europeos (MeteoAlarm)"
                     AppLanguage.FRENCH -> "Vigilances météo européennes (MeteoAlarm)"
                     AppLanguage.PORTUGUESE -> "Avisos meteorológicos europeus (MeteoAlarm)"
+                    AppLanguage.RUSSIAN -> "Европейские оповещения (MeteoAlarm)"
                 }
                 val meteoAlarmSourceBadge = "EUMETNET / MeteoAlarm"
 
@@ -353,6 +360,7 @@ fun AlertDetailScreen(
                     AppLanguage.SPANISH -> "Alertas de la Organización Meteorológica Mundial"
                     AppLanguage.FRENCH -> "Alertes de l'Organisation météorologique mondiale"
                     AppLanguage.PORTUGUESE -> "Alertas da Organização Meteorológica Mundial"
+                    AppLanguage.RUSSIAN -> "Оповещения Всемирной метеоорганизации"
                 }
                 val wmoSourceBadge = "WMO (SWIC)"
 
@@ -382,6 +390,7 @@ fun AlertDetailScreen(
                     AppLanguage.SPANISH -> "Sistema Mundial de Alerta y Coordinación de Desastres"
                     AppLanguage.FRENCH -> "Système mondial d'alerte et de coordination des catastrophes"
                     AppLanguage.PORTUGUESE -> "Sistema Global de Alerta e Coordenação de Desastres"
+                    AppLanguage.RUSSIAN -> "Глобальная система оповещения о ЧС"
                 }
                 val gdacsSourceBadge = "UN / EC (GDACS)"
 

@@ -317,6 +317,7 @@ object KikikuruNotificationManager {
                 AppLanguage.SPANISH -> "Alertas de desastre en tiempo real"
                 AppLanguage.FRENCH -> "Alertes catastrophe en temps réel"
                 AppLanguage.PORTUGUESE -> "Alertas de desastre em tempo real"
+                AppLanguage.RUSSIAN -> "Экстренные оповещения в реальном времени"
                 AppLanguage.JAPANESE -> "警戒レベル・キキクル Live Updates"
             }
             val descriptionText = when (language) {
@@ -327,6 +328,7 @@ object KikikuruNotificationManager {
                 AppLanguage.SPANISH -> "Notificaciones continuas en tiempo real cuando hay alertas meteorológicas o de desastre de nivel 2 o superior"
                 AppLanguage.FRENCH -> "Notifications continues en temps réel lorsque des alertes météo ou catastrophe de niveau 2 ou plus sont actives"
                 AppLanguage.PORTUGUESE -> "Notificações contínuas em tempo real quando houver alertas meteorológicos ou de desastre de nível 2 ou superior"
+                AppLanguage.RUSSIAN -> "Непрерывные уведомления при активных предупреждениях о погоде или стихийных бедствиях уровня 2 и выше"
                 AppLanguage.JAPANESE -> "市区町村で警戒レベル2以上の警報・注意報が発表された際のリアルタイム警戒通知（ライブ通知）"
             }
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -379,6 +381,7 @@ object KikikuruNotificationManager {
             AppLanguage.SPANISH -> primaryDetail.disasterType.shortLabelEs
             AppLanguage.FRENCH -> primaryDetail.disasterType.shortLabelFr
             AppLanguage.PORTUGUESE -> primaryDetail.disasterType.shortLabelPt
+            AppLanguage.RUSSIAN -> primaryDetail.disasterType.shortLabelRu
             AppLanguage.JAPANESE -> primaryDetail.disasterType.shortLabelJa
         }
         val chipText = when (language) {
@@ -389,6 +392,7 @@ object KikikuruNotificationManager {
             AppLanguage.SPANISH -> "$primaryDisaster Nv.$levelNum"
             AppLanguage.FRENCH -> "$primaryDisaster Niv.$levelNum"
             AppLanguage.PORTUGUESE -> "$primaryDisaster Nv.$levelNum"
+            AppLanguage.RUSSIAN -> "$primaryDisaster Ур.$levelNum"
             AppLanguage.JAPANESE -> "$primaryDisaster レベル$levelNum"
         }
 
@@ -405,6 +409,7 @@ object KikikuruNotificationManager {
             AppLanguage.SPANISH -> "Nivel de alerta $levelNum [$levelTitle] $evacBadge"
             AppLanguage.FRENCH -> "Niveau d'alerte $levelNum [$levelTitle] $evacBadge"
             AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum [$levelTitle] $evacBadge"
+            AppLanguage.RUSSIAN -> "Уровень тревоги $levelNum [$levelTitle] $evacBadge"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum 【$levelTitle】 $evacBadge"
         }.trim()
 
@@ -418,6 +423,7 @@ object KikikuruNotificationManager {
                     AppLanguage.SPANISH -> it.labelEs
                     AppLanguage.FRENCH -> it.labelFr
                     AppLanguage.PORTUGUESE -> it.labelPt
+                    AppLanguage.RUSSIAN -> it.labelRu
                     AppLanguage.JAPANESE -> it.labelJa
                 }
             }
@@ -429,6 +435,7 @@ object KikikuruNotificationManager {
                 AppLanguage.SPANISH -> "[Riesgos: $labels]"
                 AppLanguage.FRENCH -> "[Risques : $labels]"
                 AppLanguage.PORTUGUESE -> "[Riscos: $labels]"
+                AppLanguage.RUSSIAN -> "[Угрозы: $labels]"
                 AppLanguage.JAPANESE -> "【警戒対象: $labels】"
             }
         } else ""
@@ -436,7 +443,7 @@ object KikikuruNotificationManager {
         val warningsText = if (alertInfo.activeWarnings.isNotEmpty()) {
             val separator = when (language) {
                 AppLanguage.JAPANESE, AppLanguage.SIMPLIFIED_CHINESE, AppLanguage.TRADITIONAL_CHINESE -> "、"
-                AppLanguage.ENGLISH, AppLanguage.KOREAN, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> ", "
+                AppLanguage.ENGLISH, AppLanguage.KOREAN, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE, AppLanguage.RUSSIAN -> ", "
             }
             alertInfo.activeWarnings.joinToString(separator) {
                 JmaWarningMaster.getLocalizedWarningName(it.name, language)
@@ -448,6 +455,7 @@ object KikikuruNotificationManager {
                 AppLanguage.SPANISH -> " en vigor"
                 AppLanguage.FRENCH -> " en vigueur"
                 AppLanguage.PORTUGUESE -> " em vigor"
+                AppLanguage.RUSSIAN -> " (действует)"
                 AppLanguage.JAPANESE -> " 発表中"
             }
         } else {
@@ -459,6 +467,7 @@ object KikikuruNotificationManager {
                 AppLanguage.SPANISH -> "Aviso meteorológico en vigor"
                 AppLanguage.FRENCH -> "Vigilance météo en vigueur"
                 AppLanguage.PORTUGUESE -> "Aviso meteorológico em vigor"
+                AppLanguage.RUSSIAN -> "Действует погодное предупреждение"
                 AppLanguage.JAPANESE -> "注意報発表中"
             }
         }
@@ -570,6 +579,7 @@ object KikikuruNotificationManager {
                     AppLanguage.SPANISH -> "Abrir app"
                     AppLanguage.FRENCH -> "Ouvrir l'app"
                     AppLanguage.PORTUGUESE -> "Abrir app"
+                    AppLanguage.RUSSIAN -> "Открыть"
                     AppLanguage.JAPANESE -> "アプリを開く"
                 },
                 mainAppPendingIntent
@@ -584,6 +594,7 @@ object KikikuruNotificationManager {
                     AppLanguage.SPANISH -> "Descartar"
                     AppLanguage.FRENCH -> "Fermer"
                     AppLanguage.PORTUGUESE -> "Dispensar"
+                    AppLanguage.RUSSIAN -> "Скрыть"
                     AppLanguage.JAPANESE -> "閉じる"
                 },
                 dismissPendingIntent
@@ -653,6 +664,7 @@ object KikikuruNotificationManager {
             AppLanguage.SPANISH -> "Supervisando alertas meteorológicas"
             AppLanguage.FRENCH -> "Surveillance des alertes météo"
             AppLanguage.PORTUGUESE -> "Monitorando alertas meteorológicos"
+            AppLanguage.RUSSIAN -> "Мониторинг погодных угроз"
             AppLanguage.JAPANESE -> "気象警戒情報を監視中"
         }
         val fgText = when (language) {
@@ -663,6 +675,7 @@ object KikikuruNotificationManager {
             AppLanguage.SPANISH -> "Esperando actualizaciones de riesgo de desastre"
             AppLanguage.FRENCH -> "En attente des mises à jour des risques"
             AppLanguage.PORTUGUESE -> "Aguardando atualizações de risco de desastre"
+            AppLanguage.RUSSIAN -> "Ожидание обновлений об уровне опасности"
             AppLanguage.JAPANESE -> "気象庁キキクル情報を待機しています"
         }
         val dismissPendingIntent = createDismissPendingIntent(

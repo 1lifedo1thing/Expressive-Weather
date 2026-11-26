@@ -202,4 +202,53 @@ class MoonPhaseCalculatorTest {
         assertEquals(0.0f, ws, 0.0001f)
         assertEquals(0.25f, we, 0.0001f)
     }
+
+    @Test
+    fun testJapaneseTraditionalMoonNamesAcrossEntireSynodicMonth() {
+        val samples = listOf(
+            0.0 to "新月",
+            0.5 to "新月",
+            1.5 to "二日月",
+            3.0 to "三日月",
+            7.4 to "上弦の月",
+            10.0 to "十日夜",
+            13.0 to "十三夜",
+            14.0 to "小望月",
+            14.8 to "満月",
+            16.0 to "十六夜",
+            17.0 to "立待月",
+            18.0 to "居待月",
+            19.0 to "寝待月",
+            20.0 to "更待月",
+            22.2 to "下弦の月",
+            24.5 to "有明月",
+            26.0 to "二十六夜月",
+            28.2 to "晦",
+            29.3 to "新月"
+        )
+        for ((age, expectedName) in samples) {
+            assertEquals("Mismatch at age=$age", expectedName, MoonPhaseCalculator.getJapaneseTraditionalMoonName(age))
+            val fraction = (age / MoonPhaseCalculator.SYNODIC_MONTH_DAYS).toFloat()
+            val info = MoonPhaseCalculator.calculateForFraction(AppLanguage.JAPANESE, fraction)
+            assertEquals("calculateForFraction mismatch at age=$age", expectedName, info.phaseName)
+        }
+
+        // 「満ちていく月」「欠けていく月」がいかなる月齢でも返されないこと
+        for (step in 0..295) {
+            val age = step / 10.0
+            val fraction = (age / MoonPhaseCalculator.SYNODIC_MONTH_DAYS).toFloat()
+            val name = MoonPhaseCalculator.calculateForFraction(AppLanguage.JAPANESE, fraction).phaseName
+            assertFalse("Unexpected generic name at age=$age: $name", name == "満ちていく月" || name == "欠けていく月")
+        }
+
+        // 他言語の8相名称は従来どおり維持されること
+        assertEquals(
+            "Waxing Gibbous",
+            MoonPhaseCalculator.calculateForFraction(AppLanguage.ENGLISH, 0.375f).phaseName
+        )
+        assertEquals(
+            "Waning Gibbous",
+            MoonPhaseCalculator.calculateForFraction(AppLanguage.ENGLISH, 0.625f).phaseName
+        )
+    }
 }

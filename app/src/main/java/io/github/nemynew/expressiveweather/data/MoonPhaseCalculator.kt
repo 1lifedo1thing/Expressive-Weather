@@ -207,9 +207,15 @@ object MoonPhaseCalculator {
             else -> MoonPhaseStage.WANING_CRESCENT
         }
 
+        val phaseName = if (language == AppLanguage.JAPANESE) {
+            getJapaneseTraditionalMoonName(ageDouble)
+        } else {
+            getLocalizedPhaseName(stage, language)
+        }
+
         return MoonPhaseInfo(
             stage = stage,
-            phaseName = getLocalizedPhaseName(stage, language),
+            phaseName = phaseName,
             ageDays = String.format(Locale.US, "%.1f", ageDouble),
             ageDaysFloat = ageDouble.toFloat(),
             phaseFraction = phaseFraction,
@@ -218,6 +224,32 @@ object MoonPhaseCalculator {
             daysToNewMoon = daysToNew,
             isWaxing = phaseFraction < 0.5f
         )
+    }
+
+    /**
+     * 月齢（0.0〜29.53日）に基づく日本語の伝統的な月の呼び名を返す。
+     */
+    fun getJapaneseTraditionalMoonName(ageDays: Double): String {
+        val normalized = ((ageDays % SYNODIC_MONTH_DAYS) + SYNODIC_MONTH_DAYS) % SYNODIC_MONTH_DAYS
+        return when {
+            normalized < 1.0 || normalized >= 29.0 -> "新月"
+            normalized < 2.5 -> "二日月"
+            normalized < 6.0 -> "三日月"
+            normalized < 8.8 -> "上弦の月"
+            normalized < 11.8 -> "十日夜"
+            normalized < 13.5 -> "十三夜"
+            normalized < 14.3 -> "小望月"
+            normalized < 15.5 -> "満月"
+            normalized < 16.5 -> "十六夜"
+            normalized < 17.5 -> "立待月"
+            normalized < 18.5 -> "居待月"
+            normalized < 19.5 -> "寝待月"
+            normalized < 21.0 -> "更待月"
+            normalized < 23.5 -> "下弦の月"
+            normalized < 25.2 -> "有明月"
+            normalized < 27.2 -> "二十六夜月"
+            else -> "晦"
+        }
     }
 
     fun getLocalizedPhaseName(stage: MoonPhaseStage, language: AppLanguage): String = when (stage) {
@@ -230,6 +262,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Luna nueva"
             AppLanguage.FRENCH -> "Nouvelle lune"
             AppLanguage.PORTUGUESE -> "Lua nova"
+            AppLanguage.RUSSIAN -> "Новолуние"
         }
         MoonPhaseStage.WAXING_CRESCENT -> when (language) {
             AppLanguage.JAPANESE -> "三日月"
@@ -240,6 +273,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Luna creciente"
             AppLanguage.FRENCH -> "Premier croissant"
             AppLanguage.PORTUGUESE -> "Lua crescente"
+            AppLanguage.RUSSIAN -> "Растущий серп"
         }
         MoonPhaseStage.FIRST_QUARTER -> when (language) {
             AppLanguage.JAPANESE -> "上弦の月"
@@ -250,9 +284,10 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Cuarto creciente"
             AppLanguage.FRENCH -> "Premier quartier"
             AppLanguage.PORTUGUESE -> "Quarto crescente"
+            AppLanguage.RUSSIAN -> "Первая четверть"
         }
         MoonPhaseStage.WAXING_GIBBOUS -> when (language) {
-            AppLanguage.JAPANESE -> "満ちていく月"
+            AppLanguage.JAPANESE -> "十三夜"
             AppLanguage.KOREAN -> "차오르는 달"
             AppLanguage.SIMPLIFIED_CHINESE -> "盈凸月"
             AppLanguage.TRADITIONAL_CHINESE -> "盈凸月"
@@ -260,6 +295,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Gibosa creciente"
             AppLanguage.FRENCH -> "Gibbeuse croissante"
             AppLanguage.PORTUGUESE -> "Gibosa crescente"
+            AppLanguage.RUSSIAN -> "Растущая луна"
         }
         MoonPhaseStage.FULL_MOON -> when (language) {
             AppLanguage.JAPANESE -> "満月"
@@ -270,9 +306,10 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Luna llena"
             AppLanguage.FRENCH -> "Pleine lune"
             AppLanguage.PORTUGUESE -> "Lua cheia"
+            AppLanguage.RUSSIAN -> "Полнолуние"
         }
         MoonPhaseStage.WANING_GIBBOUS -> when (language) {
-            AppLanguage.JAPANESE -> "欠けていく月"
+            AppLanguage.JAPANESE -> "十六夜"
             AppLanguage.KOREAN -> "기우는 달"
             AppLanguage.SIMPLIFIED_CHINESE -> "亏凸月"
             AppLanguage.TRADITIONAL_CHINESE -> "虧凸月"
@@ -280,6 +317,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Gibosa menguante"
             AppLanguage.FRENCH -> "Gibbeuse décroissante"
             AppLanguage.PORTUGUESE -> "Gibosa minguante"
+            AppLanguage.RUSSIAN -> "Убывающая луна"
         }
         MoonPhaseStage.THIRD_QUARTER -> when (language) {
             AppLanguage.JAPANESE -> "下弦の月"
@@ -290,6 +328,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Cuarto menguante"
             AppLanguage.FRENCH -> "Dernier quartier"
             AppLanguage.PORTUGUESE -> "Quarto minguante"
+            AppLanguage.RUSSIAN -> "Последняя четверть"
         }
         MoonPhaseStage.WANING_CRESCENT -> when (language) {
             AppLanguage.JAPANESE -> "有明月"
@@ -300,6 +339,7 @@ object MoonPhaseCalculator {
             AppLanguage.SPANISH -> "Luna menguante"
             AppLanguage.FRENCH -> "Dernier croissant"
             AppLanguage.PORTUGUESE -> "Lua minguante"
+            AppLanguage.RUSSIAN -> "Убывающий серп"
         }
     }
 

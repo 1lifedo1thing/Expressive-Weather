@@ -21,6 +21,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Aseguramiento de seguridad de emergencia"
                 AppLanguage.FRENCH -> "Mise en sécurité d'urgence"
                 AppLanguage.PORTUGUESE -> "Segurança de emergência imediata"
+                AppLanguage.RUSSIAN -> "Немедленное обеспечение безопасности"
                 AppLanguage.JAPANESE -> "緊急安全確保 相当"
             }
             AlertLevel.LEVEL_4 -> when (language) {
@@ -31,6 +32,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Orden de evacuación"
                 AppLanguage.FRENCH -> "Ordre d'évacuation"
                 AppLanguage.PORTUGUESE -> "Ordem de evacuação"
+                AppLanguage.RUSSIAN -> "Приказ об эвакуации"
                 AppLanguage.JAPANESE -> "避難指示 相当"
             }
             AlertLevel.LEVEL_3 -> when (language) {
@@ -41,6 +43,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Evacuación de personas mayores y vulnerables"
                 AppLanguage.FRENCH -> "Évacuation des personnes âgées et vulnérables"
                 AppLanguage.PORTUGUESE -> "Evacuação de idosos e vulneráveis"
+                AppLanguage.RUSSIAN -> "Эвакуация пожилых и уязвимых лиц"
                 AppLanguage.JAPANESE -> "高齢者等避難 相当"
             }
             else -> null
@@ -64,6 +67,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "(Si evacuar al exterior es demasiado peligroso) ¡Peligro mortal! Póngase a salvo de inmediato en un lugar seguro bajo techo."
                     AppLanguage.FRENCH -> "(Si l'évacuation extérieure est trop dangereuse) Danger mortel ! Mettez-vous immédiatement en sécurité à l'intérieur."
                     AppLanguage.PORTUGUESE -> "(Se evacuar ao ar livre for muito perigoso) Risco de vida! Garanta sua segurança imediatamente em local abrigado."
+                    AppLanguage.RUSSIAN -> "(Если выход на улицу слишком опасен) Угроза жизни! Немедленно обеспечьте безопасность в укрытии."
                     AppLanguage.JAPANESE -> "(立退き避難がかえって危険な場合) 命の危険が迫っています。直ちに身の安全を確保して下さい。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -74,6 +78,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Compruebe su entorno y trasládese a un piso superior a salvo de inundaciones según su propio criterio."
                     AppLanguage.FRENCH -> "Vérifiez votre environnement et montez à un étage supérieur à l'abri des inondations selon votre jugement."
                     AppLanguage.PORTUGUESE -> "Verifique o entorno e desloque-se para um andar superior seguro contra alagamentos, conforme sua avaliação."
+                    AppLanguage.RUSSIAN -> "Оцените обстановку и поднимитесь на верхний этаж, защищённый от затопления."
                     AppLanguage.JAPANESE -> "周囲の状況を確認し、各自の判断で、屋内の浸水が及ばない階に移動して下さい。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -84,6 +89,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Tome medidas de seguridad tan pronto como esté preparado. Las personas mayores y vulnerables deben actuar de inmediato."
                     AppLanguage.FRENCH -> "Prenez des mesures de sécurité dès que vous êtes prêt. Les personnes âgées et vulnérables doivent agir sans délai."
                     AppLanguage.PORTUGUESE -> "Tome medidas de segurança assim que estiver preparado. Idosos e pessoas vulneráveis devem agir imediatamente."
+                    AppLanguage.RUSSIAN -> "Примите меры безопасности по мере готовности. Пожилым и уязвимым людям следует действовать немедленно."
                     AppLanguage.JAPANESE -> "安全確保行動をとる準備が整い次第、早めの行動をとって下さい。高齢者等は速やかに安全確保行動をとって下さい。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -94,6 +100,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Siga de cerca los avisos meteorológicos y la lluvia. Salga de los sótanos y aléjese de pasos subterráneos."
                     AppLanguage.FRENCH -> "Suivez attentivement la météo et les précipitations. Quittez les sous-sols et évitez les passages souterrains."
                     AppLanguage.PORTUGUESE -> "Acompanhe atentamente os boletins e a chuva. Saia de porões e mantenha-se longe de passagens subterrâneas."
+                    AppLanguage.RUSSIAN -> "Внимательно следите за сводками и дождём. Покиньте подвалы и избегайте подземных переходов."
                     AppLanguage.JAPANESE -> "今後の情報や周囲の状況、雨の降り方に注意して下さい。各自の判断で、住宅の地下室からは地上に移動し、道路のアンダーパスには近づかないようにして下さい。"
                 }
                 else -> when (language) {
@@ -104,6 +111,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Manténgase atento a las próximas previsiones meteorológicas y a las lluvias locales."
                     AppLanguage.FRENCH -> "Restez attentif aux prochaines prévisions météo et à l'évolution des pluies locales."
                     AppLanguage.PORTUGUESE -> "Fique atento às próximas previsões do tempo e às condições de chuva locais."
+                    AppLanguage.RUSSIAN -> "Следите за прогнозом погоды и обстановкой с осадками в вашем районе."
                     AppLanguage.JAPANESE -> "今後の情報や周囲の状況、雨の降り方に留意して下さい。"
                 }
             }
@@ -120,6 +128,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Deslizamiento mortal inminente o muy probablemente ya en curso. ¡Póngase a salvo de inmediato!"
                     AppLanguage.FRENCH -> "Glissement de terrain mortel imminent ou très probablement déjà en cours. Mettez-vous immédiatement en sécurité !"
                     AppLanguage.PORTUGUESE -> "Deslizamento com risco de vida iminente ou provavelmente já em curso. Garanta sua segurança imediatamente!"
+                    AppLanguage.RUSSIAN -> "Опасный для жизни оползень неизбежен или уже происходит. Немедленно позаботьтесь о безопасности!"
                     AppLanguage.JAPANESE -> "命に危険が及ぶ土砂災害が切迫しています。土砂災害がすでに発生している可能性が高い状況です。直ちに身の安全を確保して下さい。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -130,6 +139,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Un deslizamiento mortal podría ocurrir en cualquier momento. Evacúe de inmediato fuera de las zonas de riesgo."
                     AppLanguage.FRENCH -> "Un glissement de terrain mortel peut survenir à tout moment. Évacuez immédiatement hors des zones à risque."
                     AppLanguage.PORTUGUESE -> "Um deslizamento com risco de vida pode ocorrer a qualquer momento. Evacue imediatamente para fora das áreas de risco."
+                    AppLanguage.RUSSIAN -> "Опасный оползень может произойти в любой момент. Немедленно эвакуируйтесь из опасной зоны."
                     AppLanguage.JAPANESE -> "命に危険が及ぶ土砂災害がいつ発生してもおかしくない状況です。土砂災害警戒区域等の外へ避難して下さい。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -140,6 +150,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Se requiere vigilancia por deslizamientos. Las personas mayores deben evacuar las zonas de riesgo; los demás deben suspender actividades habituales y prepararse para evacuar."
                     AppLanguage.FRENCH -> "Vigilance requise face aux glissements de terrain. Les personnes âgées doivent évacuer les zones à risque ; les autres doivent suspendre leurs activités et se préparer à évacuer."
                     AppLanguage.PORTUGUESE -> "Atenção redobrada para deslizamentos. Idosos devem evacuar as áreas de risco; demais moradores devem suspender atividades rotineiras e preparar a evacuação."
+                    AppLanguage.RUSSIAN -> "Повышенная опасность оползней. Пожилым следует покинуть опасную зону; остальным — подготовиться к эвакуации."
                     AppLanguage.JAPANESE -> "土砂災害への警戒が必要な状況です。高齢者等は土砂災害警戒区域等の外へ避難して下さい。高齢者等以外の方も、普段の行動を見合わせ始めたり、避難の準備をしたり、自ら避難の判断をして下さい。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -150,6 +161,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Se recomienda precaución por deslizamientos. Consulte los mapas de riesgo y rutas de evacuación, y siga de cerca la evolución de la lluvia."
                     AppLanguage.FRENCH -> "Prudence recommandée face aux glissements de terrain. Vérifiez les cartes de risques et les itinéraires d'évacuation, et suivez l'évolution des pluies."
                     AppLanguage.PORTUGUESE -> "Recomenda-se cautela com deslizamentos. Consulte os mapas de risco e rotas de evacuação e acompanhe de perto a chuva."
+                    AppLanguage.RUSSIAN -> "Осторожность в связи с риском оползней. Проверьте карты опасностей, маршруты эвакуации и следите за дождём."
                     AppLanguage.JAPANESE -> "土砂災害への注意が必要な状況です。ハザードマップ等により土砂災害警戒区域等や避難先、避難経路を確認して下さい。今後の情報や周囲の状況、雨の降り方に留意して下さい。"
                 }
                 else -> when (language) {
@@ -160,6 +172,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Manténgase atento a las previsiones meteorológicas y a la lluvia en laderas empinadas."
                     AppLanguage.FRENCH -> "Restez attentif aux prévisions météo et aux pluies sur les pentes raides."
                     AppLanguage.PORTUGUESE -> "Fique atento às previsões do tempo e às chuvas em encostas íngremes."
+                    AppLanguage.RUSSIAN -> "Следите за прогнозом погоды и осадками вблизи крутых склонов."
                     AppLanguage.JAPANESE -> "今後の情報や周囲の状況、雨の降り方に留意して下さい。"
                 }
             }
@@ -176,6 +189,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "(Si evacuar al exterior es demasiado peligroso) ¡Peligro mortal! Póngase a salvo de inmediato en un lugar seguro bajo techo."
                     AppLanguage.FRENCH -> "(Si l'évacuation extérieure est trop dangereuse) Danger mortel ! Mettez-vous immédiatement en sécurité à l'intérieur."
                     AppLanguage.PORTUGUESE -> "(Se evacuar ao ar livre for muito perigoso) Risco de vida! Garanta sua segurança imediatamente em local abrigado."
+                    AppLanguage.RUSSIAN -> "(Если выход на улицу слишком опасен) Угроза жизни! Немедленно обеспечьте безопасность в укрытии."
                     AppLanguage.JAPANESE -> "(立退き避難がかえって危険な場合) 命の危険が迫っています。直ちに身の安全を確保して下さい。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -186,6 +200,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Compruebe su entorno y trasládese a un piso superior a salvo de inundaciones según su propio criterio."
                     AppLanguage.FRENCH -> "Vérifiez votre environnement et montez à un étage supérieur à l'abri des inondations selon votre jugement."
                     AppLanguage.PORTUGUESE -> "Verifique o entorno e desloque-se para um andar superior seguro contra alagamentos, conforme sua avaliação."
+                    AppLanguage.RUSSIAN -> "Оцените обстановку и поднимитесь на верхний этаж, защищённый от затопления."
                     AppLanguage.JAPANESE -> "周囲の状況を確認し、各自の判断で、屋内の浸水が及ばない階に移動して下さい。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -196,6 +211,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Tome medidas de seguridad tan pronto como esté preparado. Las personas mayores deben actuar con prontitud."
                     AppLanguage.FRENCH -> "Prenez des mesures de sécurité dès que vous êtes prêt. Les personnes âgées doivent agir rapidement."
                     AppLanguage.PORTUGUESE -> "Tome medidas de segurança assim que estiver preparado. Os idosos devem agir rapidamente."
+                    AppLanguage.RUSSIAN -> "Примите меры безопасности по мере готовности. Пожилым людям следует действовать оперативно."
                     AppLanguage.JAPANESE -> "安全確保行動をとる準備が整い次第、早めの行動をとって下さい。高齢者等は速やかに安全確保行動をとって下さい。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -206,6 +222,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Siga de cerca los avisos meteorológicos y la lluvia. Salga de los sótanos y evite pasos subterráneos."
                     AppLanguage.FRENCH -> "Suivez attentivement la météo et les précipitations. Quittez les sous-sols et évitez les passages souterrains."
                     AppLanguage.PORTUGUESE -> "Acompanhe atentamente os boletins e a chuva. Saia de porões e evite passagens subterrâneas."
+                    AppLanguage.RUSSIAN -> "Внимательно следите за сводками и дождём. Покиньте подвалы и избегайте подземных переходов."
                     AppLanguage.JAPANESE -> "今後の情報や周囲の状況、雨の降り方に注意して下さい。各自の判断で、住宅の地下室からは地上に移動し、道路のアンダーパスには近づかないようにして下さい。"
                 }
                 else -> when (language) {
@@ -216,6 +233,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Manténgase atento a las próximas lluvias y al drenaje en zonas bajas."
                     AppLanguage.FRENCH -> "Restez attentif aux prochaines pluies et à l'évacuation des eaux dans les zones basses."
                     AppLanguage.PORTUGUESE -> "Fique atento às próximas chuvas e à drenagem em áreas baixas."
+                    AppLanguage.RUSSIAN -> "Следите за предстоящими дождями и состоянием дренажа в низинах."
                     AppLanguage.JAPANESE -> "今後の情報や周囲の状況、雨の降り方に留意して下さい。"
                 }
             }
@@ -232,6 +250,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "¡Peligro mortal! Póngase a salvo de inmediato en un edificio sólido o en terreno elevado lejos de las aguas."
                     AppLanguage.FRENCH -> "Danger mortel ! Mettez-vous immédiatement à l'abri dans un bâtiment solide ou en hauteur, loin des eaux."
                     AppLanguage.PORTUGUESE -> "Risco de vida! Abrigue-se imediatamente em um prédio resistente ou em terreno elevado longe das águas."
+                    AppLanguage.RUSSIAN -> "Угроза жизни! Немедленно укройтесь в прочном здании или на возвышенности вдали от воды."
                     AppLanguage.JAPANESE -> "命の危険が迫っています。直ちに身の安全を確保して下さい。浸水が及ばない安全な場所や堅牢な建物の上階へ緊急避難して下さい。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -242,6 +261,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Peligro de desbordamiento grave del río (supera el período de retorno de 50 años). Evacúe de inmediato las zonas inundables hacia refugios seguros o terrenos altos."
                     AppLanguage.FRENCH -> "Danger de débordement majeur du cours d'eau (seuil cinquantennal dépassé). Évacuez immédiatement les zones inondables vers des abris sûrs ou en hauteur."
                     AppLanguage.PORTUGUESE -> "Perigo de transbordamento grave de rio (acima do período de retorno de 50 anos). Evacue imediatamente as áreas de risco para abrigos seguros ou locais elevados."
+                    AppLanguage.RUSSIAN -> "Опасность сильного разлива реки (выше 50-летнего уровня). Немедленно эвакуируйтесь в безопасные укрытия или на возвышенность."
                     AppLanguage.JAPANESE -> "河川氾濫の危険が極めて高まっています（50年確率値基準超過）。氾濫危険区域から直ちに安全な避難所や高台へ全員避難して下さい。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -252,6 +272,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Riesgo grave de inundación (alcanza el período de retorno de 30 años). Las personas mayores deben evacuar las zonas ribereñas peligrosas; los demás deben prepararse para evacuar."
                     AppLanguage.FRENCH -> "Risque sérieux de crue (seuil trentennal atteint). Les personnes âgées doivent évacuer rapidement les zones riveraines dangereuses ; les autres doivent se préparer à évacuer."
                     AppLanguage.PORTUGUESE -> "Risco sério de enchente (atinge o período de retorno de 30 anos). Idosos devem evacuar rapidamente áreas ribeirinhas perigosas; os demais devem preparar a evacuação."
+                    AppLanguage.RUSSIAN -> "Серьёзный риск наводнения (30-летний уровень). Пожилым следует срочно покинуть прибрежные зоны; остальным — готовиться к эвакуации."
                     AppLanguage.JAPANESE -> "河川の水位が上昇し氾濫のおそれがあります（30年確率値基準到達）。高齢者等は危険な場所から速やかに避難して下さい。一般住民も避難準備を整えて下さい。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -262,6 +283,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Se alcanzó el umbral de aviso fluvial. Vigile de cerca el nivel del agua y la lluvia. Nunca se acerque a ríos crecidos ni canales de drenaje."
                     AppLanguage.FRENCH -> "Seuil de vigilance crue atteint. Surveillez attentivement le niveau de l'eau et les pluies. Ne vous approchez jamais des cours d'eau en crue ou des canaux."
                     AppLanguage.PORTUGUESE -> "Limite de aviso fluvial atingido. Monitore de perto o nível da água e a chuva. Nunca se aproxime de rios cheios ou canais de drenagem."
+                    AppLanguage.RUSSIAN -> "Достигнут порог паводкового оповещения. Следите за уровнем воды и дождём. Не приближайтесь к полноводным рекам и каналам."
                     AppLanguage.JAPANESE -> "河川の水位や今後の雨の降り方に注意して下さい。増水した河川や用水路には絶対に近づかないようにして下さい。"
                 }
                 else -> when (language) {
@@ -272,6 +294,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Niveles fluviales normales. Manténgase atento a cambios repentinos del caudal por lluvias río arriba."
                     AppLanguage.FRENCH -> "Niveaux fluviaux normaux. Restez attentif aux montées soudaines liées aux pluies en amont."
                     AppLanguage.PORTUGUESE -> "Níveis fluviais normais. Fique atento a elevações repentinas causadas por chuvas a montante."
+                    AppLanguage.RUSSIAN -> "Уровень рек в норме. Следите за возможным резким подъёмом воды из-за дождей выше по течению."
                     AppLanguage.JAPANESE -> "最新の河川水位情報や気象情報に留意して下さい。"
                 }
             }
@@ -286,6 +309,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Se esperan vientos huracanados. Permanezca bajo techo, alejado de las ventanas y atento a objetos arrastrados por el viento."
                     AppLanguage.FRENCH -> "Vents de tempête violents attendus. Restez à l'intérieur, loin des fenêtres, et méfiez-vous des projectiles."
                     AppLanguage.PORTUGUESE -> "Ventos violentos de tempestade previstos. Permaneça em local fechado, longe de janelas, e atento a objetos arremessados."
+                    AppLanguage.RUSSIAN -> "Ожидается штормовой ветер. Оставайтесь в помещении подальше от окон и остерегайтесь летящих предметов."
                     AppLanguage.JAPANESE -> "猛烈な暴風が予想されます。頑丈な屋内にとどまり、窓から離れて身の安全を確保して下さい。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -296,6 +320,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Alerta por vendaval en vigor. Evite salidas innecesarias y asegure los objetos sueltos en el exterior."
                     AppLanguage.FRENCH -> "Alerte coup de vent en vigueur. Évitez les déplacements non essentiels et sécurisez les objets à l'extérieur."
                     AppLanguage.PORTUGUESE -> "Alerta de vendaval em vigor. Evite saídas desnecessárias e prenda objetos soltos em áreas externas."
+                    AppLanguage.RUSSIAN -> "Действует штормовое предупреждение. Избегайте лишних выходов и закрепите незакреплённые предметы на улице."
                     AppLanguage.JAPANESE -> "強風・暴風に警戒が必要です。不要不急の外出を控え、飛びやすい屋外の物品を固定して下さい。"
                 }
                 else -> when (language) {
@@ -306,6 +331,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Precaución por vientos fuertes. Esté atento a ráfagas repentinas y objetos que puedan caer."
                     AppLanguage.FRENCH -> "Prudence face aux vents forts. Attention aux rafales soudaines et aux chutes d'objets."
                     AppLanguage.PORTUGUESE -> "Atenção aos ventos fortes. Fique atento a rajadas repentinas e objetos que possam cair."
+                    AppLanguage.RUSSIAN -> "Ожидается сильный ветер. Остерегайтесь внезапных порывов и падающих предметов."
                     AppLanguage.JAPANESE -> "強風に注意し、突風や飛来物に留意して下さい。"
                 }
             }
@@ -329,6 +355,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Desastre grave por anegamiento o inundación inminente, o muy probablemente ya en curso."
                     AppLanguage.FRENCH -> "Inondation grave ou crue majeure imminente, ou très probablement déjà en cours."
                     AppLanguage.PORTUGUESE -> "Desastre grave por alagamento ou enchente iminente, ou com altíssima probabilidade de já estar ocorrendo."
+                    AppLanguage.RUSSIAN -> "Крупное подтопление или наводнение неизбежно либо с высокой вероятностью уже происходит."
                     AppLanguage.JAPANESE -> "重大な浸水害又は洪水害が切迫。又は、すでに発生している可能性が極めて高い状況。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -339,6 +366,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Un desastre grave podría ocurrir en cualquier momento por inundaciones repentinas o crecidas. Las viviendas en zonas bajas corren riesgo de inundación interior."
                     AppLanguage.FRENCH -> "Une catastrophe majeure peut survenir à tout moment par ruissellement ou montée des eaux. Les habitations en zone basse risquent d'être inondées."
                     AppLanguage.PORTUGUESE -> "Um desastre grave pode ocorrer a qualquer momento por enxurradas ou cheia de rios. Casas em áreas baixas correm risco de invasão pela água."
+                    AppLanguage.RUSSIAN -> "В любой момент возможно крупное наводнение из-за ливней или разлива рек. Домам в низинах грозит затопление."
                     AppLanguage.JAPANESE -> "短時間強雨での浸水または河川増水により重大な災害がいつ発生してもおかしくない。周囲より低い場所にある多くの家屋が、床上まで水に浸かるおそれがある。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -349,6 +377,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Las cunetas, alcantarillas o ríos pueden desbordarse por lluvias intensas breves, con riesgo de desastres graves."
                     AppLanguage.FRENCH -> "Les caniveaux, égouts ou cours d'eau peuvent déborder sous l'effet de fortes pluies brèves, pouvant provoquer des dégâts majeurs."
                     AppLanguage.PORTUGUESE -> "Bueiros, galerias ou rios podem transbordar devido a chuvas fortes e rápidas, podendo causar desastres graves."
+                    AppLanguage.RUSSIAN -> "Ливнёвки, каналы или реки могут выйти из берегов из-за сильных дождей, вызвав серьёзные последствия."
                     AppLanguage.JAPANESE -> "短時間強雨により、側溝や下水、または河川があふれ、重大な災害が発生するおそれがある。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -359,6 +388,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Las cunetas, alcantarillas o ríos pueden desbordarse por lluvias intensas breves y causar anegamientos locales en carreteras."
                     AppLanguage.FRENCH -> "Les caniveaux, égouts ou cours d'eau peuvent déborder sous de fortes pluies brèves, provoquant des inondations locales de chaussées."
                     AppLanguage.PORTUGUESE -> "Bueiros, galerias ou rios podem transbordar com chuvas fortes e rápidas, causando alagamentos pontuais nas vias."
+                    AppLanguage.RUSSIAN -> "Ливнёвки или реки могут переполниться при сильных дождях, вызывая локальные подтопления дорог."
                     AppLanguage.JAPANESE -> "短時間強雨により、側溝や下水、または河川があふれ、冠水するおそれがある。"
                 }
                 else -> when (language) {
@@ -369,6 +399,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Condiciones normales. Cuando llueve, el agua se acumula en las zonas bajas."
                     AppLanguage.FRENCH -> "Conditions normales. En cas de pluie, l'eau s'accumule dans les zones basses."
                     AppLanguage.PORTUGUESE -> "Condições normais. Durante a chuva, a água se acumula em áreas baixas."
+                    AppLanguage.RUSSIAN -> "Обычные условия. Во время дождя вода скапливается в низинах."
                     AppLanguage.JAPANESE -> "普段と同じ状況。雨のときは、雨水が周囲より低い場所に集まる。"
                 }
             }
@@ -385,6 +416,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Deslizamiento mortal inminente o muy probablemente ya en curso. Peligro crítico."
                     AppLanguage.FRENCH -> "Glissement de terrain mortel imminent ou très probablement déjà en cours. Danger critique."
                     AppLanguage.PORTUGUESE -> "Deslizamento com risco de vida iminente ou provavelmente já ocorrendo. Perigo crítico."
+                    AppLanguage.RUSSIAN -> "Опасный для жизни оползень неизбежен или уже происходит. Критическая опасность."
                     AppLanguage.JAPANESE -> "命に危険が及ぶ土砂災害が切迫。土砂災害がすでに発生している可能性が高い極めて危険な状況。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -395,6 +427,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Grietas en laderas o brotes de agua subterránea indican que un deslizamiento puede ocurrir en cualquier momento."
                     AppLanguage.FRENCH -> "Des fissures sur les pentes ou des résurgences d'eau indiquent qu'un glissement de terrain peut survenir à tout moment."
                     AppLanguage.PORTUGUESE -> "Rachaduras em encostas ou afloramento de água indicam que um deslizamento pode ocorrer a qualquer momento."
+                    AppLanguage.RUSSIAN -> "Трещины на склонах или выход грунтовых вод указывают, что оползень может произойти в любой момент."
                     AppLanguage.JAPANESE -> "斜面のひび割れや湧水など、命に危険が及ぶ土砂災害がいつ発生してもおかしくない極めて危険な状況。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -405,6 +438,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Las lluvias prolongadas o intensas han reblandecido el terreno. Se requiere vigilancia extrema por deslizamientos."
                     AppLanguage.FRENCH -> "Les pluies prolongées ou intenses ont fragilisé le sol. Une vigilance accrue face aux glissements de terrain est requise."
                     AppLanguage.PORTUGUESE -> "Chuvas prolongadas ou intensas encharcaram o solo. É necessária vigilância redobrada para deslizamentos."
+                    AppLanguage.RUSSIAN -> "Продолжительные или сильные дожди переувлажнили грунт. Необходима повышенная бдительность из-за оползней."
                     AppLanguage.JAPANESE -> "長雨や強雨により地盤が緩み、土砂災害への警戒が必要な状況。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -415,6 +449,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Se requiere precaución por deslizamientos debido a la lluvia. Se recomienda revisar el mapa de riesgos."
                     AppLanguage.FRENCH -> "Prudence requise face aux glissements de terrain en raison des pluies. Il est recommandé de consulter les cartes de risques."
                     AppLanguage.PORTUGUESE -> "Cautela necessária para deslizamentos devido à chuva. Recomenda-se consultar o mapa de riscos."
+                    AppLanguage.RUSSIAN -> "Требуется осторожность из-за риска оползней. Рекомендуется проверить карту опасностей."
                     AppLanguage.JAPANESE -> "降雨に伴い土砂災害への注意が必要な状況。ハザードマップ等の確認が必要。"
                 }
                 else -> when (language) {
@@ -425,6 +460,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Condiciones normales. Consulte los mapas de riesgo de laderas empinadas."
                     AppLanguage.FRENCH -> "Conditions normales. Consultez les cartes de risques pour les pentes raides."
                     AppLanguage.PORTUGUESE -> "Condições normais. Verifique os mapas de risco de encostas íngremes."
+                    AppLanguage.RUSSIAN -> "Обычные условия. Ознакомьтесь с картами опасностей крутых склонов."
                     AppLanguage.JAPANESE -> "普段と同じ状況。急傾斜地等のハザードマップを確認。"
                 }
             }
@@ -441,6 +477,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Anegamiento grave inminente. Es sumamente probable que ya esté ocurriendo."
                     AppLanguage.FRENCH -> "Inondation majeure imminente. Il est extrêmement probable qu'elle soit déjà en cours."
                     AppLanguage.PORTUGUESE -> "Alagamento grave iminente. Altíssima probabilidade de já estar ocorrendo."
+                    AppLanguage.RUSSIAN -> "Крупное подтопление неизбежно или, вероятнее всего, уже происходит."
                     AppLanguage.JAPANESE -> "重大な浸水害が切迫。浸水害がすでに発生している可能性が極めて高い状況。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -451,6 +488,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Calles completamente anegadas con cunetas y alcantarillas ocultas. Transporte público afectado. Riesgo de inundación interior en viviendas bajas."
                     AppLanguage.FRENCH -> "Routes entièrement submergées masquant caniveaux et bouches d'égout. Transports perturbés. Risque d'inondation des logements en zone basse."
                     AppLanguage.PORTUGUESE -> "Vias totalmente alagadas encobrindo bueiros e tampas. Transporte público afetado. Casas em áreas baixas correm risco de alagamento interno."
+                    AppLanguage.RUSSIAN -> "Дороги полностью затоплены, люки скрыты под водой. Возможны сбои транспорта и подтопление домов в низинах."
                     AppLanguage.JAPANESE -> "道路が一面冠水し、側溝やマンホールの場所が分からなくなるおそれがある。道路冠水等のために鉄道やバスなどの交通機関の運行に影響が出るおそれがある。周囲より低い場所にある多くの家屋が、床上まで水に浸かるおそれがある。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -461,6 +499,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Cunetas y desagües desbordados; anegamiento de calles inminente. Viviendas bajas en riesgo de entrada de agua."
                     AppLanguage.FRENCH -> "Caniveaux et égouts en débordement ; inondation des rues imminente. Risque d'infiltration d'eau dans les habitations basses."
                     AppLanguage.PORTUGUESE -> "Bueiros e galerias transbordando; alagamento de ruas iminente. Casas em áreas baixas com risco de invasão pela água."
+                    AppLanguage.RUSSIAN -> "Ливнёвки переполнены, возможно подтопление улиц и жилых помещений в низинах."
                     AppLanguage.JAPANESE -> "側溝や下水が溢れ、道路がいつ冠水してもおかしくない。周囲より低い場所にある家屋が、床上まで水に浸かるおそれがある。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -471,6 +510,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Riesgo de desborde de desagües y charcos profundos en zonas bajas. El agua puede entrar en sótanos y pasos subterráneos."
                     AppLanguage.FRENCH -> "Risque de débordement de caniveaux et d'accumulation d'eau en zone basse. L'eau peut pénétrer dans les sous-sols et passages souterrains."
                     AppLanguage.PORTUGUESE -> "Áreas baixas com risco de transbordamento de bueiros e acúmulo nas vias. A água pode invadir porões e passagens subterrâneas."
+                    AppLanguage.RUSSIAN -> "В низинах возможен перелив ливнёвок и скопление воды на дорогах, в подвалах и подземных переходах."
                     AppLanguage.JAPANESE -> "周囲より低い場所で側溝や下水が溢れ、道路が冠水するおそれがある。住宅の地下室や道路のアンダーパスに水が流れ込むおそれがある。周囲より低い場所にある家屋が、床下まで水に浸かるおそれがある。"
                 }
                 else -> when (language) {
@@ -481,6 +521,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Condiciones normales. El agua de lluvia se acumula en las zonas bajas."
                     AppLanguage.FRENCH -> "Conditions normales. Les eaux de pluie s'accumulent dans les points bas."
                     AppLanguage.PORTUGUESE -> "Condições normais. A água da chuva se acumula em áreas mais baixas."
+                    AppLanguage.RUSSIAN -> "Обычные условия. Дождевая вода скапливается в пониженных местах."
                     AppLanguage.JAPANESE -> "普段と同じ状況。雨のときは、雨水が周囲より低い場所に集まる。"
                 }
             }
@@ -497,6 +538,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Inundación grave (rotura de dique o desbordamiento) inminente o ya en curso. Peligro extremadamente crítico."
                     AppLanguage.FRENCH -> "Crue majeure (rupture de digue ou débordement) imminente ou déjà en cours. Danger extrêmement critique."
                     AppLanguage.PORTUGUESE -> "Enchente grave (rompimento de dique ou transbordamento) iminente ou já em curso. Perigo extremamente crítico."
+                    AppLanguage.RUSSIAN -> "Крупное наводнение (прорыв дамбы или разлив) неизбежно или уже идёт. Крайне критическая опасность."
                     AppLanguage.JAPANESE -> "重大な洪水災害（外水氾濫）が切迫、またはすでに堤防決壊・越水が発生している極めて危険な状況。"
                 }
                 AlertLevel.LEVEL_4 -> when (language) {
@@ -507,6 +549,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Riesgo sumamente alto de inundación grave por desbordamiento del río (supera el período de retorno de 50 años). Nivel de peligro de crecida alcanzado."
                     AppLanguage.FRENCH -> "Risque extrêmement élevé de crue majeure par débordement (seuil cinquantennal dépassé). Niveau de danger d'inondation atteint."
                     AppLanguage.PORTUGUESE -> "Risco extremamente alto de enchente grave por transbordamento de rio (acima do período de retorno de 50 anos). Nível de perigo atingido."
+                    AppLanguage.RUSSIAN -> "Чрезвычайно высокий риск крупного наводнения из-за разлива реки (выше 50-летнего уровня). Достигнут опасный уровень."
                     AppLanguage.JAPANESE -> "河川流域で発生した外水氾濫に起因する重大な浸水害が極めて発生しやすい状況（50年確率値基準超過）。氾濫危険水位に達しているおそれ。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -517,6 +560,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Riesgo de inundación grave por crecida fluvial o drenaje local (período de retorno de 30 años). El nivel del agua supera el umbral de evacuación."
                     AppLanguage.FRENCH -> "Risque de crue grave ou de saturation du drainage (seuil trentennal atteint). Le niveau d'eau dépasse le seuil d'évacuation."
                     AppLanguage.PORTUGUESE -> "Risco de enchente grave por cheia fluvial ou drenagem local (período de retorno de 30 anos). Nível da água acima do patamar de evacuação."
+                    AppLanguage.RUSSIAN -> "Риск серьёзного наводнения (30-летний уровень). Уровень воды превысил порог эвакуации."
                     AppLanguage.JAPANESE -> "河川流域で外水氾濫・内水氾濫に起因する重大な浸水害が発生するおそれ（30年確率値基準到達）。避難判断水位を超過。"
                 }
                 AlertLevel.LEVEL_2 -> when (language) {
@@ -527,6 +571,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Umbral de aviso fluvial alcanzado (70-80 % del umbral de alerta). Precaución ante el aumento del caudal."
                     AppLanguage.FRENCH -> "Seuil de vigilance crue atteint (70 à 80 % du seuil d'alerte). Prudence face à la montée des eaux."
                     AppLanguage.PORTUGUESE -> "Limite de aviso fluvial atingido (70 a 80% do limite de alerta). Atenção à elevação do nível do rio."
+                    AppLanguage.RUSSIAN -> "Достигнут порог речного оповещения (70–80% от уровня тревоги). Следите за подъёмом воды."
                     AppLanguage.JAPANESE -> "河川流域で外水氾濫・内水氾濫に起因する浸水害を見逃さないための注意報基準（警報基準の7〜8割）に到達。河川増水のおそれ。"
                 }
                 else -> when (language) {
@@ -537,6 +582,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Niveles fluviales normales. Esté atento a las lluvias río arriba."
                     AppLanguage.FRENCH -> "Niveaux fluviaux normaux. Restez attentif aux pluies en amont."
                     AppLanguage.PORTUGUESE -> "Níveis fluviais normais. Fique atento às chuvas a montante."
+                    AppLanguage.RUSSIAN -> "Уровень рек в норме. Следите за осадками выше по течению."
                     AppLanguage.JAPANESE -> "普段通りの河川水位。上流からの増水等に留意。"
                 }
             }
@@ -550,6 +596,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Daños graves por vientos violentos. Riesgo de desprendimiento de tejas, caída de árboles y corte de cables eléctricos."
                     AppLanguage.FRENCH -> "Dégâts importants liés aux vents violents. Risque de chutes de tuiles, d'arbres et de lignes électriques."
                     AppLanguage.PORTUGUESE -> "Danos graves por ventos violentos. Risco de destelhamento, queda de árvores e rompimento de fios elétricos."
+                    AppLanguage.RUSSIAN -> "Серьёзный ущерб от ураганного ветра. Возможны срыв крыш, падение деревьев и обрыв ЛЭП."
                     AppLanguage.JAPANESE -> "猛烈な暴風により、屋根瓦の飛散や樹木の倒壊、電線切断などの重大被害のおそれ。"
                 }
                 AlertLevel.LEVEL_3 -> when (language) {
@@ -560,6 +607,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Fuertes vendavales que dificultan caminar; rotura de ramas y riesgo de caída de carteles."
                     AppLanguage.FRENCH -> "Vents violents rendant la marche difficile ; branches cassées et risque de chute de panneaux."
                     AppLanguage.PORTUGUESE -> "Ventos fortes que dificultam caminhar; galhos quebrando e risco de queda de placas."
+                    AppLanguage.RUSSIAN -> "Сильный ветер затрудняет ходьбу; ломаются ветки, возможны падения вывесок."
                     AppLanguage.JAPANESE -> "風に向かって歩けなくなるほどの強風。看板やトタンの飛散に注意。"
                 }
                 AlertLevel.LEVEL_2, AlertLevel.LEVEL_1 -> when (language) {
@@ -570,6 +618,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Vientos moderados a fuertes. Los paraguas pueden darse la vuelta."
                     AppLanguage.FRENCH -> "Vents modérés à soutenus. Les parapluies peuvent se retourner."
                     AppLanguage.PORTUGUESE -> "Ventos moderados a fortes. Guarda-chuvas podem virar ao avesso."
+                    AppLanguage.RUSSIAN -> "Умеренный или сильный ветер. Зонты может выворачивать наизнанку."
                     AppLanguage.JAPANESE -> "風が強まり、傘がさしにくくなるおそれがあります。"
                 }
                 else -> when (language) {
@@ -580,6 +629,7 @@ object KikikuruGuidelineContent {
                     AppLanguage.SPANISH -> "Condiciones de viento normales. Siga las actualizaciones meteorológicas."
                     AppLanguage.FRENCH -> "Conditions de vent normales. Suivez les bulletins météorologiques."
                     AppLanguage.PORTUGUESE -> "Condições de vento normais. Acompanhe as atualizações meteorológicas."
+                    AppLanguage.RUSSIAN -> "Обычные ветровые условия. Следите за обновлениями прогноза."
                     AppLanguage.JAPANESE -> "普段通りの風況。最新の気象情報に留意してください。"
                 }
             }
@@ -599,6 +649,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Ver radar de lluvia intensa"
                 AppLanguage.FRENCH -> "Voir le radar de fortes pluies"
                 AppLanguage.PORTUGUESE -> "Ver radar de chuva intensa"
+                AppLanguage.RUSSIAN -> "Открыть радар сильного дождя"
                 AppLanguage.JAPANESE -> "雨雲・大雨キキクルを確認"
             }
             DisasterType.LANDSLIDE -> when (language) {
@@ -609,6 +660,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Ver mapa de deslizamientos"
                 AppLanguage.FRENCH -> "Voir la carte des glissements"
                 AppLanguage.PORTUGUESE -> "Ver mapa de deslizamentos"
+                AppLanguage.RUSSIAN -> "Открыть карту оползней"
                 AppLanguage.JAPANESE -> "土砂キキクルマップを確認"
             }
             DisasterType.INUNDATION -> when (language) {
@@ -619,6 +671,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Ver mapa de anegamiento"
                 AppLanguage.FRENCH -> "Voir la carte d'inondation"
                 AppLanguage.PORTUGUESE -> "Ver mapa de alagamentos"
+                AppLanguage.RUSSIAN -> "Открыть карту подтоплений"
                 AppLanguage.JAPANESE -> "浸水キキクルマップを確認"
             }
             DisasterType.FLOOD -> when (language) {
@@ -629,6 +682,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Ver mapa de inundaciones"
                 AppLanguage.FRENCH -> "Voir la carte des crues"
                 AppLanguage.PORTUGUESE -> "Ver mapa de inundações"
+                AppLanguage.RUSSIAN -> "Открыть карту наводнений"
                 AppLanguage.JAPANESE -> "洪水キキクルマップを確認"
             }
             DisasterType.STORM_WIND -> when (language) {
@@ -639,6 +693,7 @@ object KikikuruGuidelineContent {
                 AppLanguage.SPANISH -> "Ver radar de viento"
                 AppLanguage.FRENCH -> "Voir le radar de vent"
                 AppLanguage.PORTUGUESE -> "Ver radar de vento"
+                AppLanguage.RUSSIAN -> "Открыть радар ветра"
                 AppLanguage.JAPANESE -> "強風・レーダーマップを確認"
             }
         }

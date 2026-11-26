@@ -79,6 +79,7 @@ fun DetailDataSourceCard(
             city.country.equals("Japón", ignoreCase = true) ||
             city.country.equals("Japon", ignoreCase = true) ||
             city.country.equals("Japão", ignoreCase = true) ||
+            city.country.equals("Япония", ignoreCase = true) ||
             weather?.jmaOverviewText != null ||
             (city.latitude in 20.0..46.0 && city.longitude in 122.0..154.0)
     val isUs = !isJapan && NwsAlertRepository.isUnitedStates(city)
@@ -98,6 +99,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Estaciones AMeDAS de JMA y modelos de pronóstico"
                     AppLanguage.FRENCH -> "Stations AMeDAS de JMA et modèles de prévision"
                     AppLanguage.PORTUGUESE -> "Estações AMeDAS da JMA e modelos de previsão"
+                    AppLanguage.RUSSIAN -> "Станции JMA AMeDAS и модели прогноза"
                     AppLanguage.ENGLISH -> "JMA AMeDAS Stations & Forecast Models"
                 }
                 isUs -> when (language) {
@@ -108,6 +110,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "NOAA / Servicio Meteorológico Nacional (NWS)"
                     AppLanguage.FRENCH -> "NOAA / National Weather Service (NWS)"
                     AppLanguage.PORTUGUESE -> "NOAA / Serviço Nacional de Meteorologia (NWS)"
+                    AppLanguage.RUSSIAN -> "NOAA / Национальная метеослужба США (NWS)"
                     AppLanguage.ENGLISH -> "NOAA / National Weather Service (NWS)"
                 }
                 else -> when (language) {
@@ -118,6 +121,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Modelos de alta resolución Open-Meteo (ECMWF/GFS)"
                     AppLanguage.FRENCH -> "Modèles haute résolution Open-Meteo (ECMWF/GFS)"
                     AppLanguage.PORTUGUESE -> "Modelos de alta resolução Open-Meteo (ECMWF/GFS)"
+                    AppLanguage.RUSSIAN -> "Высокоточные модели Open-Meteo (ECMWF/GFS)"
                     AppLanguage.ENGLISH -> "Open-Meteo High-Resolution Models (ECMWF/GFS)"
                 }
             }
@@ -129,6 +133,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Mediciones de viento en superficie y rachas"
                 AppLanguage.FRENCH -> "Mesures du vent en surface et rafales"
                 AppLanguage.PORTUGUESE -> "Medições de vento na superfície e rajadas"
+                AppLanguage.RUSSIAN -> "Измерения приземного ветра и порывов"
                 AppLanguage.ENGLISH -> "Surface Wind Vector & Gust Measurements"
             }
             sourceDetail = when {
@@ -140,6 +145,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Velocidad, rachas y dirección del viento en tiempo real obtenidos directamente de ~1.300 estaciones automáticas AMeDAS en todo Japón."
                     AppLanguage.FRENCH -> "Vitesse, rafales et direction du vent en temps réel issues directement d'environ 1 300 stations automatiques AMeDAS au Japon."
                     AppLanguage.PORTUGUESE -> "Velocidade, rajadas e direção do vento em tempo real obtidas diretamente de ~1.300 estações automáticas AMeDAS em todo o Japão."
+                    AppLanguage.RUSSIAN -> "Скорость, порывы и направление приземного ветра в реальном времени с ~1 300 автоматических станций AMeDAS по всей Японии."
                     AppLanguage.ENGLISH -> "Real-time surface wind speed, gusts, and direction directly retrieved from ~1,300 AMeDAS automated stations nationwide."
                 }
                 else -> when (language) {
@@ -150,6 +156,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Integra informes oficiales de estaciones METAR con modelos numéricos globales de alta resolución ECMWF y GFS."
                     AppLanguage.FRENCH -> "Combine les relevés officiels des stations METAR avec les modèles numériques haute résolution ECMWF et GFS."
                     AppLanguage.PORTUGUESE -> "Integra relatórios oficiais de estações METAR com os modelos numéricos globais de alta resolução ECMWF e GFS."
+                    AppLanguage.RUSSIAN -> "Объединяет официальные сводки станций METAR с глобальными численными моделями высокого разрешения ECMWF и GFS."
                     AppLanguage.ENGLISH -> "Synthesizing official METAR station reports with global high-resolution ECMWF and GFS numerical models."
                 }
             }
@@ -164,6 +171,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Open-Meteo y Copernicus Atmosphere (CAMS)"
                 AppLanguage.FRENCH -> "Open-Meteo et Copernicus Atmosphere (CAMS)"
                 AppLanguage.PORTUGUESE -> "Open-Meteo e Copernicus Atmosphere (CAMS)"
+                AppLanguage.RUSSIAN -> "Open-Meteo и Copernicus Atmosphere (CAMS)"
                 AppLanguage.ENGLISH -> "Open-Meteo & Copernicus Atmosphere (CAMS)"
             }
             sourceSubtitle = when (language) {
@@ -174,6 +182,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Modelo de radiación UV solar estándar OMM (WMO)"
                 AppLanguage.FRENCH -> "Modèle de rayonnement UV solaire standard OMM (WMO)"
                 AppLanguage.PORTUGUESE -> "Modelo de radiação UV solar padrão OMM (WMO)"
+                AppLanguage.RUSSIAN -> "Модель солнечной УФ-радиации по стандарту ВМО (WMO)"
                 AppLanguage.ENGLISH -> "WMO-Standard Solar UV Radiation Model"
             }
             sourceDetail = when (language) {
@@ -184,6 +193,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Calcula el índice UV en superficie según las directrices de la OMS/OMM, considerando el ángulo solar cenital, el ozono total y la atenuación nubosa."
                 AppLanguage.FRENCH -> "Calcule l'indice UV au sol selon les directives OMS/OMM en tenant compte de l'angle solaire zénithal, de l'ozone total et de la nébulosité."
                 AppLanguage.PORTUGUESE -> "Calcula o índice UV na superfície conforme as diretrizes da OMS/OMM, considerando o ângulo zenital solar, o ozônio total e a atenuação por nuvens."
+                AppLanguage.RUSSIAN -> "Рассчитывает приземный УФ-индекс по рекомендациям ВОЗ/ВМО с учётом зенитного угла Солнца, общего содержания озона и ослабления облачностью."
                 AppLanguage.ENGLISH -> "Calculates surface erythemal UV index according to WHO/WMO guidelines, factoring solar zenith angle, total column ozone, and cloud attenuation."
             }
         }
@@ -197,6 +207,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Copernicus (CAMS) y Open-Meteo Air Quality"
                 AppLanguage.FRENCH -> "Copernicus (CAMS) et Open-Meteo Air Quality"
                 AppLanguage.PORTUGUESE -> "Copernicus (CAMS) e Open-Meteo Air Quality"
+                AppLanguage.RUSSIAN -> "Copernicus (CAMS) и Open-Meteo Air Quality"
                 AppLanguage.ENGLISH -> "Copernicus (CAMS) & Open-Meteo Air Quality"
             }
             sourceSubtitle = when (language) {
@@ -207,6 +218,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Análisis global de transporte químico atmosférico"
                 AppLanguage.FRENCH -> "Analyse globale de transport chimique atmosphérique"
                 AppLanguage.PORTUGUESE -> "Análise global de transporte químico atmosférico"
+                AppLanguage.RUSSIAN -> "Глобальный анализ химического переноса в атмосфере"
                 AppLanguage.ENGLISH -> "Global Atmospheric Chemistry Transport Analysis"
             }
             sourceDetail = when (language) {
@@ -217,6 +229,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Integra modelos de transporte químico multicapa con observaciones en superficie para PM2.5, PM10, NO2 y ozono troposférico."
                 AppLanguage.FRENCH -> "Intègre la modélisation chimique multicouche et les observations au sol pour les PM2.5, PM10, NO2 et l'ozone de surface."
                 AppLanguage.PORTUGUESE -> "Integra modelagem química atmosférica multicamadas com observações de superfície para PM2.5, PM10, NO2 e ozônio."
+                AppLanguage.RUSSIAN -> "Объединяет многослойное химико-транспортное моделирование с наземными наблюдениями для PM2.5, PM10, NO2 и приземного озона."
                 AppLanguage.ENGLISH -> "Integrates multi-layer chemistry transport modeling with ground observations for PM2.5, PM10, NO2, and surface ozone."
             }
         }
@@ -231,6 +244,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Mediciones AMeDAS de JMA y análisis termodinámico"
                     AppLanguage.FRENCH -> "Mesures AMeDAS de JMA et analyse thermodynamique"
                     AppLanguage.PORTUGUESE -> "Medições AMeDAS da JMA e análise termodinâmica"
+                    AppLanguage.RUSSIAN -> "Измерения JMA AMeDAS и термодинамический анализ"
                     AppLanguage.ENGLISH -> "JMA AMeDAS Measurements & Thermodynamic Analysis"
                 }
                 isUs -> when (language) {
@@ -241,6 +255,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Estaciones de humedad en superficie NOAA / NWS"
                     AppLanguage.FRENCH -> "Stations d'humidité en surface NOAA / NWS"
                     AppLanguage.PORTUGUESE -> "Estações de umidade de superfície NOAA / NWS"
+                    AppLanguage.RUSSIAN -> "Наземные станции влажности NOAA / NWS"
                     AppLanguage.ENGLISH -> "NOAA / NWS Surface Humidity Stations"
                 }
                 else -> when (language) {
@@ -251,6 +266,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Análisis de superficie Open-Meteo y ECMWF"
                     AppLanguage.FRENCH -> "Analyse de surface Open-Meteo et ECMWF"
                     AppLanguage.PORTUGUESE -> "Análise de superfície Open-Meteo e ECMWF"
+                    AppLanguage.RUSSIAN -> "Приземный анализ Open-Meteo и ECMWF"
                     AppLanguage.ENGLISH -> "Open-Meteo & ECMWF Surface Analysis"
                 }
             }
@@ -262,16 +278,18 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Humedad relativa, punto de rocío e índice de sequedad (humedad absoluta)"
                 AppLanguage.FRENCH -> "Humidité relative, point de rosée et indice de sécheresse (humidité absolue)"
                 AppLanguage.PORTUGUESE -> "Umidade relativa, ponto de orvalho e índice de secura (umidade absoluta)"
+                AppLanguage.RUSSIAN -> "Относительная влажность, точка росы и индекс сухости (абсолютная влажность)"
                 AppLanguage.ENGLISH -> "Relative Humidity, Dew Point & Dryness Score (Volumetric Humidity)"
             }
             sourceDetail = when (language) {
                 AppLanguage.JAPANESE -> "地上観測の相対湿度・気温・風速をもとに、マグナス・テテンス式で露点温度と容積絶対湿度（g/m³）を導出しています。乾燥スコア（0〜100）は容積絶対湿度による基礎点（最大80点）に風速補正と相対湿度補正を加減算して算出しています。"
                 AppLanguage.KOREAN -> "지상 관측 상대 습도·기온·풍속을 바탕으로 마그누스-테텐스 공식으로 이슬점 온도와 용적 절대습도(g/m³)를 산출합니다. 건조 지수(0~100)는 용적 절대습도 기반 기초 점수(최대 80점)에 풍속 및 상대 습도 보정을 반영해 계산합니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "结合地面观测的相对湿度、气温与风速，基于马格努斯-泰滕斯公式推导露点温度与容积绝对湿度（g/m³）。干燥指数（0–100）以容积绝对湿度基础分（最高80分）叠加风速与相对湿度修正计算得出。"
-                AppLanguage.TRADITIONAL_CHINESE -> "結合地面觀測的相對濕度、氣溫與風速，基於馬格努斯-泰騰斯公式推導露點溫度與容積絕對濕度（g/m³）。乾燥指數（0–100）以容積絕對濕度基礎分（最高80分）疊加風速與相對濕度修正計算得出。"
+                AppLanguage.TRADITIONAL_CHINESE -> "結合地面觀測的相對濕度、氣溫與風速，基於馬格努斯-泰騰斯公式推導露點溫度與容積絕對濕度（g/m³）。乾燥指數（0–100）以容积絕對濕度基礎分（最高80分）疊加風速與相對濕度修正計算得出。"
                 AppLanguage.SPANISH -> "Combina humedad relativa, temperatura y viento en superficie mediante la fórmula de Magnus-Tetens para calcular el punto de rocío y la humedad absoluta volumétrica (g/m³). El índice de sequedad (0–100) suma una base volumétrica (hasta 80) con ajustes de viento y humedad relativa."
                 AppLanguage.FRENCH -> "Associe l'humidité relative, la température et le vent au sol via la formule de Magnus-Tetens pour calculer le point de rosée et l'humidité absolue volumétrique (g/m³). L'indice de sécheresse (0–100) combine une base volumétrique (max 80) avec des corrections de vent et d'humidité relative."
                 AppLanguage.PORTUGUESE -> "Combina umidade relativa, temperatura e vento na superfície pela fórmula de Magnus-Tetens para calcular o ponto de orvalho e a umidade absoluta volumétrica (g/m³). O índice de secura (0–100) soma uma base volumétrica (até 80) a ajustes de vento e umidade relativa."
+                AppLanguage.RUSSIAN -> "Сочетает приземную относительную влажность, температуру и скорость ветра по формуле Магнуса–Тетенса для расчёта точки росы и абсолютной влажности (г/м³). Индекс сухости (0–100) объединяет базу абсолютной влажности (до 80) с поправками на ветер и влажность."
                 AppLanguage.ENGLISH -> "Combines surface relative humidity, temperature, and wind speed using the Magnus-Tetens formulation to derive dew point and volumetric absolute humidity (g/m³). The Dryness Score (0–100) blends a volumetric humidity base (up to 80 pts) with wind and relative humidity corrections."
             }
         }
@@ -285,6 +303,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Cálculos de posición solar NOAA"
                 AppLanguage.FRENCH -> "Calculs de position solaire NOAA"
                 AppLanguage.PORTUGUESE -> "Cálculos de posição solar NOAA"
+                AppLanguage.RUSSIAN -> "Расчёты положения Солнца NOAA"
                 AppLanguage.ENGLISH -> "NOAA Solar Position Calculations"
             }
             sourceSubtitle = when (language) {
@@ -295,6 +314,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Coordenadas solares locales y refracción atmosférica (~34')"
                 AppLanguage.FRENCH -> "Coordonnées solaires locales et réfraction atmosphérique (~34')"
                 AppLanguage.PORTUGUESE -> "Coordenadas solares locais e refração atmosférica (~34')"
+                AppLanguage.RUSSIAN -> "Местная солнечная геометрия и атмосферная рефракция (~34')"
                 AppLanguage.ENGLISH -> "Local Solar Geometry & Atmospheric Refraction (~34')"
             }
             sourceDetail = when (language) {
@@ -305,6 +325,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Calculado a partir de las coordenadas y zona horaria locales mediante las ecuaciones de posición solar de la NOAA con corrección de refracción atmosférica (~34 min de arco)."
                 AppLanguage.FRENCH -> "Calculé à partir des coordonnées et du fuseau horaire locaux via les équations de position solaire de la NOAA intégrant la réfraction atmosphérique (~34 minutes d'arc)."
                 AppLanguage.PORTUGUESE -> "Calculado a partir das coordenadas e fuso horário locais pelas equações de posição solar da NOAA considerando a refração atmosférica (~34 min de arco)."
+                AppLanguage.RUSSIAN -> "Вычисляется по местным координатам и часовому поясу с помощью уравнений положения Солнца NOAA с учётом атмосферной рефракции (~34 угл. мин) для точного расчёта восхода, заката и длины дня."
                 AppLanguage.ENGLISH -> "Computed from local coordinates and time zone using NOAA solar position equations with atmospheric refraction (~34 arcmin) to determine sunrise, sunset, and daylight duration."
             }
         }
@@ -318,6 +339,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Cálculo astronómico lunar local (Meeus / USNO)"
                 AppLanguage.FRENCH -> "Calcul astronomique lunaire local (Meeus / USNO)"
                 AppLanguage.PORTUGUESE -> "Cálculo astronômico lunar local (Meeus / USNO)"
+                AppLanguage.RUSSIAN -> "Лунные эфемериды на устройстве (Meeus / USNO)"
                 AppLanguage.ENGLISH -> "On-Device Lunar Ephemeris (Meeus / USNO)"
             }
             sourceSubtitle = when (language) {
@@ -328,6 +350,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Longitud eclíptica, paralaje horizontal y refracción (34')"
                 AppLanguage.FRENCH -> "Longitude écliptique, parallaxe horizontale et réfraction (34')"
                 AppLanguage.PORTUGUESE -> "Longitude eclíptica, paralaxe horizontal e refração (34')"
+                AppLanguage.RUSSIAN -> "Эклиптические возмущения, параллакс и рефракция (34')"
                 AppLanguage.ENGLISH -> "Lunar Ecliptic Perturbations, Parallax & Refraction (34')"
             }
             sourceDetail = when (language) {
@@ -338,6 +361,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Calcula localmente la salida y puesta de la luna, su altitud aparente, edad lunar e iluminación a partir de las coordenadas del lugar, aplicando paralaje horizontal y refracción atmosférica."
                 AppLanguage.FRENCH -> "Calcule localement le lever et le coucher de la lune, sa hauteur apparente, son âge et son illumination à partir des coordonnées du lieu avec parallaxe horizontale et réfraction atmosphérique."
                 AppLanguage.PORTUGUESE -> "Calcula localmente o nascer e o pôr da lua, a altitude aparente, a idade lunar e a iluminação a partir das coordenadas do local com paralaxe horizontal e refração atmosférica."
+                AppLanguage.RUSSIAN -> "Рассчитывает локально на устройстве время восхода и захода Луны, видимую высоту, возраст и освещённость по координатам с учётом возмущений, горизонтального параллакса и рефракции."
                 AppLanguage.ENGLISH -> "Computes local moonrise, moonset, apparent altitude, lunar age, and illumination directly on-device from location coordinates using lunar perturbations, horizontal parallax, and atmospheric refraction."
             }
         }
@@ -352,6 +376,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Observaciones barométricas AMeDAS de JMA"
                     AppLanguage.FRENCH -> "Observations barométriques AMeDAS de JMA"
                     AppLanguage.PORTUGUESE -> "Observações barométricas AMeDAS da JMA"
+                    AppLanguage.RUSSIAN -> "Барометрические наблюдения JMA AMeDAS"
                     AppLanguage.ENGLISH -> "JMA AMeDAS Barometric Observations"
                 }
                 isUs -> when (language) {
@@ -362,6 +387,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Estaciones barométricas NOAA / NWS"
                     AppLanguage.FRENCH -> "Stations barométriques NOAA / NWS"
                     AppLanguage.PORTUGUESE -> "Estações barométricas NOAA / NWS"
+                    AppLanguage.RUSSIAN -> "Барометрические станции NOAA / NWS"
                     AppLanguage.ENGLISH -> "NOAA / NWS Barometric Stations"
                 }
                 else -> when (language) {
@@ -372,6 +398,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Modelos de presión atmosférica Open-Meteo y ECMWF"
                     AppLanguage.FRENCH -> "Modèles de pression en surface Open-Meteo et ECMWF"
                     AppLanguage.PORTUGUESE -> "Modelos de pressão atmosférica Open-Meteo e ECMWF"
+                    AppLanguage.RUSSIAN -> "Модели приземного давления Open-Meteo и ECMWF"
                     AppLanguage.ENGLISH -> "Open-Meteo & ECMWF Surface Pressure Models"
                 }
             }
@@ -383,6 +410,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Presión media a nivel del mar estándar ISA (MSLP)"
                 AppLanguage.FRENCH -> "Pression moyenne au niveau de la mer standard ISA"
                 AppLanguage.PORTUGUESE -> "Pressão média ao nível do mar padrão ISA (MSLP)"
+                AppLanguage.RUSSIAN -> "Давление на уровне моря по стандарту ISA (MSLP)"
                 AppLanguage.ENGLISH -> "ISA-Standard Mean Sea Level Pressure (MSLP)"
             }
             sourceDetail = when (language) {
@@ -393,6 +421,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Mediciones de sensores ajustadas por la elevación de la estación según la Atmósfera Estándar Internacional (ISA) para obtener la presión a nivel del mar."
                 AppLanguage.FRENCH -> "Mesures barométriques corrigées selon l'altitude de la station d'après l'atmosphère normalisée internationale (ISA) pour obtenir la pression au niveau de la mer."
                 AppLanguage.PORTUGUESE -> "Medições de sensores ajustadas pela altitude da estação conforme a Atmosfera Padrão Internacional (ISA) para obter a pressão ao nível do mar."
+                AppLanguage.RUSSIAN -> "Показания барометров, скорректированные с учётом высоты станции по Международной стандартной атмосфере (ISA), для приведения к уровню моря."
                 AppLanguage.ENGLISH -> "Sensor measurements adjusted for station elevation according to the International Standard Atmosphere to produce MSLP."
             }
         }
@@ -407,6 +436,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Estaciones aeronáuticas JMA y Open-Meteo"
                     AppLanguage.FRENCH -> "Stations aéronautiques JMA et Open-Meteo"
                     AppLanguage.PORTUGUESE -> "Estações aeronáuticas JMA e Open-Meteo"
+                    AppLanguage.RUSSIAN -> "Авиационные станции JMA и Open-Meteo"
                     AppLanguage.ENGLISH -> "JMA Aviation Stations & Open-Meteo"
                 }
                 isUs -> when (language) {
@@ -417,6 +447,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Visibilidad aeronáutica METAR y NOAA / NWS"
                     AppLanguage.FRENCH -> "Visibilité aéronautique METAR et NOAA / NWS"
                     AppLanguage.PORTUGUESE -> "Visibilidade aeronáutica METAR e NOAA / NWS"
+                    AppLanguage.RUSSIAN -> "Авиационная видимость METAR и NOAA / NWS"
                     AppLanguage.ENGLISH -> "Aviation METAR Visibility & NOAA / NWS"
                 }
                 else -> when (language) {
@@ -427,6 +458,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Visibilidad de alta resolución Open-Meteo (ECMWF)"
                     AppLanguage.FRENCH -> "Visibilité haute résolution Open-Meteo (ECMWF)"
                     AppLanguage.PORTUGUESE -> "Visibilidade de alta resolução Open-Meteo (ECMWF)"
+                    AppLanguage.RUSSIAN -> "Высокоточная видимость Open-Meteo (ECMWF)"
                     AppLanguage.ENGLISH -> "Open-Meteo High-Resolution Visibility (ECMWF)"
                 }
             }
@@ -438,6 +470,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Transmisómetro estándar OACI y extinción por aerosoles"
                 AppLanguage.FRENCH -> "Transmissomètre standard OACI et extinction par aérosols"
                 AppLanguage.PORTUGUESE -> "Transmissômetro padrão OACI e extinção por aerossóis"
+                AppLanguage.RUSSIAN -> "Трансмиссометр по стандарту ИКАО и аэрозольное ослабление"
                 AppLanguage.ENGLISH -> "ICAO Standard Transmissometer & Aerosol Extinction"
             }
             sourceDetail = when (language) {
@@ -448,6 +481,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Calcula la visibilidad horizontal efectiva en superficie a partir de mediciones de transmisómetro, humedad relativa y extinción por aerosoles."
                 AppLanguage.FRENCH -> "Calcule la visibilité horizontale effective au sol à partir des mesures de transmissomètre, de l'humidité relative et de l'extinction par aérosols."
                 AppLanguage.PORTUGUESE -> "Calcula a visibilidade horizontal efetiva no solo com base em medições de transmissômetro, umidade relativa e extinção por aerossóis."
+                AppLanguage.RUSSIAN -> "Рассчитывает эффективную горизонтальную видимость у земли по данным трансмиссометра, относительной влажности и аэрозольного ослабления."
                 AppLanguage.ENGLISH -> "Calculates effective horizontal ground visibility based on transmissometer measurements, relative humidity, and aerosol extinction."
             }
         }
@@ -462,6 +496,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Pluviómetros AMeDAS de JMA y nowcast de alta resolución"
                     AppLanguage.FRENCH -> "Pluviomètres AMeDAS de JMA et nowcast haute résolution"
                     AppLanguage.PORTUGUESE -> "Pluviômetros AMeDAS da JMA e nowcast de alta resolução"
+                    AppLanguage.RUSSIAN -> "Осадкомеры JMA AMeDAS и высокоточный nowcast"
                     AppLanguage.ENGLISH -> "JMA AMeDAS Rain Gauges & High-Res Nowcast"
                 }
                 isUs -> when (language) {
@@ -472,6 +507,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Radar Doppler NOAA / NWS y red MRMS"
                     AppLanguage.FRENCH -> "Radar Doppler NOAA / NWS et réseau MRMS"
                     AppLanguage.PORTUGUESE -> "Radar Doppler NOAA / NWS e rede MRMS"
+                    AppLanguage.RUSSIAN -> "Доплеровские радары NOAA / NWS и сеть MRMS"
                     AppLanguage.ENGLISH -> "NOAA / NWS Doppler Radar & MRMS Network"
                 }
                 else -> when (language) {
@@ -482,6 +518,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Radar Open-Meteo y modelos numéricos de precipitación"
                     AppLanguage.FRENCH -> "Radar Open-Meteo et modèles numériques de précipitations"
                     AppLanguage.PORTUGUESE -> "Radar Open-Meteo e modelos numéricos de precipitação"
+                    AppLanguage.RUSSIAN -> "Радар Open-Meteo и численные модели осадков"
                     AppLanguage.ENGLISH -> "Open-Meteo Radar & Numerical Precipitation Models"
                 }
             }
@@ -493,6 +530,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Mediciones de pluviómetros y síntesis radar de alta resolución"
                 AppLanguage.FRENCH -> "Mesures pluviométriques et synthèse radar haute résolution"
                 AppLanguage.PORTUGUESE -> "Medições pluviométricas e síntese de radar de alta resolução"
+                AppLanguage.RUSSIAN -> "Данные осадкомеров и высокоточный радарный синтез"
                 AppLanguage.ENGLISH -> "Gauge Measurements & High-Resolution Radar Synthesis"
             }
             sourceDetail = when {
@@ -504,6 +542,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Combina mediciones directas de pluviómetros de balancín con análisis sintético de nowcast por radar Doppler."
                     AppLanguage.FRENCH -> "Combine les mesures directes des pluviomètres à augets basculeurs avec les prévisions immédiates par radar Doppler."
                     AppLanguage.PORTUGUESE -> "Combina medições diretas de pluviômetros basculantes com análises de nowcast por radar Doppler."
+                    AppLanguage.RUSSIAN -> "Сочетает прямые показания челночных осадкомеров со сверхкраткосрочным анализом доплеровских радаров."
                     AppLanguage.ENGLISH -> "Direct precipitation metrics measured by tipping-bucket rain gauges synthesized with Doppler radar nowcasts."
                 }
                 else -> when (language) {
@@ -514,6 +553,7 @@ fun DetailDataSourceCard(
                     AppLanguage.SPANISH -> "Redes integradas de pluviómetros en superficie y algoritmos de precipitación por radar satelital."
                     AppLanguage.FRENCH -> "Réseaux intégrés de pluviomètres au sol et algorithmes de précipitations par radar satellitaire."
                     AppLanguage.PORTUGUESE -> "Redes integradas de pluviômetros terrestres e algoritmos de precipitação por radar satelital."
+                    AppLanguage.RUSSIAN -> "Интегрированные сети наземных осадкомеров и алгоритмы оценки осадков по спутниковым радарам."
                     AppLanguage.ENGLISH -> "Integrated ground rain gauge networks and satellite-derived radar precipitation algorithms."
                 }
             }
@@ -528,6 +568,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Modelo de temperatura aparente (AT) del BOM australiano"
                 AppLanguage.FRENCH -> "Modèle de température apparente (AT) du BOM australien"
                 AppLanguage.PORTUGUESE -> "Modelo de temperatura aparente (AT) do BOM australiano"
+                AppLanguage.RUSSIAN -> "Модель ощущаемой температуры (AT) австралийского BOM"
                 AppLanguage.ENGLISH -> "Australian BOM Apparent Temperature (AT) Model"
             }
             sourceSubtitle = when (language) {
@@ -538,6 +579,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Combinación de temperatura, presión de vapor y sensación térmica"
                 AppLanguage.FRENCH -> "Combinaison température, pression de vapeur et refroidissement éolien"
                 AppLanguage.PORTUGUESE -> "Combinação de temperatura, pressão de vapor e sensação térmica"
+                AppLanguage.RUSSIAN -> "Температура воздуха, давление пара и ветро-холодовой индекс"
                 AppLanguage.ENGLISH -> "Combined Ambient, Vapor Pressure & Wind Chill"
             }
             sourceDetail = when (language) {
@@ -548,6 +590,7 @@ fun DetailDataSourceCard(
                 AppLanguage.SPANISH -> "Calculado mediante la fórmula de temperatura aparente del Bureau of Meteorology de Australia, combinando temperatura, presión de vapor de humedad y efecto del viento."
                 AppLanguage.FRENCH -> "Calculé avec la formule de température apparente du Bureau of Meteorology australien, intégrant température, pression de vapeur et refroidissement éolien."
                 AppLanguage.PORTUGUESE -> "Calculado pela fórmula de temperatura aparente do Bureau of Meteorology da Austrália, combinando temperatura, pressão de vapor e efeito do vento."
+                AppLanguage.RUSSIAN -> "Рассчитывается по формуле ощущаемой температуры (Apparent Temperature) Бюро метеорологии Австралии с учётом температуры, влажности и ветра."
                 AppLanguage.ENGLISH -> "Derived using the Australian Bureau of Meteorology Apparent Temperature formulation, factoring temperature, humidity vapor pressure, and wind chill."
             }
         }
@@ -561,6 +604,7 @@ fun DetailDataSourceCard(
         AppLanguage.SPANISH -> "Fuente de datos y metodología"
         AppLanguage.FRENCH -> "Source de données et méthodologie"
         AppLanguage.PORTUGUESE -> "Fonte de dados e metodologia"
+        AppLanguage.RUSSIAN -> "Источник данных и методика"
         AppLanguage.ENGLISH -> "Data Source & Methodology"
     }
 
@@ -572,6 +616,7 @@ fun DetailDataSourceCard(
         AppLanguage.SPANISH -> "Fuente oficial verificada"
         AppLanguage.FRENCH -> "Source officielle vérifiée"
         AppLanguage.PORTUGUESE -> "Fonte oficial verificada"
+        AppLanguage.RUSSIAN -> "Официальный источник"
         AppLanguage.ENGLISH -> "Verified Official Source"
     }
 
@@ -583,13 +628,14 @@ fun DetailDataSourceCard(
         AppLanguage.SPANISH -> "Observado: ${weather?.lastUpdatedTime ?: "En vivo"}"
         AppLanguage.FRENCH -> "Observé : ${weather?.lastUpdatedTime ?: "En direct"}"
         AppLanguage.PORTUGUESE -> "Observado: ${weather?.lastUpdatedTime ?: "Ao vivo"}"
+        AppLanguage.RUSSIAN -> "Наблюдение: ${weather?.lastUpdatedTime ?: "В реальном времени"}"
         AppLanguage.ENGLISH -> "Observed: ${weather?.lastUpdatedTime ?: "Live"}"
     }
 
     Card(
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+            containerColor = getDetailCardColor(colorScheme = colorScheme)
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = modifier.fillMaxWidth()

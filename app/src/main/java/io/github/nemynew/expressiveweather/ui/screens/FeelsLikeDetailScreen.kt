@@ -60,6 +60,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 
 /**
  * 体感温度（Feels Like / Comfort）詳細画面 - Material 3 Expressive 準拠、多言語対応、枠線フリー
@@ -99,6 +100,7 @@ fun FeelsLikeDetailScreen(
             AppLanguage.SPANISH -> "+${diffDisplay}${unitSymbol} más cálido que la real"
             AppLanguage.FRENCH -> "+${diffDisplay}${unitSymbol} plus chaud que le réel"
             AppLanguage.PORTUGUESE -> "+${diffDisplay}${unitSymbol} mais quente que a real"
+            AppLanguage.RUSSIAN -> "+${diffDisplay}${unitSymbol} теплее реальной"
             AppLanguage.JAPANESE -> "実気温より +${diffDisplay}${unitSymbol} 高い"
         }
         diffDisplay < 0 -> when (language) {
@@ -109,6 +111,7 @@ fun FeelsLikeDetailScreen(
             AppLanguage.SPANISH -> "${diffDisplay}${unitSymbol} más fresco que la real"
             AppLanguage.FRENCH -> "${diffDisplay}${unitSymbol} plus frais que le réel"
             AppLanguage.PORTUGUESE -> "${diffDisplay}${unitSymbol} mais frio que a real"
+            AppLanguage.RUSSIAN -> "${diffDisplay}${unitSymbol} холоднее реальной"
             AppLanguage.JAPANESE -> "実気温より ${diffDisplay}${unitSymbol} 低い"
         }
         else -> when (language) {
@@ -119,6 +122,7 @@ fun FeelsLikeDetailScreen(
             AppLanguage.SPANISH -> "Similar a la temperatura real"
             AppLanguage.FRENCH -> "Proche de la température réelle"
             AppLanguage.PORTUGUESE -> "Semelhante à temperatura real"
+            AppLanguage.RUSSIAN -> "Близко к реальной температуре"
             AppLanguage.JAPANESE -> "実気温とほぼ同じ"
         }
     }
@@ -176,7 +180,7 @@ fun FeelsLikeDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -203,6 +207,7 @@ fun FeelsLikeDetailScreen(
                             AppLanguage.SPANISH -> "Sensación térmica (Índice BOM)"
                             AppLanguage.FRENCH -> "Température ressentie (Indice BOM)"
                             AppLanguage.PORTUGUESE -> "Sensação térmica (Índice BOM)"
+                            AppLanguage.RUSSIAN -> "Ощущаемая температура (BOM)"
                             AppLanguage.JAPANESE -> "体感温度 (体感指数)"
                         },
                         style = MaterialTheme.typography.titleMedium,
@@ -281,6 +286,7 @@ fun FeelsLikeDetailScreen(
                                 AppLanguage.SPANISH -> "Temperatura real"
                                 AppLanguage.FRENCH -> "Température réelle"
                                 AppLanguage.PORTUGUESE -> "Temperatura real"
+                                AppLanguage.RUSSIAN -> "Реальная температура"
                                 AppLanguage.JAPANESE -> "実際の気温"
                             },
                             style = MaterialTheme.typography.labelSmall,
@@ -310,6 +316,7 @@ fun FeelsLikeDetailScreen(
                                 AppLanguage.SPANISH -> "Sensación térmica"
                                 AppLanguage.FRENCH -> "Ressenti"
                                 AppLanguage.PORTUGUESE -> "Sensação térmica"
+                                AppLanguage.RUSSIAN -> "Ощущается как"
                                 AppLanguage.JAPANESE -> "体感温度"
                             },
                             style = MaterialTheme.typography.labelSmall,
@@ -341,7 +348,7 @@ fun FeelsLikeDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -355,6 +362,7 @@ fun FeelsLikeDetailScreen(
                         AppLanguage.SPANISH -> "Evolución de la sensación térmica"
                         AppLanguage.FRENCH -> "Évolution du ressenti aujourd'hui"
                         AppLanguage.PORTUGUESE -> "Tendência da sensação térmica hoje"
+                        AppLanguage.RUSSIAN -> "Ощущаемая температура сегодня"
                         AppLanguage.JAPANESE -> "本日の体感温度推移"
                     },
                     style = MaterialTheme.typography.titleMedium,
@@ -414,7 +422,7 @@ fun FeelsLikeDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -436,6 +444,7 @@ fun FeelsLikeDetailScreen(
                             AppLanguage.SPANISH -> "Recomendaciones de vestimenta"
                             AppLanguage.FRENCH -> "Conseils vestimentaires"
                             AppLanguage.PORTUGUESE -> "Recomendações de vestuário"
+                            AppLanguage.RUSSIAN -> "Рекомендации по одежде"
                             AppLanguage.JAPANESE -> "服装指数とアドバイス"
                         },
                         style = MaterialTheme.typography.titleMedium,
@@ -483,6 +492,7 @@ fun FeelsLikeDetailScreen(
                                 AppLanguage.SPANISH -> "Vestimenta recomendada según el viento, la humedad y el confort térmico."
                                 AppLanguage.FRENCH -> "Tenue recommandée selon le refroidissement éolien, l'humidité et le confort thermique."
                                 AppLanguage.PORTUGUESE -> "Vestuário recomendado com base no vento, umidade e conforto térmico."
+                                AppLanguage.RUSSIAN -> "Рекомендации с учётом ветра, влажности и теплового комфорта."
                                 AppLanguage.JAPANESE -> "風速や湿度の影響を考慮した推奨スタイルです。"
                             },
                             style = MaterialTheme.typography.bodySmall,
@@ -497,7 +507,7 @@ fun FeelsLikeDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -519,6 +529,7 @@ fun FeelsLikeDetailScreen(
                             AppLanguage.SPANISH -> "Cómo se calcula la sensación térmica"
                             AppLanguage.FRENCH -> "Comprendre la température ressentie"
                             AppLanguage.PORTUGUESE -> "Entendendo a sensação térmica"
+                            AppLanguage.RUSSIAN -> "Как рассчитывается ощущение"
                             AppLanguage.JAPANESE -> "体感温度の仕組み"
                         },
                         style = MaterialTheme.typography.titleMedium,
@@ -545,6 +556,8 @@ fun FeelsLikeDetailScreen(
                             "La température ressentie combine la température ambiante, l'humidité relative et la vitesse du vent (formule BOM australienne / Steadman). Le vent accélère le refroidissement, tandis qu'une forte humidité freine l'évaporation de la transpiration."
                         AppLanguage.PORTUGUESE ->
                             "A sensação térmica combina a temperatura ambiente, a umidade relativa e a velocidade do vento (fórmula BOM australiana / Steadman). O vento acelera o resfriamento do corpo, enquanto a alta umidade dificulta a evaporação do suor."
+                        AppLanguage.RUSSIAN ->
+                            "Ощущаемая температура учитывает температуру воздуха, относительную влажность и скорость ветра (формула BOM / Стедмана). Ветер усиливает охлаждение, а высокая влажность замедляет испарение пота и создаёт ощущение духоты."
                         AppLanguage.JAPANESE ->
                             "体感温度は気温に加え、「湿度」と「風速」を総合して算出されます（オーストラリア気象局/Steadman基準）。風速が強まると風冷効果で体温が奪われ、湿度が高まると発汗による気化熱冷却が阻害されて蒸し暑く感じられます。"
                     },
@@ -577,6 +590,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "La humedad elevada dificulta la disipación del calor corporal, generando una sensación más cálida y bochornosa."
             AppLanguage.FRENCH -> "L'humidité élevée limite la dissipation de la chaleur corporelle, rendant l'air nettement plus chaud et lourd."
             AppLanguage.PORTUGUESE -> "A umidade elevada dificulta a dissipação do calor corporal, deixando a sensação mais quente e abafada."
+            AppLanguage.RUSSIAN -> "Повышенная влажность замедляет теплоотдачу, поэтому воздух кажется заметно теплее и душнее."
             AppLanguage.JAPANESE -> "湿度が高めのため、皮膚からの熱放散が抑えられ、実際よりも暖かく（蒸し暑く）感じられます。"
         }
         diff < 0 && windSpeedKmH > 15.0 -> when (language) {
@@ -587,6 +601,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "El viento intensifica la sensación de frío, haciendo que se perciba más fresco que la temperatura real."
             AppLanguage.FRENCH -> "Le vent accentue le refroidissement éolien, donnant une sensation plus fraîche que la température réelle."
             AppLanguage.PORTUGUESE -> "O vento intensifica o resfriamento, criando uma sensação mais fria do que a temperatura ambiente."
+            AppLanguage.RUSSIAN -> "Ветер усиливает охлаждение, поэтому на улице ощущается холоднее фактической температуры."
             AppLanguage.JAPANESE -> "風が吹いているため、風冷効果（ウィンドチル）により実際の気温よりも涼しく（肌寒く）感じられます。"
         }
         else -> when (language) {
@@ -597,6 +612,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "La humedad y el viento están equilibrados; la sensación térmica coincide casi con el termómetro."
             AppLanguage.FRENCH -> "L'humidité et le vent sont équilibrés ; le ressenti correspond presque à la température affichée."
             AppLanguage.PORTUGUESE -> "A umidade e o vento estão equilibrados; a sensação térmica acompanha de perto o termômetro."
+            AppLanguage.RUSSIAN -> "Влажность и ветер сбалансированы — ощущения близки к показаниям термометра."
             AppLanguage.JAPANESE -> "湿度と風速のバランスが標準的で、ほぼ実際の気温に近い心地よさです。"
         }
     }
@@ -610,6 +626,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Ideal para camiseta ligera. Mantente hidratado y busca sombra bajo el sol directo."
             AppLanguage.FRENCH -> "Temps de t-shirt. Hydratez-vous bien et restez au frais au soleil."
             AppLanguage.PORTUGUESE -> "Clima para camiseta leve. Hidrate-se bem e proteja-se do sol direto."
+            AppLanguage.RUSSIAN -> "Погода для футболки. Пейте больше воды и избегайте прямого солнца."
             AppLanguage.JAPANESE -> "半袖で快適にお過ごしいただけます。熱中症対策・水分補給を心がけてください。"
         }
         feelsLike >= 23 -> when (language) {
@@ -620,6 +637,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Manga corta o camisa ligera de manga larga son ideales para salir."
             AppLanguage.FRENCH -> "Manches courtes ou manches longues légères parfaites pour sortir."
             AppLanguage.PORTUGUESE -> "Manga curta ou manga longa leve são ideais para um passeio confortável."
+            AppLanguage.RUSSIAN -> "Отлично подойдут футболка или лёгкая рубашка с длинным рукавом."
             AppLanguage.JAPANESE -> "半袖または薄手の長袖シャツが快適な過ごしやすい気候です。"
         }
         feelsLike >= 17 -> when (language) {
@@ -630,6 +648,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Manga larga, suéter ligero o cárdigan fino son lo más adecuado."
             AppLanguage.FRENCH -> "Manches longues, pull léger ou gilet fin sont idéaux."
             AppLanguage.PORTUGUESE -> "Manga longa, suéter leve ou cardigã fino são ideais."
+            AppLanguage.RUSSIAN -> "Подойдут лонгслив, лёгкий свитер или тонкий кардиган."
             AppLanguage.JAPANESE -> "長袖シャツやカットソー、薄手のカーディガンがあると安心です。"
         }
         feelsLike >= 12 -> when (language) {
@@ -640,6 +659,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Se recomiendan chaquetas, gabardinas, jerséis de punto o cortavientos."
             AppLanguage.FRENCH -> "Veste, trench, pull en maille ou coupe-vent recommandés."
             AppLanguage.PORTUGUESE -> "Jaquetas, casacos leves, suéteres de tricô ou corta-ventos são recomendados."
+            AppLanguage.RUSSIAN -> "Рекомендуются куртка, плащ, вязаный свитер или ветровка."
             AppLanguage.JAPANESE -> "セーターやジャケット、トレンチコートなどの上着が必要です。"
         }
         feelsLike >= 6 -> when (language) {
@@ -650,6 +670,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Se necesitan abrigos de invierno, bufandas y capas térmicas."
             AppLanguage.FRENCH -> "Manteau d'hiver épais, écharpe et couches isolantes nécessaires."
             AppLanguage.PORTUGUESE -> "Casacos de inverno pesados, cachecóis e camadas térmicas são necessários."
+            AppLanguage.RUSSIAN -> "Понадобятся тёплое пальто, шарф и утеплённые слои одежды."
             AppLanguage.JAPANESE -> "冬物コートやマフラーなどのしっかりとした防寒着をお選びください。"
         }
         else -> when (language) {
@@ -660,6 +681,7 @@ private fun getFeelsLikeAnalysis(
             AppLanguage.SPANISH -> "Abrigo de plumas grueso, ropa térmica, guantes y gorro son imprescindibles."
             AppLanguage.FRENCH -> "Doudoune épaisse, sous-vêtements thermiques, gants et bonnet indispensables."
             AppLanguage.PORTUGUESE -> "Casaco acolchoado pesado, roupas térmicas, luvas e gorro são essenciais."
+            AppLanguage.RUSSIAN -> "Обязательны тёплый пуховик, термобельё, перчатки и шапка."
             AppLanguage.JAPANESE -> "ダウンジャケットや手袋、万全の防寒対策が必須です。"
         }
     }

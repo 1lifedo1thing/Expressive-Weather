@@ -31,7 +31,8 @@ enum class FeatureRequestCategory(
     val labelZhHant: String,
     val labelEs: String,
     val labelFr: String,
-    val labelPt: String
+    val labelPt: String,
+    val labelRu: String
 ) {
     UI_DESIGN(
         issueTag = "UI / Design",
@@ -42,7 +43,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "介面與設計",
         labelEs = "UI y diseño",
         labelFr = "UI et design",
-        labelPt = "UI e design"
+        labelPt = "UI e design",
+        labelRu = "Интерфейс и дизайн"
     ),
     RADAR(
         issueTag = "Radar",
@@ -53,7 +55,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "降雨雷達",
         labelEs = "Radar de lluvia",
         labelFr = "Radar de pluie",
-        labelPt = "Radar de chuva"
+        labelPt = "Radar de chuva",
+        labelRu = "Радар осадков"
     ),
     WIDGET(
         issueTag = "Widget",
@@ -64,7 +67,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "桌面小工具",
         labelEs = "Widget",
         labelFr = "Widget",
-        labelPt = "Widget"
+        labelPt = "Widget",
+        labelRu = "Виджет"
     ),
     ALERTS_NOTIFICATIONS(
         issueTag = "Alerts / Notifications",
@@ -75,7 +79,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "警報與通知",
         labelEs = "Alertas y notificaciones",
         labelFr = "Alertes et notifications",
-        labelPt = "Alertas e notificações"
+        labelPt = "Alertas e notificações",
+        labelRu = "Оповещения и уведомления"
     ),
     WEATHER_DATA_REGION(
         issueTag = "Weather Data / Region",
@@ -86,7 +91,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "氣象資料與地區",
         labelEs = "Datos y regiones",
         labelFr = "Données et régions",
-        labelPt = "Dados e regiões"
+        labelPt = "Dados e regiões",
+        labelRu = "Данные и регионы"
     ),
     SETTINGS_USABILITY(
         issueTag = "Settings / UX",
@@ -97,7 +103,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "設定與體驗",
         labelEs = "Ajustes y experiencia",
         labelFr = "Paramètres et UX",
-        labelPt = "Configurações e UX"
+        labelPt = "Configurações e UX",
+        labelRu = "Настройки и удобство"
     ),
     OTHER(
         issueTag = "Feature",
@@ -108,7 +115,8 @@ enum class FeatureRequestCategory(
         labelZhHant = "其他",
         labelEs = "Otro",
         labelFr = "Autre",
-        labelPt = "Outro"
+        labelPt = "Outro",
+        labelRu = "Другое"
     );
 
     fun label(language: AppLanguage): String = when (language) {
@@ -120,6 +128,7 @@ enum class FeatureRequestCategory(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
     }
 }
 
@@ -135,7 +144,8 @@ enum class BugReportCategory(
     val labelZhHant: String,
     val labelEs: String,
     val labelFr: String,
-    val labelPt: String
+    val labelPt: String,
+    val labelRu: String
 ) {
     WEATHER_DATA(
         issueTag = "Weather Data",
@@ -146,7 +156,8 @@ enum class BugReportCategory(
         labelZhHant = "天氣資料",
         labelEs = "Datos meteorológicos",
         labelFr = "Données météo",
-        labelPt = "Dados meteorológicos"
+        labelPt = "Dados meteorológicos",
+        labelRu = "Данные о погоде"
     ),
     RADAR(
         issueTag = "Radar",
@@ -157,7 +168,8 @@ enum class BugReportCategory(
         labelZhHant = "降雨雷達",
         labelEs = "Radar de lluvia",
         labelFr = "Radar de pluie",
-        labelPt = "Radar de chuva"
+        labelPt = "Radar de chuva",
+        labelRu = "Радар осадков"
     ),
     ALERTS_NOTIFICATIONS(
         issueTag = "Alerts / Notifications",
@@ -168,7 +180,8 @@ enum class BugReportCategory(
         labelZhHant = "警報與通知",
         labelEs = "Alertas y notificaciones",
         labelFr = "Alertes et notifications",
-        labelPt = "Alertas e notificações"
+        labelPt = "Alertas e notificações",
+        labelRu = "Оповещения и уведомления"
     ),
     WIDGET(
         issueTag = "Widget",
@@ -179,7 +192,8 @@ enum class BugReportCategory(
         labelZhHant = "桌面小工具",
         labelEs = "Widget",
         labelFr = "Widget",
-        labelPt = "Widget"
+        labelPt = "Widget",
+        labelRu = "Виджет"
     ),
     UI_LAYOUT(
         issueTag = "UI / Layout",
@@ -190,7 +204,8 @@ enum class BugReportCategory(
         labelZhHant = "介面顯示",
         labelEs = "UI y diseño",
         labelFr = "UI et mise en page",
-        labelPt = "UI e layout"
+        labelPt = "UI e layout",
+        labelRu = "Интерфейс и вёрстка"
     ),
     CRASH_PERFORMANCE(
         issueTag = "Crash / Freeze",
@@ -201,7 +216,8 @@ enum class BugReportCategory(
         labelZhHant = "當機 / 卡頓",
         labelEs = "Cierre / Lentitud",
         labelFr = "Plantage / Lenteur",
-        labelPt = "Travamento / Lentidão"
+        labelPt = "Travamento / Lentidão",
+        labelRu = "Сбои / тормоза"
     ),
     OTHER(
         issueTag = "Other",
@@ -212,7 +228,8 @@ enum class BugReportCategory(
         labelZhHant = "其他",
         labelEs = "Otro",
         labelFr = "Autre",
-        labelPt = "Outro"
+        labelPt = "Outro",
+        labelRu = "Другое"
     );
 
     fun label(language: AppLanguage): String = when (language) {
@@ -224,6 +241,7 @@ enum class BugReportCategory(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
     }
 }
 

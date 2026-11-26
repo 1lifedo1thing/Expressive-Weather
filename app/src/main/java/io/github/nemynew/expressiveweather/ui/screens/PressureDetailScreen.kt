@@ -63,6 +63,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import java.util.Locale
 
 /**
@@ -104,7 +105,7 @@ fun PressureDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -128,6 +129,7 @@ fun PressureDetailScreen(
                             AppLanguage.SPANISH -> "Presión en superficie (Barómetro)"
                             AppLanguage.FRENCH -> "Pression de surface (Baromètre)"
                             AppLanguage.PORTUGUESE -> "Pressão na superfície (Barômetro)"
+                            AppLanguage.RUSSIAN -> "Атмосферное давление (Барометр)"
                             AppLanguage.KOREAN -> "현지 기압 (기압계)"
                             AppLanguage.SIMPLIFIED_CHINESE -> "地面气压 (气压计)"
                             AppLanguage.TRADITIONAL_CHINESE -> "地面氣壓 (氣壓計)"
@@ -261,7 +263,7 @@ fun PressureDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -272,6 +274,7 @@ fun PressureDetailScreen(
                         AppLanguage.SPANISH -> "Presión de referencia al nivel del mar"
                         AppLanguage.FRENCH -> "Pression de référence au niveau de la mer"
                         AppLanguage.PORTUGUESE -> "Pressão de referência ao nível do mar"
+                        AppLanguage.RUSSIAN -> "Опорное давление на уровне моря"
                         AppLanguage.KOREAN -> "기준 해면 기압 참고치"
                         AppLanguage.SIMPLIFIED_CHINESE -> "参考海平面气压"
                         AppLanguage.TRADITIONAL_CHINESE -> "參考海平面氣壓"
@@ -290,6 +293,7 @@ fun PressureDetailScreen(
                         AppLanguage.SPANISH -> "La fuente de datos actual no ofrece previsión horaria de presión; se muestra la última presión observada al nivel del mar como referencia."
                         AppLanguage.FRENCH -> "La source de données actuelle ne fournit pas de prévision horaire de pression ; la dernière pression observée au niveau de la mer est affichée à titre indicatif."
                         AppLanguage.PORTUGUESE -> "A fonte de dados atual não fornece previsão horária de pressão; a última pressão observada ao nível do mar é exibida como referência."
+                        AppLanguage.RUSSIAN -> "Текущий источник не предоставляет почасовой прогноз давления; для ориентира показано последнее измеренное давление на уровне моря."
                         AppLanguage.KOREAN -> "현재 데이터 제공처에서 시간별 기압 예보를 제공하지 않아 최신 관측 해면 기압을 기준치로 표시합니다."
                         AppLanguage.SIMPLIFIED_CHINESE -> "当前数据源未提供逐小时气压预测序列，以下以最新实测海平面气压作为参考基准。"
                         AppLanguage.TRADITIONAL_CHINESE -> "目前資料來源未提供逐小時氣壓預測序列，以下以最新實測海平面氣壓作為參考基準。"
@@ -350,7 +354,7 @@ fun PressureDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -369,6 +373,7 @@ fun PressureDetailScreen(
                             AppLanguage.SPANISH -> "Sensibilidad barométrica y bienestar"
                             AppLanguage.FRENCH -> "Sensibilité barométrique et bien-être"
                             AppLanguage.PORTUGUESE -> "Sensibilidade barométrica e bem-estar"
+                            AppLanguage.RUSSIAN -> "Барочувствительность и самочувствие"
                             AppLanguage.KOREAN -> "기압 변화와 건강 가이드"
                             AppLanguage.SIMPLIFIED_CHINESE -> "气压变化与健康关怀"
                             AppLanguage.TRADITIONAL_CHINESE -> "氣壓變化與健康關懷"
@@ -389,6 +394,7 @@ fun PressureDetailScreen(
                         AppLanguage.SPANISH -> if (isWarning) "Aviso de baja presión" else "Tendencia barométrica estable"
                         AppLanguage.FRENCH -> if (isWarning) "Alerte basse pression" else "Tendance barométrique stable"
                         AppLanguage.PORTUGUESE -> if (isWarning) "Alerta de baixa pressão" else "Tendência barométrica estável"
+                        AppLanguage.RUSSIAN -> if (isWarning) "Низкое давление" else "Стабильное давление"
                         AppLanguage.KOREAN -> if (isWarning) "저기압 컨디션 주의" else "기압 안정세"
                         AppLanguage.SIMPLIFIED_CHINESE -> if (isWarning) "低气压不适提醒" else "气压平稳正常"
                         AppLanguage.TRADITIONAL_CHINESE -> if (isWarning) "低氣壓不適提醒" else "氣壓平穩正常"
@@ -411,6 +417,10 @@ fun PressureDetailScreen(
                             "A queda na pressão barométrica pode causar dor de cabeça, fadiga ou desconforto articular. Hidrate-se bem e descanse quando necessário."
                         else
                             "A pressão atmosférica permanece no padrão normal, com impacto mínimo no bem-estar físico."
+                        AppLanguage.RUSSIAN -> if (isWarning)
+                            "Пониженное давление может вызывать головную боль, усталость или ломоту в суставах. Пейте достаточно воды и отдыхайте."
+                        else
+                            "Давление в пределах нормы — влияние на самочувствие минимально."
                         AppLanguage.KOREAN -> if (isWarning)
                             "기압이 낮거나 하강하는 추세입니다. 두통, 피로감, 관절 불편감을 느끼기 쉬우니 무리하지 말고 충분히 휴식하세요."
                         else
@@ -437,6 +447,7 @@ fun PressureDetailScreen(
                         AppLanguage.SPANISH -> "Referencia atmosférica estándar"
                         AppLanguage.FRENCH -> "Référence atmosphérique standard"
                         AppLanguage.PORTUGUESE -> "Referência atmosférica padrão"
+                        AppLanguage.RUSSIAN -> "Нормальное атмосферное давление"
                         AppLanguage.KOREAN -> "표준 대기압과의 관계"
                         AppLanguage.SIMPLIFIED_CHINESE -> "标准大气压基准"
                         AppLanguage.TRADITIONAL_CHINESE -> "標準大氣壓基準"
@@ -451,6 +462,8 @@ fun PressureDetailScreen(
                             "La pression atmosphérique moyenne au niveau de la mer est de 1013,25 hPa. Des valeurs plus élevées apportent généralement un temps calme et dégagé, tandis qu'une baisse annonce le passage de dépressions ou de fronts."
                         AppLanguage.PORTUGUESE ->
                             "A pressão atmosférica média ao nível do mar é de 1013,25 hPa. Valores mais altos costumam trazer céu limpo e tempo estável, enquanto valores mais baixos indicam a aproximação de frentes ou áreas de baixa pressão."
+                        AppLanguage.RUSSIAN ->
+                            "Среднее давление на уровне моря — 1013,25 гПа. Более высокие значения обычно приносят ясную и устойчивую погоду, а пониженные — циклоны и фронты."
                         AppLanguage.KOREAN ->
                             "표준 대기압(1기압)은 1013.25 hPa입니다. 이보다 높으면 고기압 영향으로 맑고 안정적인 날씨가 이어지며, 낮으면 저기압이나 기압골·전선이 다가오기 쉽습니다."
                         AppLanguage.SIMPLIFIED_CHINESE ->
@@ -510,6 +523,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "Sistema de alta presión"
                 AppLanguage.FRENCH -> "Système anticyclonique"
                 AppLanguage.PORTUGUESE -> "Sistema de alta pressão"
+                AppLanguage.RUSSIAN -> "Высокое давление"
                 AppLanguage.KOREAN -> "고기압 영향권"
                 AppLanguage.SIMPLIFIED_CHINESE -> "受高气压控制"
                 AppLanguage.TRADITIONAL_CHINESE -> "受高氣壓控制"
@@ -521,6 +535,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "La presión atmosférica es alta y estable. Se espera tiempo soleado sin molestias por presión."
                 AppLanguage.FRENCH -> "La pression atmosphérique est élevée et stable. Temps ensoleillé attendu sans gêne liée à la pression."
                 AppLanguage.PORTUGUESE -> "A pressão atmosférica está alta e estável. Espera-se tempo ensolarado sem desconforto causado pela pressão."
+                AppLanguage.RUSSIAN -> "Давление высокое и устойчивое. Ожидается ясная погода без дискомфорта."
                 AppLanguage.KOREAN -> "기압이 높고 안정적입니다. 맑은 날씨가 이어지기 쉬우며 기압에 의한 컨디션 영향은 거의 없습니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "气压较高且稳定。晴好天气居多，气压对身体几乎无不良影响。"
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓較高且穩定。晴朗天氣居多，氣壓對身體幾乎無不良影響。"
@@ -534,6 +549,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "Presión normal y estable"
                 AppLanguage.FRENCH -> "Pression normale et stable"
                 AppLanguage.PORTUGUESE -> "Pressão normal e estável"
+                AppLanguage.RUSSIAN -> "Нормальное стабильное давление"
                 AppLanguage.KOREAN -> "표준 기압 부근 안정"
                 AppLanguage.SIMPLIFIED_CHINESE -> "处于标准气压附近"
                 AppLanguage.TRADITIONAL_CHINESE -> "處於標準氣壓附近"
@@ -545,6 +561,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "Oscila en torno a la presión normal (1013 hPa); se espera un impacto mínimo en el organismo."
                 AppLanguage.FRENCH -> "Pression proche de la normale (1013 hPa) ; impact minimal sur l'organisme."
                 AppLanguage.PORTUGUESE -> "Oscilando em torno da pressão normal (1013 hPa); impacto mínimo esperado no organismo."
+                AppLanguage.RUSSIAN -> "Давление около нормы (1013 гПа); нагрузка на организм минимальна."
                 AppLanguage.KOREAN -> "표준 대기압(1013 hPa) 전후로 유지되어 신체에 미치는 부담이 적은 상태입니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "气压在标准大气压(1013hPa)附近波动，对身体无明显额外负担。"
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓在標準大氣壓(1013hPa)附近波動，對身體無明顯額外負擔。"
@@ -558,6 +575,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "Presión ligeramente baja"
                 AppLanguage.FRENCH -> "Pression légèrement basse"
                 AppLanguage.PORTUGUESE -> "Pressão ligeiramente baixa"
+                AppLanguage.RUSSIAN -> "Слегка пониженное давление"
                 AppLanguage.KOREAN -> "다소 낮은 기압"
                 AppLanguage.SIMPLIFIED_CHINESE -> "气压略微偏低"
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓略微偏低"
@@ -569,6 +587,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "La presión está algo baja. Las personas sensibles pueden notar ligeros dolores de cabeza o cansancio."
                 AppLanguage.FRENCH -> "La pression est légèrement basse. Les personnes sensibles peuvent ressentir de légers maux de tête ou de la fatigue."
                 AppLanguage.PORTUGUESE -> "A pressão está ligeiramente baixa. Pessoas sensíveis podem sentir leves dores de cabeça ou cansaço."
+                AppLanguage.RUSSIAN -> "Давление немного снижено. Метеочувствительные люди могут ощущать лёгкую головную боль или усталость."
                 AppLanguage.KOREAN -> "기압이 다소 낮은 편입니다. 민감한 경우 가벼운 두통이나 목·어깨 뻐근함을 느낄 수 있습니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "气压略微偏低。敏感体质者可能会感到轻微头痛或颈肩酸胀。"
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓略微偏低。敏感體質者可能會感到輕微頭痛或頸肩緊繃。"
@@ -582,6 +601,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "Sistema de baja presión (Precaución)"
                 AppLanguage.FRENCH -> "Dépression (Prudence)"
                 AppLanguage.PORTUGUESE -> "Sistema de baixa pressão (Atenção)"
+                AppLanguage.RUSSIAN -> "Низкое давление (Внимание)"
                 AppLanguage.KOREAN -> "저기압 접근 (주의)"
                 AppLanguage.SIMPLIFIED_CHINESE -> "低气压接近 (注意)"
                 AppLanguage.TRADITIONAL_CHINESE -> "低氣壓接近 (注意)"
@@ -593,6 +613,7 @@ private fun getPressureAnalysis(
                 AppLanguage.SPANISH -> "La presión es significativamente baja. Puede provocar dolor de cabeza, rigidez articular y decaimiento; prioriza el descanso."
                 AppLanguage.FRENCH -> "La pression est nettement basse. Elle peut déclencher maux de tête, raideurs articulaires et fatigue ; privilégiez le repos."
                 AppLanguage.PORTUGUESE -> "A pressão está significativamente baixa. Pode causar dor de cabeça, rigidez articular e cansaço; priorize o descanso."
+                AppLanguage.RUSSIAN -> "Давление заметно понижено. Возможны головная боль, скованность суставов и вялость — постарайтесь больше отдыхать."
                 AppLanguage.KOREAN -> "기압이 크게 낮아진 상태입니다. 편두통, 관절통, 나른함이 나타나기 쉬우니 충분히 휴식하세요."
                 AppLanguage.SIMPLIFIED_CHINESE -> "气压明显偏低。容易引起偏头痛、关节不适与倦怠感，请注意劳逸结合与充足休息。"
                 AppLanguage.TRADITIONAL_CHINESE -> "氣壓明顯偏低。容易引起偏頭痛、關節不適與倦怠感，請注意適度休息。"

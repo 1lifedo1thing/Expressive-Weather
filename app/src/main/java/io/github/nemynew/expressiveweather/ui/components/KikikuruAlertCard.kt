@@ -229,6 +229,7 @@ fun KikikuruAlertCard(
             AppLanguage.SPANISH -> "Nivel de alerta $levelNum $levelTitle"
             AppLanguage.FRENCH -> "Niveau d'alerte $levelNum $levelTitle"
             AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum $levelTitle"
+            AppLanguage.RUSSIAN -> "Уровень угрозы $levelNum $levelTitle"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle"
         }
     } else {
@@ -240,6 +241,7 @@ fun KikikuruAlertCard(
             AppLanguage.SPANISH -> "Nivel de alerta $levelNum $levelTitle ($cityName)"
             AppLanguage.FRENCH -> "Niveau d'alerte $levelNum $levelTitle ($cityName)"
             AppLanguage.PORTUGUESE -> "Nível de alerta $levelNum $levelTitle ($cityName)"
+            AppLanguage.RUSSIAN -> "Уровень угрозы $levelNum $levelTitle ($cityName)"
             AppLanguage.JAPANESE -> "警戒レベル$levelNum $levelTitle（$cityName）"
         }
     }
@@ -252,6 +254,7 @@ fun KikikuruAlertCard(
         AppLanguage.SPANISH -> "Ver mapa de riesgo Kikikuru"
         AppLanguage.FRENCH -> "Voir la carte Kikikuru"
         AppLanguage.PORTUGUESE -> "Ver mapa de risco Kikikuru"
+        AppLanguage.RUSSIAN -> "Карта рисков Kikikuru"
         AppLanguage.JAPANESE -> "キキクルマップを確認"
     }
 

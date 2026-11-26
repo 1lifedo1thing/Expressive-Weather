@@ -107,6 +107,7 @@ object WidgetUiModelBuilder {
                 AppLanguage.SPANISH -> if (isRefreshing) "Actualizando…" else "Toca para cargar el clima"
                 AppLanguage.FRENCH -> if (isRefreshing) "Mise à jour…" else "Appuyer pour charger la météo"
                 AppLanguage.PORTUGUESE -> if (isRefreshing) "Atualizando…" else "Toque para carregar o clima"
+                AppLanguage.RUSSIAN -> if (isRefreshing) "Обновление…" else "Нажмите для загрузки погоды"
             }
             return WidgetUiModel(
                 targetCity = targetCity,
@@ -146,6 +147,7 @@ object WidgetUiModelBuilder {
             AppLanguage.SPANISH -> "Sensación"
             AppLanguage.FRENCH -> "Ressenti"
             AppLanguage.PORTUGUESE -> "Sensação"
+            AppLanguage.RUSSIAN -> "Ощущ."
         }
         val feelsLikeText = "$feelsPrefix ${feelsLikeTemp}°"
         val highLowText = "↑${maxTemp}° ↓${minTemp}°"
@@ -159,6 +161,7 @@ object WidgetUiModelBuilder {
             AppLanguage.SPANISH -> "Humedad"
             AppLanguage.FRENCH -> "Humidité"
             AppLanguage.PORTUGUESE -> "Umidade"
+            AppLanguage.RUSSIAN -> "Влажность"
         }
         val windLabel = when (language) {
             AppLanguage.JAPANESE -> "風"
@@ -169,13 +172,15 @@ object WidgetUiModelBuilder {
             AppLanguage.SPANISH -> "Viento"
             AppLanguage.FRENCH -> "Vent"
             AppLanguage.PORTUGUESE -> "Vento"
+            AppLanguage.RUSSIAN -> "Ветер"
         }
         val windFormatted = windSpeedUnit.formatCompact(weather.windSpeedKmH, language)
         val dotSep = when (language) {
             AppLanguage.ENGLISH,
             AppLanguage.SPANISH,
             AppLanguage.FRENCH,
-            AppLanguage.PORTUGUESE -> " • "
+            AppLanguage.PORTUGUESE,
+            AppLanguage.RUSSIAN -> " • "
             AppLanguage.KOREAN -> " · "
             AppLanguage.JAPANESE,
             AppLanguage.SIMPLIFIED_CHINESE,
@@ -192,6 +197,7 @@ object WidgetUiModelBuilder {
             AppLanguage.SPANISH -> "Actualizando…"
             AppLanguage.FRENCH -> "Mise à jour…"
             AppLanguage.PORTUGUESE -> "Atualizando…"
+            AppLanguage.RUSSIAN -> "Обновление…"
         }
         val updatedTimeText = if (isRefreshing) {
             updatingSuffix

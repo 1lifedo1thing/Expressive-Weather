@@ -246,6 +246,7 @@ object PrecipitationAnalyzer {
                     val timeLabelEs = formatTo5MinTime(startTime, AppLanguage.SPANISH, timeZone)
                     val timeLabelFr = formatTo5MinTime(startTime, AppLanguage.FRENCH, timeZone)
                     val timeLabelPt = formatTo5MinTime(startTime, AppLanguage.PORTUGUESE, timeZone)
+                    val timeLabelRu = formatTo5MinTime(startTime, AppLanguage.RUSSIAN, timeZone)
 
                     val jaHeadline = if (diffMinutes < 15) {
                         if (isHeavy) "まもなく激しい雨が降ります" else "まもなく雨が降り始めます"
@@ -286,6 +287,11 @@ object PrecipitationAnalyzer {
                         if (isHeavy) "Chuva forte começando em breve" else "Vai começar a chover em breve"
                     } else {
                         if (isHeavy) "Chuva forte começando por volta das $timeLabelPt" else "Chuva começando por volta das $timeLabelPt"
+                    }
+                    val ruHeadline = if (diffMinutes < 15) {
+                        if (isHeavy) "Скоро начнётся сильный дождь" else "Скоро начнётся дождь"
+                    } else {
+                        if (isHeavy) "Сильный дождь начнётся около $timeLabelRu" else "Дождь начнётся около $timeLabelRu"
                     }
 
                     val jaSubText = if (isHeavy) {
@@ -344,6 +350,13 @@ object PrecipitationAnalyzer {
                     } else {
                         "Previsão de chuva em cerca de ${diffMinutes} min. Recomenda-se levar guarda-chuva."
                     }
+                    val ruSubText = if (isHeavy) {
+                        "Приближаются тучи сильного дождя (около ${formatPrecipMm(maxPrecipInEvent)} мм/ч). Укройтесь в помещении."
+                    } else if (diffMinutes < 15) {
+                        "Дождь ожидается примерно через ${diffMinutes} мин. Держите зонт под рукой."
+                    } else {
+                        "Дождь ожидается примерно через ${diffMinutes} мин. Рекомендуется взять зонт."
+                    }
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = jaHeadline,
@@ -354,6 +367,7 @@ object PrecipitationAnalyzer {
                         esHeadline = esHeadline,
                         frHeadline = frHeadline,
                         ptHeadline = ptHeadline,
+                        ruHeadline = ruHeadline,
                         jaSubText = jaSubText,
                         koSubText = koSubText,
                         enSubText = enSubText,
@@ -362,6 +376,7 @@ object PrecipitationAnalyzer {
                         esSubText = esSubText,
                         frSubText = frSubText,
                         ptSubText = ptSubText,
+                        ruSubText = ruSubText,
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -369,7 +384,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
 
                     buildNowcast(
@@ -399,6 +415,7 @@ object PrecipitationAnalyzer {
                     val timeLabelEs = roundToNearest10Min(startTime, AppLanguage.SPANISH, timeZone)
                     val timeLabelFr = roundToNearest10Min(startTime, AppLanguage.FRENCH, timeZone)
                     val timeLabelPt = roundToNearest10Min(startTime, AppLanguage.PORTUGUESE, timeZone)
+                    val timeLabelRu = roundToNearest10Min(startTime, AppLanguage.RUSSIAN, timeZone)
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = "${timeLabelJa}頃から雨が降り始める見込みです",
@@ -409,6 +426,7 @@ object PrecipitationAnalyzer {
                         esHeadline = "Se espera lluvia sobre las $timeLabelEs",
                         frHeadline = "Pluie attendue vers $timeLabelFr",
                         ptHeadline = "Previsão de chuva por volta das $timeLabelPt",
+                        ruHeadline = "Дождь ожидается около $timeLabelRu",
                         jaSubText = "${timeLabelJa}頃から雨が降り始める予想です（予想雨量 約${formatPrecipMm(maxPrecipInEvent)}mm/h）。お出かけの際は雨具をお持ちください。",
                         koSubText = "${timeLabelKo}경부터 비가 내릴 예상입니다(예상 강수량 약 ${formatPrecipMm(maxPrecipInEvent)} mm/h). 외출 시 우산을 챙기세요.",
                         enSubText = "Rain expected around $timeLabelEn (~${formatPrecipMm(maxPrecipInEvent)} mm/h). Bring an umbrella if heading out.",
@@ -417,6 +435,7 @@ object PrecipitationAnalyzer {
                         esSubText = "Se espera lluvia sobre las $timeLabelEs (aprox. ${formatPrecipMm(maxPrecipInEvent)} mm/h). Lleva paraguas si vas a salir.",
                         frSubText = "Pluie attendue vers $timeLabelFr (env. ${formatPrecipMm(maxPrecipInEvent)} mm/h). Emportez un parapluie si vous sortez.",
                         ptSubText = "Previsão de chuva por volta das $timeLabelPt (aprox. ${formatPrecipMm(maxPrecipInEvent)} mm/h). Leve guarda-chuva se for sair.",
+                        ruSubText = "Дождь ожидается около $timeLabelRu (около ${formatPrecipMm(maxPrecipInEvent)} мм/ч). Возьмите зонт, если выходите.",
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -424,7 +443,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
 
                     buildNowcast(
@@ -454,6 +474,7 @@ object PrecipitationAnalyzer {
                     val roundedHourEs = roundToNearestHour(startTime, AppLanguage.SPANISH, timeZone)
                     val roundedHourFr = roundToNearestHour(startTime, AppLanguage.FRENCH, timeZone)
                     val roundedHourPt = roundToNearestHour(startTime, AppLanguage.PORTUGUESE, timeZone)
+                    val roundedHourRu = roundToNearestHour(startTime, AppLanguage.RUSSIAN, timeZone)
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = "${roundedHourJa}頃から雨が降り出す見込みです",
@@ -464,6 +485,7 @@ object PrecipitationAnalyzer {
                         esHeadline = "Se espera lluvia sobre las $roundedHourEs",
                         frHeadline = "Pluie attendue vers $roundedHourFr",
                         ptHeadline = "Previsão de chuva por volta das $roundedHourPt",
+                        ruHeadline = "Дождь ожидается около $roundedHourRu",
                         jaSubText = "今夜にかけてまとまった雨雲が広がる予想です（降水確率${pop}%）。夜間のお帰りの際は傘をお持ちください。",
                         koSubText = "오늘 밤 비구름이 확대될 전망입니다(강수확률 ${pop}%). 귀가 시 우산을 챙기세요.",
                         enSubText = "Rain clouds expected tonight (${pop}% chance). Don't forget an umbrella for tonight.",
@@ -472,6 +494,7 @@ object PrecipitationAnalyzer {
                         esSubText = "Se esperan nubes de lluvia esta noche (${pop}% de prob.). No olvides el paraguas.",
                         frSubText = "Nuages pluvieux attendus ce soir (${pop} % de risque). N'oubliez pas votre parapluie.",
                         ptSubText = "Nuvens de chuva previstas para esta noite (${pop}% de chance). Não esqueça o guarda-chuva.",
+                        ruSubText = "Сегодня вечером ожидаются дождевые облака (вероятность ${pop}%). Не забудьте зонт.",
                         jaTimeLabel = "${roundedHourJa}頃",
                         koTimeLabel = "${roundedHourKo}경",
                         enTimeLabel = roundedHourEn,
@@ -479,7 +502,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = roundedHourZhTw,
                         esTimeLabel = roundedHourEs,
                         frTimeLabel = roundedHourFr,
-                        ptTimeLabel = roundedHourPt
+                        ptTimeLabel = roundedHourPt,
+                        ruTimeLabel = roundedHourRu
                     )
 
                     buildNowcast(
@@ -514,6 +538,7 @@ object PrecipitationAnalyzer {
             val (headlineEs, labelEs) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.SPANISH, timeZone)
             val (headlineFr, labelFr) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.FRENCH, timeZone)
             val (headlinePt, labelPt) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.PORTUGUESE, timeZone)
+            val (headlineRu, labelRu) = formatTier4TimeOfDayExpression(rainyBlock.timestampMillis, AppLanguage.RUSSIAN, timeZone)
 
             val pop = rainyBlock.precipProbability
             val sourceKo = when {
@@ -534,6 +559,12 @@ object PrecipitationAnalyzer {
                 isEurope -> Triple("Pronóstico ECMWF", "Prévision ECMWF", "Previsão ECMWF")
                 else -> Triple("Pronóstico global", "Prévision mondiale", "Previsão global")
             }
+            val sourceRu = when {
+                isJapan -> "Прогноз JMA"
+                isUS -> "Прогноз NOAA/NWS"
+                isEurope -> "Прогноз ECMWF"
+                else -> "Глобальный прогноз"
+            }
 
             val multilingual = createMultilingualTexts(
                 jaHeadline = headlineJa,
@@ -544,6 +575,7 @@ object PrecipitationAnalyzer {
                 esHeadline = headlineEs,
                 frHeadline = headlineFr,
                 ptHeadline = headlinePt,
+                ruHeadline = headlineRu,
                 jaSubText = "${sourceJa}：降水確率${pop}%の雨が予想されています。明日の外出時は雨具をご準備ください。",
                 koSubText = "${sourceKo}: 강수확률 ${pop}%의 비가 예상됩니다. 내일 외출 시 우산을 준비하세요.",
                 enSubText = "${sourceEn}: ${pop}% chance of rain expected. Prepare rain gear for tomorrow.",
@@ -552,6 +584,7 @@ object PrecipitationAnalyzer {
                 esSubText = "${sourceEs}: ${pop}% de probabilidad de lluvia. Prepara ropa de lluvia para mañana.",
                 frSubText = "${sourceFr} : ${pop} % de risque de pluie. Prévoyez de quoi vous protéger demain.",
                 ptSubText = "${sourcePt}: ${pop}% de chance de chuva. Prepare capa ou guarda-chuva para amanhã.",
+                ruSubText = "${sourceRu}: вероятность дождя ${pop}%. Подготовьте зонт на завтра.",
                 jaTimeLabel = labelJa,
                 koTimeLabel = labelKo,
                 enTimeLabel = labelEn,
@@ -559,7 +592,8 @@ object PrecipitationAnalyzer {
                 zhTwTimeLabel = labelZhTw,
                 esTimeLabel = labelEs,
                 frTimeLabel = labelFr,
-                ptTimeLabel = labelPt
+                ptTimeLabel = labelPt,
+                ruTimeLabel = labelRu
             )
 
             return buildNowcast(
@@ -590,6 +624,7 @@ object PrecipitationAnalyzer {
                 esHeadline = "Se espera lluvia esta noche",
                 frHeadline = "Pluie attendue ce soir",
                 ptHeadline = "Previsão de chuva hoje à noite",
+                ruHeadline = "Сегодня вечером ожидается дождь",
                 jaSubText = "気象庁予報：今夜遅くにかけて所により雨が降る見込みです。お帰りの際はご注意ください。",
                 koSubText = "기상청 예보: 오늘 밤늦게 곳곳에 비가 내릴 전망입니다. 귀가 시 우산을 챙기세요.",
                 enSubText = "JMA Forecast: Rain expected in some areas late tonight. Carry an umbrella when heading home.",
@@ -598,6 +633,7 @@ object PrecipitationAnalyzer {
                 esSubText = "Pronóstico JMA: Se esperan lluvias dispersas a última hora de la noche. Lleva paraguas al volver.",
                 frSubText = "Prévision JMA : Pluies éparses attendues tard ce soir. Prévoyez un parapluie pour le retour.",
                 ptSubText = "Previsão JMA: Chuva isolada prevista para o fim da noite. Leve guarda-chuva ao voltar para casa.",
+                ruSubText = "Прогноз JMA: Поздно вечером местами ожидается дождь. Возьмите зонт на обратный путь.",
                 jaTimeLabel = "今夜遅く",
                 koTimeLabel = "오늘 밤늦게",
                 enTimeLabel = "Late Tonight",
@@ -605,7 +641,8 @@ object PrecipitationAnalyzer {
                 zhTwTimeLabel = "今晚較晚",
                 esTimeLabel = "Esta noche tarde",
                 frTimeLabel = "Tard ce soir",
-                ptTimeLabel = "Fim da noite"
+                ptTimeLabel = "Fim da noite",
+                ruTimeLabel = "Поздно вечером"
             )
 
             return buildNowcast(
@@ -637,6 +674,7 @@ object PrecipitationAnalyzer {
             esHeadline = "No se espera lluvia hoy",
             frHeadline = "Pas de pluie prévue aujourd'hui",
             ptHeadline = "Sem previsão de chuva hoje",
+            ruHeadline = "Сегодня дождь не ожидается",
             jaSubText = "当面雨は降らない見込みです。お出かけやお洗濯にも安心です。",
             koSubText = "당분간 비 소식이 없습니다. 외출이나 빨래하기 좋은 날씨입니다.",
             enSubText = "Clear conditions ahead. Great weather for going out or laundry.",
@@ -645,6 +683,7 @@ object PrecipitationAnalyzer {
             esSubText = "Sin lluvias a la vista. Buen tiempo para salir o tender la ropa.",
             frSubText = "Temps sec à venir. Idéal pour sortir ou étendre le linge.",
             ptSubText = "Sem chuva à vista. Ótimo tempo para sair ou estender roupas.",
+            ruSubText = "Осадков не предвидится. Отличная погода для прогулок и сушки белья.",
             jaTimeLabel = null,
             koTimeLabel = null,
             enTimeLabel = null,
@@ -652,7 +691,8 @@ object PrecipitationAnalyzer {
             zhTwTimeLabel = null,
             esTimeLabel = null,
             frTimeLabel = null,
-            ptTimeLabel = null
+            ptTimeLabel = null,
+            ruTimeLabel = null
         )
 
         return buildNowcast(
@@ -728,6 +768,7 @@ object PrecipitationAnalyzer {
             val timeLabelEs = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.SPANISH, timeZone) else roundToNearest10Min(peakTime, AppLanguage.SPANISH, timeZone)
             val timeLabelFr = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.FRENCH, timeZone) else roundToNearest10Min(peakTime, AppLanguage.FRENCH, timeZone)
             val timeLabelPt = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.PORTUGUESE, timeZone) else roundToNearest10Min(peakTime, AppLanguage.PORTUGUESE, timeZone)
+            val timeLabelRu = if (diffMin <= 60) formatTo5MinTime(peakTime, AppLanguage.RUSSIAN, timeZone) else roundToNearest10Min(peakTime, AppLanguage.RUSSIAN, timeZone)
 
             val multilingual = createMultilingualTexts(
                 jaHeadline = "${timeLabelJa}頃から雨がさらに強まる見込みです",
@@ -738,6 +779,7 @@ object PrecipitationAnalyzer {
                 esHeadline = "La lluvia se intensificará sobre las $timeLabelEs",
                 frHeadline = "Renforcement de la pluie vers $timeLabelFr",
                 ptHeadline = "Chuva ficando mais forte por volta das $timeLabelPt",
+                ruHeadline = "Дождь усилится около $timeLabelRu",
                 jaSubText = "現在より雨脚が強まり、激しい雨（約${formatPrecipMm(peakFrame.precipMmPerHour)}mm/h）となる恐れがあります。視界悪化にご注意ください。",
                 koSubText = "지금보다 빗줄기가 강해져 강한 비(약 ${formatPrecipMm(peakFrame.precipMmPerHour)} mm/h)가 내릴 수 있습니다. 시야 악화에 주의하세요.",
                 enSubText = "Rain will become heavier (est. ~${formatPrecipMm(peakFrame.precipMmPerHour)} mm/h). Watch out for poor visibility.",
@@ -746,6 +788,7 @@ object PrecipitationAnalyzer {
                 esSubText = "La lluvia se intensificará (aprox. ${formatPrecipMm(peakFrame.precipMmPerHour)} mm/h). Precaución por baja visibilidad.",
                 frSubText = "La pluie va s'intensifier (env. ${formatPrecipMm(peakFrame.precipMmPerHour)} mm/h). Attention à la baisse de visibilité.",
                 ptSubText = "A chuva vai ficar mais forte (aprox. ${formatPrecipMm(peakFrame.precipMmPerHour)} mm/h). Atenção à baixa visibilidade.",
+                ruSubText = "Дождь усилится (около ${formatPrecipMm(peakFrame.precipMmPerHour)} мм/ч). Будьте осторожны из-за плохой видимости.",
                 jaTimeLabel = timeLabelJa,
                 koTimeLabel = timeLabelKo,
                 enTimeLabel = timeLabelEn,
@@ -753,7 +796,8 @@ object PrecipitationAnalyzer {
                 zhTwTimeLabel = timeLabelZhTw,
                 esTimeLabel = timeLabelEs,
                 frTimeLabel = timeLabelFr,
-                ptTimeLabel = timeLabelPt
+                ptTimeLabel = timeLabelPt,
+                ruTimeLabel = timeLabelRu
             )
 
             return buildNowcast(
@@ -785,6 +829,7 @@ object PrecipitationAnalyzer {
             val timeLabelEs = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SPANISH, timeZone) else roundToNearest10Min(endTime, AppLanguage.SPANISH, timeZone)
             val timeLabelFr = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.FRENCH, timeZone) else roundToNearest10Min(endTime, AppLanguage.FRENCH, timeZone)
             val timeLabelPt = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.PORTUGUESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.PORTUGUESE, timeZone)
+            val timeLabelRu = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.RUSSIAN, timeZone) else roundToNearest10Min(endTime, AppLanguage.RUSSIAN, timeZone)
 
             val hours = diffMin / 60
             val mins = diffMin % 60
@@ -823,6 +868,11 @@ object PrecipitationAnalyzer {
                 hours > 0 -> "cerca de ${hours} hora${if (hours > 1) "s" else ""}"
                 else -> "cerca de ${mins} min"
             }
+            val durationRu = when {
+                hours > 0 && mins > 0 -> "около ${hours} ч ${mins} мин"
+                hours > 0 -> "около ${hours} ч"
+                else -> "около ${mins} мин"
+            }
 
             when {
                 // A. 短時間 (90分以内): 「もうすぐ雨が止む」
@@ -835,6 +885,7 @@ object PrecipitationAnalyzer {
                     val esHeadline = if (diffMin < 15) "Dejará de llover en breve" else "Dejará de llover sobre las $timeLabelEs"
                     val frHeadline = if (diffMin < 15) "La pluie va bientôt cesser" else "Fin de la pluie vers $timeLabelFr"
                     val ptHeadline = if (diffMin < 15) "A chuva deve parar em breve" else "A chuva deve parar por volta das $timeLabelPt"
+                    val ruHeadline = if (diffMin < 15) "Дождь скоро закончится" else "Дождь закончится около $timeLabelRu"
 
                     val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
                     val koSubText = "앞으로 ${durationKo} 동안 비가 이어질 전망입니다(${timeLabelKo}경 그침 예상). 차차 흐린 날씨로 회복됩니다."
@@ -844,6 +895,7 @@ object PrecipitationAnalyzer {
                     val esSubText = "Se espera lluvia durante $durationEs (parará sobre las $timeLabelEs). El tiempo mejorará gradualmente."
                     val frSubText = "Pluie prévue pendant $durationFr (fin vers $timeLabelFr). Le temps va s'améliorer progressivement."
                     val ptSubText = "Previsão de chuva por $durationPt (parando por volta das $timeLabelPt). O tempo deve melhorar gradualmente."
+                    val ruSubText = "Дождь продлится $durationRu (закончится около $timeLabelRu). Погода постепенно улучшится."
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = jaHeadline,
@@ -854,6 +906,7 @@ object PrecipitationAnalyzer {
                         esHeadline = esHeadline,
                         frHeadline = frHeadline,
                         ptHeadline = ptHeadline,
+                        ruHeadline = ruHeadline,
                         jaSubText = jaSubText,
                         koSubText = koSubText,
                         enSubText = enSubText,
@@ -862,6 +915,7 @@ object PrecipitationAnalyzer {
                         esSubText = esSubText,
                         frSubText = frSubText,
                         ptSubText = ptSubText,
+                        ruSubText = ruSubText,
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -869,7 +923,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
 
                     return buildNowcast(
@@ -899,6 +954,7 @@ object PrecipitationAnalyzer {
                     val esHeadline = "La lluvia continuará hasta las $timeLabelEs aprox."
                     val frHeadline = "La pluie continue jusqu'à environ $timeLabelFr"
                     val ptHeadline = "A chuva continua até por volta das $timeLabelPt"
+                    val ruHeadline = "Дождь продолжится примерно до $timeLabelRu"
 
                     val jaSubText = "あと${durationJa}雨が降り続く予想です。次第に雨脚が弱まる見込みです。"
                     val koSubText = "앞으로 ${durationKo} 동안 비가 이어질 예상입니다. 빗줄기가 차차 약해질 전망입니다."
@@ -908,6 +964,7 @@ object PrecipitationAnalyzer {
                     val esSubText = "Se espera que la lluvia continúe durante $durationEs y amaine gradualmente."
                     val frSubText = "La pluie devrait durer encore $durationFr avant de faiblir progressivement."
                     val ptSubText = "A chuva deve continuar por $durationPt e enfraquecer gradualmente."
+                    val ruSubText = "Дождь продлится $durationRu и постепенно ослабнет."
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = jaHeadline,
@@ -918,6 +975,7 @@ object PrecipitationAnalyzer {
                         esHeadline = esHeadline,
                         frHeadline = frHeadline,
                         ptHeadline = ptHeadline,
+                        ruHeadline = ruHeadline,
                         jaSubText = jaSubText,
                         koSubText = koSubText,
                         enSubText = enSubText,
@@ -926,6 +984,7 @@ object PrecipitationAnalyzer {
                         esSubText = esSubText,
                         frSubText = frSubText,
                         ptSubText = ptSubText,
+                        ruSubText = ruSubText,
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -933,7 +992,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
 
                     return buildNowcast(
@@ -964,6 +1024,7 @@ object PrecipitationAnalyzer {
                     val esHeadline = "La lluvia continuará durante las próximas ${approxHours} horas"
                     val frHeadline = "La pluie va continuer pendant les ${approxHours} prochaines heures"
                     val ptHeadline = "A chuva deve continuar pelas próximas ${approxHours} horas"
+                    val ruHeadline = "Дождь продолжится в ближайшие ${approxHours} ч"
 
                     val jaSubText = "${timeLabelJa}頃まで雨が降り続く予想です。お出かけやお帰りの際は雨具を必ずお持ちください。"
                     val koSubText = "${timeLabelKo}경까지 비가 이어질 예상입니다. 외출 및 귀가 시 꼭 우산을 챙기세요."
@@ -973,6 +1034,7 @@ object PrecipitationAnalyzer {
                     val esSubText = "Se espera lluvia hasta las $timeLabelEs aprox. Ten siempre un paraguas a mano."
                     val frSubText = "Pluie attendue jusqu'à environ $timeLabelFr. Gardez un parapluie à portée de main."
                     val ptSubText = "Previsão de chuva até por volta das $timeLabelPt. Mantenha um guarda-chuva por perto."
+                    val ruSubText = "Дождь ожидается примерно до $timeLabelRu. Держите зонт под рукой."
 
                     val multilingual = createMultilingualTexts(
                         jaHeadline = jaHeadline,
@@ -983,6 +1045,7 @@ object PrecipitationAnalyzer {
                         esHeadline = esHeadline,
                         frHeadline = frHeadline,
                         ptHeadline = ptHeadline,
+                        ruHeadline = ruHeadline,
                         jaSubText = jaSubText,
                         koSubText = koSubText,
                         enSubText = enSubText,
@@ -991,6 +1054,7 @@ object PrecipitationAnalyzer {
                         esSubText = esSubText,
                         frSubText = frSubText,
                         ptSubText = ptSubText,
+                        ruSubText = ruSubText,
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -998,7 +1062,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
 
                     return buildNowcast(
@@ -1030,6 +1095,7 @@ object PrecipitationAnalyzer {
             esHeadline = "La lluvia continuará durante más de 6 horas",
             frHeadline = "La pluie va continuer pendant plus de 6 heures",
             ptHeadline = "A chuva deve continuar pelas próximas 6+ horas",
+            ruHeadline = "Дождь продолжится более 6 часов",
             jaSubText = "今後6時間以上、まとまった雨が降り続く予想です。お足元や視界の悪化にご注意ください。",
             koSubText = "앞으로 6시간 이상 비가 계속 내릴 전망입니다. 빗길 미끄럼과 시야 악화에 주의하세요.",
             enSubText = "Steady rain expected to continue for the next 6+ hours. Take care on wet roads.",
@@ -1038,6 +1104,7 @@ object PrecipitationAnalyzer {
             esSubText = "Se espera lluvia constante durante más de 6 horas. Extrema la precaución en calzadas mojadas.",
             frSubText = "Pluie régulière attendue pendant plus de 6 heures. Soyez prudent sur les routes glissantes.",
             ptSubText = "Chuva constante prevista pelas próximas 6+ horas. Tenha cuidado em vias molhadas.",
+            ruSubText = "Устойчивый дождь ожидается более 6 часов. Будьте осторожны на мокрых дорогах.",
             jaTimeLabel = "当面の間",
             koTimeLabel = "6시간 이상",
             enTimeLabel = "6+ hours",
@@ -1045,7 +1112,8 @@ object PrecipitationAnalyzer {
             zhTwTimeLabel = "6小時以上",
             esTimeLabel = "Más de 6 h",
             frTimeLabel = "Plus de 6 h",
-            ptTimeLabel = "6+ horas"
+            ptTimeLabel = "6+ horas",
+            ruTimeLabel = "Более 6 ч"
         )
 
         return buildNowcast(
@@ -1482,6 +1550,12 @@ object PrecipitationAnalyzer {
                 in 12..17 -> Pair("Previsão de chuva amanhã à tarde", "Amanhã à tarde")
                 else -> Pair("Você vai precisar de guarda-chuva amanhã à noite", "Amanhã à noite")
             }
+            AppLanguage.RUSSIAN -> when (hour) {
+                in 0..5 -> Pair("Завтра на рассвете ожидается дождь", "Завтра на рассвете")
+                in 6..11 -> Pair("Завтра утром ожидается дождь", "Завтра утром")
+                in 12..17 -> Pair("Завтра днём ожидается дождь", "Завтра днём")
+                else -> Pair("Завтра вечером понадобится зонт", "Завтра вечером")
+            }
         }
     }
 
@@ -1494,6 +1568,7 @@ object PrecipitationAnalyzer {
         esHeadline: String,
         frHeadline: String,
         ptHeadline: String,
+        ruHeadline: String = enHeadline,
         jaSubText: String,
         koSubText: String,
         enSubText: String,
@@ -1502,6 +1577,7 @@ object PrecipitationAnalyzer {
         esSubText: String,
         frSubText: String,
         ptSubText: String,
+        ruSubText: String = enSubText,
         jaTimeLabel: String? = null,
         koTimeLabel: String? = null,
         enTimeLabel: String? = null,
@@ -1509,7 +1585,8 @@ object PrecipitationAnalyzer {
         zhTwTimeLabel: String? = null,
         esTimeLabel: String? = null,
         frTimeLabel: String? = null,
-        ptTimeLabel: String? = null
+        ptTimeLabel: String? = null,
+        ruTimeLabel: String? = enTimeLabel
     ): Triple<Map<String, String>, Map<String, String>, Map<String, String>> {
         val headlines = mapOf(
             AppLanguage.JAPANESE.code to jaHeadline,
@@ -1519,7 +1596,8 @@ object PrecipitationAnalyzer {
             AppLanguage.TRADITIONAL_CHINESE.code to zhTwHeadline,
             AppLanguage.SPANISH.code to esHeadline,
             AppLanguage.FRENCH.code to frHeadline,
-            AppLanguage.PORTUGUESE.code to ptHeadline
+            AppLanguage.PORTUGUESE.code to ptHeadline,
+            AppLanguage.RUSSIAN.code to ruHeadline
         )
         val subTexts = mapOf(
             AppLanguage.JAPANESE.code to jaSubText,
@@ -1529,7 +1607,8 @@ object PrecipitationAnalyzer {
             AppLanguage.TRADITIONAL_CHINESE.code to zhTwSubText,
             AppLanguage.SPANISH.code to esSubText,
             AppLanguage.FRENCH.code to frSubText,
-            AppLanguage.PORTUGUESE.code to ptSubText
+            AppLanguage.PORTUGUESE.code to ptSubText,
+            AppLanguage.RUSSIAN.code to ruSubText
         )
         val timeLabels = mutableMapOf<String, String>()
         if (jaTimeLabel != null) timeLabels[AppLanguage.JAPANESE.code] = jaTimeLabel
@@ -1540,6 +1619,7 @@ object PrecipitationAnalyzer {
         if (esTimeLabel != null) timeLabels[AppLanguage.SPANISH.code] = esTimeLabel
         if (frTimeLabel != null) timeLabels[AppLanguage.FRENCH.code] = frTimeLabel
         if (ptTimeLabel != null) timeLabels[AppLanguage.PORTUGUESE.code] = ptTimeLabel
+        if (ruTimeLabel != null) timeLabels[AppLanguage.RUSSIAN.code] = ruTimeLabel
 
         return Triple(headlines, subTexts, timeLabels)
     }
@@ -1679,6 +1759,7 @@ object PrecipitationAnalyzer {
             val timeLabelEs = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.SPANISH, timeZone) else roundToNearest10Min(endTime, AppLanguage.SPANISH, timeZone)
             val timeLabelFr = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.FRENCH, timeZone) else roundToNearest10Min(endTime, AppLanguage.FRENCH, timeZone)
             val timeLabelPt = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.PORTUGUESE, timeZone) else roundToNearest10Min(endTime, AppLanguage.PORTUGUESE, timeZone)
+            val timeLabelRu = if (diffMin <= 60) formatTo5MinTime(endTime, AppLanguage.RUSSIAN, timeZone) else roundToNearest10Min(endTime, AppLanguage.RUSSIAN, timeZone)
 
             val hours = diffMin / 60
             val mins = diffMin % 60
@@ -1717,6 +1798,11 @@ object PrecipitationAnalyzer {
                 hours > 0 -> "cerca de ${hours} hora${if (hours > 1) "s" else ""}"
                 else -> "cerca de ${mins} min"
             }
+            val durationRu = when {
+                hours > 0 && mins > 0 -> "около ${hours} ч ${mins} мин"
+                hours > 0 -> "около ${hours} ч"
+                else -> "около ${mins} мин"
+            }
 
             val multilingual = when {
                 diffMin <= 90 -> {
@@ -1728,6 +1814,7 @@ object PrecipitationAnalyzer {
                     val esHeadline = if (diffMin < 15) "Dejará de llover en breve" else "Dejará de llover sobre las $timeLabelEs"
                     val frHeadline = if (diffMin < 15) "La pluie va bientôt cesser" else "Fin de la pluie vers $timeLabelFr"
                     val ptHeadline = if (diffMin < 15) "A chuva deve parar em breve" else "A chuva deve parar por volta das $timeLabelPt"
+                    val ruHeadline = if (diffMin < 15) "Дождь скоро закончится" else "Дождь закончится около $timeLabelRu"
 
                     val jaSubText = "あと${durationJa}雨が降り続く見込みです（${timeLabelJa}頃に降り止み予想）。次第に曇り空へと回復する見込みです。"
                     val koSubText = "앞으로 ${durationKo} 동안 비가 이어질 전망입니다(${timeLabelKo}경 그침 예상). 차차 흐린 날씨로 회복됩니다."
@@ -1737,6 +1824,7 @@ object PrecipitationAnalyzer {
                     val esSubText = "Se espera lluvia durante $durationEs (parará sobre las $timeLabelEs). El tiempo mejorará gradualmente."
                     val frSubText = "Pluie prévue pendant $durationFr (fin vers $timeLabelFr). Le temps va s'améliorer progressivement."
                     val ptSubText = "Previsão de chuva por $durationPt (parando por volta das $timeLabelPt). O tempo deve melhorar gradualmente."
+                    val ruSubText = "Дождь продлится $durationRu (закончится около $timeLabelRu). Погода постепенно улучшится."
 
                     createMultilingualTexts(
                         jaHeadline = jaHeadline,
@@ -1747,6 +1835,7 @@ object PrecipitationAnalyzer {
                         esHeadline = esHeadline,
                         frHeadline = frHeadline,
                         ptHeadline = ptHeadline,
+                        ruHeadline = ruHeadline,
                         jaSubText = jaSubText,
                         koSubText = koSubText,
                         enSubText = enSubText,
@@ -1755,6 +1844,7 @@ object PrecipitationAnalyzer {
                         esSubText = esSubText,
                         frSubText = frSubText,
                         ptSubText = ptSubText,
+                        ruSubText = ruSubText,
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -1762,7 +1852,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
                 }
                 diffMin in 91..180 -> {
@@ -1775,6 +1866,7 @@ object PrecipitationAnalyzer {
                         esHeadline = "La lluvia continuará hasta las $timeLabelEs aprox.",
                         frHeadline = "La pluie continue jusqu'à environ $timeLabelFr",
                         ptHeadline = "A chuva continua até por volta das $timeLabelPt",
+                        ruHeadline = "Дождь продолжится примерно до $timeLabelRu",
                         jaSubText = "あと${durationJa}雨が降り続く予想です。次第に雨脚が弱まる見込みです。",
                         koSubText = "앞으로 ${durationKo} 동안 비가 이어질 예상입니다. 빗줄기가 차차 약해질 전망입니다.",
                         enSubText = "Rain expected to continue for $durationEn. Conditions will gradually ease.",
@@ -1783,6 +1875,7 @@ object PrecipitationAnalyzer {
                         esSubText = "Se espera que la lluvia continúe durante $durationEs y amaine gradualmente.",
                         frSubText = "La pluie devrait durer encore $durationFr avant de faiblir progressivement.",
                         ptSubText = "A chuva deve continuar por $durationPt e enfraquecer gradualmente.",
+                        ruSubText = "Дождь продлится $durationRu и постепенно ослабнет.",
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -1790,7 +1883,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
                 }
                 else -> {
@@ -1804,6 +1898,7 @@ object PrecipitationAnalyzer {
                         esHeadline = "La lluvia continuará durante las próximas ${approxHours} horas",
                         frHeadline = "La pluie va continuer pendant les ${approxHours} prochaines heures",
                         ptHeadline = "A chuva deve continuar pelas próximas ${approxHours} horas",
+                        ruHeadline = "Дождь продолжится в ближайшие ${approxHours} ч",
                         jaSubText = "${timeLabelJa}頃まで雨が降り続く予想です。お出かけやお帰りの際は雨具を必ずお持ちください。",
                         koSubText = "${timeLabelKo}경까지 비가 이어질 예상입니다. 외출 및 귀가 시 꼭 우산을 챙기세요.",
                         enSubText = "Rain expected to continue until around $timeLabelEn. Keep an umbrella handy.",
@@ -1812,6 +1907,7 @@ object PrecipitationAnalyzer {
                         esSubText = "Se espera lluvia hasta las $timeLabelEs aprox. Ten siempre un paraguas a mano.",
                         frSubText = "Pluie attendue jusqu'à environ $timeLabelFr. Gardez un parapluie à portée de main.",
                         ptSubText = "Previsão de chuva até por volta das $timeLabelPt. Mantenha um guarda-chuva por perto.",
+                        ruSubText = "Дождь ожидается примерно до $timeLabelRu. Держите зонт под рукой.",
                         jaTimeLabel = timeLabelJa,
                         koTimeLabel = timeLabelKo,
                         enTimeLabel = timeLabelEn,
@@ -1819,7 +1915,8 @@ object PrecipitationAnalyzer {
                         zhTwTimeLabel = timeLabelZhTw,
                         esTimeLabel = timeLabelEs,
                         frTimeLabel = timeLabelFr,
-                        ptTimeLabel = timeLabelPt
+                        ptTimeLabel = timeLabelPt,
+                        ruTimeLabel = timeLabelRu
                     )
                 }
             }
@@ -1927,6 +2024,7 @@ object PrecipitationAnalyzer {
                 val timeLabelEs = formatTo5MinTime(targetMillis, AppLanguage.SPANISH)
                 val timeLabelFr = formatTo5MinTime(targetMillis, AppLanguage.FRENCH)
                 val timeLabelPt = formatTo5MinTime(targetMillis, AppLanguage.PORTUGUESE)
+                val timeLabelRu = formatTo5MinTime(targetMillis, AppLanguage.RUSSIAN)
 
                 val multilingual = createMultilingualTexts(
                     jaHeadline = "${timeLabelJa}頃から雨が降り始めます",
@@ -1937,6 +2035,7 @@ object PrecipitationAnalyzer {
                     esHeadline = "Empezará a llover sobre las $timeLabelEs",
                     frHeadline = "Début de la pluie vers $timeLabelFr",
                     ptHeadline = "Chuva começando por volta das $timeLabelPt",
+                    ruHeadline = "Дождь начнётся около $timeLabelRu",
                     jaSubText = "あと約${diffMin}分で雨が降り始める見込みです。折りたたみ傘があると安心です。",
                     koSubText = "약 ${diffMin}분 후 비가 내리기 시작할 전망입니다. 접이식 우산을 챙기면 좋습니다.",
                     enSubText = "Rain is expected in about ${diffMin} min. An umbrella is recommended.",
@@ -1945,6 +2044,7 @@ object PrecipitationAnalyzer {
                     esSubText = "Se espera lluvia en unos ${diffMin} min. Se recomienda llevar paraguas.",
                     frSubText = "Pluie attendue dans environ ${diffMin} min. Un parapluie est conseillé.",
                     ptSubText = "Previsão de chuva em cerca de ${diffMin} min. Recomenda-se levar guarda-chuva.",
+                    ruSubText = "Дождь ожидается примерно через ${diffMin} мин. Рекомендуется взять зонт.",
                     jaTimeLabel = timeLabelJa,
                     koTimeLabel = timeLabelKo,
                     enTimeLabel = timeLabelEn,
@@ -1952,7 +2052,8 @@ object PrecipitationAnalyzer {
                     zhTwTimeLabel = timeLabelZhTw,
                     esTimeLabel = timeLabelEs,
                     frTimeLabel = timeLabelFr,
-                    ptTimeLabel = timeLabelPt
+                    ptTimeLabel = timeLabelPt,
+                    ruTimeLabel = timeLabelRu
                 )
 
                 buildNowcast(
@@ -1981,6 +2082,7 @@ object PrecipitationAnalyzer {
                 val timeLabelEs = formatTo5MinTime(targetMillis, AppLanguage.SPANISH)
                 val timeLabelFr = formatTo5MinTime(targetMillis, AppLanguage.FRENCH)
                 val timeLabelPt = formatTo5MinTime(targetMillis, AppLanguage.PORTUGUESE)
+                val timeLabelRu = formatTo5MinTime(targetMillis, AppLanguage.RUSSIAN)
 
                 val multilingual = createMultilingualTexts(
                     jaHeadline = "${timeLabelJa}頃に雨が止む見込みです",
@@ -1991,6 +2093,7 @@ object PrecipitationAnalyzer {
                     esHeadline = "Dejará de llover sobre las $timeLabelEs",
                     frHeadline = "Fin de la pluie vers $timeLabelFr",
                     ptHeadline = "A chuva deve parar por volta das $timeLabelPt",
+                    ruHeadline = "Дождь закончится около $timeLabelRu",
                     jaSubText = "雨が止むまであと約${diffMin}分です。次第に曇り空へと回復する見込みです。",
                     koSubText = "비가 그치기까지 약 ${diffMin}분 남았습니다. 차차 흐린 날씨로 회복될 전망입니다.",
                     enSubText = "About ${diffMin} min until rain stops. Conditions will gradually improve.",
@@ -1999,6 +2102,7 @@ object PrecipitationAnalyzer {
                     esSubText = "Quedan unos ${diffMin} min para que deje de llover. El tiempo mejorará gradualmente.",
                     frSubText = "Environ ${diffMin} min avant la fin de la pluie. Le temps va s'améliorer progressivement.",
                     ptSubText = "Faltam cerca de ${diffMin} min para a chuva parar. O tempo deve melhorar gradualmente.",
+                    ruSubText = "До окончания дождя около ${diffMin} мин. Погода постепенно улучшится.",
                     jaTimeLabel = timeLabelJa,
                     koTimeLabel = timeLabelKo,
                     enTimeLabel = timeLabelEn,
@@ -2006,7 +2110,8 @@ object PrecipitationAnalyzer {
                     zhTwTimeLabel = timeLabelZhTw,
                     esTimeLabel = timeLabelEs,
                     frTimeLabel = timeLabelFr,
-                    ptTimeLabel = timeLabelPt
+                    ptTimeLabel = timeLabelPt,
+                    ruTimeLabel = timeLabelRu
                 )
 
                 buildNowcast(
@@ -2036,6 +2141,7 @@ object PrecipitationAnalyzer {
                     esHeadline = "Se espera lluvia sobre las ${tonightHour}:00",
                     frHeadline = "Pluie attendue vers ${tonightHour}h00",
                     ptHeadline = "Previsão de chuva por volta das ${tonightHour}:00",
+                    ruHeadline = "Дождь ожидается около ${tonightHour}:00",
                     jaSubText = "今夜にかけてまとまった雨雲が広がる予想です（降水確率80%）。夜間のお帰りの際は傘をお持ちください。",
                     koSubText = "오늘 밤 비구름이 확대될 전망입니다(강수확률 80%). 귀가 시 우산을 챙기세요.",
                     enSubText = "Rain clouds expected tonight (80% chance). Don't forget an umbrella for tonight.",
@@ -2044,6 +2150,7 @@ object PrecipitationAnalyzer {
                     esSubText = "Se esperan nubes de lluvia esta noche (80% de prob.). No olvides el paraguas.",
                     frSubText = "Nuages pluvieux attendus ce soir (80 % de risque). N'oubliez pas votre parapluie.",
                     ptSubText = "Nuvens de chuva previstas para esta noite (80% de chance). Não esqueça o guarda-chuva.",
+                    ruSubText = "Сегодня вечером ожидаются дождевые облака (вероятность 80%). Не забудьте зонт.",
                     jaTimeLabel = "${tonightHour}時頃",
                     koTimeLabel = "${tonightHour}시경",
                     enTimeLabel = "${tonightHour}:00",
@@ -2051,7 +2158,8 @@ object PrecipitationAnalyzer {
                     zhTwTimeLabel = "${tonightHour}:00",
                     esTimeLabel = "${tonightHour}:00",
                     frTimeLabel = "${tonightHour}h00",
-                    ptTimeLabel = "${tonightHour}:00"
+                    ptTimeLabel = "${tonightHour}:00",
+                    ruTimeLabel = "${tonightHour}:00"
                 )
 
                 buildNowcast(
@@ -2079,6 +2187,7 @@ object PrecipitationAnalyzer {
                     esHeadline = "Necesitarás paraguas mañana al atardecer",
                     frHeadline = "Parapluie nécessaire demain en soirée",
                     ptHeadline = "Você vai precisar de guarda-chuva amanhã à noite",
+                    ruHeadline = "Завтра вечером понадобится зонт",
                     jaSubText = "気象庁予報：降水確率70%の雨が予想されています。明日の外出時は雨具をご準備ください。",
                     koSubText = "기상청 예보: 강수확률 70%의 비가 예상됩니다. 내일 외출 시 우산을 준비하세요.",
                     enSubText = "JMA Forecast: 70% chance of rain expected. Prepare rain gear for tomorrow.",
@@ -2087,6 +2196,7 @@ object PrecipitationAnalyzer {
                     esSubText = "Pronóstico JMA: 70% de probabilidad de lluvia. Prepara ropa de lluvia para mañana.",
                     frSubText = "Prévision JMA : 70 % de risque de pluie. Prévoyez de quoi vous protéger demain.",
                     ptSubText = "Previsão JMA: 70% de chance de chuva. Prepare capa ou guarda-chuva para amanhã.",
+                    ruSubText = "Прогноз JMA: вероятность дождя 70%. Подготовьте зонт на завтра.",
                     jaTimeLabel = "明日夕方以降",
                     koTimeLabel = "내일 저녁 이후",
                     enTimeLabel = "Tomorrow Evening",
@@ -2094,7 +2204,8 @@ object PrecipitationAnalyzer {
                     zhTwTimeLabel = "明天傍晚起",
                     esTimeLabel = "Mañana al atardecer",
                     frTimeLabel = "Demain en soirée",
-                    ptTimeLabel = "Amanhã à noite"
+                    ptTimeLabel = "Amanhã à noite",
+                    ruTimeLabel = "Завтра вечером"
                 )
 
                 buildNowcast(

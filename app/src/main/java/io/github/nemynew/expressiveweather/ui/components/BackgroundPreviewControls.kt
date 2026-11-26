@@ -45,6 +45,7 @@ internal fun BackgroundPreviewSettings(
                 AppLanguage.SPANISH -> "Depuración · Prueba de fondo"
                 AppLanguage.FRENCH -> "Débogage · Test d'arrière-plan"
                 AppLanguage.PORTUGUESE -> "Depuração · Teste de fundo"
+                AppLanguage.RUSSIAN -> "Отладка · Тест фона"
                 AppLanguage.ENGLISH -> "Debug · Background test"
             },
             style = MaterialTheme.typography.titleMedium
@@ -58,6 +59,7 @@ internal fun BackgroundPreviewSettings(
                 AppLanguage.SPANISH -> "Solo cambia el fondo. Las temperaturas y el pronóstico conservan los datos reales."
                 AppLanguage.FRENCH -> "Seul l'arrière-plan change. Les températures et prévisions conservent leurs valeurs réelles."
                 AppLanguage.PORTUGUESE -> "Apenas o fundo muda. As temperaturas e previsões mantêm os dados obtidos."
+                AppLanguage.RUSSIAN -> "Меняется только фон. Температура и прогноз остаются реальными."
                 AppLanguage.ENGLISH -> "Only the background changes. Temperatures and forecasts keep their fetched values."
             },
             style = MaterialTheme.typography.bodySmall
@@ -85,6 +87,7 @@ internal fun BackgroundPreviewSettings(
                             AppLanguage.SPANISH -> "Día"
                             AppLanguage.FRENCH -> "Jour"
                             AppLanguage.PORTUGUESE -> "Dia"
+                            AppLanguage.RUSSIAN -> "День"
                             AppLanguage.ENGLISH -> "Day"
                         }
                     )
@@ -103,6 +106,7 @@ internal fun BackgroundPreviewSettings(
                             AppLanguage.SPANISH -> "Noche"
                             AppLanguage.FRENCH -> "Nuit"
                             AppLanguage.PORTUGUESE -> "Noite"
+                            AppLanguage.RUSSIAN -> "Ночь"
                             AppLanguage.ENGLISH -> "Night"
                         }
                     )
@@ -119,6 +123,7 @@ internal fun BackgroundPreviewSettings(
                     AppLanguage.SPANISH -> "Usar clima real"
                     AppLanguage.FRENCH -> "Utiliser la météo réelle"
                     AppLanguage.PORTUGUESE -> "Usar clima real"
+                    AppLanguage.RUSSIAN -> "Вернуть реальную погоду"
                     AppLanguage.ENGLISH -> "Use actual weather"
                 }
             )
@@ -132,6 +137,7 @@ internal fun BackgroundPreviewSettings(
                 AppLanguage.SPANISH -> "Cierra este panel para ver el fondo."
                 AppLanguage.FRENCH -> "Fermez ce panneau pour observer l'arrière-plan."
                 AppLanguage.PORTUGUESE -> "Feche este painel para inspecionar o fundo."
+                AppLanguage.RUSSIAN -> "Закройте эту панель, чтобы увидеть фон."
                 AppLanguage.ENGLISH -> "Dismiss this sheet to inspect the background."
             },
             style = MaterialTheme.typography.bodySmall
@@ -145,6 +151,7 @@ internal fun BackgroundPreviewSettings(
                 AppLanguage.SPANISH -> "✨ Física giroscópica: Activa (inclina el dispositivo para ver nubes con paralaje 3D y lluvia o nieve inclinada)"
                 AppLanguage.FRENCH -> "✨ Physique gyroscopique : Active (inclinez l'appareil pour le parallaxe 3D des nuages et l'inclinaison de la pluie ou de la neige)"
                 AppLanguage.PORTUGUESE -> "✨ Física giroscópica: Ativa (incline o dispositivo para ver nuvens com paralaxe 3D e chuva ou neve inclinada)"
+                AppLanguage.RUSSIAN -> "✨ Физика гироскопа: активна (наклоните устройство для 3D-параллакса облаков и наклона дождя или снега)"
                 AppLanguage.ENGLISH -> "✨ Gyro motion physics: Active (tilt device to see 3D parallax clouds, slanted rain and snow drift)"
             },
             style = MaterialTheme.typography.labelSmall,
@@ -170,6 +177,7 @@ internal fun BackgroundPreviewPill(
         AppLanguage.SPANISH -> if (isDay) "Día" else "Noche"
         AppLanguage.FRENCH -> if (isDay) "Jour" else "Nuit"
         AppLanguage.PORTUGUESE -> if (isDay) "Dia" else "Noite"
+        AppLanguage.RUSSIAN -> if (isDay) "День" else "Ночь"
         AppLanguage.ENGLISH -> if (isDay) "Day" else "Night"
     }
     val previewPrefix = when (language) {
@@ -180,6 +188,7 @@ internal fun BackgroundPreviewPill(
         AppLanguage.SPANISH -> "Vista previa"
         AppLanguage.FRENCH -> "Aperçu"
         AppLanguage.PORTUGUESE -> "Prévia"
+        AppLanguage.RUSSIAN -> "Предпросмотр"
         AppLanguage.ENGLISH -> "Preview"
     }
     val stopDescription = when (language) {
@@ -190,6 +199,7 @@ internal fun BackgroundPreviewPill(
         AppLanguage.SPANISH -> "Detener vista previa"
         AppLanguage.FRENCH -> "Arrêter l'aperçu"
         AppLanguage.PORTUGUESE -> "Parar prévia"
+        AppLanguage.RUSSIAN -> "Остановить предпросмотр"
         AppLanguage.ENGLISH -> "Stop preview"
     }
     Surface(modifier = modifier, shape = RoundedCornerShape(50),

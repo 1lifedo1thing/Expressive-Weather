@@ -281,6 +281,7 @@ class CurrentLocationProvider(context: Context) {
             AppLanguage.SPANISH -> Locale("es", "ES")
             AppLanguage.FRENCH -> Locale.FRANCE
             AppLanguage.PORTUGUESE -> Locale("pt", "BR")
+            AppLanguage.RUSSIAN -> Locale("ru", "RU")
         }
         val fallbackCurrentName = when (savedLanguage) {
             AppLanguage.JAPANESE -> "現在地"
@@ -291,6 +292,7 @@ class CurrentLocationProvider(context: Context) {
             AppLanguage.SPANISH -> "Ubicación actual"
             AppLanguage.FRENCH -> "Position actuelle"
             AppLanguage.PORTUGUESE -> "Localização atual"
+            AppLanguage.RUSSIAN -> "Текущее местоположение"
         }
 
         var displayName = ""
@@ -303,6 +305,7 @@ class CurrentLocationProvider(context: Context) {
                 AppLanguage.SPANISH -> "Japón"
                 AppLanguage.FRENCH -> "Japon"
                 AppLanguage.PORTUGUESE -> "Japão"
+                AppLanguage.RUSSIAN -> "Япония"
             }
         } else ""
 

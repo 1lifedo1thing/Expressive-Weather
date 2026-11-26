@@ -86,6 +86,7 @@ fun isLocationOrCountryInJapan(country: String?, latitude: Double, longitude: Do
             lower.contains("japón") ||
             lower.contains("japon") ||
             lower.contains("japão") ||
+            lower.contains("япони") ||
             trimmed.equals("JP", ignoreCase = true) ||
             trimmed.equals("JPN", ignoreCase = true)
         return mentionsJapan && isLocationInJapan(latitude, longitude)
@@ -186,6 +187,15 @@ data class RainViewerColorLevel(
             50 -> "Aguaceiro intenso"
             else -> "Tempestade severa"
         }
+        AppLanguage.RUSSIAN -> when (dbzValue) {
+            15 -> "Слабый / Морось"
+            20 -> "Небольшой дождь"
+            25 -> "Умеренный дождь"
+            35 -> "Сильный дождь"
+            45 -> "Очень сильный дождь"
+            50 -> "Сильный ливень"
+            else -> "Сильная гроза"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -252,6 +262,15 @@ data class RainViewerColorLevel(
             45 -> "Chuva torrencial, cai com força (15-30 mm/h)"
             50 -> "Aguaceiro violento, risco de alagamentos (30-60 mm/h)"
             else -> "Intensidade máxima com risco de tempestades severas e granizo (60+ mm/h)"
+        }
+        AppLanguage.RUSSIAN -> when (dbzValue) {
+            15 -> "Очень слабый дождь или морось (0,1–1 мм/ч)"
+            20 -> "Небольшой дождь, нужен зонт (1–2 мм/ч)"
+            25 -> "Устойчивый дождь, промокает обувь (2–5 мм/ч)"
+            35 -> "Шумный продолжительный дождь (5–15 мм/ч)"
+            45 -> "Льёт как из ведра (15–30 мм/ч)"
+            50 -> "Мощный ливень, риск подтопления улиц (30–60 мм/ч)"
+            else -> "Максимальная интенсивность, риск грозы и града (60+ мм/ч)"
         }
     }
 }

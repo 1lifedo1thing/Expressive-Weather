@@ -21,6 +21,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana al atardecer"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain en soirée"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã à noite"
+                AppLanguage.RUSSIAN -> "Завтра вечером понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "明日の夜は傘が必要です" -> when (language) {
@@ -31,6 +32,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana por la noche"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain soir"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã à noite"
+                AppLanguage.RUSSIAN -> "Завтра вечером понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "明日の午後は傘が必要です" -> when (language) {
@@ -41,6 +43,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana por la tarde"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain après-midi"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã à tarde"
+                AppLanguage.RUSSIAN -> "Завтра днём понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "明日の午前中は傘が必要です" -> when (language) {
@@ -51,6 +54,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana por la mañana"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain matin"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã de manhã"
+                AppLanguage.RUSSIAN -> "Завтра утром понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "明日未明は傘が必要です" -> when (language) {
@@ -61,6 +65,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana de madrugada"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain avant l'aube"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã de madrugada"
+                AppLanguage.RUSSIAN -> "Завтра на рассвете понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "明日は傘が必要です" -> when (language) {
@@ -71,6 +76,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Necesitarás paraguas mañana"
                 AppLanguage.FRENCH -> "Parapluie nécessaire demain"
                 AppLanguage.PORTUGUESE -> "Você vai precisar de guarda-chuva amanhã"
+                AppLanguage.RUSSIAN -> "Завтра понадобится зонт"
                 AppLanguage.JAPANESE -> text
             }
             "今夜は雨が降るでしょう" -> when (language) {
@@ -81,6 +87,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Se espera lluvia esta noche"
                 AppLanguage.FRENCH -> "Pluie attendue ce soir"
                 AppLanguage.PORTUGUESE -> "Previsão de chuva hoje à noite"
+                AppLanguage.RUSSIAN -> "Сегодня вечером ожидается дождь"
                 AppLanguage.JAPANESE -> text
             }
             "まもなく雨が降り始めます" -> when (language) {
@@ -91,6 +98,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Empezará a llover en breve"
                 AppLanguage.FRENCH -> "La pluie va bientôt commencer"
                 AppLanguage.PORTUGUESE -> "Vai começar a chover em breve"
+                AppLanguage.RUSSIAN -> "Скоро начнётся дождь"
                 AppLanguage.JAPANESE -> text
             }
             "まもなく激しい雨が降ります" -> when (language) {
@@ -101,6 +109,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Lluvia intensa en breve"
                 AppLanguage.FRENCH -> "Forte pluie imminente"
                 AppLanguage.PORTUGUESE -> "Chuva forte começando em breve"
+                AppLanguage.RUSSIAN -> "Скоро начнётся сильный дождь"
                 AppLanguage.JAPANESE -> text
             }
             "まもなく雨が止む見込みです" -> when (language) {
@@ -111,6 +120,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Dejará de llover en breve"
                 AppLanguage.FRENCH -> "La pluie va bientôt cesser"
                 AppLanguage.PORTUGUESE -> "A chuva deve parar em breve"
+                AppLanguage.RUSSIAN -> "Дождь скоро закончится"
                 AppLanguage.JAPANESE -> text
             }
             "雨は当面の間降り続く見込みです" -> when (language) {
@@ -121,6 +131,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "La lluvia continuará por el momento"
                 AppLanguage.FRENCH -> "La pluie va continuer pour le moment"
                 AppLanguage.PORTUGUESE -> "A chuva deve continuar por enquanto"
+                AppLanguage.RUSSIAN -> "Дождь пока продолжится"
                 AppLanguage.JAPANESE -> text
             }
             "雨は当面の間（6時間以上）降り続く見込みです" -> when (language) {
@@ -131,6 +142,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "La lluvia continuará durante más de 6 horas"
                 AppLanguage.FRENCH -> "La pluie va continuer pendant plus de 6 heures"
                 AppLanguage.PORTUGUESE -> "A chuva deve continuar pelas próximas 6+ horas"
+                AppLanguage.RUSSIAN -> "Дождь продолжится более 6 часов"
                 AppLanguage.JAPANESE -> text
             }
             "明日の朝から雨が降る見込みです" -> when (language) {
@@ -141,6 +153,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Se espera lluvia mañana por la mañana"
                 AppLanguage.FRENCH -> "Pluie attendue demain matin"
                 AppLanguage.PORTUGUESE -> "Previsão de chuva amanhã de manhã"
+                AppLanguage.RUSSIAN -> "Завтра утром ожидается дождь"
                 AppLanguage.JAPANESE -> text
             }
             "激しい雨が続いています" -> when (language) {
@@ -151,6 +164,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Continúa la lluvia intensa"
                 AppLanguage.FRENCH -> "Forte pluie en cours"
                 AppLanguage.PORTUGUESE -> "Chuva forte continua"
+                AppLanguage.RUSSIAN -> "Сильный дождь продолжается"
                 AppLanguage.JAPANESE -> text
             }
             "雨が降り続いています" -> when (language) {
@@ -161,6 +175,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Sigue lloviendo"
                 AppLanguage.FRENCH -> "La pluie continue"
                 AppLanguage.PORTUGUESE -> "Continua chovendo"
+                AppLanguage.RUSSIAN -> "Дождь продолжается"
                 AppLanguage.JAPANESE -> text
             }
             "雨雲が接近しています" -> when (language) {
@@ -171,6 +186,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Se acercan nubes de lluvia"
                 AppLanguage.FRENCH -> "Nuages de pluie en approche"
                 AppLanguage.PORTUGUESE -> "Nuvens de chuva se aproximando"
+                AppLanguage.RUSSIAN -> "Приближаются дождевые облака"
                 AppLanguage.JAPANESE -> text
             }
             "今日いっぱいは雨の心配はありません" -> when (language) {
@@ -181,6 +197,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "No se espera lluvia hoy"
                 AppLanguage.FRENCH -> "Pas de pluie prévue aujourd'hui"
                 AppLanguage.PORTUGUESE -> "Sem previsão de chuva hoje"
+                AppLanguage.RUSSIAN -> "Сегодня дождь не ожидается"
                 AppLanguage.JAPANESE -> text
             }
             "当面、雨の心配はありません" -> when (language) {
@@ -191,6 +208,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "No se espera lluvia por ahora"
                 AppLanguage.FRENCH -> "Pas de pluie prévue pour le moment"
                 AppLanguage.PORTUGUESE -> "Sem previsão de chuva por enquanto"
+                AppLanguage.RUSSIAN -> "В ближайшее время дождь не ожидается"
                 AppLanguage.JAPANESE -> text
             }
             else -> {
@@ -207,6 +225,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Lluvia intensa a partir de las $time aprox."
                         AppLanguage.FRENCH -> "Forte pluie prévue vers $time"
                         AppLanguage.PORTUGUESE -> "Chuva forte começando por volta das $time"
+                        AppLanguage.RUSSIAN -> "Сильный дождь начнётся около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -223,6 +242,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Empezará a llover sobre las $time"
                         AppLanguage.FRENCH -> "Début de la pluie vers $time"
                         AppLanguage.PORTUGUESE -> "Chuva começando por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь начнётся около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -239,6 +259,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera lluvia sobre las $time"
                         AppLanguage.FRENCH -> "Pluie attendue vers $time"
                         AppLanguage.PORTUGUESE -> "Previsão de chuva por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь ожидается около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -255,6 +276,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera lluvia sobre las $time"
                         AppLanguage.FRENCH -> "Pluie attendue vers $time"
                         AppLanguage.PORTUGUESE -> "Previsão de chuva por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь ожидается около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -271,6 +293,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "La lluvia se intensificará sobre las $time"
                         AppLanguage.FRENCH -> "Renforcement de la pluie vers $time"
                         AppLanguage.PORTUGUESE -> "Chuva ficando mais forte por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь усилится около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -287,6 +310,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Pico de lluvia previsto sobre las $time"
                         AppLanguage.FRENCH -> "Pic de pluie attendu vers $time"
                         AppLanguage.PORTUGUESE -> "Pico de chuva previsto por volta das $time"
+                        AppLanguage.RUSSIAN -> "Пик дождя ожидается около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -303,6 +327,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Dejará de llover sobre las $time"
                         AppLanguage.FRENCH -> "Fin de la pluie vers $time"
                         AppLanguage.PORTUGUESE -> "A chuva deve parar por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь закончится около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -319,6 +344,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Dejará de llover sobre las $time"
                         AppLanguage.FRENCH -> "Fin de la pluie vers $time"
                         AppLanguage.PORTUGUESE -> "A chuva deve parar por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь закончится около $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -335,6 +361,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "La lluvia continuará hasta las $time aprox."
                         AppLanguage.FRENCH -> "La pluie continue jusqu'à environ $time"
                         AppLanguage.PORTUGUESE -> "A chuva continua até por volta das $time"
+                        AppLanguage.RUSSIAN -> "Дождь продолжится примерно до $time"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -350,6 +377,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "La lluvia continuará durante las próximas $hours horas"
                         AppLanguage.FRENCH -> "La pluie va continuer pendant les $hours prochaines heures"
                         AppLanguage.PORTUGUESE -> "A chuva deve continuar pelas próximas $hours horas"
+                        AppLanguage.RUSSIAN -> "Дождь продолжится в ближайшие $hours ч"
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -372,6 +400,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Pronóstico JMA: Se esperan lluvias dispersas a última hora de la noche. Lleva paraguas al volver."
                 AppLanguage.FRENCH -> "Prévision JMA : Pluies éparses attendues tard ce soir. Prévoyez un parapluie pour le retour."
                 AppLanguage.PORTUGUESE -> "Previsão JMA: Chuva isolada prevista para o fim da noite. Leve guarda-chuva ao voltar para casa."
+                AppLanguage.RUSSIAN -> "Прогноз JMA: Поздно вечером местами ожидается дождь. Возьмите зонт на обратный путь."
                 AppLanguage.JAPANESE -> text
             }
             text == "今後6時間以上、まとまった雨が降り続く予想です。お足元や視界の悪化にご注意ください。" -> when (language) {
@@ -382,6 +411,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Se espera lluvia constante durante más de 6 horas. Extrema la precaución en calzadas mojadas."
                 AppLanguage.FRENCH -> "Pluie régulière attendue pendant plus de 6 heures. Soyez prudent sur les routes glissantes."
                 AppLanguage.PORTUGUESE -> "Chuva constante prevista pelas próximas 6+ horas. Tenha cuidado em vias molhadas."
+                AppLanguage.RUSSIAN -> "Устойчивый дождь ожидается более 6 часов. Будьте осторожны на мокрых дорогах."
                 AppLanguage.JAPANESE -> text
             }
             text == "当面雨は降らない見込みです。お出かけやお洗濯にも安心です。" -> when (language) {
@@ -392,6 +422,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Sin lluvias a la vista. Buen tiempo para salir o tender la ropa."
                 AppLanguage.FRENCH -> "Temps sec à venir. Idéal pour sortir ou étendre le linge."
                 AppLanguage.PORTUGUESE -> "Sem chuva à vista. Ótimo tempo para sair ou estender roupas."
+                AppLanguage.RUSSIAN -> "Осадков не предвидится. Отличная погода для прогулок и сушки белья."
                 AppLanguage.JAPANESE -> text
             }
             else -> {
@@ -421,6 +452,13 @@ object PrecipitationNowcastTranslator {
                         "国際数値予報" -> Triple("Pronóstico global", "Prévision mondiale", "Previsão global")
                         else -> Triple("Pronóstico del tiempo", "Prévision météo", "Previsão do tempo")
                     }
+                    val sourceRu = when (source) {
+                        "気象庁予報" -> "Прогноз JMA"
+                        "NOAA/NWS予報" -> "Прогноз NOAA/NWS"
+                        "ECMWF予報" -> "Прогноз ECMWF"
+                        "国際数値予報" -> "Глобальный прогноз"
+                        else -> "Прогноз погоды"
+                    }
                     return when (language) {
                         AppLanguage.ENGLISH -> "$sourceEn: ${pop}% chance of rain expected. Prepare rain gear for tomorrow."
                         AppLanguage.KOREAN -> "$sourceKo: 강수확률 ${pop}%의 비가 예상됩니다. 내일 외출 시 우산을 준비하세요."
@@ -429,6 +467,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "$sourceEs: ${pop}% de probabilidad de lluvia. Prepara ropa de lluvia para mañana."
                         AppLanguage.FRENCH -> "$sourceFr : ${pop} % de risque de pluie. Prévoyez de quoi vous protéger demain."
                         AppLanguage.PORTUGUESE -> "$sourcePt: ${pop}% de chance de chuva. Prepare capa ou guarda-chuva para amanhã."
+                        AppLanguage.RUSSIAN -> "$sourceRu: вероятность дождя ${pop}%. Подготовьте зонт на завтра."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -445,6 +484,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se esperan nubes de lluvia esta noche (${pop}% de prob.). No olvides el paraguas."
                         AppLanguage.FRENCH -> "Nuages pluvieux attendus ce soir (${pop} % de risque). N'oubliez pas votre parapluie."
                         AppLanguage.PORTUGUESE -> "Nuvens de chuva previstas para esta noite (${pop}% de chance). Não esqueça o guarda-chuva."
+                        AppLanguage.RUSSIAN -> "Сегодня вечером ожидаются дождевые облака (вероятность ${pop}%). Не забудьте зонт."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -461,6 +501,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se acercan nubes de lluvia intensa (aprox. $mm mm/h). Busca refugio en interiores."
                         AppLanguage.FRENCH -> "Nuages de forte pluie en approche (env. $mm mm/h). Mettez-vous à l'abri."
                         AppLanguage.PORTUGUESE -> "Nuvens de chuva forte se aproximando (aprox. $mm mm/h). Abrigue-se em local seguro."
+                        AppLanguage.RUSSIAN -> "Приближаются тучи сильного дождя (около $mm мм/ч). Укройтесь в помещении."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -477,6 +518,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera lluvia en unos $min min. Ten un paraguas a mano."
                         AppLanguage.FRENCH -> "Pluie attendue dans environ $min min. Préparez votre parapluie."
                         AppLanguage.PORTUGUESE -> "Previsão de chuva em cerca de $min min. Deixe o guarda-chuva pronto."
+                        AppLanguage.RUSSIAN -> "Дождь ожидается примерно через $min мин. Держите зонт под рукой."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -493,6 +535,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera lluvia en unos $min min. Se recomienda llevar paraguas."
                         AppLanguage.FRENCH -> "Pluie attendue dans environ $min min. Un parapluie est conseillé."
                         AppLanguage.PORTUGUESE -> "Previsão de chuva em cerca de $min min. Recomenda-se levar guarda-chuva."
+                        AppLanguage.RUSSIAN -> "Дождь ожидается примерно через $min мин. Рекомендуется взять зонт."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -511,6 +554,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera lluvia sobre las $time (aprox. $mm mm/h). Lleva paraguas si vas a salir."
                         AppLanguage.FRENCH -> "Pluie attendue vers $time (env. $mm mm/h). Emportez un parapluie si vous sortez."
                         AppLanguage.PORTUGUESE -> "Previsão de chuva por volta das $time (aprox. $mm mm/h). Leve guarda-chuva se for sair."
+                        AppLanguage.RUSSIAN -> "Дождь ожидается около $time (около $mm мм/ч). Возьмите зонт, если выходите."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -527,6 +571,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Está lloviendo intensamente (aprox. $mm mm/h). Evita desplazamientos innecesarios."
                         AppLanguage.FRENCH -> "Forte pluie en cours (env. $mm mm/h). Évitez les déplacements inutiles."
                         AppLanguage.PORTUGUESE -> "Chuva intensa no momento (aprox. $mm mm/h). Evite sair sem necessidade."
+                        AppLanguage.RUSSIAN -> "Сейчас идёт сильный дождь (около $mm мм/ч). Избегайте лишних выходов."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -543,6 +588,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "La lluvia se intensificará (aprox. $mm mm/h). Precaución por baja visibilidad."
                         AppLanguage.FRENCH -> "La pluie va s'intensifier (env. $mm mm/h). Attention à la baisse de visibilité."
                         AppLanguage.PORTUGUESE -> "A chuva vai ficar mais forte (aprox. $mm mm/h). Atenção à baixa visibilidade."
+                        AppLanguage.RUSSIAN -> "Дождь усилится (около $mm мм/ч). Будьте осторожны из-за плохой видимости."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -560,6 +606,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Pico de lluvia previsto en unos $min min (aprox. $mm mm/h)."
                         AppLanguage.FRENCH -> "Pic de pluie attendu dans environ $min min (env. $mm mm/h)."
                         AppLanguage.PORTUGUESE -> "Pico de chuva previsto em cerca de $min min (aprox. $mm mm/h)."
+                        AppLanguage.RUSSIAN -> "Пик дождя ожидается примерно через $min мин (около $mm мм/ч)."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -576,6 +623,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Quedan unos $min min para que deje de llover. El tiempo mejorará gradualmente."
                         AppLanguage.FRENCH -> "Environ $min min avant la fin de la pluie. Le temps va s'améliorer progressivement."
                         AppLanguage.PORTUGUESE -> "Faltam cerca de $min min para a chuva parar. O tempo deve melhorar gradualmente."
+                        AppLanguage.RUSSIAN -> "До окончания дождя около $min мин. Погода постепенно улучшится."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -591,6 +639,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Dejará de llover en unos $min min. No olvides tu paraguas."
                         AppLanguage.FRENCH -> "La pluie devrait cesser dans environ $min min. N'oubliez pas votre parapluie."
                         AppLanguage.PORTUGUESE -> "A chuva deve parar em cerca de $min min. Não esqueça seu guarda-chuva."
+                        AppLanguage.RUSSIAN -> "Дождь закончится примерно через $min мин. Не забудьте свой зонт."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -608,6 +657,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "Se espera que deje de llover sobre las $time. Recuerda no olvidar tu paraguas."
                         AppLanguage.FRENCH -> "Fin de la pluie prévue vers $time. Pensez à ne pas oublier votre parapluie."
                         AppLanguage.PORTUGUESE -> "A chuva deve parar por volta das $time. Lembre-se de não esquecer o guarda-chuva."
+                        AppLanguage.RUSSIAN -> "Дождь закончится около $time. Не забудьте свой зонт."
                         AppLanguage.JAPANESE -> text
                     }
                 }
@@ -628,6 +678,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Mañana de madrugada"
                 AppLanguage.FRENCH -> "Demain avant l'aube"
                 AppLanguage.PORTUGUESE -> "Amanhã de madrugada"
+                AppLanguage.RUSSIAN -> "Завтра на рассвете"
                 AppLanguage.JAPANESE -> label
             }
             "明日の午前中" -> when (language) {
@@ -638,6 +689,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Mañana por la mañana"
                 AppLanguage.FRENCH -> "Demain matin"
                 AppLanguage.PORTUGUESE -> "Amanhã de manhã"
+                AppLanguage.RUSSIAN -> "Завтра утром"
                 AppLanguage.JAPANESE -> label
             }
             "明日の午後" -> when (language) {
@@ -648,6 +700,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Mañana por la tarde"
                 AppLanguage.FRENCH -> "Demain après-midi"
                 AppLanguage.PORTUGUESE -> "Amanhã à tarde"
+                AppLanguage.RUSSIAN -> "Завтра днём"
                 AppLanguage.JAPANESE -> label
             }
             "明日の夕方以降" -> when (language) {
@@ -658,6 +711,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Mañana al atardecer"
                 AppLanguage.FRENCH -> "Demain en soirée"
                 AppLanguage.PORTUGUESE -> "Amanhã ao entardecer"
+                AppLanguage.RUSSIAN -> "Завтра вечером"
                 AppLanguage.JAPANESE -> label
             }
             "明日の夜" -> when (language) {
@@ -668,6 +722,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Mañana por la noche"
                 AppLanguage.FRENCH -> "Demain soir"
                 AppLanguage.PORTUGUESE -> "Amanhã à noite"
+                AppLanguage.RUSSIAN -> "Завтра ночью"
                 AppLanguage.JAPANESE -> label
             }
             "当面の間" -> when (language) {
@@ -678,6 +733,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Por el momento"
                 AppLanguage.FRENCH -> "Pour le moment"
                 AppLanguage.PORTUGUESE -> "Por enquanto"
+                AppLanguage.RUSSIAN -> "В ближайшее время"
                 AppLanguage.JAPANESE -> label
             }
             "今夜遅く" -> when (language) {
@@ -688,6 +744,7 @@ object PrecipitationNowcastTranslator {
                 AppLanguage.SPANISH -> "Esta noche tarde"
                 AppLanguage.FRENCH -> "Tard ce soir"
                 AppLanguage.PORTUGUESE -> "Fim da noite"
+                AppLanguage.RUSSIAN -> "Поздно вечером"
                 AppLanguage.JAPANESE -> label
             }
             else -> {
@@ -702,6 +759,7 @@ object PrecipitationNowcastTranslator {
                         AppLanguage.SPANISH -> "$h:00"
                         AppLanguage.FRENCH -> "${h}h00"
                         AppLanguage.PORTUGUESE -> "$h:00"
+                        AppLanguage.RUSSIAN -> "$h:00"
                         AppLanguage.JAPANESE -> "${h}時"
                     }
                 }

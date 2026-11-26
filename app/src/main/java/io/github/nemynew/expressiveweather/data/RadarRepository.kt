@@ -19,6 +19,7 @@ enum class RadarSourceMode(
     val titleEs: String,
     val titleFr: String,
     val titlePt: String,
+    val titleRu: String,
     val descJa: String,
     val descEn: String,
     val descKo: String,
@@ -26,7 +27,8 @@ enum class RadarSourceMode(
     val descZhHant: String,
     val descEs: String,
     val descFr: String,
-    val descPt: String
+    val descPt: String,
+    val descRu: String
 ) {
     AUTO(
         "AUTO",
@@ -38,6 +40,7 @@ enum class RadarSourceMode(
         "Automático (JMA / NEXRAD EE. UU. / RainViewer)",
         "Auto (JMA / NEXRAD É.-U. / RainViewer)",
         "Automático (JMA / NEXRAD EUA / RainViewer)",
+        "Авто (JMA / NEXRAD США / RainViewer)",
         "日本は気象庁、アメリカはNEXRAD/HRRR、その他はRainViewerを自動切替",
         "Uses JMA in Japan, NEXRAD/HRRR in US, RainViewer elsewhere",
         "일본은 기상청(JMA), 미국은 NEXRAD/HRRR, 그 외 지역은 RainViewer 자동 전환",
@@ -45,7 +48,8 @@ enum class RadarSourceMode(
         "日本境內使用氣象廳，美國境內使用NEXRAD/HRRR，其他地區使用RainViewer",
         "Usa JMA en Japón, NEXRAD/HRRR en EE. UU. y RainViewer en el resto",
         "Utilise JMA au Japon, NEXRAD/HRRR aux É.-U. et RainViewer ailleurs",
-        "Usa JMA no Japão, NEXRAD/HRRR nos EUA e RainViewer nas demais regiões"
+        "Usa JMA no Japão, NEXRAD/HRRR nos EUA e RainViewer nas demais regiões",
+        "JMA в Японии, NEXRAD/HRRR в США и RainViewer в остальных регионах"
     ),
     JMA(
         "JMA",
@@ -57,6 +61,7 @@ enum class RadarSourceMode(
         "Agencia Meteorológica de Japón (JMA)",
         "Agence météorologique du Japon (JMA)",
         "Agência Meteorológica do Japão (JMA)",
+        "Метеорологическое агентство Японии (JMA)",
         "高精度降水ナウキャスト",
         "High-resolution precipitation nowcast",
         "고정밀 강수 초단기 예보",
@@ -64,7 +69,8 @@ enum class RadarSourceMode(
         "高解析度降雨即時預報",
         "Predicción inmediata de precipitaciones en alta resolución",
         "Prévision immédiate des précipitations haute résolution",
-        "Previsão imediata de precipitação em alta resolução"
+        "Previsão imediata de precipitação em alta resolução",
+        "Сверхкраткосрочный прогноз осадков высокого разрешения"
     ),
     US_NEXRAD_HRRR(
         "US_NEXRAD_HRRR",
@@ -76,6 +82,7 @@ enum class RadarSourceMode(
         "EE. UU. NEXRAD / HRRR (Obs., Ahora, Pronóstico)",
         "É.-U. NEXRAD / HRRR (Obs., Immédiat, Prévision)",
         "EUA NEXRAD / HRRR (Obs., Agora, Previsão)",
+        "США NEXRAD / HRRR (Набл., Прогноз, Модель)",
         "NEXRAD/MRMS実況＋直近0-60分外挿予測＋HRRR予報シミュレーション",
         "NEXRAD/MRMS Obs + 0-60m Extrapolation + HRRR Simulation Forecast",
         "NEXRAD/MRMS 실황 + 0~60분 외삽 예측 + HRRR 수치 예보",
@@ -83,7 +90,8 @@ enum class RadarSourceMode(
         "NEXRAD/MRMS實況＋0-60分外推預報＋HRRR模擬預報",
         "Observación NEXRAD/MRMS + extrapolación 0-60 min + simulación HRRR",
         "Observations NEXRAD/MRMS + extrapolation 0-60 min + simulation HRRR",
-        "Observação NEXRAD/MRMS + extrapolação 0-60 min + simulação HRRR"
+        "Observação NEXRAD/MRMS + extrapolação 0-60 min + simulação HRRR",
+        "Наблюдения NEXRAD/MRMS + экстраполяция 0–60 мин + модель HRRR"
     ),
     RAIN_VIEWER(
         "RAIN_VIEWER",
@@ -95,6 +103,7 @@ enum class RadarSourceMode(
         "Radar global (RainViewer)",
         "Radar mondial (RainViewer)",
         "Radar global (RainViewer)",
+        "Глобальный радар (RainViewer)",
         "世界中をカバーする広域降水レーダー",
         "Global radar coverage",
         "전 세계를 커버하는 광역 강수 레이더",
@@ -102,7 +111,8 @@ enum class RadarSourceMode(
         "涵蓋全球的廣域氣象雷達",
         "Cobertura de radar de precipitaciones a nivel mundial",
         "Couverture radar des précipitations dans le monde entier",
-        "Cobertura global de radar de precipitação"
+        "Cobertura global de radar de precipitação",
+        "Глобальное покрытие радара осадков"
     );
 
     fun title(language: AppLanguage): String = when (language) {
@@ -113,6 +123,7 @@ enum class RadarSourceMode(
         AppLanguage.SPANISH -> titleEs
         AppLanguage.FRENCH -> titleFr
         AppLanguage.PORTUGUESE -> titlePt
+        AppLanguage.RUSSIAN -> titleRu
         AppLanguage.ENGLISH -> titleEn
     }
 
@@ -124,6 +135,7 @@ enum class RadarSourceMode(
         AppLanguage.SPANISH -> descEs
         AppLanguage.FRENCH -> descFr
         AppLanguage.PORTUGUESE -> descPt
+        AppLanguage.RUSSIAN -> descRu
         AppLanguage.ENGLISH -> descEn
     }
 

@@ -322,6 +322,41 @@ data class GlobalAlertItem(
                 "Air Quality Alert" to "Alerta de qualidade do ar"
             )
 
+            val translationsRu = mapOf(
+                "Tornado Warning" to "Предупреждение о торнадо",
+                "Tornado Watch" to "Угроза торнадо",
+                "Severe Thunderstorm Warning" to "Предупреждение о сильной грозе",
+                "Severe Thunderstorm Watch" to "Угроза сильной грозы",
+                "Flash Flood Warning" to "Предупреждение о внезапном наводнении",
+                "Flash Flood Watch" to "Угроза внезапного наводнения",
+                "Flood Warning" to "Предупреждение о наводнении",
+                "Flood Watch" to "Угроза наводнения",
+                "Flood Advisory" to "Оповещение о подтоплении",
+                "Winter Storm Warning" to "Предупреждение о зимнем шторме",
+                "Winter Storm Watch" to "Угроза зимнего шторма",
+                "Winter Weather Advisory" to "Оповещение о зимней непогоде",
+                "Blizzard Warning" to "Предупреждение о сильной метели",
+                "Ice Storm Warning" to "Предупреждение о ледяном шторме",
+                "High Wind Warning" to "Предупреждение о сильном ветре",
+                "Wind Advisory" to "Оповещение о ветре",
+                "Excessive Heat Warning" to "Предупреждение об экстремальной жаре",
+                "Heat Advisory" to "Оповещение о жаре",
+                "Excessive Heat Watch" to "Угроза экстремальной жары",
+                "Hurricane Warning" to "Предупреждение об урагане",
+                "Hurricane Watch" to "Угроза урагана",
+                "Tropical Storm Warning" to "Предупреждение о тропическом шторме",
+                "Tropical Storm Watch" to "Угроза тропического шторма",
+                "Storm Surge Warning" to "Предупреждение о штормовом нагоне",
+                "Storm Surge Watch" to "Угроза штормового нагона",
+                "Red Flag Warning" to "Предупреждение о пожарной опасности",
+                "Fire Weather Watch" to "Угроза пожароопасной погоды",
+                "Coastal Flood Warning" to "Предупреждение о прибрежном наводнении",
+                "Dense Fog Advisory" to "Оповещение о густом тумане",
+                "Frost Advisory" to "Оповещение о заморозках",
+                "Freeze Warning" to "Предупреждение о сильных заморозках",
+                "Air Quality Alert" to "Предупреждение о качестве воздуха"
+            )
+
             val map = when (language) {
                 AppLanguage.JAPANESE -> translationsJa
                 AppLanguage.KOREAN -> translationsKo
@@ -330,6 +365,7 @@ data class GlobalAlertItem(
                 AppLanguage.SPANISH -> translationsEs
                 AppLanguage.FRENCH -> translationsFr
                 AppLanguage.PORTUGUESE -> translationsPt
+                AppLanguage.RUSSIAN -> translationsRu
                 AppLanguage.ENGLISH -> emptyMap()
             }
 
@@ -344,6 +380,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de tornado"
                         AppLanguage.FRENCH -> "Alerte de tornade"
                         AppLanguage.PORTUGUESE -> "Aviso de tornado"
+                    AppLanguage.RUSSIAN -> "Предупреждение о торнадо"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Hurricane", ignoreCase = true) -> when (language) {
@@ -354,6 +391,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de huracán"
                         AppLanguage.FRENCH -> "Alerte d'ouragan"
                         AppLanguage.PORTUGUESE -> "Aviso de furacão"
+                    AppLanguage.RUSSIAN -> "Предупреждение об урагане"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Thunderstorm", ignoreCase = true) -> when (language) {
@@ -364,6 +402,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de tormenta severa"
                         AppLanguage.FRENCH -> "Alerte d'orage violent"
                         AppLanguage.PORTUGUESE -> "Aviso de tempestade severa"
+                    AppLanguage.RUSSIAN -> "Предупреждение о сильной грозе"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Flash Flood", ignoreCase = true) -> when (language) {
@@ -374,6 +413,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de inundación repentina"
                         AppLanguage.FRENCH -> "Alerte de crue éclair"
                         AppLanguage.PORTUGUESE -> "Aviso de enchente relâmpago"
+                    AppLanguage.RUSSIAN -> "Предупреждение о внезапном наводнении"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Flood", ignoreCase = true) -> when (language) {
@@ -384,6 +424,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de inundación"
                         AppLanguage.FRENCH -> "Alerte d'inondation"
                         AppLanguage.PORTUGUESE -> "Aviso de inundação"
+                    AppLanguage.RUSSIAN -> "Предупреждение о наводнении"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Winter", ignoreCase = true) -> when (language) {
@@ -394,6 +435,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Aviso de tormenta invernal"
                         AppLanguage.FRENCH -> "Alerte de tempête hivernale"
                         AppLanguage.PORTUGUESE -> "Aviso de tempestade de inverno"
+                    AppLanguage.RUSSIAN -> "Предупреждение о зимнем шторме"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Heat", ignoreCase = true) -> when (language) {
@@ -404,6 +446,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Advertencia de calor"
                         AppLanguage.FRENCH -> "Avis de chaleur"
                         AppLanguage.PORTUGUESE -> "Alerta de calor"
+                    AppLanguage.RUSSIAN -> "Предупреждение о жаре"
                         AppLanguage.ENGLISH -> event
                     }
                     event.contains("Wind", ignoreCase = true) -> when (language) {
@@ -414,6 +457,7 @@ data class GlobalAlertItem(
                         AppLanguage.SPANISH -> "Advertencia de viento"
                         AppLanguage.FRENCH -> "Avis de vent fort"
                         AppLanguage.PORTUGUESE -> "Alerta de vento"
+                    AppLanguage.RUSSIAN -> "Предупреждение о ветре"
                         AppLanguage.ENGLISH -> event
                     }
                     else -> event
@@ -497,6 +541,16 @@ data class GlobalAlertItem(
                 else -> "Desastre natural"
             }
 
+            val typeNameRu = when (typeCode) {
+                "TC" -> "Тропический циклон / Тайфун / Ураган"
+                "EQ" -> "Сильное землетрясение"
+                "FL" -> "Крупное наводнение"
+                "VO" -> "Извержение вулкана"
+                "WF" -> "Крупный лесной пожар"
+                "DR" -> "Сильная засуха"
+                else -> "Стихийное бедствие"
+            }
+
             val prefix = when (language) {
                 AppLanguage.JAPANESE -> "GDACS全球警報: $typeNameJa"
                 AppLanguage.KOREAN -> "GDACS 글로벌 경보: $typeNameKo"
@@ -505,6 +559,7 @@ data class GlobalAlertItem(
                 AppLanguage.SPANISH -> "Alerta global GDACS: $typeNameEs"
                 AppLanguage.FRENCH -> "Alerte mondiale GDACS : $typeNameFr"
                 AppLanguage.PORTUGUESE -> "Alerta global GDACS: $typeNamePt"
+                AppLanguage.RUSSIAN -> "Глобальное оповещение GDACS: $typeNameRu"
                 AppLanguage.ENGLISH -> "GDACS Alert: $eventName"
             }
 
@@ -659,6 +714,26 @@ data class GlobalAlertItem(
                     lower.contains("fire") -> "Alerta de incêndio florestal"
                     else -> "Alerta OMM: $event"
                 }
+                AppLanguage.RUSSIAN -> when {
+                    lower.contains("cyclone") || lower.contains("typhoon") || lower.contains("hurricane") -> "Предупреждение о тропическом циклоне"
+                    lower.contains("convection") -> "Предупреждение о сильной конвекции"
+                    lower.contains("thunder") -> "Предупреждение о грозе"
+                    lower.contains("blizzard") -> "Предупреждение о сильной метели"
+                    lower.contains("flash flood") -> "Предупреждение о внезапном наводнении"
+                    lower.contains("flood") -> "Предупреждение о наводнении"
+                    lower.contains("rainstorm") || (lower.contains("rain") && lower.contains("heavy")) -> "Предупреждение о ливне"
+                    lower.contains("rain") -> "Предупреждение о сильном дожде"
+                    lower.contains("gale") -> "Штормовое предупреждение о ветре"
+                    lower.contains("wind") -> "Предупреждение о сильном ветре"
+                    lower.contains("snow") -> "Предупреждение о снегопаде"
+                    lower.contains("heat") || lower.contains("high temperature") -> "Предупреждение об экстремальной жаре"
+                    lower.contains("cold") || lower.contains("freeze") -> "Предупреждение об экстремальном холоде"
+                    lower.contains("frost") -> "Предупреждение о заморозках"
+                    lower.contains("fog") -> "Предупреждение о густом тумане"
+                    lower.contains("avalanche") -> "Предупреждение о лавинах"
+                    lower.contains("fire") -> "Предупреждение о лесных пожарах"
+                    else -> "Предупреждение ВМО: $event"
+                }
                 AppLanguage.ENGLISH -> event
             }
         }
@@ -783,6 +858,22 @@ data class GlobalAlertItem(
                     lower.contains("low-temperature") || lower.contains("low temp") || lower.contains("cold") || lower.contains("freeze") || lower.contains("kälte") || lower.contains("froid") || lower.contains("frio") || lower.contains("frío") -> "Alerta de frio extremo"
                     lower.contains("fog") || lower.contains("nebel") || lower.contains("brouillard") || lower.contains("niebla") || lower.contains("nevoeiro") -> "Alerta de nevoeiro denso"
                     else -> "Alerta MeteoAlarm: $event"
+                }
+                AppLanguage.RUSSIAN -> when {
+                    lower.contains("coastal") || lower.contains("costeir") -> "Предупреждение о прибрежном шторме"
+                    lower.contains("avalanche") || lower.contains("lawine") -> "Предупреждение о лавиноопасности"
+                    lower.contains("forest") || lower.contains("fire") || lower.contains("waldbrand") || lower.contains("incendie") || lower.contains("incêndio") || lower.contains("incendio") -> "Предупреждение о лесных пожарах"
+                    lower.contains("thunder") || lower.contains("gewitter") || lower.contains("orage") || lower.contains("tormenta") || lower.contains("trovoada") -> "Предупреждение о грозе"
+                    lower.contains("snow") || lower.contains("ice") || lower.contains("schnee") || lower.contains("neige") || lower.contains("nieve") || lower.contains("neve") || lower.contains("gelo") -> "Предупреждение о снеге и гололёде"
+                    lower.contains("flash flood") -> "Предупреждение о внезапном наводнении"
+                    lower.contains("flood") || lower.contains("hochwasser") || lower.contains("inondation") || lower.contains("inundaci") || lower.contains("cheia") -> "Предупреждение о наводнении"
+                    lower.contains("rain") || lower.contains("regen") || lower.contains("pluie") || lower.contains("lluvia") || lower.contains("chuva") -> "Предупреждение о сильном дожде"
+                    lower.contains("gale") || lower.contains("storm") || lower.contains("tempestade") -> "Штормовое предупреждение"
+                    lower.contains("wind") || lower.contains("böen") || lower.contains("vent") || lower.contains("viento") || lower.contains("vento") -> "Предупреждение о сильном ветре"
+                    lower.contains("high-temperature") || lower.contains("high temp") || lower.contains("heat") || lower.contains("hitze") || lower.contains("canicule") || lower.contains("calor") -> "Предупреждение об экстремальной жаре"
+                    lower.contains("low-temperature") || lower.contains("low temp") || lower.contains("cold") || lower.contains("freeze") || lower.contains("kälte") || lower.contains("froid") || lower.contains("frio") || lower.contains("frío") -> "Предупреждение об экстремальном холоде"
+                    lower.contains("fog") || lower.contains("nebel") || lower.contains("brouillard") || lower.contains("niebla") || lower.contains("nevoeiro") -> "Предупреждение о густом тумане"
+                    else -> "Оповещение MeteoAlarm: $event"
                 }
                 AppLanguage.ENGLISH -> event
             }

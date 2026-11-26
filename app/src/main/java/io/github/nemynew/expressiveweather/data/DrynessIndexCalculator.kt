@@ -28,6 +28,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Húmedo"
             AppLanguage.FRENCH -> "Humide"
             AppLanguage.PORTUGUESE -> "Úmido"
+            AppLanguage.RUSSIAN -> "Влажно"
         }
         SLIGHTLY_DRY -> when (language) {
             AppLanguage.JAPANESE -> "やや乾燥"
@@ -38,6 +39,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Algo seco"
             AppLanguage.FRENCH -> "Légèrement sec"
             AppLanguage.PORTUGUESE -> "Levemente seco"
+            AppLanguage.RUSSIAN -> "Слегка сухо"
         }
         DRY -> when (language) {
             AppLanguage.JAPANESE -> "乾燥"
@@ -48,6 +50,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Seco"
             AppLanguage.FRENCH -> "Sec"
             AppLanguage.PORTUGUESE -> "Seco"
+            AppLanguage.RUSSIAN -> "Сухо"
         }
         VERY_DRY -> when (language) {
             AppLanguage.JAPANESE -> "カラカラ"
@@ -58,6 +61,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Muy seco"
             AppLanguage.FRENCH -> "Très sec"
             AppLanguage.PORTUGUESE -> "Muito seco"
+            AppLanguage.RUSSIAN -> "Очень сухо"
         }
         EXTREME_DRY -> when (language) {
             AppLanguage.JAPANESE -> "超カラカラ"
@@ -68,6 +72,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Extremadamente seco"
             AppLanguage.FRENCH -> "Extrêmement sec"
             AppLanguage.PORTUGUESE -> "Extremamente seco"
+            AppLanguage.RUSSIAN -> "Крайне сухо"
         }
     }
 
@@ -81,6 +86,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Humedad suficiente; no requiere medidas contra la sequedad"
             AppLanguage.FRENCH -> "Humidité suffisante ; aucune mesure anti-sécheresse nécessaire"
             AppLanguage.PORTUGUESE -> "Umidade suficiente; não é necessário cuidado contra ressecamento"
+            AppLanguage.RUSSIAN -> "В воздухе достаточно влаги; меры против сухости не требуются"
         }
         SLIGHTLY_DRY -> when (language) {
             AppLanguage.JAPANESE -> "概ね快適だが敏感肌は保湿を意識したい"
@@ -91,6 +97,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Generalmente cómodo, aunque la piel sensible agradecerá hidratación"
             AppLanguage.FRENCH -> "Globalement confortable, mais les peaux sensibles gagnent à s'hydrater"
             AppLanguage.PORTUGUESE -> "Geralmente confortável, mas peles sensíveis se beneficiam de hidratação"
+            AppLanguage.RUSSIAN -> "В целом комфортно, но чувствительной коже полезно увлажнение"
         }
         DRY -> when (language) {
             AppLanguage.JAPANESE -> "肌や喉の乾きを感じ始める標準的な注意域"
@@ -101,6 +108,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Nivel de atención: la piel y la garganta comienzan a sentirse secas"
             AppLanguage.FRENCH -> "Seuil de vigilance : la peau et la gorge commencent à s'assécher"
             AppLanguage.PORTUGUESE -> "Faixa de atenção: pele e garganta começam a ressecar"
+            AppLanguage.RUSSIAN -> "Порог внимания: кожа и горло начинают ощущать сухость, стоит увлажнять"
         }
         VERY_DRY -> when (language) {
             AppLanguage.JAPANESE -> "肌荒れや感染症リスクが高く加湿と保湿が必要"
@@ -111,6 +119,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Alto riesgo de irritación y piel seca; se recomienda humidificar e hidratar"
             AppLanguage.FRENCH -> "Risque élevé de sécheresse cutanée et d'irritation ; humidifiez et hydratez"
             AppLanguage.PORTUGUESE -> "Alto risco de pele ressecada e irritação; umidifique e hidrate"
+            AppLanguage.RUSSIAN -> "Высокий риск сухости кожи и раздражения; нужны увлажнитель и уход"
         }
         EXTREME_DRY -> when (language) {
             AppLanguage.JAPANESE -> "真冬の強風・低湿などの極端な乾燥状態"
@@ -121,6 +130,7 @@ enum class DrynessRank(
             AppLanguage.SPANISH -> "Sequedad extrema por aire frío, viento fuerte o humedad muy baja"
             AppLanguage.FRENCH -> "Sécheresse extrême liée à l'air sec, au vent fort ou à une très faible humidité"
             AppLanguage.PORTUGUESE -> "Secura extrema causada por ar seco, vento forte ou umidade muito baixa"
+            AppLanguage.RUSSIAN -> "Экстремальная сухость из-за морозного воздуха, сильного ветра или очень низкой влажности"
         }
     }
 

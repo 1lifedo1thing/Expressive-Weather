@@ -105,7 +105,9 @@ import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
+import io.github.nemynew.expressiveweather.ui.components.DetailAtmosphereBackdrop
 import io.github.nemynew.expressiveweather.ui.components.WeatherIconHelper
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
 import java.util.Locale
 
@@ -154,6 +156,7 @@ fun TodayDetailScreen(
                         AppLanguage.SPANISH -> "Los datos meteorológicos no están disponibles"
                         AppLanguage.FRENCH -> "Les données météo ne sont pas disponibles"
                         AppLanguage.PORTUGUESE -> "Os dados do tempo não estão disponíveis"
+                        AppLanguage.RUSSIAN -> "Данные о погоде сейчас недоступны"
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -169,6 +172,7 @@ fun TodayDetailScreen(
                             AppLanguage.SPANISH -> "Volver"
                             AppLanguage.FRENCH -> "Retour"
                             AppLanguage.PORTUGUESE -> "Voltar"
+                            AppLanguage.RUSSIAN -> "Назад"
                         }
                     )
                 }
@@ -210,70 +214,16 @@ fun TodayDetailScreen(
         ) {
             val themeColorScheme = MaterialTheme.colorScheme
             val themeSurface = themeColorScheme.surface
-            val themeContainer = themeColorScheme.surfaceContainer
-            val themeContainerHigh = themeColorScheme.surfaceContainerHigh
-            val themeTint = themeColorScheme.surfaceTint
 
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to themeSurface,
-                            0.45f to themeContainer,
-                            1.0f to themeContainerHigh
-                        )
-                    )
-            ) {
-                // 1. Material You トーナルアンビエント背景
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1400f
-                            )
-                        )
+            Box(modifier = modifier.fillMaxSize()) {
+                // 1. ライブ天候フロスト背景（空色グラデーション + 動的パーティクル + すりガラス拡散）
+                DetailAtmosphereBackdrop(
+                    condition = dayCondition,
+                    isDay = isDay,
+                    isDark = isDark
                 )
 
-                // 2. Material You セカンダリアンビエント光彩
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(1100f, 1800f),
-                                radius = 1400f
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1100f
-                            )
-                        )
-                )
-
-                // 4. メインコンテンツ
+                // 2. メインコンテンツ
                 val scrollState = rememberScrollState()
                 val density = LocalDensity.current
                 val fadeHeightDp = 52.dp
@@ -288,8 +238,8 @@ fun TodayDetailScreen(
                             .fillMaxWidth()
                             .background(
                                 Brush.verticalGradient(
-                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.88f else 0.80f),
-                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.58f),
+                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.56f),
+                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.42f else 0.30f),
                                     1.0f to themeSurface.copy(alpha = 0f)
                                 )
                             )
@@ -304,7 +254,11 @@ fun TodayDetailScreen(
                             // 戻るボタン
                             Surface(
                                 shape = CircleShape,
-                                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.90f),
+                                color = getDetailCardColor(
+                                    isDark = isDark,
+                                    colorScheme = themeColorScheme,
+                                    alpha = if (isDark) 0.78f else 0.80f
+                                ),
                                 modifier = Modifier
                                     .size(44.dp)
                                     .m3eBouncyClick(scaleDown = 0.88f, overshootScale = 1.12f) {
@@ -335,6 +289,7 @@ fun TodayDetailScreen(
                                         AppLanguage.SPANISH -> "Detalles del tiempo a 7 días"
                                         AppLanguage.FRENCH -> "Détails météo sur 7 jours"
                                         AppLanguage.PORTUGUESE -> "Detalhes do tempo para 7 dias"
+                                        AppLanguage.RUSSIAN -> "Прогноз на 7 дней"
                                     },
                                     fontFamily = GoogleSansFlex,
                                     fontWeight = FontWeight.Bold,
@@ -496,7 +451,7 @@ private fun DaySelectorCapsuleRow(
 
             Surface(
                 shape = RoundedCornerShape(20.dp),
-                color = if (isSelected) colorScheme.primaryContainer else colorScheme.surfaceContainerHigh.copy(alpha = 0.8f),
+                color = if (isSelected) colorScheme.primaryContainer else getDetailCardColor(colorScheme = colorScheme),
                 modifier = Modifier
                     .m3eBouncyClick(scaleDown = 0.94f) {
                         onDaySelected(index)
@@ -584,7 +539,7 @@ private fun HeroDaySection(
 
     Surface(
         shape = RoundedCornerShape(32.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -650,6 +605,7 @@ private fun HeroDaySection(
                                 AppLanguage.SPANISH -> "Lluvia ${day.precipProb}%"
                                 AppLanguage.FRENCH -> "Pluie ${day.precipProb} %"
                                 AppLanguage.PORTUGUESE -> "Chuva ${day.precipProb}%"
+                                AppLanguage.RUSSIAN -> "Осадки ${day.precipProb}%"
                             }
                             Surface(
                                 shape = RoundedCornerShape(12.dp),
@@ -917,7 +873,7 @@ private fun InteractiveHourlyWeatherChart(
 
     Surface(
         shape = RoundedCornerShape(32.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -1328,7 +1284,7 @@ private fun LifestyleAdviceCard(
 
     Surface(
         shape = RoundedCornerShape(22.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -1411,6 +1367,7 @@ private fun DetailedWeatherMetricsSection(
             AppLanguage.SPANISH -> "Sin datos"
             AppLanguage.FRENCH -> "Aucune donnée"
             AppLanguage.PORTUGUESE -> "Sem dados"
+            AppLanguage.RUSSIAN -> "Нет данных"
         }
     }
 
@@ -1505,7 +1462,7 @@ private fun MetricItemCard(
 
     Surface(
         shape = RoundedCornerShape(22.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = modifier
     ) {
         Column(
@@ -1660,6 +1617,18 @@ private fun generateDaySmartSummary(
                 "Tempo frio durante todo o dia. Agasalhe-se bem com casaco ou jaqueta quente."
             else ->
                 "Previsão de tempo ameno e agradável. Um ótimo dia para passeios e atividades ao ar livre."
+        }
+        AppLanguage.RUSSIAN -> when {
+            maxProb >= 60 || sumMm >= 5.0 ->
+                "Ожидаются частые дожди. Обязательно возьмите зонт или дождевик."
+            maxProb in 25..59 ->
+                "Возможны кратковременные дожди. Рекомендуется взять складной зонт."
+            maxTemp >= 28 ->
+                "Жаркий день с высокой температурой. Пейте больше воды и берегитесь солнца."
+            maxTemp <= 12 ->
+                "Прохладно в течение всего дня. Оденьтесь потеплее — куртка или пальто пригодятся."
+            else ->
+                "Мягкая и приятная погода. Отличный день для прогулок и дел на свежем воздухе."
         }
     }
 }

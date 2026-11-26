@@ -269,6 +269,7 @@ fun TabletNavigationDrawer(
                             AppLanguage.SPANISH -> "Ciudades"
                             AppLanguage.FRENCH -> "Villes"
                             AppLanguage.PORTUGUESE -> "Cidades"
+                            AppLanguage.RUSSIAN -> "Города"
                             AppLanguage.ENGLISH -> "Cities"
                         },
                         style = MaterialTheme.typography.titleLarge,
@@ -375,6 +376,7 @@ fun TabletNavigationDrawer(
                             AppLanguage.SPANISH -> "Resultados"
                             AppLanguage.FRENCH -> "Résultats"
                             AppLanguage.PORTUGUESE -> "Resultados"
+                            AppLanguage.RUSSIAN -> "Результаты"
                             AppLanguage.ENGLISH -> "Search Results"
                         },
                         style = MaterialTheme.typography.labelLarge,

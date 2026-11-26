@@ -164,6 +164,7 @@ fun SettingsBottomSheet(
                             AppLanguage.SPANISH -> "Idioma, unidades, alertas y háptica"
                             AppLanguage.FRENCH -> "Langue, unités, alertes et haptique"
                             AppLanguage.PORTUGUESE -> "Idioma, unidades, alertas e tato"
+                            AppLanguage.RUSSIAN -> "Язык, единицы, оповещения и виброотклик"
                             AppLanguage.ENGLISH -> "Language, units, alerts & haptics"
                         },
                         leadingIcon = Icons.Rounded.Tune,
@@ -192,6 +193,7 @@ fun SettingsBottomSheet(
                             AppLanguage.SPANISH -> "Tema, efecto vidrio y formas"
                             AppLanguage.FRENCH -> "Thème, verre dépoli et formes"
                             AppLanguage.PORTUGUESE -> "Tema, vidro fosco e formas"
+                            AppLanguage.RUSSIAN -> "Тема, стекло и формы"
                             AppLanguage.ENGLISH -> "Theme, glass & shapes"
                         },
                         leadingIcon = Icons.Rounded.Palette,
@@ -220,6 +222,7 @@ fun SettingsBottomSheet(
                             AppLanguage.SPANISH -> "Radar, alertas globales y caché"
                             AppLanguage.FRENCH -> "Radar, alertes mondiales et cache"
                             AppLanguage.PORTUGUESE -> "Radar, alertas globais e cache"
+                            AppLanguage.RUSSIAN -> "Радар, мировые оповещения и кэш"
                             AppLanguage.ENGLISH -> "Radar, global alerts & cache"
                         },
                         leadingIcon = Icons.Rounded.Storage,

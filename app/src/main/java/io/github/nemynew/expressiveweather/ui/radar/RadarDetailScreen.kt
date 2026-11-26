@@ -174,7 +174,10 @@ data class RainIntensityLevel(
     val warningFr: String,
     val namePt: String,
     val impactPt: String,
-    val warningPt: String
+    val warningPt: String,
+    val nameRu: String,
+    val impactRu: String,
+    val warningRu: String
 ) {
     fun name(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> nameJa
@@ -185,6 +188,7 @@ data class RainIntensityLevel(
         AppLanguage.SPANISH -> nameEs
         AppLanguage.FRENCH -> nameFr
         AppLanguage.PORTUGUESE -> namePt
+        AppLanguage.RUSSIAN -> nameRu
     }
     fun impact(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> impactJa
@@ -195,6 +199,7 @@ data class RainIntensityLevel(
         AppLanguage.SPANISH -> impactEs
         AppLanguage.FRENCH -> impactFr
         AppLanguage.PORTUGUESE -> impactPt
+        AppLanguage.RUSSIAN -> impactRu
     }
     fun warning(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> warningJa
@@ -205,6 +210,7 @@ data class RainIntensityLevel(
         AppLanguage.SPANISH -> warningEs
         AppLanguage.FRENCH -> warningFr
         AppLanguage.PORTUGUESE -> warningPt
+        AppLanguage.RUSSIAN -> warningRu
     }
 }
 
@@ -236,7 +242,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Risque extrême de catastrophe. Alerte maximale aux crues et glissements de terrain.",
         namePt = "Chuva torrencial",
         impactPt = "Sensação opressiva que dificulta respirar; visibilidade bloqueada pela cortina de água.",
-        warningPt = "Risco extremo de desastre. Alerta máximo para enchentes e deslizamentos de terra."
+        warningPt = "Risco extremo de desastre. Alerta máximo para enchentes e deslizamentos de terra.",
+        nameRu = "Проливной ливень",
+        impactRu = "Тяжёлое ощущение духоты; видимость полностью перекрыта стеной воды.",
+        warningRu = "Крайняя опасность бедствия. Максимальная тревога по наводнениям и оползням."
     ),
     RainIntensityLevel(
         rangeLabel = "50〜80",
@@ -265,7 +274,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Vigilance face aux inondations de zones basses et sous-sols, glissements et crues rapides.",
         namePt = "Chuva muito forte",
         impactPt = "Cai como uma cachoeira; o guarda-chuva não tem utilidade alguma.",
-        warningPt = "Alerta para alagamentos em áreas baixas e subsolos, deslizamentos e cheias rápidas."
+        warningPt = "Alerta para alagamentos em áreas baixas e subsolos, deslizamentos e cheias rápidas.",
+        nameRu = "Очень сильный ливень",
+        impactRu = "Льёт как водопад; зонт совершенно бесполезен.",
+        warningRu = "Опасность подтопления низин и подвалов, оползней и резкого подъёма рек."
     ),
     RainIntensityLevel(
         rangeLabel = "30〜50",
@@ -294,7 +306,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Les routes se transforment en ruisseaux ; risque d'aquaplaning à vive allure.",
         namePt = "Chuva forte",
         impactPt = "Chove torrencialmente, como se despejassem baldes de água.",
-        warningPt = "As vias ficam alagadas; veículos em alta velocidade correm risco de aquaplanagem."
+        warningPt = "As vias ficam alagadas; veículos em alta velocidade correm risco de aquaplanagem.",
+        nameRu = "Сильный ливень",
+        impactRu = "Льёт как из ведра.",
+        warningRu = "Дороги превращаются в потоки воды; на высокой скорости велик риск аквапланирования."
     ),
     RainIntensityLevel(
         rangeLabel = "20〜30",
@@ -323,7 +338,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Les caniveaux, égouts et petits cours d'eau peuvent déborder.",
         namePt = "Chuva intensa",
         impactPt = "Aguaceiro forte; a roupa molha mesmo usando guarda-chuva.",
-        warningPt = "Bueiros, sarjetas e pequenos córregos podem transbordar."
+        warningPt = "Bueiros, sarjetas e pequenos córregos podem transbordar.",
+        nameRu = "Сильный дождь",
+        impactRu = "Проливной дождь; одежда намокает даже под зонтом.",
+        warningRu = "Ливнёвки, канавы и небольшие ручьи могут переполниться."
     ),
     RainIntensityLevel(
         rangeLabel = "10〜20",
@@ -352,7 +370,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Des flaques se forment partout ; l'humidité traverse les vêtements à la longue.",
         namePt = "Chuva moderada",
         impactPt = "Chuva com barulho constante; calçados e pés se molham com facilidade.",
-        warningPt = "Formam-se poças por todo o chão; a umidade encharca a roupa com o tempo."
+        warningPt = "Formam-se poças por todo o chão; a umidade encharca a roupa com o tempo.",
+        nameRu = "Умеренно сильный дождь",
+        impactRu = "Шумный постоянный дождь; обувь и ноги быстро промокают.",
+        warningRu = "Повсюду образуются лужи; при долгом пребывании на улице одежда промокает."
     ),
     RainIntensityLevel(
         rangeLabel = "5〜10",
@@ -381,7 +402,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Parapluie nécessaire pour marcher dehors ; nombreuses petites flaques.",
         namePt = "Chuva contínua",
         impactPt = "Chuva constante com som bem audível ao redor.",
-        warningPt = "É necessário guarda-chuva para sair; formam-se várias poças."
+        warningPt = "É necessário guarda-chuva para sair; formam-se várias poças.",
+        nameRu = "Умеренный дождь",
+        impactRu = "Ровный дождь с отчётливым шумом вокруг.",
+        warningRu = "Для прогулки необходим зонт; образуются многочисленные лужи."
     ),
     RainIntensityLevel(
         rangeLabel = "1〜5",
@@ -410,7 +434,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Un parapluie pliant est recommandé pour sortir.",
         namePt = "Chuva fraca",
         impactPt = "Chuva leve e suave; você se molhará sem proteção.",
-        warningPt = "Recomenda-se levar um guarda-chuva dobrável ao sair."
+        warningPt = "Recomenda-se levar um guarda-chuva dobrável ao sair.",
+        nameRu = "Слабый дождь",
+        impactRu = "Тихий моросящий дождь; без зонта можно промокнуть.",
+        warningRu = "Рекомендуется взять с собой складной зонт."
     ),
     RainIntensityLevel(
         rangeLabel = "0.1〜1",
@@ -439,7 +466,10 @@ val RAIN_INTENSITY_LEVELS = listOf(
         warningFr = "Le sol est légèrement humide ; un parapluie est utile pour marcher longtemps.",
         namePt = "Garoa",
         impactPt = "Garoa muito leve, suportável por pouco tempo sem guarda-chuva.",
-        warningPt = "O chão fica levemente úmido; um guarda-chuva ajuda em caminhadas longas."
+        warningPt = "O chão fica levemente úmido; um guarda-chuva ajuda em caminhadas longas.",
+        nameRu = "Морось",
+        impactRu = "Очень слабый дождь, переносимый недолго без зонта.",
+        warningRu = "Земля слегка влажная; при долгой ходьбе пригодится зонт."
     )
 )
 
@@ -487,7 +517,10 @@ data class RadarLegendLevelItem(
     val warningFr: String,
     val namePt: String,
     val impactPt: String,
-    val warningPt: String
+    val warningPt: String,
+    val nameRu: String,
+    val impactRu: String,
+    val warningRu: String
 ) {
     fun name(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> nameJa
@@ -498,6 +531,7 @@ data class RadarLegendLevelItem(
         AppLanguage.SPANISH -> nameEs
         AppLanguage.FRENCH -> nameFr
         AppLanguage.PORTUGUESE -> namePt
+        AppLanguage.RUSSIAN -> nameRu
     }
     fun impact(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> impactJa
@@ -508,6 +542,7 @@ data class RadarLegendLevelItem(
         AppLanguage.SPANISH -> impactEs
         AppLanguage.FRENCH -> impactFr
         AppLanguage.PORTUGUESE -> impactPt
+        AppLanguage.RUSSIAN -> impactRu
     }
     fun warning(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> warningJa
@@ -518,6 +553,7 @@ data class RadarLegendLevelItem(
         AppLanguage.SPANISH -> warningEs
         AppLanguage.FRENCH -> warningFr
         AppLanguage.PORTUGUESE -> warningPt
+        AppLanguage.RUSSIAN -> warningRu
     }
 }
 
@@ -549,7 +585,10 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningFr = "Danger extrême de foudre. Abritez-vous immédiatement dans un bâtiment solide ou un véhicule.",
         namePt = "Raios intensos",
         impactPt = "Atividade elétrica intensa; alta probabilidade de tempestade severa, rajadas e granizo.",
-        warningPt = "Risco extremo de raios. Abrigue-se imediatamente em um prédio resistente ou veículo."
+        warningPt = "Risco extremo de raios. Abrigue-se imediatamente em um prédio resistente ou veículo.",
+        nameRu = "Сильнейшая гроза",
+        impactRu = "Интенсивные разряды молний; очень вероятны шквалы и град.",
+        warningRu = "Крайняя опасность молний. Немедленно укройтесь в прочном здании или автомобиле."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 3",
@@ -578,7 +617,10 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningFr = "Risque élevé de foudroiement. Mettez-vous rapidement à l'abri à l'intérieur.",
         namePt = "Raios ativos",
         impactPt = "Vários raios registrados; alto risco de descargas elétricas.",
-        warningPt = "Alto risco de queda de raios. Procure abrigo em local fechado rapidamente."
+        warningPt = "Alto risco de queda de raios. Procure abrigo em local fechado rapidamente.",
+        nameRu = "Активная гроза",
+        impactRu = "Наблюдаются частые удары молний; высокая грозовая опасность.",
+        warningRu = "Высокий риск удара молнии. Как можно скорее перейдите в помещение."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 2",
@@ -607,7 +649,10 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningFr = "Surveillez le ciel lors d'activités en extérieur et préparez-vous à vous abriter.",
         namePt = "Raios prováveis",
         impactPt = "Alta probabilidade de raios em até 1 hora; nuvens de tempestade em desenvolvimento.",
-        warningPt = "Observe o céu em atividades ao ar livre e prepare-se para buscar abrigo."
+        warningPt = "Observe o céu em atividades ao ar livre e prepare-se para buscar abrigo.",
+        nameRu = "Вероятна гроза",
+        impactRu = "Высокая вероятность молний в течение 1 часа; активно развиваются грозовые облака.",
+        warningRu = "Следите за небом на открытом воздухе и будьте готовы укрыться."
     ),
     RadarLegendLevelItem(
         rangeLabel = "活動度 1",
@@ -636,7 +681,10 @@ val LIGHTNING_ACTIVITY_LEVELS = listOf(
         warningFr = "Méfiez-vous des averses soudaines ou rafales liées aux nuages en formation.",
         namePt = "Indícios de raios",
         impactPt = "Possibilidade de formação de raios na próxima hora.",
-        warningPt = "Fique atento a pancadas súbitas de chuva ou rajadas de vento."
+        warningPt = "Fique atento a pancadas súbitas de chuva ou rajadas de vento.",
+        nameRu = "Признаки грозы",
+        impactRu = "Возможны разряды молний в течение ближайшего часа.",
+        warningRu = "Остерегайтесь внезапных ливней и порывов ветра."
     )
 )
 
@@ -668,7 +716,10 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningFr = "Prenez immédiatement les mesures pour sauver votre vie et vous mettre en sécurité.",
         namePt = "Emergência (Nível 5)",
         impactPt = "Desastre já ocorrido ou iminente; risco extremo à vida.",
-        warningPt = "Tome medidas imediatas para preservar sua vida e garanta sua segurança sem demora."
+        warningPt = "Tome medidas imediatas para preservar sua vida e garanta sua segurança sem demora.",
+        nameRu = "Чрезвычайная ситуация (Ур. 5)",
+        impactRu = "Бедствие уже произошло или неизбежно; крайняя угроза жизни.",
+        warningRu = "Немедленно примите меры для спасения жизни и обеспечьте безопасность."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 4",
@@ -697,7 +748,10 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningFr = "Équivalent au niveau d'alerte 4. Évacuez immédiatement les zones à risque.",
         namePt = "Perigo (Nível 4)",
         impactPt = "Probabilidade muito alta de desastre grave; evacuação geral necessária.",
-        warningPt = "Equivalente ao Nível de Alerta 4. Evacue imediatamente as áreas de risco."
+        warningPt = "Equivalente ao Nível de Alerta 4. Evacue imediatamente as áreas de risco.",
+        nameRu = "Опасность (Ур. 4)",
+        impactRu = "Очень высокая вероятность крупного бедствия; необходима общая эвакуация.",
+        warningRu = "Соответствует уровню тревоги 4. Немедленно покиньте опасные зоны."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 3",
@@ -726,7 +780,10 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningFr = "Équivalent au niveau d'alerte 3. Les personnes âgées et vulnérables doivent évacuer.",
         namePt = "Alerta (Nível 3)",
         impactPt = "Supera os critérios de alerta; pessoas vulneráveis devem evacuar.",
-        warningPt = "Equivalente ao Nível de Alerta 3. Idosos e pessoas vulneráveis devem iniciar a evacuação."
+        warningPt = "Equivalente ao Nível de Alerta 3. Idosos e pessoas vulneráveis devem iniciar a evacuação.",
+        nameRu = "Тревога (Ур. 3)",
+        impactRu = "Превышены критерии предупреждения; требуется эвакуация уязвимых групп.",
+        warningRu = "Соответствует уровню тревоги 3. Пожилым и уязвимым следует начать эвакуацию."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 2",
@@ -755,7 +812,10 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningFr = "Équivalent au niveau d'alerte 2. Consultez les cartes de risque et itinéraires d'évacuation.",
         namePt = "Atenção (Nível 2)",
         impactPt = "Supera os critérios de aviso; recomenda-se verificar a preparação.",
-        warningPt = "Equivalente ao Nível de Alerta 2. Verifique mapas de risco e rotas de evacuação."
+        warningPt = "Equivalente ao Nível de Alerta 2. Verifique mapas de risco e rotas de evacuação.",
+        nameRu = "Внимание (Ур. 2)",
+        impactRu = "Превышены критерии оповещения; рекомендуется проверить готовность.",
+        warningRu = "Соответствует уровню тревоги 2. Проверьте карты рисков и маршруты эвакуации."
     ),
     RadarLegendLevelItem(
         rangeLabel = "Lv 1",
@@ -784,7 +844,10 @@ val KIKIKURU_RISK_LEVELS = listOf(
         warningFr = "Restez attentif aux derniers bulletins et mises à jour météo.",
         namePt = "Precaução (Nível 1)",
         impactPt = "Risco atualmente baixo, mas acompanhe a evolução do tempo.",
-        warningPt = "Acompanhe os últimos boletins e atualizações meteorológicas."
+        warningPt = "Acompanhe os últimos boletins e atualizações meteorológicas.",
+        nameRu = "Предосторожность (Ур. 1)",
+        impactRu = "Опасность пока низкая, но следите за развитием погодной ситуации.",
+        warningRu = "Следите за свежими метеосводками и обновлениями."
     )
 )
 
@@ -816,7 +879,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Danger extrême d'avalanche. Évitez tout déplacement non essentiel.",
         namePt = "200 cm ou mais",
         impactPt = "Nevasca recorde catastrófica; risco de desabamento e isolamento.",
-        warningPt = "Perigo extremo de avalanches. Evite qualquer deslocamento desnecessário."
+        warningPt = "Perigo extremo de avalanches. Evite qualquer deslocamento desnecessário.",
+        nameRu = "200 см и более",
+        impactRu = "Рекордный снегопад; угроза обрушения конструкций и изоляции.",
+        warningRu = "Крайняя лавинная опасность. Избегайте любых необязательных поездок."
     ),
     RadarLegendLevelItem(
         rangeLabel = "100〜200",
@@ -845,7 +911,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Vigilance face aux avalanches, chutes de neige des toits et véhicules bloqués.",
         namePt = "100 a 200 cm",
         impactPt = "Acúmulo muito profundo; interdições de vias e riscos ao remover neve de telhados.",
-        warningPt = "Alerta para avalanches, queda de neve de telhados e veículos presos."
+        warningPt = "Alerta para avalanches, queda de neve de telhados e veículos presos.",
+        nameRu = "100–200 см",
+        impactRu = "Очень глубокий снежный покров; массовые перекрытия дорог и опасность уборки крыш.",
+        warningRu = "Остерегайтесь лавин, схода снега с крыш и снежных заносов."
     ),
     RadarLegendLevelItem(
         rangeLabel = "50〜100",
@@ -874,7 +943,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Pneus hiver ou chaînes obligatoires. Attention aux chutes sur sols glissants.",
         namePt = "50 a 100 cm",
         impactPt = "Neve intensa; veículos presos com frequência e vias muito escorregadias.",
-        warningPt = "Pneus de inverno ou correntes obrigatórios. Cuidado com quedas em pisos lisos."
+        warningPt = "Pneus de inverno ou correntes obrigatórios. Cuidado com quedas em pisos lisos.",
+        nameRu = "50–100 см",
+        impactRu = "Сильный снег; частые застревания машин и сильный гололёд.",
+        warningRu = "Обязательны зимние шины или цепи. Остерегайтесь падений на скользком покрытии."
     ),
     RadarLegendLevelItem(
         rangeLabel = "20〜50",
@@ -903,7 +975,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Conduisez prudemment contre le dérapage et prévoyez un temps de trajet supplémentaire.",
         namePt = "20 a 50 cm",
         impactPt = "Neve profunda cobrindo os pés; atrasos no transporte e necessidade de limpeza.",
-        warningPt = "Dirija com cautela para evitar derrapagens e saia com antecedência."
+        warningPt = "Dirija com cautela para evitar derrapagens e saia com antecedência.",
+        nameRu = "20–50 см",
+        impactRu = "Глубокий снег по щиколотку; задержки транспорта и необходимость расчистки.",
+        warningRu = "Ведите машину осторожно и закладывайте дополнительное время в пути."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜20",
@@ -932,7 +1007,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Ne roulez pas en pneus été. Attention au verglas noir.",
         namePt = "5 a 20 cm",
         impactPt = "Solo totalmente coberto; veículos sem pneus de inverno podem ficar presos.",
-        warningPt = "Não dirija com pneus comuns. Cuidado com gelo invisível na pista."
+        warningPt = "Não dirija com pneus comuns. Cuidado com gelo invisível na pista.",
+        nameRu = "5–20 см",
+        impactRu = "Дороги полностью покрыты снегом; машины на летней резине застревают.",
+        warningRu = "Не выезжайте на летних шинах. Остерегайтесь чёрного льда."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜5",
@@ -961,7 +1039,10 @@ val SNOW_DEPTH_LEVELS = listOf(
         warningFr = "Méfiez-vous du verglas sur les ponts et les zones ombragées.",
         namePt = "1 a 5 cm",
         impactPt = "Leve camada de neve; pontos escorregadios e risco de gelo na pista.",
-        warningPt = "Atenção ao gelo em pontes e trechos sombreados."
+        warningPt = "Atenção ao gelo em pontes e trechos sombreados.",
+        nameRu = "1–5 см",
+        impactRu = "Тонкий слой снега; скользкие участки и риск гололёда.",
+        warningRu = "Остерегайтесь гололёда на мостах и в тенистых участках дорог."
     )
 )
 
@@ -993,7 +1074,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Alerte maximale face à la paralysie du trafic et aux véhicules bloqués.",
         namePt = "20 cm ou mais",
         impactPt = "Nevasca intensa acima de 20 cm em 3 h; acúmulo muito rápido.",
-        warningPt = "Alerta máximo para paralisação do trânsito e veículos retidos."
+        warningPt = "Alerta máximo para paralisação do trânsito e veículos retidos.",
+        nameRu = "20 см и более",
+        impactRu = "Экстремальный снегопад более 20 см за 3 ч; стремительный рост сугробов.",
+        warningRu = "Максимальная тревога из-за паралича движения и застрявших машин."
     ),
     RadarLegendLevelItem(
         rangeLabel = "10〜20",
@@ -1022,7 +1106,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Fort risque de voile blanc et de dégradation rapide des routes.",
         namePt = "10 a 20 cm",
         impactPt = "Neve muito forte de 10 a 20 cm em 3 h; a limpeza não acompanha.",
-        warningPt = "Alto risco de visibilidade nula e piora rápida das estradas."
+        warningPt = "Alto risco de visibilidade nula e piora rápida das estradas.",
+        nameRu = "10–20 см",
+        impactRu = "Очень сильный снегопад 10–20 см за 3 ч; уборка снега не успевает.",
+        warningRu = "Высокий риск нулевой видимости и быстрого ухудшения дорожных условий."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜10",
@@ -1051,7 +1138,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Utilisez des pneus hiver et réduisez nettement votre vitesse.",
         namePt = "5 a 10 cm",
         impactPt = "Faixa de neve forte; as condições da via pioram rapidamente.",
-        warningPt = "Use pneus de inverno e reduza bastante a velocidade."
+        warningPt = "Use pneus de inverno e reduza bastante a velocidade.",
+        nameRu = "5–10 см",
+        impactRu = "Сильный снегопад; состояние дорог стремительно ухудшается.",
+        warningRu = "Используйте зимние шины и значительно снизьте скорость."
     ),
     RadarLegendLevelItem(
         rangeLabel = "3〜5",
@@ -1080,7 +1170,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Prudence sur les routes verglacées ou boueuses.",
         namePt = "3 a 5 cm",
         impactPt = "Neve contínua cobrindo o pavimento.",
-        warningPt = "Cuidado com pistas congeladas ou com neve derretida."
+        warningPt = "Cuidado com pistas congeladas ou com neve derretida.",
+        nameRu = "3–5 см",
+        impactRu = "Устойчивый снегопад, покрывающий проезжую часть.",
+        warningRu = "Будьте осторожны на обледенелой или заснеженной дороге."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜3",
@@ -1109,7 +1202,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Portez des chaussures antidérapantes et surveillez vos pas.",
         namePt = "1 a 3 cm",
         impactPt = "Neve moderada cobrindo a paisagem de branco.",
-        warningPt = "Use calçados antiderrapantes e tenha atenção ao caminhar."
+        warningPt = "Use calçados antiderrapantes e tenha atenção ao caminhar.",
+        nameRu = "1–3 см",
+        impactRu = "Умеренный снегопад, покрывающий землю белым слоем.",
+        warningRu = "Носите нескользящую обувь и будьте осторожны при ходьбе."
     ),
     RadarLegendLevelItem(
         rangeLabel = "0.5〜1",
@@ -1138,7 +1234,10 @@ val SNOWFALL_3H_LEVELS = listOf(
         warningFr = "Attention au gel lorsque les températures sont basses.",
         namePt = "0,5 a 1 cm",
         impactPt = "Flocos isolados ou neve fraca.",
-        warningPt = "Atenção ao congelamento da pista com temperaturas baixas."
+        warningPt = "Atenção ao congelamento da pista com temperaturas baixas.",
+        nameRu = "0,5–1 см",
+        impactRu = "Небольшой снег или отдельные снежинки.",
+        warningRu = "При низкой температуре возможен гололёд."
     )
 )
 
@@ -1170,7 +1269,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Préparez-vous aux arrêts de transport, coupures de courant et chutes d'arbres.",
         namePt = "50 cm ou mais",
         impactPt = "Acúmulo severo acima de 50 cm em 24 h; nível de alerta de nevasca.",
-        warningPt = "Prepare-se para suspensões no transporte, quedas de energia e de árvores."
+        warningPt = "Prepare-se para suspensões no transporte, quedas de energia e de árvores.",
+        nameRu = "50 см и более",
+        impactRu = "Сильнейший снегопад свыше 50 см за 24 ч; уровень штормового предупреждения.",
+        warningRu = "Возможны отмена транспорта, отключения электричества и падение деревьев."
     ),
     RadarLegendLevelItem(
         rangeLabel = "30〜50",
@@ -1199,7 +1301,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Évitez les sorties non indispensables.",
         namePt = "30 a 50 cm",
         impactPt = "Critério de alerta de neve forte; alto risco de veículos presos.",
-        warningPt = "Evite saídas não essenciais."
+        warningPt = "Evite saídas não essenciais.",
+        nameRu = "30–50 см",
+        impactRu = "Снегопад уровня предупреждения; высокий риск застрять в снегу.",
+        warningRu = "Воздержитесь от необязательных поездок."
     ),
     RadarLegendLevelItem(
         rangeLabel = "20〜30",
@@ -1228,7 +1333,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Évitez de conduire si vous n'êtes pas habitué aux conditions hivernales.",
         namePt = "20 a 30 cm",
         impactPt = "Neve considerável causando transtornos em serras e vias locais.",
-        warningPt = "Evite dirigir se não tiver prática em pistas com neve."
+        warningPt = "Evite dirigir se não tiver prática em pistas com neve.",
+        nameRu = "20–30 см",
+        impactRu = "Значительный снегопад; затруднения движения на перевалах и местных дорогах.",
+        warningRu = "Воздержитесь от вождения без опыта зимней езды."
     ),
     RadarLegendLevelItem(
         rangeLabel = "10〜20",
@@ -1257,7 +1365,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Prévoyez des retards dans les transports aux heures de pointe.",
         namePt = "10 a 20 cm",
         impactPt = "Neve moderada em nível de aviso; será necessário remover neve.",
-        warningPt = "Espere atrasos no transporte nos horários de pico."
+        warningPt = "Espere atrasos no transporte nos horários de pico.",
+        nameRu = "10–20 см",
+        impactRu = "Умеренный снегопад; потребуется расчистка снега.",
+        warningRu = "Возможны задержки транспорта в часы пик."
     ),
     RadarLegendLevelItem(
         rangeLabel = "5〜10",
@@ -1286,7 +1397,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Prévoyez des équipements antidérapants avant de sortir.",
         namePt = "5 a 10 cm",
         impactPt = "Acúmulo visível de neve; vias congeladas e escorregadias.",
-        warningPt = "Garanta medidas antiderrapantes antes de sair."
+        warningPt = "Garanta medidas antiderrapantes antes de sair.",
+        nameRu = "5–10 см",
+        impactRu = "Заметный снежный покров; скользкие обледенелые дороги.",
+        warningRu = "Подготовьте средства против скольжения перед выходом."
     ),
     RadarLegendLevelItem(
         rangeLabel = "1〜5",
@@ -1315,7 +1429,10 @@ val SNOWFALL_24H_LEVELS = listOf(
         warningFr = "Attention aux zones verglacées le matin et la nuit.",
         namePt = "1 a 5 cm",
         impactPt = "Leve camada de neve; trechos congelados na sombra.",
-        warningPt = "Atenção ao gelo na pista de manhã e à noite."
+        warningPt = "Atenção ao gelo na pista de manhã e à noite.",
+        nameRu = "1–5 см",
+        impactRu = "Лёгкий снежный покров; возможна наледь в тени.",
+        warningRu = "Остерегайтесь гололёда утром и ночью."
     )
 )
 
@@ -1542,6 +1659,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Ahora"
                     AppLanguage.FRENCH -> "Direct"
                     AppLanguage.PORTUGUESE -> "Agora"
+                    AppLanguage.RUSSIAN -> "Сейчас"
                 }
                 diffMin < 0 -> {
                     val absMin = -diffMin
@@ -1557,6 +1675,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> if (mins == 0) "Hace ${hours}h" else "Hace ${hours}h ${mins}m"
                             AppLanguage.FRENCH -> if (mins == 0) "Il y a ${hours}h" else "Il y a ${hours}h ${mins}m"
                             AppLanguage.PORTUGUESE -> if (mins == 0) "Há ${hours}h" else "Há ${hours}h ${mins}m"
+                            AppLanguage.RUSSIAN -> if (mins == 0) "${hours} ч назад" else "${hours} ч ${mins} м назад"
                         }
                     } else {
                         when (language) {
@@ -1568,6 +1687,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "Hace ${absMin}m"
                             AppLanguage.FRENCH -> "Il y a ${absMin}m"
                             AppLanguage.PORTUGUESE -> "Há ${absMin}m"
+                            AppLanguage.RUSSIAN -> "${absMin} мин назад"
                         }
                     }
                 }
@@ -1584,6 +1704,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.FRENCH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.PORTUGUESE -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.RUSSIAN -> if (mins == 0) "+${hours} ч" else "+${hours} ч ${mins} м"
                         }
                     } else {
                         when (language) {
@@ -1595,6 +1716,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "+${diffMin}m"
                             AppLanguage.FRENCH -> "+${diffMin}m"
                             AppLanguage.PORTUGUESE -> "+${diffMin}m"
+                            AppLanguage.RUSSIAN -> "+${diffMin} м"
                         }
                     }
                 }
@@ -1699,6 +1821,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nowcast de precipitación"
                         AppLanguage.FRENCH -> "Nowcast des précipitations"
                         AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
+                        AppLanguage.RUSSIAN -> "Наукаст осадков"
                     },
                     icon = Icons.Rounded.WaterDrop,
                     isSelected = selectedJmaLayer == JmaLayerType.HRPNS,
@@ -1715,6 +1838,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nowcast de rayos"
                         AppLanguage.FRENCH -> "Nowcast de la foudre"
                         AppLanguage.PORTUGUESE -> "Nowcast de raios"
+                        AppLanguage.RUSSIAN -> "Наукаст гроз"
                     },
                     icon = Icons.Rounded.Thunderstorm,
                     isSelected = selectedJmaLayer == JmaLayerType.THNS,
@@ -1731,6 +1855,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Riesgo Kikikuru"
                         AppLanguage.FRENCH -> "Risque Kikikuru"
                         AppLanguage.PORTUGUESE -> "Risco Kikikuru"
+                        AppLanguage.RUSSIAN -> "Риски Kikikuru"
                     },
                     icon = Icons.Rounded.Warning,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.RISK,
@@ -1759,6 +1884,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nieve y nevadas"
                         AppLanguage.FRENCH -> "Neige et chutes de neige"
                         AppLanguage.PORTUGUESE -> "Neve e precipitação de neve"
+                        AppLanguage.RUSSIAN -> "Снег и снегопады"
                     },
                     icon = Icons.Rounded.AcUnit,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.SNOW,
@@ -1786,6 +1912,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Trayectoria y alertas de tifón"
                         AppLanguage.FRENCH -> "Trajectoire et alertes typhon"
                         AppLanguage.PORTUGUESE -> "Trajetória e alertas de tufão"
+                        AppLanguage.RUSSIAN -> "Траектория и оповещения о тайфунах"
                     },
                     icon = Icons.Rounded.Air,
                     iconRes = R.drawable.ic_storm,
@@ -1806,6 +1933,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nowcast de precipitación"
                         AppLanguage.FRENCH -> "Nowcast des précipitations"
                         AppLanguage.PORTUGUESE -> "Nowcast de precipitação"
+                        AppLanguage.RUSSIAN -> "Наукаст осадков"
                     },
                     icon = Icons.Rounded.WaterDrop,
                     isSelected = selectedJmaLayer == JmaLayerType.HRPNS,
@@ -1822,6 +1950,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Rayos / Tornado"
                         AppLanguage.FRENCH -> "Orage / Tornade"
                         AppLanguage.PORTUGUESE -> "Raios / Tornado"
+                        AppLanguage.RUSSIAN -> "Грозы / Торнадо"
                     },
                     icon = Icons.Rounded.Thunderstorm,
                     isSelected = selectedJmaLayer == JmaLayerType.THNS || selectedJmaLayer == JmaLayerType.TRNS,
@@ -1838,6 +1967,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Riesgo Kikikuru"
                         AppLanguage.FRENCH -> "Risque Kikikuru"
                         AppLanguage.PORTUGUESE -> "Risco Kikikuru"
+                        AppLanguage.RUSSIAN -> "Риски Kikikuru"
                     },
                     icon = Icons.Rounded.Warning,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.RISK,
@@ -1866,6 +1996,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Satélite Himawari"
                         AppLanguage.FRENCH -> "Satellite Himawari"
                         AppLanguage.PORTUGUESE -> "Satélite Himawari"
+                        AppLanguage.RUSSIAN -> "Спутник Himawari"
                     },
                     icon = Icons.Rounded.Public,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.HIMAWARI,
@@ -1882,6 +2013,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Tiempo y temp. prevista"
                         AppLanguage.FRENCH -> "Météo et temp. prévues"
                         AppLanguage.PORTUGUESE -> "Clima e temp. prevista"
+                        AppLanguage.RUSSIAN -> "Погода и прогноз темп."
                     },
                     icon = Icons.Rounded.Thermostat,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.WEATHER_DIST,
@@ -1898,6 +2030,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nieve y nevadas"
                         AppLanguage.FRENCH -> "Neige et chutes de neige"
                         AppLanguage.PORTUGUESE -> "Neve e precipitação de neve"
+                        AppLanguage.RUSSIAN -> "Снег и снегопады"
                     },
                     icon = Icons.Rounded.AcUnit,
                     isSelected = selectedJmaLayer.category == JmaLayerCategory.SNOW,
@@ -1914,6 +2047,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Trayectoria y alertas de tifón"
                         AppLanguage.FRENCH -> "Trajectoire et alertes typhon"
                         AppLanguage.PORTUGUESE -> "Trajetória e alertas de tufão"
+                        AppLanguage.RUSSIAN -> "Траектория и оповещения о тайфунах"
                     },
                     icon = Icons.Rounded.Air,
                     iconRes = R.drawable.ic_storm,
@@ -1931,6 +2065,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Todas las capas (${JmaLayerType.entries.size})"
                         AppLanguage.FRENCH -> "Toutes les couches (${JmaLayerType.entries.size})"
                         AppLanguage.PORTUGUESE -> "Todas as camadas (${JmaLayerType.entries.size})"
+                        AppLanguage.RUSSIAN -> "Все слои (${JmaLayerType.entries.size})"
                     },
                     icon = Icons.Rounded.Layers,
                     isSelected = false,
@@ -1956,6 +2091,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR"
                     AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR"
                     AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR"
+                    AppLanguage.RUSSIAN -> "США NEXRAD / HRRR"
                 },
                 icon = Icons.Rounded.WaterDrop,
                 isSelected = selectedUsLayer == UsRadarLayerType.UNIFIED_ALL,
@@ -1974,6 +2110,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Todas las capas de EE. UU. (${UsRadarLayerType.entries.size})"
                     AppLanguage.FRENCH -> "Toutes les couches É.-U. (${UsRadarLayerType.entries.size})"
                     AppLanguage.PORTUGUESE -> "Todas as camadas dos EUA (${UsRadarLayerType.entries.size})"
+                    AppLanguage.RUSSIAN -> "Все слои США (${UsRadarLayerType.entries.size})"
                 },
                 icon = Icons.Rounded.Layers,
                 isSelected = selectedUsLayer != UsRadarLayerType.UNIFIED_ALL,
@@ -1993,6 +2130,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Cambiar fuente de radar"
                     AppLanguage.FRENCH -> "Changer de source radar"
                     AppLanguage.PORTUGUESE -> "Trocar fonte do radar"
+                    AppLanguage.RUSSIAN -> "Сменить источник радара"
                 },
                 icon = Icons.Rounded.Map,
                 isSelected = false,
@@ -2016,6 +2154,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Radar global (RainViewer)"
                     AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
                     AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
+                    AppLanguage.RUSSIAN -> "Глобальный радар (RainViewer)"
                 },
                 icon = Icons.Rounded.Public,
                 isSelected = true,
@@ -2031,6 +2170,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Cambiar fuente de radar"
                     AppLanguage.FRENCH -> "Changer de source radar"
                     AppLanguage.PORTUGUESE -> "Trocar fonte do radar"
+                    AppLanguage.RUSSIAN -> "Сменить источник радара"
                 },
                 icon = Icons.Rounded.Map,
                 isSelected = false,
@@ -2119,6 +2259,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Atrás"
                         AppLanguage.FRENCH -> "Retour"
                         AppLanguage.PORTUGUESE -> "Voltar"
+                        AppLanguage.RUSSIAN -> "Назад"
                     },
                     tint = colorScheme.onSurface,
                     modifier = Modifier.size(20.dp)
@@ -2137,6 +2278,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "JMA Radar y prev. a corto plazo"
                                     AppLanguage.FRENCH -> "JMA Radar et prév. à court terme"
                                     AppLanguage.PORTUGUESE -> "JMA Radar e prev. de curto prazo"
+                                    AppLanguage.RUSSIAN -> "Радар и краткосрочный прогноз JMA"
                                 }
                             } else {
                                 val jmaPrefix = when (language) {
@@ -2148,6 +2290,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "JMA"
                                     AppLanguage.FRENCH -> "JMA"
                                     AppLanguage.PORTUGUESE -> "JMA"
+                                    AppLanguage.RUSSIAN -> "JMA"
                                 }
                                 "$jmaPrefix ${selectedJmaLayer.shortName(language)}"
                             }
@@ -2163,6 +2306,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Extrap., Prev.)"
                                     AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Extrap., Prév.)"
                                     AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Extrap., Prev.)"
+                                    AppLanguage.RUSSIAN -> "США NEXRAD / HRRR (Набл., Экстрап., Прогноз)"
                                 }
                             } else {
                                 selectedUsLayer.displayName(language)
@@ -2178,6 +2322,7 @@ fun RadarDetailScreen(
                                 AppLanguage.SPANISH -> "Radar global (RainViewer)"
                                 AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
                                 AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
+                                AppLanguage.RUSSIAN -> "Глобальный радар (RainViewer)"
                             }
                         }
                     },
@@ -2248,6 +2393,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Seleccionar capa del mapa"
                                     AppLanguage.FRENCH -> "Sélectionner une couche"
                                     AppLanguage.PORTUGUESE -> "Selecionar camada do mapa"
+                                    AppLanguage.RUSSIAN -> "Выбрать слой карты"
                                 },
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier
@@ -2333,6 +2479,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Trayectoria y alertas"
                                         AppLanguage.FRENCH -> "Trajectoire et alertes"
                                         AppLanguage.PORTUGUESE -> "Trajetória e alertas"
+                                        AppLanguage.RUSSIAN -> "Траектория и угрозы"
                                     }
                                 }
                                 currentFrame?.isExtrapolation == true -> {
@@ -2345,6 +2492,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Nowcast (0-60 min)"
                                         AppLanguage.FRENCH -> "Nowcast (0-60 min)"
                                         AppLanguage.PORTUGUESE -> "Nowcast (0-60 min)"
+                                        AppLanguage.RUSSIAN -> "Наукаст (0–60 мин)"
                                     }
                                 }
                                 currentFrame?.isForecast == true -> {
@@ -2357,6 +2505,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Modelo de previsión"
                                         AppLanguage.FRENCH -> "Modèle de prévision"
                                         AppLanguage.PORTUGUESE -> "Modelo de previsão"
+                                        AppLanguage.RUSSIAN -> "Прогнозная модель"
                                     }
                                 }
                                 else -> currentFrame?.resolutionInfo?.takeIf { it.isNotBlank() }
@@ -2370,6 +2519,7 @@ fun RadarDetailScreen(
                                 AppLanguage.SPANISH -> "Ahora"
                                 AppLanguage.FRENCH -> "Maintenant"
                                 AppLanguage.PORTUGUESE -> "Agora"
+                                AppLanguage.RUSSIAN -> "Сейчас"
                             }
                             RadarNowClockText(
                                 nowPrefix = nowPrefix,
@@ -2404,6 +2554,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Ubicación actual"
                                     AppLanguage.FRENCH -> "Position actuelle"
                                     AppLanguage.PORTUGUESE -> "Localização atual"
+                                    AppLanguage.RUSSIAN -> "Текущее местоположение"
                                 },
                                 tint = colorScheme.onPrimary,
                                 modifier = Modifier.size(26.dp)
@@ -2532,6 +2683,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Obs. -2h"
                                         AppLanguage.FRENCH -> "Obs. -2h"
                                         AppLanguage.PORTUGUESE -> "Obs. -2h"
+                                        AppLanguage.RUSSIAN -> "Набл. -2 ч"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2548,6 +2700,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Ahora 0m"
                                         AppLanguage.FRENCH -> "Direct 0m"
                                         AppLanguage.PORTUGUESE -> "Agora 0m"
+                                        AppLanguage.RUSSIAN -> "Сейчас 0 м"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2564,6 +2717,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Nowcast +60m"
                                         AppLanguage.FRENCH -> "Nowcast +60m"
                                         AppLanguage.PORTUGUESE -> "Nowcast +60m"
+                                        AppLanguage.RUSSIAN -> "Наукаст +60 м"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2596,6 +2750,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Hace 2h"
                                         AppLanguage.FRENCH -> "Il y a 2h"
                                         AppLanguage.PORTUGUESE -> "Há 2h"
+                                        AppLanguage.RUSSIAN -> "2 ч назад"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2612,6 +2767,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Ahora"
                                         AppLanguage.FRENCH -> "Maintenant"
                                         AppLanguage.PORTUGUESE -> "Agora"
+                                        AppLanguage.RUSSIAN -> "Сейчас"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2628,6 +2784,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "+15h"
                                         AppLanguage.FRENCH -> "+15h"
                                         AppLanguage.PORTUGUESE -> "+15h"
+                                        AppLanguage.RUSSIAN -> "+15 ч"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2655,6 +2812,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Hace 2h"
                                         AppLanguage.FRENCH -> "Il y a 2h"
                                         AppLanguage.PORTUGUESE -> "Há 2h"
+                                        AppLanguage.RUSSIAN -> "2 ч назад"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2672,6 +2830,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Ahora"
                                             AppLanguage.FRENCH -> "Maintenant"
                                             AppLanguage.PORTUGUESE -> "Agora"
+                                            AppLanguage.RUSSIAN -> "Сейчас"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Black,
@@ -2689,6 +2848,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "+${nowcastMin}m"
                                             AppLanguage.FRENCH -> "+${nowcastMin}m"
                                             AppLanguage.PORTUGUESE -> "+${nowcastMin}m"
+                                            AppLanguage.RUSSIAN -> "+${nowcastMin} м"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
@@ -2706,6 +2866,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Hace 1h"
                                             AppLanguage.FRENCH -> "Il y a 1h"
                                             AppLanguage.PORTUGUESE -> "Há 1h"
+                                            AppLanguage.RUSSIAN -> "1 ч назад"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Normal,
@@ -2722,6 +2883,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Ahora (En vivo)"
                                             AppLanguage.FRENCH -> "Maintenant (Direct)"
                                             AppLanguage.PORTUGUESE -> "Agora (Ao vivo)"
+                                            AppLanguage.RUSSIAN -> "Сейчас (Live)"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Black,
@@ -2748,6 +2910,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Hace 1h"
                                         AppLanguage.FRENCH -> "Il y a 1h"
                                         AppLanguage.PORTUGUESE -> "Há 1h"
+                                        AppLanguage.RUSSIAN -> "1 ч назад"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2764,6 +2927,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Ahora"
                                         AppLanguage.FRENCH -> "Maintenant"
                                         AppLanguage.PORTUGUESE -> "Agora"
+                                        AppLanguage.RUSSIAN -> "Сейчас"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2780,6 +2944,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "+60m"
                                         AppLanguage.FRENCH -> "+60m"
                                         AppLanguage.PORTUGUESE -> "+60m"
+                                        AppLanguage.RUSSIAN -> "+60 м"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2806,6 +2971,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Pasado"
                                         AppLanguage.FRENCH -> "Passé"
                                         AppLanguage.PORTUGUESE -> "Passado"
+                                        AppLanguage.RUSSIAN -> "Прошлое"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2822,6 +2988,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Ahora"
                                         AppLanguage.FRENCH -> "Maintenant"
                                         AppLanguage.PORTUGUESE -> "Agora"
+                                        AppLanguage.RUSSIAN -> "Сейчас"
                                     },
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Black,
@@ -2839,6 +3006,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Previsión"
                                             AppLanguage.FRENCH -> "Prévision"
                                             AppLanguage.PORTUGUESE -> "Previsão"
+                                            AppLanguage.RUSSIAN -> "Прогноз"
                                         },
                                         style = MaterialTheme.typography.labelSmall,
                                         fontWeight = FontWeight.Bold,
@@ -2871,6 +3039,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "JMA Trayectoria y alertas de tifón (Actual / Previsión)"
                                         AppLanguage.FRENCH -> "JMA Trajectoire et alertes typhon (Actuel / Prévision)"
                                         AppLanguage.PORTUGUESE -> "JMA Trajetória e alertas de tufão (Atual / Previsão)"
+                                        AppLanguage.RUSSIAN -> "Траектория и предупреждения о тайфунах JMA (Сейчас / Прогноз)"
                                     }
                                 } else {
                                     when (language) {
@@ -2882,6 +3051,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Capa de mapa base activa"
                                         AppLanguage.FRENCH -> "Couche de fond de carte active"
                                         AppLanguage.PORTUGUESE -> "Camada de mapa base ativa"
+                                        AppLanguage.RUSSIAN -> "Активен базовый слой карты"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -2947,6 +3117,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Fotograma anterior"
                                             AppLanguage.FRENCH -> "Image précédente"
                                             AppLanguage.PORTUGUESE -> "Quadro anterior"
+                                            AppLanguage.RUSSIAN -> "Предыдущий кадр"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -2984,6 +3155,7 @@ fun RadarDetailScreen(
                                                 AppLanguage.SPANISH -> "Pausar"
                                                 AppLanguage.FRENCH -> "Pause"
                                                 AppLanguage.PORTUGUESE -> "Pausar"
+                                                AppLanguage.RUSSIAN -> "Пауза"
                                             }
                                         } else {
                                             when (language) {
@@ -2995,6 +3167,7 @@ fun RadarDetailScreen(
                                                 AppLanguage.SPANISH -> "Reproducir"
                                                 AppLanguage.FRENCH -> "Lire"
                                                 AppLanguage.PORTUGUESE -> "Reproduzir"
+                                                AppLanguage.RUSSIAN -> "Воспроизвести"
                                             }
                                         },
                                         tint = colorScheme.primary,
@@ -3041,6 +3214,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Siguiente fotograma"
                                             AppLanguage.FRENCH -> "Image suivante"
                                             AppLanguage.PORTUGUESE -> "Próximo quadro"
+                                            AppLanguage.RUSSIAN -> "Следующий кадр"
                                         },
                                         tint = colorScheme.onPrimaryContainer,
                                         modifier = Modifier.size(24.dp)
@@ -3123,6 +3297,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Reflectividad del radar (dBZ)"
                         AppLanguage.FRENCH -> "Réflectivité radar (dBZ)"
                         AppLanguage.PORTUGUESE -> "Refletividade do radar (dBZ)"
+                        AppLanguage.RUSSIAN -> "Отражаемость радара (dBZ)"
                     }
                     RadarLegendKind.RAIN_INTENSITY -> when (language) {
                         AppLanguage.JAPANESE -> "雨の強さ (mm/h)"
@@ -3133,6 +3308,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Intensidad de lluvia (mm/h)"
                         AppLanguage.FRENCH -> "Intensité des pluies (mm/h)"
                         AppLanguage.PORTUGUESE -> "Intensidade da chuva (mm/h)"
+                        AppLanguage.RUSSIAN -> "Интенсивность дождя (мм/ч)"
                     }
                     RadarLegendKind.LIGHTNING -> when (language) {
                         AppLanguage.JAPANESE -> "雷活動度 (活動度1〜4)"
@@ -3143,6 +3319,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Actividad eléctrica (1-4)"
                         AppLanguage.FRENCH -> "Activité orageuse (1-4)"
                         AppLanguage.PORTUGUESE -> "Atividade de raios (1-4)"
+                        AppLanguage.RUSSIAN -> "Грозовая активность (1–4)"
                     }
                     RadarLegendKind.KIKIKURU -> when (selectedJmaLayer) {
                         JmaLayerType.LANDSLIDE -> when (language) {
@@ -3154,6 +3331,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "Riesgo de deslizamiento (Kikikuru)"
                             AppLanguage.FRENCH -> "Risque de glissement (Kikikuru)"
                             AppLanguage.PORTUGUESE -> "Risco de deslizamento (Kikikuru)"
+                            AppLanguage.RUSSIAN -> "Риск оползней (Kikikuru)"
                         }
                         JmaLayerType.INUNDATION -> when (language) {
                             AppLanguage.JAPANESE -> "浸水キキクル (危険度)"
@@ -3164,6 +3342,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "Riesgo de anegamiento (Kikikuru)"
                             AppLanguage.FRENCH -> "Risque de submersion (Kikikuru)"
                             AppLanguage.PORTUGUESE -> "Risco de alagamento (Kikikuru)"
+                            AppLanguage.RUSSIAN -> "Риск подтоплений (Kikikuru)"
                         }
                         JmaLayerType.FLOOD -> when (language) {
                             AppLanguage.JAPANESE -> "洪水キキクル (危険度)"
@@ -3174,6 +3353,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "Riesgo de inundación (Kikikuru)"
                             AppLanguage.FRENCH -> "Risque de crue (Kikikuru)"
                             AppLanguage.PORTUGUESE -> "Risco de enchente (Kikikuru)"
+                            AppLanguage.RUSSIAN -> "Риск наводнений (Kikikuru)"
                         }
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "キキクル (危険度分布)"
@@ -3184,6 +3364,7 @@ fun RadarDetailScreen(
                             AppLanguage.SPANISH -> "Kikikuru (Riesgo de desastre)"
                             AppLanguage.FRENCH -> "Kikikuru (Risque de catastrophe)"
                             AppLanguage.PORTUGUESE -> "Kikikuru (Risco de desastre)"
+                            AppLanguage.RUSSIAN -> "Kikikuru (Уровень опасности)"
                         }
                     }
                     RadarLegendKind.SNOW_DEPTH -> when (language) {
@@ -3195,6 +3376,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Espesor de nieve (cm)"
                         AppLanguage.FRENCH -> "Hauteur de neige (cm)"
                         AppLanguage.PORTUGUESE -> "Profundidade da neve (cm)"
+                        AppLanguage.RUSSIAN -> "Высота снега (см)"
                     }
                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                         AppLanguage.JAPANESE -> "3時間降雪量 (cm)"
@@ -3205,6 +3387,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nevada en 3 horas (cm)"
                         AppLanguage.FRENCH -> "Chutes de neige 3 h (cm)"
                         AppLanguage.PORTUGUESE -> "Neve em 3 horas (cm)"
+                        AppLanguage.RUSSIAN -> "Снегопад за 3 ч (см)"
                     }
                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                         AppLanguage.JAPANESE -> "24時間降雪量 (cm)"
@@ -3215,6 +3398,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Nevada en 24 horas (cm)"
                         AppLanguage.FRENCH -> "Chutes de neige 24 h (cm)"
                         AppLanguage.PORTUGUESE -> "Neve em 24 horas (cm)"
+                        AppLanguage.RUSSIAN -> "Снегопад за 24 ч (см)"
                     }
                 }
 
@@ -3315,6 +3499,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Cerrar"
                                         AppLanguage.FRENCH -> "Fermer"
                                         AppLanguage.PORTUGUESE -> "Fechar"
+                                        AppLanguage.RUSSIAN -> "Закрыть"
                                     },
                                     tint = colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(15.dp)
@@ -3401,6 +3586,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Guía detallada ❯"
                                     AppLanguage.FRENCH -> "Guide détaillé ❯"
                                     AppLanguage.PORTUGUESE -> "Guia detalhado ❯"
+                                    AppLanguage.RUSSIAN -> "Подробнее ❯"
                                 },
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
@@ -3495,6 +3681,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Mapas meteorológicos de EE. UU."
                                             AppLanguage.FRENCH -> "Cartes météo et prévisions É.-U."
                                             AppLanguage.PORTUGUESE -> "Mapas meteorológicos dos EUA"
+                                            AppLanguage.RUSSIAN -> "Погодные карты США"
                                         }
                                     } else {
                                         when (language) {
@@ -3506,6 +3693,7 @@ fun RadarDetailScreen(
                                             AppLanguage.SPANISH -> "Capas del mapa meteorológico"
                                             AppLanguage.FRENCH -> "Couches de carte météo"
                                             AppLanguage.PORTUGUESE -> "Camadas do mapa meteorológico"
+                                            AppLanguage.RUSSIAN -> "Слои погодной карты"
                                         }
                                     },
                                     style = MaterialTheme.typography.titleMedium,
@@ -3524,6 +3712,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Simulación NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} capas)"
                                         AppLanguage.FRENCH -> "Simulation NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} couches)"
                                         AppLanguage.PORTUGUESE -> "Simulação NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} camadas)"
+                                        AppLanguage.RUSSIAN -> "Модель NOAA / NEXRAD / HRRR (${UsRadarLayerType.entries.size} сл.)"
                                     }
                                 } else {
                                     val count = JmaLayerType.entries.count { showAllJapanLayers || isAllowedJapanRadarLayer(it) }
@@ -3536,6 +3725,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Mosaicos oficiales de JMA ($count capas)"
                                         AppLanguage.FRENCH -> "Tuiles officielles JMA ($count couches)"
                                         AppLanguage.PORTUGUESE -> "Blocos oficiais da JMA ($count camadas)"
+                                        AppLanguage.RUSSIAN -> "Официальные тайлы JMA ($count сл.)"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -3557,6 +3747,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Cerrar"
                                     AppLanguage.FRENCH -> "Fermer"
                                     AppLanguage.PORTUGUESE -> "Fechar"
+                                    AppLanguage.RUSSIAN -> "Закрыть"
                                 },
                                 tint = colorScheme.onSurfaceVariant
                             )
@@ -3670,6 +3861,7 @@ fun RadarDetailScreen(
                                                         AppLanguage.SPANISH -> "Act. cada ${layer.updateIntervalMinutes} min"
                                                         AppLanguage.FRENCH -> "Màj ${layer.updateIntervalMinutes} min"
                                                         AppLanguage.PORTUGUESE -> "Atual. a cada ${layer.updateIntervalMinutes} min"
+                                                        AppLanguage.RUSSIAN -> "Обн. каждые ${layer.updateIntervalMinutes} мин"
                                                     }
                                                     Text(
                                                         text = updateText,
@@ -3877,6 +4069,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de reflectividad dBZ (EE. UU.)"
                                         AppLanguage.FRENCH -> "Échelle de réflectivité dBZ (É.-U.)"
                                         AppLanguage.PORTUGUESE -> "Escala de refletividade dBZ (EUA)"
+                                        AppLanguage.RUSSIAN -> "Шкала отражаемости dBZ (США)"
                                     }
                                     RadarLegendKind.RAIN_VIEWER -> when (language) {
                                         AppLanguage.JAPANESE -> "世界レーダー dBZ 反射強度基準"
@@ -3887,6 +4080,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de reflectividad dBZ (Global)"
                                         AppLanguage.FRENCH -> "Échelle de réflectivité dBZ (Mondiale)"
                                         AppLanguage.PORTUGUESE -> "Escala de refletividade dBZ (Global)"
+                                        AppLanguage.RUSSIAN -> "Шкала отражаемости dBZ (Мир)"
                                     }
                                     RadarLegendKind.LIGHTNING -> when (language) {
                                         AppLanguage.JAPANESE -> "雷ナウキャスト 活動度基準・ガイド"
@@ -3897,6 +4091,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala y guía de actividad eléctrica"
                                         AppLanguage.FRENCH -> "Échelle et guide d'activité orageuse"
                                         AppLanguage.PORTUGUESE -> "Escala e guia de atividade de raios"
+                                        AppLanguage.RUSSIAN -> "Шкала и справочник грозовой активности"
                                     }
                                     RadarLegendKind.KIKIKURU -> when (language) {
                                         AppLanguage.JAPANESE -> "キキクル（危険度分布）判定基準・ガイド"
@@ -3907,6 +4102,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de riesgo Kikikuru y guía de acción"
                                         AppLanguage.FRENCH -> "Échelle de risque Kikikuru et guide d'action"
                                         AppLanguage.PORTUGUESE -> "Escala de risco Kikikuru e guia de ação"
+                                        AppLanguage.RUSSIAN -> "Шкала рисков Kikikuru и рекомендации"
                                     }
                                     RadarLegendKind.SNOW_DEPTH -> when (language) {
                                         AppLanguage.JAPANESE -> "現在の積雪の深さ 区分・目安"
@@ -3917,6 +4113,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de espesor de nieve y guía vial"
                                         AppLanguage.FRENCH -> "Échelle de hauteur de neige et guide"
                                         AppLanguage.PORTUGUESE -> "Escala de profundidade da neve e guia"
+                                        AppLanguage.RUSSIAN -> "Шкала высоты снежного покрова"
                                     }
                                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                                         AppLanguage.JAPANESE -> "3時間降雪量 区分・目安"
@@ -3927,6 +4124,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de nevada en 3 horas"
                                         AppLanguage.FRENCH -> "Échelle des chutes de neige (3 h)"
                                         AppLanguage.PORTUGUESE -> "Escala de neve em 3 horas"
+                                        AppLanguage.RUSSIAN -> "Шкала снегопада за 3 часа"
                                     }
                                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                                         AppLanguage.JAPANESE -> "24時間降雪量 区分・目安"
@@ -3937,6 +4135,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de nevada en 24 horas"
                                         AppLanguage.FRENCH -> "Échelle des chutes de neige (24 h)"
                                         AppLanguage.PORTUGUESE -> "Escala de neve em 24 horas"
+                                        AppLanguage.RUSSIAN -> "Шкала снегопада за 24 часа"
                                     }
                                     else -> when (language) {
                                         AppLanguage.JAPANESE -> "雨の強さと降水量の目安"
@@ -3947,6 +4146,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de intensidad de lluvia"
                                         AppLanguage.FRENCH -> "Échelle d'intensité des pluies"
                                         AppLanguage.PORTUGUESE -> "Escala de intensidade da chuva"
+                                        AppLanguage.RUSSIAN -> "Шкала интенсивности дождя"
                                     }
                                 },
                                 style = MaterialTheme.typography.titleMedium,
@@ -3965,6 +4165,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Paleta estándar NOAA / NEXRAD / MRMS (dBZ)"
                                         AppLanguage.FRENCH -> "Palette standard NOAA / NEXRAD / MRMS (dBZ)"
                                         AppLanguage.PORTUGUESE -> "Paleta padrão NOAA / NEXRAD / MRMS (dBZ)"
+                                        AppLanguage.RUSSIAN -> "Стандартная палитра NOAA / NEXRAD / MRMS (dBZ)"
                                     }
                                     RadarLegendKind.RAIN_VIEWER -> when (language) {
                                         AppLanguage.JAPANESE -> "RainViewer Universal Blue 標準カラーパレット (dBZ)"
@@ -3975,6 +4176,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Paleta RainViewer Universal Blue (dBZ)"
                                         AppLanguage.FRENCH -> "Palette RainViewer Universal Blue (dBZ)"
                                         AppLanguage.PORTUGUESE -> "Paleta RainViewer Universal Blue (dBZ)"
+                                        AppLanguage.RUSSIAN -> "Палитра RainViewer Universal Blue (dBZ)"
                                     }
                                     RadarLegendKind.LIGHTNING -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 雷ナウキャスト（活動度4〜1）基準"
@@ -3985,6 +4187,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Niveles de actividad eléctrica JMA (1–4)"
                                         AppLanguage.FRENCH -> "Niveaux d'activité orageuse JMA (1–4)"
                                         AppLanguage.PORTUGUESE -> "Níveis de atividade de raios JMA (1–4)"
+                                        AppLanguage.RUSSIAN -> "Уровни грозовой активности JMA (1–4)"
                                     }
                                     RadarLegendKind.KIKIKURU -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 警戒レベル・災害切迫度（Lv1〜Lv5）"
@@ -3995,6 +4198,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Niveles de alerta y evacuación JMA (Nv1–Nv5)"
                                         AppLanguage.FRENCH -> "Niveaux d'alerte et d'évacuation JMA (Niv. 1–5)"
                                         AppLanguage.PORTUGUESE -> "Níveis de alerta e evacuação JMA (Nv1–Nv5)"
+                                        AppLanguage.RUSSIAN -> "Уровни тревоги и эвакуации JMA (Ур. 1–5)"
                                     }
                                     RadarLegendKind.SNOW_DEPTH -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 解析積雪深・アメダス積雪階級（cm）"
@@ -4005,6 +4209,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Estándares JMA de espesor de nieve (cm)"
                                         AppLanguage.FRENCH -> "Normes JMA de hauteur de neige (cm)"
                                         AppLanguage.PORTUGUESE -> "Padrões JMA de profundidade da neve (cm)"
+                                        AppLanguage.RUSSIAN -> "Стандарты высоты снежного покрова JMA (см)"
                                     }
                                     RadarLegendKind.SNOWFALL_3H -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 3時間解析降雪量・短時間豪雪警戒（cm）"
@@ -4015,6 +4220,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Estándares JMA de nevada en 3 h (cm)"
                                         AppLanguage.FRENCH -> "Normes JMA de chutes de neige en 3 h (cm)"
                                         AppLanguage.PORTUGUESE -> "Padrões JMA de neve em 3 h (cm)"
+                                        AppLanguage.RUSSIAN -> "Стандарты снегопада JMA за 3 ч (см)"
                                     }
                                     RadarLegendKind.SNOWFALL_24H -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 24時間解析降雪量・大雪警戒（cm）"
@@ -4025,6 +4231,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Estándares JMA de nevada en 24 h (cm)"
                                         AppLanguage.FRENCH -> "Normes JMA de chutes de neige en 24 h (cm)"
                                         AppLanguage.PORTUGUESE -> "Padrões JMA de neve em 24 h (cm)"
+                                        AppLanguage.RUSSIAN -> "Стандарты снегопада JMA за 24 ч (см)"
                                     }
                                     else -> when (language) {
                                         AppLanguage.JAPANESE -> "気象庁 降水ナウキャスト色基準・予報一覧"
@@ -4035,6 +4242,7 @@ fun RadarDetailScreen(
                                         AppLanguage.SPANISH -> "Escala de color y previsión JMA Nowcast"
                                         AppLanguage.FRENCH -> "Échelle de couleurs et prévision JMA Nowcast"
                                         AppLanguage.PORTUGUESE -> "Escala de cores e previsão JMA Nowcast"
+                                        AppLanguage.RUSSIAN -> "Цветовая шкала и прогноз JMA Nowcast"
                                     }
                                 },
                                 style = MaterialTheme.typography.bodySmall,
@@ -4056,6 +4264,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Cerrar"
                                     AppLanguage.FRENCH -> "Fermer"
                                     AppLanguage.PORTUGUESE -> "Fechar"
+                                    AppLanguage.RUSSIAN -> "Закрыть"
                                 },
                                 tint = colorScheme.onSurfaceVariant
                             )
@@ -4369,6 +4578,7 @@ fun RadarDetailScreen(
                                     AppLanguage.SPANISH -> "Cerrar"
                                     AppLanguage.FRENCH -> "Fermer"
                                     AppLanguage.PORTUGUESE -> "Fechar"
+                                    AppLanguage.RUSSIAN -> "Закрыть"
                                 },
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold
@@ -4415,6 +4625,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Seleccionar fuente de radar"
                     AppLanguage.FRENCH -> "Sélectionner la source radar"
                     AppLanguage.PORTUGUESE -> "Selecionar fonte do radar"
+                    AppLanguage.RUSSIAN -> "Выбрать источник радара"
                 },
                 options = listOf(
                     RadarSourceMode.AUTO to when (language) {
@@ -4426,6 +4637,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Automático (Según ubicación)"
                         AppLanguage.FRENCH -> "Automatique (Selon la position)"
                         AppLanguage.PORTUGUESE -> "Automático (Por localização)"
+                        AppLanguage.RUSSIAN -> "Авто (По местоположению)"
                     },
                     RadarSourceMode.US_NEXRAD_HRRR to when (language) {
                         AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR (実況・外挿予測・予報)"
@@ -4436,6 +4648,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Nowcast, Prev.)"
                         AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Nowcast, Prév.)"
                         AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Nowcast, Prev.)"
+                        AppLanguage.RUSSIAN -> "США NEXRAD / HRRR (Набл., Наукаст, Прогноз)"
                     },
                     RadarSourceMode.JMA to when (language) {
                         AppLanguage.JAPANESE -> "気象庁 高解像度降水ナウキャスト"
@@ -4446,6 +4659,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "JMA Nowcast de precipitación de alta resolución"
                         AppLanguage.FRENCH -> "JMA Nowcast des précipitations haute résolution"
                         AppLanguage.PORTUGUESE -> "JMA Nowcast de precipitação de alta resolução"
+                        AppLanguage.RUSSIAN -> "Высокоточный наукаст осадков JMA"
                     },
                     RadarSourceMode.RAIN_VIEWER to when (language) {
                         AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
@@ -4456,6 +4670,7 @@ fun RadarDetailScreen(
                         AppLanguage.SPANISH -> "Radar global (RainViewer)"
                         AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
                         AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
+                        AppLanguage.RUSSIAN -> "Глобальный радар (RainViewer)"
                     }
                 ),
                 selectedOption = sourceMode,
@@ -4473,6 +4688,7 @@ fun RadarDetailScreen(
                     AppLanguage.SPANISH -> "Cancelar"
                     AppLanguage.FRENCH -> "Annuler"
                     AppLanguage.PORTUGUESE -> "Cancelar"
+                    AppLanguage.RUSSIAN -> "Отмена"
                 }
             )
         }
@@ -4640,6 +4856,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "Cerrar"
                             AppLanguage.FRENCH -> "Fermer"
                             AppLanguage.PORTUGUESE -> "Fechar"
+                            AppLanguage.RUSSIAN -> "Закрыть"
                         },
                         tint = colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
@@ -4663,6 +4880,7 @@ private fun TyphoonInfoCard(
                         AppLanguage.SPANISH -> "Presión"
                         AppLanguage.FRENCH -> "Pression"
                         AppLanguage.PORTUGUESE -> "Pressão"
+                        AppLanguage.RUSSIAN -> "Давление"
                     },
                     value = analysis.pressureHpa?.let { "$it hPa" } ?: "---",
                     accentColor = colorScheme.primary,
@@ -4681,6 +4899,7 @@ private fun TyphoonInfoCard(
                         AppLanguage.SPANISH -> "Movimiento"
                         AppLanguage.FRENCH -> "Déplacement"
                         AppLanguage.PORTUGUESE -> "Deslocamento"
+                        AppLanguage.RUSSIAN -> "Движение"
                     },
                     value = if (analysis.course.isNotBlank()) "${analysis.course} ${analysis.speedText}" else analysis.speedText.ifBlank { "---" },
                     accentColor = colorScheme.onSurface,
@@ -4704,6 +4923,7 @@ private fun TyphoonInfoCard(
                         AppLanguage.SPANISH -> "Viento máx."
                         AppLanguage.FRENCH -> "Vent max."
                         AppLanguage.PORTUGUESE -> "Vento máx."
+                        AppLanguage.RUSSIAN -> "Макс. ветер"
                     },
                     value = analysis.maxWindMs?.let { "$it m/s" } ?: "---",
                     subtitle = analysis.maxWindMs?.let {
@@ -4717,6 +4937,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "~$kmh km/h"
                             AppLanguage.FRENCH -> "~$kmh km/h"
                             AppLanguage.PORTUGUESE -> "~$kmh km/h"
+                            AppLanguage.RUSSIAN -> "~$kmh км/ч"
                         }
                     },
                     accentColor = colorScheme.tertiary,
@@ -4735,6 +4956,7 @@ private fun TyphoonInfoCard(
                         AppLanguage.SPANISH -> "Racha máx."
                         AppLanguage.FRENCH -> "Rafale max."
                         AppLanguage.PORTUGUESE -> "Rajada máx."
+                        AppLanguage.RUSSIAN -> "Макс. порыв"
                     },
                     value = analysis.gustWindMs?.let { "$it m/s" } ?: "---",
                     subtitle = analysis.gustWindMs?.let {
@@ -4748,6 +4970,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "~$kmh km/h"
                             AppLanguage.FRENCH -> "~$kmh km/h"
                             AppLanguage.PORTUGUESE -> "~$kmh km/h"
+                            AppLanguage.RUSSIAN -> "~$kmh км/ч"
                         }
                     },
                     accentColor = colorScheme.error,
@@ -4786,6 +5009,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "Tormenta (≥25 m/s): "
                             AppLanguage.FRENCH -> "Tempête (≥25 m/s) : "
                             AppLanguage.PORTUGUESE -> "Tempestade (≥25 m/s): "
+                            AppLanguage.RUSSIAN -> "Шторм (≥25 м/с): "
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
@@ -4802,6 +5026,7 @@ private fun TyphoonInfoCard(
                                 AppLanguage.SPANISH -> "Radio ${it.toInt()} km"
                                 AppLanguage.FRENCH -> "Rayon ${it.toInt()} km"
                                 AppLanguage.PORTUGUESE -> "Raio ${it.toInt()} km"
+                                AppLanguage.RUSSIAN -> "Радиус ${it.toInt()} км"
                             }
                         } ?: when (language) {
                             AppLanguage.JAPANESE -> "なし"
@@ -4812,6 +5037,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "Ninguno"
                             AppLanguage.FRENCH -> "Aucun"
                             AppLanguage.PORTUGUESE -> "Nenhum"
+                            AppLanguage.RUSSIAN -> "Нет"
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
@@ -4840,6 +5066,7 @@ private fun TyphoonInfoCard(
                             AppLanguage.SPANISH -> "Vendaval (≥15 m/s): "
                             AppLanguage.FRENCH -> "Coup de vent (≥15 m/s) : "
                             AppLanguage.PORTUGUESE -> "Ventania (≥15 m/s): "
+                            AppLanguage.RUSSIAN -> "Сильный ветер (≥15 м/с): "
                         },
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
@@ -4856,6 +5083,7 @@ private fun TyphoonInfoCard(
                                 AppLanguage.SPANISH -> "Radio ${it.toInt()} km"
                                 AppLanguage.FRENCH -> "Rayon ${it.toInt()} km"
                                 AppLanguage.PORTUGUESE -> "Raio ${it.toInt()} km"
+                                AppLanguage.RUSSIAN -> "Радиус ${it.toInt()} км"
                             }
                         } ?: "---",
                         style = MaterialTheme.typography.bodySmall,
@@ -4891,6 +5119,7 @@ private fun TyphoonInfoCard(
                     AppLanguage.SPANISH -> "JMA"
                     AppLanguage.FRENCH -> "JMA"
                     AppLanguage.PORTUGUESE -> "JMA"
+                    AppLanguage.RUSSIAN -> "JMA"
                 }
                 Text(
                     text = "${typhoon.formattedIssueTime} ($agencyLabel)",

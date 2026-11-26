@@ -169,6 +169,7 @@ private data class SimulationWeatherItem(
     val nameEs: String,
     val nameFr: String,
     val namePt: String,
+    val nameRu: String,
     val condition: WeatherCondition,
     val isDay: Boolean,
     val icon: ImageVector
@@ -182,6 +183,7 @@ private data class SimulationWeatherItem(
         AppLanguage.SPANISH -> nameEs
         AppLanguage.FRENCH -> nameFr
         AppLanguage.PORTUGUESE -> namePt
+        AppLanguage.RUSSIAN -> nameRu
     }
 }
 
@@ -196,14 +198,14 @@ fun WeatherSimulationDialog(
     val expressHaptics = LocalExpressiveHaptics.current
     val items = remember {
         listOf(
-            SimulationWeatherItem("快晴 (昼)", "맑음 (주간)", "Clear (Day)", "晴朗 (白天)", "晴朗 (白天)", "Despejado (Día)", "Dégagé (Jour)", "Céu limpo (Dia)", WeatherCondition.CLEAR, true, Icons.Rounded.WbSunny),
-            SimulationWeatherItem("快晴 (夜)", "맑음 (야간)", "Clear (Night)", "晴朗 (夜间)", "晴朗 (夜間)", "Despejado (Noche)", "Dégagé (Nuit)", "Céu limpo (Noite)", WeatherCondition.CLEAR, false, Icons.Rounded.NightsStay),
-            SimulationWeatherItem("晴れ時々曇り", "구름 조금", "Few Clouds", "多云", "多雲", "Pocas nubes", "Peu nuageux", "Poucas nuvens", WeatherCondition.FEW_CLOUDS, true, Icons.Rounded.CloudQueue),
-            SimulationWeatherItem("曇り", "흐림", "Cloudy", "阴天", "陰天", "Nublado", "Nuageux", "Nublado", WeatherCondition.CLOUDY, true, Icons.Rounded.Cloud),
-            SimulationWeatherItem("雨", "비", "Rain", "降雨", "降雨", "Lluvia", "Pluie", "Chuva", WeatherCondition.RAIN, true, Icons.Rounded.WaterDrop),
-            SimulationWeatherItem("雷雨", "뇌우", "Thunderstorm", "雷阵雨", "雷陣雨", "Tormenta", "Orage", "Tempestade", WeatherCondition.THUNDERSTORM, false, Icons.Rounded.Thunderstorm),
-            SimulationWeatherItem("雪", "눈", "Snow", "降雪", "降雪", "Nieve", "Neige", "Neve", WeatherCondition.SNOW, true, Icons.Rounded.AcUnit),
-            SimulationWeatherItem("霧", "안개", "Fog", "有雾", "有霧", "Niebla", "Brouillard", "Nevoeiro", WeatherCondition.FOG, true, Icons.Rounded.Dehaze)
+            SimulationWeatherItem("快晴 (昼)", "맑음 (주간)", "Clear (Day)", "晴朗 (白天)", "晴朗 (白天)", "Despejado (Día)", "Dégagé (Jour)", "Céu limpo (Dia)", "Ясно (День)", WeatherCondition.CLEAR, true, Icons.Rounded.WbSunny),
+            SimulationWeatherItem("快晴 (夜)", "맑음 (야간)", "Clear (Night)", "晴朗 (夜间)", "晴朗 (夜間)", "Despejado (Noche)", "Dégagé (Nuit)", "Céu limpo (Noite)", "Ясно (Ночь)", WeatherCondition.CLEAR, false, Icons.Rounded.NightsStay),
+            SimulationWeatherItem("晴れ時々曇り", "구름 조금", "Few Clouds", "多云", "多雲", "Pocas nubes", "Peu nuageux", "Poucas nuvens", "Малооблачно", WeatherCondition.FEW_CLOUDS, true, Icons.Rounded.CloudQueue),
+            SimulationWeatherItem("曇り", "흐림", "Cloudy", "阴天", "陰天", "Nublado", "Nuageux", "Nublado", "Облачно", WeatherCondition.CLOUDY, true, Icons.Rounded.Cloud),
+            SimulationWeatherItem("雨", "비", "Rain", "降雨", "降雨", "Lluvia", "Pluie", "Chuva", "Дождь", WeatherCondition.RAIN, true, Icons.Rounded.WaterDrop),
+            SimulationWeatherItem("雷雨", "뇌우", "Thunderstorm", "雷阵雨", "雷陣雨", "Tormenta", "Orage", "Tempestade", "Гроза", WeatherCondition.THUNDERSTORM, false, Icons.Rounded.Thunderstorm),
+            SimulationWeatherItem("雪", "눈", "Snow", "降雪", "降雪", "Nieve", "Neige", "Neve", "Снег", WeatherCondition.SNOW, true, Icons.Rounded.AcUnit),
+            SimulationWeatherItem("霧", "안개", "Fog", "有雾", "有霧", "Niebla", "Brouillard", "Nevoeiro", "Туман", WeatherCondition.FOG, true, Icons.Rounded.Dehaze)
         )
     }
 
@@ -220,6 +222,7 @@ fun WeatherSimulationDialog(
                     AppLanguage.SPANISH -> "Simulación atmosférica"
                     AppLanguage.FRENCH -> "Simulation atmosphérique"
                     AppLanguage.PORTUGUESE -> "Simulação atmosférica"
+                    AppLanguage.RUSSIAN -> "Симуляция погоды"
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.SemiBold
@@ -353,6 +356,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Simulador de fases lunares"
         AppLanguage.FRENCH -> "Simulateur de phases lunaires"
         AppLanguage.PORTUGUESE -> "Simulador de fases da lua"
+        AppLanguage.RUSSIAN -> "Симулятор фаз Луны"
     }
 
     val statusText = if (simulatedPhase != null) {
@@ -365,6 +369,7 @@ fun MoonPhaseSimulationDialog(
             AppLanguage.SPANISH -> "Simulando"
             AppLanguage.FRENCH -> "Simulation active"
             AppLanguage.PORTUGUESE -> "Simulando"
+            AppLanguage.RUSSIAN -> "Симуляция"
         }
     } else {
         when (language) {
@@ -376,6 +381,7 @@ fun MoonPhaseSimulationDialog(
             AppLanguage.SPANISH -> "Fase astronómica real"
             AppLanguage.FRENCH -> "Phase astronomique réelle"
             AppLanguage.PORTUGUESE -> "Fase astronômica real"
+            AppLanguage.RUSSIAN -> "Текущая фаза Луны"
         }
     }
 
@@ -388,6 +394,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Edad ${activeMoonInfo.ageDays}d"
         AppLanguage.FRENCH -> "Âge ${activeMoonInfo.ageDays} j"
         AppLanguage.PORTUGUESE -> "Idade ${activeMoonInfo.ageDays}d"
+        AppLanguage.RUSSIAN -> "Возраст ${activeMoonInfo.ageDays} д."
     }
 
     val sliderHeaderLabel = when (language) {
@@ -399,6 +406,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Ciclo lunar (0,0 – 29,5 d)"
         AppLanguage.FRENCH -> "Cycle lunaire (0,0 – 29,5 j)"
         AppLanguage.PORTUGUESE -> "Ciclo lunar (0,0 – 29,5 d)"
+        AppLanguage.RUSSIAN -> "Лунный цикл (0,0 – 29,5 д.)"
     }
 
     val presetsHeaderLabel = when (language) {
@@ -410,6 +418,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Preajustes de 8 fases"
         AppLanguage.FRENCH -> "Préréglages des 8 phases"
         AppLanguage.PORTUGUESE -> "Predefinições das 8 fases"
+        AppLanguage.RUSSIAN -> "8 основных фаз"
     }
 
     val southernLabel = when (language) {
@@ -421,6 +430,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Vista del hemisferio sur"
         AppLanguage.FRENCH -> "Vue hémisphère sud"
         AppLanguage.PORTUGUESE -> "Visão do hemisfério sul"
+        AppLanguage.RUSSIAN -> "Вид из Южного полушария"
     }
 
     val resetLabel = when (language) {
@@ -432,6 +442,7 @@ fun MoonPhaseSimulationDialog(
         AppLanguage.SPANISH -> "Restaurar fase real"
         AppLanguage.FRENCH -> "Revenir à la phase réelle"
         AppLanguage.PORTUGUESE -> "Restaurar fase real"
+        AppLanguage.RUSSIAN -> "Вернуть текущую фазу"
     }
 
     AlertDialog(
@@ -740,6 +751,7 @@ fun ThemePresetDialog(
                         AppLanguage.SPANISH -> "Seleccionar color del tema"
                         AppLanguage.FRENCH -> "Choisir la couleur du thème"
                         AppLanguage.PORTUGUESE -> "Selecionar cor do tema"
+                        AppLanguage.RUSSIAN -> "Выбор цвета темы"
                     },
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.SemiBold
@@ -754,6 +766,7 @@ fun ThemePresetDialog(
                         AppLanguage.SPANISH -> "Elige una paleta fija o que se adapte al clima"
                         AppLanguage.FRENCH -> "Choisissez une palette fixe ou adaptée à la météo"
                         AppLanguage.PORTUGUESE -> "Escolha uma paleta fixa ou adaptada ao clima"
+                        AppLanguage.RUSSIAN -> "Выберите фиксированную палитру или адаптацию к погоде"
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = colorScheme.onSurfaceVariant
@@ -878,6 +891,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Agencia Meteorológica de Japón (JMA)"
                     AppLanguage.FRENCH -> "Agence météorologique du Japon (JMA)"
                     AppLanguage.PORTUGUESE -> "Agência Meteorológica do Japão (JMA)"
+                    AppLanguage.RUSSIAN -> "Японское метеорологическое агентство (JMA)"
                 },
                 category = when (language) {
                     AppLanguage.JAPANESE -> "国内高精度実況・防災"
@@ -888,6 +902,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Radar y alertas de Japón"
                     AppLanguage.FRENCH -> "Radar et alertes du Japon"
                     AppLanguage.PORTUGUESE -> "Radar e alertas do Japão"
+                    AppLanguage.RUSSIAN -> "Радар и оповещения (Япония)"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "高解像度降水ナウキャスト(250m)、降水短時間予報(+15h)、キキクル(危険度分布)、気象衛星ひまわり、特別警報・警報・注意報"
@@ -898,6 +913,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Pronóstico inmediato de alta resolución (250 m), precipitación (+15 h), Kikikuru, satélite Himawari y alertas meteorológicas"
                     AppLanguage.FRENCH -> "Prévision immédiate haute résolution (250 m), précipitations (+15 h), Kikikuru, satellite Himawari et alertes météo"
                     AppLanguage.PORTUGUESE -> "Previsão imediata de alta resolução (250 m), precipitação (+15 h), Kikikuru, satélite Himawari e alertas meteorológicos"
+                    AppLanguage.RUSSIAN -> "Сверхкраткосрочный прогноз осадков (250 м), прогноз (+15 ч), Kikikuru, спутник Himawari и штормовые предупреждения"
                 },
                 attribution = when (language) {
                     AppLanguage.JAPANESE -> "出典：気象庁（政府標準利用規約2.0準拠）"
@@ -908,6 +924,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Fuente: Agencia Meteorológica de Japón (JMA)"
                     AppLanguage.FRENCH -> "Source : Agence météorologique du Japon (JMA)"
                     AppLanguage.PORTUGUESE -> "Fonte: Agência Meteorológica do Japão (JMA)"
+                    AppLanguage.RUSSIAN -> "Источник: Японское метеорологическое агентство (JMA)"
                 },
                 url = "https://www.jma.go.jp/"
             ),
@@ -922,6 +939,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Pronóstico global y calidad del aire"
                     AppLanguage.FRENCH -> "Prévisions mondiales et qualité de l'air"
                     AppLanguage.PORTUGUESE -> "Previsão global e qualidade do ar"
+                    AppLanguage.RUSSIAN -> "Глобальный прогноз и воздух"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "週間・時間別天気予報、気温、降水量、湿度、風向風速、気圧、紫外線指数(UV)、大気質指数(AQI)"
@@ -932,6 +950,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Pronóstico semanal y por horas, temperatura, precipitación, humedad, viento, presión, UV y calidad del aire (AQI)"
                     AppLanguage.FRENCH -> "Prévisions hebdomadaires et horaires, température, précipitations, humidité, vent, pression, UV et qualité de l'air (IQA)"
                     AppLanguage.PORTUGUESE -> "Previsão semanal e horária, temperatura, precipitação, umidade, vento, pressão, UV e qualidade do ar (IQA)"
+                    AppLanguage.RUSSIAN -> "Почасовой и недельный прогноз, температура, осадки, влажность, ветер, давление, УФ-индекс и качество воздуха (AQI)"
                 },
                 attribution = "Weather data by Open-Meteo.com (CC BY 4.0)",
                 url = "https://open-meteo.com/"
@@ -947,6 +966,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Red global de radar"
                     AppLanguage.FRENCH -> "Réseau radar mondial"
                     AppLanguage.PORTUGUESE -> "Rede global de radar"
+                    AppLanguage.RUSSIAN -> "Глобальная сеть радаров"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "世界各国の気象レーダー観測網を統合したシームレスな実況レーダータイルおよびタイムライン"
@@ -957,6 +977,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mosaico global compuesto de radares meteorológicos y línea de tiempo"
                     AppLanguage.FRENCH -> "Tuiles radar météo mondiales composites et chronologie"
                     AppLanguage.PORTUGUESE -> "Mosaico global composto de radares meteorológicos e linha do tempo"
+                    AppLanguage.RUSSIAN -> "Сводные глобальные тайлы метеорадаров и шкала времени"
                 },
                 attribution = "Weather data provided by RainViewer",
                 url = "https://www.rainviewer.com/api.html"
@@ -972,6 +993,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Geocodificación y búsqueda"
                     AppLanguage.FRENCH -> "Géocodage et recherche"
                     AppLanguage.PORTUGUESE -> "Geocodificação e busca"
+                    AppLanguage.RUSSIAN -> "Геокодирование и поиск"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "全世界の都市・地名検索およびGPS座標からの逆ジオコーディング"
@@ -982,6 +1004,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Búsqueda global de ciudades y geocodificación inversa desde coordenadas"
                     AppLanguage.FRENCH -> "Recherche mondiale de villes et géocodage inversé depuis les coordonnées"
                     AppLanguage.PORTUGUESE -> "Busca global de cidades e geocodificação reversa a partir de coordenadas"
+                    AppLanguage.RUSSIAN -> "Глобальный поиск городов и обратное геокодирование по координатам"
                 },
                 attribution = "© OpenStreetMap contributors (ODbL) / Photon",
                 url = "https://www.openstreetmap.org/copyright"
@@ -997,6 +1020,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Radar de EE. UU. y modelo HRRR"
                     AppLanguage.FRENCH -> "Radar US et prévisions HRRR"
                     AppLanguage.PORTUGUESE -> "Radar dos EUA e modelo HRRR"
+                    AppLanguage.RUSSIAN -> "Радар США и модель HRRR"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "全米NEXRAD地上反射強度実況、MRMSモザイク、HRRR数値予報シミュレーション(+18h)、NWS気象警報"
@@ -1007,6 +1031,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Reflectividad NEXRAD de EE. UU., compuesto MRMS, simulación HRRR (+18 h) y alertas del NWS"
                     AppLanguage.FRENCH -> "Réflectivité NEXRAD US, composite MRMS, simulation HRRR (+18 h) et alertes NWS"
                     AppLanguage.PORTUGUESE -> "Refletividade NEXRAD dos EUA, composto MRMS, simulação HRRR (+18 h) e alertas do NWS"
+                    AppLanguage.RUSSIAN -> "Радарная отражаемость NEXRAD, мозаика MRMS, модель HRRR (+18 ч) и оповещения NWS"
                 },
                 attribution = "Data provided by NOAA / National Weather Service (Public Domain)",
                 url = "https://www.weather.gov/"
@@ -1022,6 +1047,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Alertas globales de desastres"
                     AppLanguage.FRENCH -> "Alertes mondiales de catastrophes"
                     AppLanguage.PORTUGUESE -> "Alertas globais de desastres"
+                    AppLanguage.RUSSIAN -> "Глобальные оповещения о ЧС"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "熱帯低気圧（台風・ハリケーン）、地震、津波、火山活動、洪水警報"
@@ -1032,6 +1058,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Ciclones tropicales, terremotos, tsunamis, erupciones volcánicas e inundaciones"
                     AppLanguage.FRENCH -> "Cyclones tropicaux, séismes, tsunamis, éruptions volcaniques et inondations"
                     AppLanguage.PORTUGUESE -> "Ciclones tropicais, terremotos, tsunamis, erupções vulcânicas e enchentes"
+                    AppLanguage.RUSSIAN -> "Тропические циклоны, землетрясения, цунами, извержения вулканов и наводнения"
                 },
                 attribution = "Disaster alerts provided by GDACS (UN & European Commission)",
                 url = "https://www.gdacs.org/"
@@ -1047,6 +1074,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Alertas meteorológicas oficiales"
                     AppLanguage.FRENCH -> "Alertes météo officielles"
                     AppLanguage.PORTUGUESE -> "Alertas meteorológicos oficiais"
+                    AppLanguage.RUSSIAN -> "Официальные метеопредупреждения"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "SWIC（Severe Weather Information Centre）を通じた各国気象当局の公式警報"
@@ -1057,6 +1085,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Alertas oficiales de clima severo de servicios meteorológicos nacionales de todo el mundo"
                     AppLanguage.FRENCH -> "Alertes officielles de phénomènes violents des services météorologiques nationaux"
                     AppLanguage.PORTUGUESE -> "Alertas oficiais de tempo severo de serviços meteorológicos nacionais no mundo todo"
+                    AppLanguage.RUSSIAN -> "Официальные предупреждения об опасных явлениях от национальных метеослужб мира"
                 },
                 attribution = "Official weather warnings provided by WMO",
                 url = "https://severeweather.wmo.int/"
@@ -1072,6 +1101,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Alertas meteorológicas de Europa"
                     AppLanguage.FRENCH -> "Alertes météo européennes"
                     AppLanguage.PORTUGUESE -> "Alertas meteorológicos da Europa"
+                    AppLanguage.RUSSIAN -> "Метеопредупреждения Европы"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "欧州39カ国・地域の公式気象警報（CAP / Atomフィード）"
@@ -1082,6 +1112,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Alertas meteorológicas oficiales en 39 países europeos (CAP / Atom)"
                     AppLanguage.FRENCH -> "Alertes météo officielles dans 39 pays européens (CAP / Atom)"
                     AppLanguage.PORTUGUESE -> "Alertas meteorológicos oficiais em 39 países europeus (CAP / Atom)"
+                    AppLanguage.RUSSIAN -> "Официальные метеопредупреждения в 39 странах Европы (CAP / Atom)"
                 },
                 attribution = "Alerts provided by MeteoAlarm / EUMETNET",
                 url = "https://meteoalarm.org/"
@@ -1097,6 +1128,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Servicio de mosaicos radar de EE. UU."
                     AppLanguage.FRENCH -> "Service de tuiles radar US"
                     AppLanguage.PORTUGUESE -> "Serviço de mosaicos de radar dos EUA"
+                    AppLanguage.RUSSIAN -> "Тайлы радаров США"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "NEXRAD / MRMS 合成レーダーおよび HRRR 数値予報タイル配信"
@@ -1107,6 +1139,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mosaicos de radar compuesto NEXRAD / MRMS y del modelo HRRR"
                     AppLanguage.FRENCH -> "Tuiles cartographiques radar NEXRAD / MRMS et modèle HRRR"
                     AppLanguage.PORTUGUESE -> "Mosaicos de radar composto NEXRAD / MRMS e do modelo HRRR"
+                    AppLanguage.RUSSIAN -> "Композитные радарные карты NEXRAD / MRMS и тайлы модели HRRR"
                 },
                 attribution = "Tiles hosted by Iowa Environmental Mesonet (Iowa State University)",
                 url = "https://mesonet.agron.iastate.edu/"
@@ -1121,6 +1154,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Autoridad de Información Geoespacial de Japón (GSI)"
                     AppLanguage.FRENCH -> "Autorité d'information géospatiale du Japon (GSI)"
                     AppLanguage.PORTUGUESE -> "Autoridade de Informação Geoespacial do Japão (GSI)"
+                    AppLanguage.RUSSIAN -> "Управление геопространственной информации Японии (GSI)"
                 },
                 category = when (language) {
                     AppLanguage.JAPANESE -> "背景地図・ハザードマップ"
@@ -1131,6 +1165,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mapas base y zonas de riesgo"
                     AppLanguage.FRENCH -> "Fonds de carte et zones à risque"
                     AppLanguage.PORTUGUESE -> "Mapas base e áreas de risco"
+                    AppLanguage.RUSSIAN -> "Базовые карты и зоны риска"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "日本域ウィジェット背景地図（淡色・白地図）および浸水想定区域オーバーレイ"
@@ -1141,6 +1176,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mapas base de widgets para Japón y capas de riesgo de inundación"
                     AppLanguage.FRENCH -> "Fonds de carte de widget pour le Japon et couches de risque d'inondation"
                     AppLanguage.PORTUGUESE -> "Mapas base de widgets para o Japão e camadas de risco de inundação"
+                    AppLanguage.RUSSIAN -> "Базовые карты виджетов для Японии и слои зон возможного затопления"
                 },
                 attribution = when (language) {
                     AppLanguage.JAPANESE -> "出典：国土地理院（地理院タイル）"
@@ -1151,6 +1187,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Fuente: Autoridad de Información Geoespacial de Japón (GSI)"
                     AppLanguage.FRENCH -> "Source : Autorité d'information géospatiale du Japon (GSI)"
                     AppLanguage.PORTUGUESE -> "Fonte: Autoridade de Informação Geoespacial do Japão (GSI)"
+                    AppLanguage.RUSSIAN -> "Источник: Управление геопространственной информации Японии (GSI)"
                 },
                 url = "https://maps.gsi.go.jp/development/ichiran.html"
             ),
@@ -1165,6 +1202,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mapas interactivos"
                     AppLanguage.FRENCH -> "Cartes interactives"
                     AppLanguage.PORTUGUESE -> "Mapas interativos"
+                    AppLanguage.RUSSIAN -> "Интерактивные карты"
                 },
                 usage = when (language) {
                     AppLanguage.JAPANESE -> "雨雲レーダー・キキクル・台風進路表示用のベースマップ描画"
@@ -1175,6 +1213,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Mapa base interactivo para radar meteorológico, Kikikuru y trayectorias de tifones"
                     AppLanguage.FRENCH -> "Fond de carte interactif pour le radar météo, Kikikuru et les trajectoires de typhons"
                     AppLanguage.PORTUGUESE -> "Mapa base interativo para radar meteorológico, Kikikuru e trajetórias de tufões"
+                    AppLanguage.RUSSIAN -> "Интерактивная базовая карта для радара осадков, Kikikuru и траекторий тайфунов"
                 },
                 attribution = "Map data © Google",
                 url = "https://www.google.com/help/terms_maps/"
@@ -1202,6 +1241,7 @@ fun DataSourcesCreditsDialog(
                     AppLanguage.SPANISH -> "Fuentes de datos y créditos"
                     AppLanguage.FRENCH -> "Sources de données et crédits"
                     AppLanguage.PORTUGUESE -> "Fontes de dados e créditos"
+                    AppLanguage.RUSSIAN -> "Источники данных и авторы"
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
@@ -1290,6 +1330,7 @@ fun DataSourcesCreditsDialog(
                                             AppLanguage.SPANISH -> "Sitio web"
                                             AppLanguage.FRENCH -> "Site web"
                                             AppLanguage.PORTUGUESE -> "Site"
+                                            AppLanguage.RUSSIAN -> "Сайт"
                                         },
                                         fontSize = 11.sp
                                     )
@@ -1322,6 +1363,7 @@ fun DataSourcesCreditsDialog(
                             AppLanguage.SPANISH -> "Nota: Esta es una aplicación no oficial y no está afiliada a ninguna agencia meteorológica oficial. En emergencias, consulta los avisos oficiales de las autoridades."
                             AppLanguage.FRENCH -> "Remarque : Cette application n'est pas officielle et n'est affiliée à aucun service météorologique officiel. En cas d'urgence, consultez les annonces officielles des autorités."
                             AppLanguage.PORTUGUESE -> "Aviso: Este é um aplicativo não oficial e não é afiliado a nenhuma agência meteorológica oficial. Em emergências, consulte os comunicados oficiais das autoridades."
+                            AppLanguage.RUSSIAN -> "Примечание: это неофициальное приложение, не связанное с какими-либо метеорологическими ведомствами. В чрезвычайных ситуациях ориентируйтесь на официальные сообщения властей."
                         },
                         style = MaterialTheme.typography.labelSmall,
                         color = colorScheme.onTertiaryContainer,
@@ -1345,6 +1387,7 @@ fun DataSourcesCreditsDialog(
                         AppLanguage.SPANISH -> "Cerrar"
                         AppLanguage.FRENCH -> "Fermer"
                         AppLanguage.PORTUGUESE -> "Fechar"
+                        AppLanguage.RUSSIAN -> "Закрыть"
                     }
                 )
             }
@@ -1382,6 +1425,7 @@ fun OpenSourceLicenseDialog(
                     AppLanguage.SPANISH -> "Licencia de código abierto"
                     AppLanguage.FRENCH -> "Licence open source"
                     AppLanguage.PORTUGUESE -> "Licença de código aberto"
+                    AppLanguage.RUSSIAN -> "Лицензия открытого ПО"
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
@@ -1429,6 +1473,7 @@ fun OpenSourceLicenseDialog(
                         AppLanguage.SPANISH -> "Copyright © Expressive Weather Contributors\n\nExpressive Weather es software de código abierto bajo la licencia Apache, versión 2.0. Este software se proporciona \"TAL CUAL\" (AS IS), SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO."
                         AppLanguage.FRENCH -> "Copyright © Expressive Weather Contributors\n\nExpressive Weather est un logiciel open source sous licence Apache, version 2.0. Ce logiciel est fourni « EN L'ÉTAT » (AS IS), SANS GARANTIE NI CONDITION D'AUCUNE SORTE."
                         AppLanguage.PORTUGUESE -> "Copyright © Expressive Weather Contributors\n\nExpressive Weather é um software de código aberto licenciado sob a Licença Apache, versão 2.0. Este software é fornecido \"COMO ESTÁ\" (AS IS), SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO."
+                        AppLanguage.RUSSIAN -> "Copyright © Expressive Weather Contributors\n\nExpressive Weather — ПО с открытым исходным кодом под лицензией Apache License 2.0. Программа предоставляется «КАК ЕСТЬ» (AS IS), БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ ИЛИ УСЛОВИЙ."
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorScheme.onSurface,
@@ -1454,6 +1499,7 @@ fun OpenSourceLicenseDialog(
                                 AppLanguage.SPANISH -> "Licencias de terceros (OSS y recursos)"
                                 AppLanguage.FRENCH -> "Licences tierces (OSS et ressources)"
                                 AppLanguage.PORTUGUESE -> "Licenças de terceiros (OSS e recursos)"
+                                AppLanguage.RUSSIAN -> "Сторонние компоненты и ресурсы"
                             },
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.Bold,
@@ -1557,6 +1603,7 @@ fun OpenSourceLicenseDialog(
                                 AppLanguage.SPANISH -> "Apoyar en Buy Me a Coffee"
                                 AppLanguage.FRENCH -> "Soutenir sur Buy Me a Coffee"
                                 AppLanguage.PORTUGUESE -> "Apoiar no Buy Me a Coffee"
+                                AppLanguage.RUSSIAN -> "Поддержать на Buy Me a Coffee"
                             },
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium
@@ -1584,6 +1631,7 @@ fun OpenSourceLicenseDialog(
                         AppLanguage.SPANISH -> "Cerrar"
                         AppLanguage.FRENCH -> "Fermer"
                         AppLanguage.PORTUGUESE -> "Fechar"
+                        AppLanguage.RUSSIAN -> "Закрыть"
                     }
                 )
             }
@@ -1623,6 +1671,7 @@ fun BackgroundLocationDisclosureDialog(
                     AppLanguage.SPANISH -> "Uso de ubicación en segundo plano"
                     AppLanguage.FRENCH -> "Localisation en arrière-plan"
                     AppLanguage.PORTUGUESE -> "Uso de localização em segundo plano"
+                    AppLanguage.RUSSIAN -> "Доступ к геолокации в фоне"
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
@@ -1645,6 +1694,7 @@ fun BackgroundLocationDisclosureDialog(
                         AppLanguage.SPANISH -> "Expressive Weather recopila datos de ubicación para habilitar las siguientes funciones incluso cuando la app está cerrada o no está en uso:"
                         AppLanguage.FRENCH -> "Expressive Weather collecte des données de localisation pour activer les fonctionnalités suivantes même lorsque l'application est fermée ou inutilisée :"
                         AppLanguage.PORTUGUESE -> "O Expressive Weather coleta dados de localização para ativar os recursos a seguir mesmo quando o app está fechado ou fora de uso:"
+                        AppLanguage.RUSSIAN -> "Expressive Weather собирает данные о местоположении для работы следующих функций, даже когда приложение закрыто или не используется:"
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorScheme.onSurface
@@ -1700,6 +1750,11 @@ fun BackgroundLocationDisclosureDialog(
                                 "• Notificações em tempo real de contagem regressiva de início e fim de chuva na sua localização",
                                 "• Atualização automática em segundo plano do clima e dos widgets da tela inicial"
                             )
+                            AppLanguage.RUSSIAN -> listOf(
+                                "• Автоматический мониторинг штормовых предупреждений и ЧС в пути",
+                                "• Уведомления в реальном времени о приближении и окончании осадков по вашему местоположению",
+                                "• Фоновое обновление погоды и виджетов на главном экране для вашего текущего района"
+                            )
                         }
                         bullets.forEach { bullet ->
                             Text(
@@ -1722,6 +1777,7 @@ fun BackgroundLocationDisclosureDialog(
                         AppLanguage.SPANISH -> "Tus coordenadas se envían únicamente a proveedores de clima y alertas para obtener pronósticos y avisos locales. Nunca se venden ni se usan para publicidad. Este permiso es opcional y puede revocarse en cualquier momento en los ajustes de Android."
                         AppLanguage.FRENCH -> "Vos coordonnées sont envoyées uniquement aux fournisseurs météo et d'alertes pour récupérer les prévisions et avis locaux. Elles ne sont jamais vendues ni utilisées à des fins publicitaires. Cette autorisation est facultative et révocable à tout moment dans les paramètres Android."
                         AppLanguage.PORTUGUESE -> "Suas coordenadas são enviadas apenas aos provedores de clima e alertas para obter previsões e avisos locais. Elas nunca são vendidas nem usadas para publicidade. Essa permissão é opcional e pode ser revogada a qualquer momento nas configurações do Android."
+                        AppLanguage.RUSSIAN -> "Ваши координаты передаются только поставщикам погодных данных и оповещений для получения локальных прогнозов и предупреждений. Они никогда не продаются и не используются для рекламы. Это разрешение необязательно и может быть отозвано в любой момент в настройках Android."
                     },
                     style = MaterialTheme.typography.bodySmall,
                     color = colorScheme.onSurfaceVariant,
@@ -1741,6 +1797,7 @@ fun BackgroundLocationDisclosureDialog(
                         AppLanguage.SPANISH -> "Continuar a Ajustes"
                         AppLanguage.FRENCH -> "Continuer vers les paramètres"
                         AppLanguage.PORTUGUESE -> "Continuar para Configurações"
+                        AppLanguage.RUSSIAN -> "Перейти в настройки"
                     }
                 )
             }
@@ -1757,6 +1814,7 @@ fun BackgroundLocationDisclosureDialog(
                         AppLanguage.SPANISH -> "Ahora no"
                         AppLanguage.FRENCH -> "Plus tard"
                         AppLanguage.PORTUGUESE -> "Agora não"
+                        AppLanguage.RUSSIAN -> "Не сейчас"
                     }
                 )
             }
@@ -1798,6 +1856,7 @@ fun PrivacyPolicyDialog(
                     AppLanguage.SPANISH -> "Política de privacidad"
                     AppLanguage.FRENCH -> "Politique de confidentialité"
                     AppLanguage.PORTUGUESE -> "Política de privacidade"
+                    AppLanguage.RUSSIAN -> "Политика конфиденциальности"
                 },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
@@ -1820,6 +1879,7 @@ fun PrivacyPolicyDialog(
                         AppLanguage.SPANISH -> "Expressive Weather no opera servidores propios de análisis ni seguimiento, no requiere cuenta y no muestra anuncios."
                         AppLanguage.FRENCH -> "Expressive Weather n'exploite aucun serveur d'analyse ou de suivi, ne nécessite aucun compte et n'affiche aucune publicité."
                         AppLanguage.PORTUGUESE -> "O Expressive Weather não opera servidores próprios de análise ou rastreamento, não exige conta e não exibe anúncios."
+                        AppLanguage.RUSSIAN -> "Expressive Weather не использует собственные серверы аналитики и отслеживания, не требует учётной записи и не показывает рекламу."
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = colorScheme.onSurface
@@ -1883,6 +1943,12 @@ fun PrivacyPolicyDialog(
                                 "• Provedores terceiros: Open-Meteo, JMA, GSI, NOAA/NWS, IEM, MeteoAlarm, WMO, GDACS, RainViewer, Photon e Google Maps SDK.",
                                 "• Armazenamento local: Cidades salvas, cache de clima e preferências permanecem apenas no seu dispositivo."
                             )
+                            AppLanguage.RUSSIAN -> listOf(
+                                "• Геолокация (необязательно): используется только для прогнозов, радара, оповещений о ЧС и обратного геокодирования. Доступ в фоне осуществляется только с вашего явного разрешения.",
+                                "• Поисковые запросы: отправляются в Photon (OpenStreetMap) для поиска городов.",
+                                "• Сторонние сервисы: Open-Meteo, JMA, GSI, NOAA/NWS, IEM, MeteoAlarm, WMO, GDACS, RainViewer, Photon и Google Maps SDK.",
+                                "• Локальное хранение: сохранённые города, кэш погоды и настройки хранятся только на вашем устройстве."
+                            )
                         }
                         items.forEach { text ->
                             Text(
@@ -1916,6 +1982,7 @@ fun PrivacyPolicyDialog(
                             AppLanguage.SPANISH -> "Leer política de privacidad completa"
                             AppLanguage.FRENCH -> "Lire la politique de confidentialité complète"
                             AppLanguage.PORTUGUESE -> "Ler política de privacidade completa"
+                            AppLanguage.RUSSIAN -> "Читать полную политику"
                         },
                         fontSize = 12.sp
                     )
@@ -1941,6 +2008,7 @@ fun PrivacyPolicyDialog(
                         AppLanguage.SPANISH -> "Cerrar"
                         AppLanguage.FRENCH -> "Fermer"
                         AppLanguage.PORTUGUESE -> "Fechar"
+                        AppLanguage.RUSSIAN -> "Закрыть"
                     }
                 )
             }
@@ -1960,6 +2028,7 @@ private data class HapticPreviewItem(
     val labelEs: String,
     val labelFr: String,
     val labelPt: String,
+    val labelRu: String,
     val icon: ImageVector
 ) {
     fun label(language: AppLanguage): String = when (language) {
@@ -1971,6 +2040,7 @@ private data class HapticPreviewItem(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
     }
 }
 
@@ -1992,37 +2062,37 @@ fun HapticShowcaseDialog(
             HapticPreviewItem(
                 ExpressiveHapticPattern.EXPRESSIVE_BOUNCE,
                 "弾性タップ", "탄성 탭", "Bouncy Tap", "弹性点击", "彈性點擊",
-                "Toque elástico", "Tap rebond", "Toque elástico",
+                "Toque elástico", "Tap rebond", "Toque elástico", "Упругий тап",
                 Icons.Rounded.TouchApp
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.SWITCH_ON,
                 "スイッチ ON", "스위치 전환", "Switch Snap", "开关切换", "開關切換",
-                "Interruptor", "Interrupteur", "Interruptor",
+                "Interruptor", "Interrupteur", "Interruptor", "Щелчок",
                 Icons.Rounded.ToggleOn
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.DETENT_BOUNDARY,
                 "端点デテント", "경계 디텐트", "Detent Edge", "边界刻度", "邊界刻度",
-                "Tope de borde", "Cran de bord", "Limite tátil",
+                "Tope de borde", "Cran de bord", "Limite tátil", "Граница",
                 Icons.Rounded.LinearScale
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.DRAG_PICKUP,
                 "ドラッグ掴み", "드래그 잡기", "Grab & Lift", "抓取抬起", "抓取抬起",
-                "Agarrar", "Saisir", "Segurar",
+                "Agarrar", "Saisir", "Segurar", "Захват",
                 Icons.Rounded.DragIndicator
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.REFRESH_SUCCESS,
                 "更新完了", "업데이트 완료", "Sync Done", "同步完成", "同步完成",
-                "Actualizado", "Synchronisé", "Atualizado",
+                "Actualizado", "Synchronisé", "Atualizado", "Обновлено",
                 Icons.Rounded.CheckCircle
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.CELEBRATE_UNLOCK,
                 "達成・解除", "완료·잠금 해제", "Celebrate", "解锁庆祝", "解鎖慶祝",
-                "Celebración", "Célébration", "Celebração",
+                "Celebración", "Célébration", "Celebração", "Успех",
                 Icons.Rounded.AutoAwesome
             )
         )
@@ -2033,31 +2103,31 @@ fun HapticShowcaseDialog(
             HapticPreviewItem(
                 ExpressiveHapticPattern.WEATHER_RAINDROP_PATTER,
                 "雨粒パター", "빗방울 톡톡", "Raindrop Patter", "雨滴轻敲", "雨滴輕敲",
-                "Gotas de lluvia", "Gouttes de pluie", "Gotas de chuva",
+                "Gotas de lluvia", "Gouttes de pluie", "Gotas de chuva", "Капли дождя",
                 Icons.Rounded.WaterDrop
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.WEATHER_THUNDER_RUMBLE,
                 "雷鳴ランブル", "천둥 울림", "Thunder Rumble", "雷鸣轰隆", "雷鳴轟隆",
-                "Trueno", "Tonnerre", "Trovão",
+                "Trueno", "Tonnerre", "Trovão", "Раскат грома",
                 Icons.Rounded.Thunderstorm
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.WEATHER_SNOW_CRISP,
                 "粉雪クリスプ", "눈송이 터치", "Crisp Snow", "降雪轻触", "降雪輕觸",
-                "Nieve suave", "Neige légère", "Neve suave",
+                "Nieve suave", "Neige légère", "Neve suave", "Хруст снега",
                 Icons.Rounded.AcUnit
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.WEATHER_WIND_GUST,
                 "強風ガスト", "돌풍 진동", "Wind Gust", "阵风拂动", "陣風拂動",
-                "Ráfaga", "Rafale", "Rajada",
+                "Ráfaga", "Rafale", "Rajada", "Порыв ветра",
                 Icons.Rounded.Air
             ),
             HapticPreviewItem(
                 ExpressiveHapticPattern.ALERT_CRITICAL_PULSE,
                 "緊急警報パルス", "긴급 경보 펄스", "Critical Alert", "紧急警报脉冲", "緊急警報脈衝",
-                "Alerta crítica", "Alerte critique", "Alerta crítico",
+                "Alerta crítica", "Alerte critique", "Alerta crítico", "Тревога",
                 Icons.Rounded.Warning
             )
         )
@@ -2094,6 +2164,7 @@ fun HapticShowcaseDialog(
                         AppLanguage.SPANISH -> "Estudio y perfil háptico"
                         AppLanguage.FRENCH -> "Studio et profil haptique"
                         AppLanguage.PORTUGUESE -> "Estúdio e perfil tátil"
+                        AppLanguage.RUSSIAN -> "Студия и профиль виброотклика"
                     },
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold
@@ -2139,6 +2210,7 @@ fun HapticShowcaseDialog(
                                 AppLanguage.SPANISH -> "Sí"
                                 AppLanguage.FRENCH -> "Oui"
                                 AppLanguage.PORTUGUESE -> "Sim"
+                                AppLanguage.RUSSIAN -> "Да"
                             }
                             val no = when (language) {
                                 AppLanguage.JAPANESE -> "非対応"
@@ -2149,6 +2221,7 @@ fun HapticShowcaseDialog(
                                 AppLanguage.SPANISH -> "No"
                                 AppLanguage.FRENCH -> "Non"
                                 AppLanguage.PORTUGUESE -> "Não"
+                                AppLanguage.RUSSIAN -> "Нет"
                             }
                             Text(
                                 text = when (language) {
@@ -2160,6 +2233,7 @@ fun HapticShowcaseDialog(
                                     AppLanguage.SPANISH -> "Amplitud: ${if (capabilities.hasAmplitudeControl) yes else no} • Primitivas: ${capabilities.supportedPrimitivesCount}"
                                     AppLanguage.FRENCH -> "Amplitude : ${if (capabilities.hasAmplitudeControl) yes else no} • Primitives : ${capabilities.supportedPrimitivesCount}"
                                     AppLanguage.PORTUGUESE -> "Amplitude: ${if (capabilities.hasAmplitudeControl) yes else no} • Primitivas: ${capabilities.supportedPrimitivesCount}"
+                                    AppLanguage.RUSSIAN -> "Амплитуда: ${if (capabilities.hasAmplitudeControl) yes else no} • Примитивы: ${capabilities.supportedPrimitivesCount}"
                                 },
                                 style = MaterialTheme.typography.labelSmall,
                                 color = colorScheme.onSurfaceVariant
@@ -2175,6 +2249,7 @@ fun HapticShowcaseDialog(
                                 AppLanguage.SPANISH -> "Intensidad activa: ${currentIntensity.getLabel(language)}"
                                 AppLanguage.FRENCH -> "Intensité active : ${currentIntensity.getLabel(language)}"
                                 AppLanguage.PORTUGUESE -> "Intensidade ativa: ${currentIntensity.getLabel(language)}"
+                                AppLanguage.RUSSIAN -> "Текущая сила: ${currentIntensity.getLabel(language)}"
                             },
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Medium,
@@ -2197,6 +2272,7 @@ fun HapticShowcaseDialog(
                         AppLanguage.SPANISH -> "Interacciones de interfaz"
                         AppLanguage.FRENCH -> "Interactions de l'interface"
                         AppLanguage.PORTUGUESE -> "Interações de interface"
+                        AppLanguage.RUSSIAN -> "Взаимодействия интерфейса"
                     },
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
@@ -2244,6 +2320,7 @@ fun HapticShowcaseDialog(
                         AppLanguage.SPANISH -> "Firmas de clima y alertas"
                         AppLanguage.FRENCH -> "Signatures météo et alertes"
                         AppLanguage.PORTUGUESE -> "Assinaturas de clima e alertas"
+                        AppLanguage.RUSSIAN -> "Погода и оповещения"
                     },
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
@@ -2300,6 +2377,7 @@ fun HapticShowcaseDialog(
                         AppLanguage.SPANISH -> "Cerrar"
                         AppLanguage.FRENCH -> "Fermer"
                         AppLanguage.PORTUGUESE -> "Fechar"
+                        AppLanguage.RUSSIAN -> "Закрыть"
                     }
                 )
             }

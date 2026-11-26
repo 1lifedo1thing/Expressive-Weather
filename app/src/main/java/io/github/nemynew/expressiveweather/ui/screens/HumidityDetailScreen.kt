@@ -85,6 +85,7 @@ import io.github.nemynew.expressiveweather.theme.accentColor
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.haptics.ExpressiveHapticPattern
 import io.github.nemynew.expressiveweather.ui.haptics.LocalExpressiveHaptics
 import java.util.Locale
@@ -142,6 +143,7 @@ fun HumidityDetailScreen(
         AppLanguage.SPANISH -> "Humedad relativa"
         AppLanguage.FRENCH -> "Humidité relative"
         AppLanguage.PORTUGUESE -> "Umidade relativa"
+        AppLanguage.RUSSIAN -> "Относительная влажность"
     }
 
     val dewPointLabel = when (language) {
@@ -153,6 +155,7 @@ fun HumidityDetailScreen(
         AppLanguage.SPANISH -> "Punto de rocío actual"
         AppLanguage.FRENCH -> "Point de rosée actuel"
         AppLanguage.PORTUGUESE -> "Ponto de orvalho atual"
+        AppLanguage.RUSSIAN -> "Текущая точка росы"
     }
 
     val hourlyHumidityTitle = when (language) {
@@ -164,6 +167,7 @@ fun HumidityDetailScreen(
         AppLanguage.SPANISH -> "Humedad y sequedad por hora"
         AppLanguage.FRENCH -> "Humidité et sécheresse horaire"
         AppLanguage.PORTUGUESE -> "Umidade e secura por hora"
+        AppLanguage.RUSSIAN -> "Влажность и сухость по часам"
     }
 
     val adviceSectionTitle = when (language) {
@@ -175,6 +179,7 @@ fun HumidityDetailScreen(
         AppLanguage.SPANISH -> "Guía de confort y bienestar interior"
         AppLanguage.FRENCH -> "Guide confort et bien-être intérieur"
         AppLanguage.PORTUGUESE -> "Guia de conforto e bem-estar interno"
+        AppLanguage.RUSSIAN -> "Рекомендации по комфорту в помещении"
     }
 
     DetailScaffold(
@@ -264,7 +269,7 @@ fun HumidityDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -415,6 +420,7 @@ fun HumidityDetailScreen(
                             AppLanguage.SPANISH -> "0% (Seco)"
                             AppLanguage.FRENCH -> "0% (Sec)"
                             AppLanguage.PORTUGUESE -> "0% (Seco)"
+                            AppLanguage.RUSSIAN -> "0% (Сухо)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(when (language) {
                             AppLanguage.JAPANESE -> "40-60% (快適ゾーン)"
@@ -425,6 +431,7 @@ fun HumidityDetailScreen(
                             AppLanguage.SPANISH -> "40-60% (Zona óptima)"
                             AppLanguage.FRENCH -> "40-60% (Zone confort)"
                             AppLanguage.PORTUGUESE -> "40-60% (Zona ideal)"
+                            AppLanguage.RUSSIAN -> "40–60% (Зона комфорта)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text(when (language) {
                             AppLanguage.JAPANESE -> "100% (多湿)"
@@ -435,6 +442,7 @@ fun HumidityDetailScreen(
                             AppLanguage.SPANISH -> "100% (Húmedo)"
                             AppLanguage.FRENCH -> "100% (Humide)"
                             AppLanguage.PORTUGUESE -> "100% (Úmido)"
+                            AppLanguage.RUSSIAN -> "100% (Влажно)"
                         }, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
@@ -501,7 +509,7 @@ fun HumidityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -562,6 +570,7 @@ fun HumidityDetailScreen(
                                     AppLanguage.SPANISH -> "Máxima sequedad hoy ($peakTime)"
                                     AppLanguage.FRENCH -> "Pic de sécheresse ($peakTime)"
                                     AppLanguage.PORTUGUESE -> "Pico de secura hoje ($peakTime)"
+                                    AppLanguage.RUSSIAN -> "Пик сухости сегодня ($peakTime)"
                                 },
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.SemiBold,
@@ -639,7 +648,7 @@ fun HumidityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -707,6 +716,11 @@ fun HumidityDetailScreen(
                         isModerateDryness -> "O ar está ficando seco. Manter a umidade interna entre 40% e 60% ajuda a proteger as mucosas."
                         else -> "Níveis saudáveis de umidade favorecem uma respiração confortável."
                     }
+                    AppLanguage.RUSSIAN -> "Здоровье дыхательных путей" to when {
+                        isHighDryness -> "Высокий индекс сухости (${currentDryness.score}/100). Используйте увлажнитель (40–60%) и чаще пейте воду."
+                        isModerateDryness -> "Воздух становится сухим. Поддержание влажности в помещении на уровне 40–60% защитит слизистые."
+                        else -> "Оптимальный уровень влажности способствует комфортному дыханию."
+                    }
                 }
 
                 val (moldTitle, moldDesc) = when (language) {
@@ -718,6 +732,7 @@ fun HumidityDetailScreen(
                     AppLanguage.SPANISH -> "Prevención de moho y humedad" to if (humidity > 65) "Humedad elevada. Ventila bien o usa un deshumidificador para evitar el moho." else "Bajo riesgo de moho y condensación."
                     AppLanguage.FRENCH -> "Prévention moisissures et condensation" to if (humidity > 65) "Humidité élevée. Aérez régulièrement ou utilisez un déshumidificateur contre les moisissures." else "Faible risque de moisissures et de condensation."
                     AppLanguage.PORTUGUESE -> "Prevenção de mofo e umidade" to if (humidity > 65) "Umidade alta. Mantenha o ambiente ventilado ou use desumidificador para evitar mofo." else "Baixo risco de mofo e condensação."
+                    AppLanguage.RUSSIAN -> "Защита от влаги и плесени" to if (humidity > 65) "Высокая влажность. Проветривайте помещение или используйте осушитель." else "Низкий риск плесени и конденсата."
                 }
 
                 val (skinTitle, skinDesc) = when (language) {
@@ -761,6 +776,11 @@ fun HumidityDetailScreen(
                         isModerateDryness -> "A pele e os lábios podem ressecar com facilidade. Use hidratante e beba bastante água."
                         else -> "A umidade do ar ajuda a manter a pele naturalmente hidratada."
                     }
+                    AppLanguage.RUSSIAN -> "Увлажнение кожи" to when {
+                        isHighDryness -> "Сухой воздух и ветер быстро обезвоживают кожу. Нанесите крем и бальзам для губ перед выходом."
+                        isModerateDryness -> "Кожа и губы могут сохнуть быстрее обычного. Используйте увлажняющий крем и пейте воду."
+                        else -> "Влажность воздуха естественным образом поддерживает увлажнённость кожи."
+                    }
                 }
 
                 HumidityAdviceRow(title = respiratoryTitle, desc = respiratoryDesc)
@@ -801,6 +821,7 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Índice de sequedad"
         AppLanguage.FRENCH -> "Indice de sécheresse"
         AppLanguage.PORTUGUESE -> "Índice de secura"
+        AppLanguage.RUSSIAN -> "Индекс сухости"
     }
 
     val vhLabel = when (language) {
@@ -812,6 +833,7 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Humedad absoluta"
         AppLanguage.FRENCH -> "Humidité absolue"
         AppLanguage.PORTUGUESE -> "Umidade absoluta"
+        AppLanguage.RUSSIAN -> "Абсолютная влажность"
     }
 
     val baseLabel = when (language) {
@@ -823,6 +845,7 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Base (HA)"
         AppLanguage.FRENCH -> "Base (HA)"
         AppLanguage.PORTUGUESE -> "Base (UA)"
+        AppLanguage.RUSSIAN -> "База (АВ)"
     }
 
     val windCorrLabel = when (language) {
@@ -834,6 +857,7 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Aj. viento"
         AppLanguage.FRENCH -> "Corr. vent"
         AppLanguage.PORTUGUESE -> "Aj. vento"
+        AppLanguage.RUSSIAN -> "Попр. ветра"
     }
 
     val rhCorrLabel = when (language) {
@@ -845,6 +869,7 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Aj. HR"
         AppLanguage.FRENCH -> "Corr. HR"
         AppLanguage.PORTUGUESE -> "Aj. UR"
+        AppLanguage.RUSSIAN -> "Попр. ОВ"
     }
 
     val rankGuideTitle = when (language) {
@@ -856,12 +881,13 @@ private fun DrynessScoreCard(
         AppLanguage.SPANISH -> "Escala de sequedad (5 niveles)"
         AppLanguage.FRENCH -> "Échelle de sécheresse (5 niveaux)"
         AppLanguage.PORTUGUESE -> "Escala de secura (5 níveis)"
+        AppLanguage.RUSSIAN -> "Шкала сухости (5 уровней)"
     }
 
     Card(
         shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.cardColors(
-            containerColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+            containerColor = getDetailCardColor(colorScheme = colorScheme)
         ),
         elevation = CardDefaults.cardElevation(0.dp),
         modifier = modifier.fillMaxWidth()
@@ -1234,6 +1260,7 @@ private fun HourlyMetricToggle(
         AppLanguage.SPANISH -> "HR %"
         AppLanguage.FRENCH -> "HR %"
         AppLanguage.PORTUGUESE -> "UR %"
+        AppLanguage.RUSSIAN -> "ОВ %"
     }
     val drynessTabLabel = when (language) {
         AppLanguage.JAPANESE -> "乾燥"
@@ -1244,6 +1271,7 @@ private fun HourlyMetricToggle(
         AppLanguage.SPANISH -> "Sequedad"
         AppLanguage.FRENCH -> "Sécher."
         AppLanguage.PORTUGUESE -> "Secura"
+        AppLanguage.RUSSIAN -> "Сухость"
     }
 
     Surface(
@@ -1339,6 +1367,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Seco"
             AppLanguage.FRENCH -> "Sec"
             AppLanguage.PORTUGUESE -> "Seco"
+            AppLanguage.RUSSIAN -> "Сухо"
         }
         humidity <= 60 -> when (language) {
             AppLanguage.JAPANESE -> "快適"
@@ -1349,6 +1378,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Agradable"
             AppLanguage.FRENCH -> "Confortable"
             AppLanguage.PORTUGUESE -> "Confortável"
+            AppLanguage.RUSSIAN -> "Комфортно"
         }
         humidity <= 75 -> when (language) {
             AppLanguage.JAPANESE -> "やや多湿"
@@ -1359,6 +1389,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Húmedo"
             AppLanguage.FRENCH -> "Humide"
             AppLanguage.PORTUGUESE -> "Úmido"
+            AppLanguage.RUSSIAN -> "Влажно"
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "高湿度"
@@ -1369,6 +1400,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Muy húmedo"
             AppLanguage.FRENCH -> "Très humide"
             AppLanguage.PORTUGUESE -> "Muito úmido"
+            AppLanguage.RUSSIAN -> "Очень влажно"
         }
     }
 
@@ -1382,6 +1414,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "El aire está seco. Mantente hidratado y considera usar un humidificador en interiores."
             AppLanguage.FRENCH -> "L'air est sec. Hydratez-vous bien et envisagez un humidificateur à l'intérieur."
             AppLanguage.PORTUGUESE -> "O ar está seco. Hidrate-se bem e considere usar um umidificador em ambientes internos."
+            AppLanguage.RUSSIAN -> "Воздух сухой. Пейте достаточно воды и используйте увлажнитель в помещении."
         }
         humidity <= 60 -> when (language) {
             AppLanguage.JAPANESE -> "理想的な湿度環境です。肌や喉にも優しく過ごしやすい空気です。"
@@ -1392,6 +1425,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Niveles de humedad ideales. Cómodo para la piel y las vías respiratorias."
             AppLanguage.FRENCH -> "Taux d'humidité idéal. Confortable pour la peau et les voies respiratoires."
             AppLanguage.PORTUGUESE -> "Níveis ideais de umidade. Confortável para a pele e as vias respiratórias."
+            AppLanguage.RUSSIAN -> "Идеальный уровень влажности. Комфортно для кожи и дыхательных путей."
         }
         humidity <= 75 -> when (language) {
             AppLanguage.JAPANESE -> "少し湿気を感じる状態です。除湿や風通しを良くするとより快適です。"
@@ -1402,6 +1436,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Se nota humedad en el ambiente. Una buena ventilación mantiene el aire fresco."
             AppLanguage.FRENCH -> "Humidité perceptible dans l'air. Une bonne aération garde l'intérieur frais."
             AppLanguage.PORTUGUESE -> "Umidade perceptível no ar. Uma boa ventilação mantém o ambiente agradável."
+            AppLanguage.RUSSIAN -> "Ощутимая влажность в воздухе. Хорошее проветривание сохранит свежесть."
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "湿度が非常に高い状態です。蒸し暑さやカビの発生にご注意ください。"
@@ -1412,6 +1447,7 @@ private fun getHumidityInfo(
             AppLanguage.SPANISH -> "Humedad relativa muy alta. Precaución ante el bochorno y la condensación interior."
             AppLanguage.FRENCH -> "Humidité relative très élevée. Attention à la lourdeur de l'air et à la condensation."
             AppLanguage.PORTUGUESE -> "Umidade relativa muito alta. Atenção ao calor abafado e à condensação interna."
+            AppLanguage.RUSSIAN -> "Очень высокая относительная влажность. Возможны духота и конденсат в помещении."
         }
     }
 

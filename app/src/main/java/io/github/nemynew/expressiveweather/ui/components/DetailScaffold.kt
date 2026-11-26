@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -44,12 +45,94 @@ import io.github.nemynew.expressiveweather.data.AppLanguage
 import io.github.nemynew.expressiveweather.data.City
 import io.github.nemynew.expressiveweather.data.LocalAppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppStrings
+import io.github.nemynew.expressiveweather.data.WeatherCondition
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.localizedName
 import io.github.nemynew.expressiveweather.theme.ExpressiveWeatherTheme
 import io.github.nemynew.expressiveweather.theme.GoogleSansFlex
 import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
+import io.github.nemynew.expressiveweather.theme.getAtmosphereTheme
+
+/**
+ * 全詳細画面共通のライブ天候フロスト背景。
+ * 現在の空色グラデーション＋天候パーティクル (WeatherAtmosphereCanvas) の上に、
+ * テーマカラーに沿ったすりガラス拡散レイヤーを重ねることで、
+ * 読みやすさを保ちつつ背後の天気と空の色が自然に透ける質感を実現する。
+ */
+@Composable
+fun DetailAtmosphereBackdrop(
+    condition: WeatherCondition,
+    isDay: Boolean,
+    isDark: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val themeColorScheme = MaterialTheme.colorScheme
+    val themeSurface = themeColorScheme.surface
+    val themeContainer = themeColorScheme.surfaceContainer
+    val themeContainerHigh = themeColorScheme.surfaceContainerHigh
+    val themeTint = themeColorScheme.surfaceTint
+    val atmosphere = getAtmosphereTheme(condition, themeColorScheme, isDay = isDay)
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    0.0f to themeSurface,
+                    0.45f to themeContainer,
+                    1.0f to themeContainerHigh
+                )
+            )
+    ) {
+        // 1. 天候の空色グラデーション（テーマカラーの上にブレンドして天候の空気感を維持）
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(atmosphere.skyGradient)
+                .graphicsLayer { alpha = if (!isDay) 0.52f else 0.62f }
+        )
+
+        // 2. Edge-to-Edge 天候動的パーティクル背景（雨・雪は鮮明、晴れ・曇りは柔らかくぼかし）
+        val hasCrispParticles = condition.isPrecipitating
+        WeatherAtmosphereCanvas(
+            condition = condition,
+            atmosphere = atmosphere,
+            modifier = Modifier
+                .fillMaxSize()
+                .then(if (hasCrispParticles) Modifier else Modifier.blur(26.dp))
+        )
+
+        // 3. テーマカラーに沿ったフロストすりガラス拡散レイヤー（白浮きを抑えて空の気配を透過）
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        0.0f to themeSurface.copy(alpha = if (isDark) 0.52f else 0.36f),
+                        0.5f to themeContainer.copy(alpha = if (isDark) 0.58f else 0.44f),
+                        1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.68f else 0.54f)
+                    )
+                )
+        )
+
+        // 4. テーマカラーのフロストハイライト光彩層
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.radialGradient(
+                        colors = listOf(
+                            themeTint.copy(alpha = if (isDark) 0.14f else 0.10f),
+                            Color.Transparent
+                        ),
+                        center = Offset(0f, 0f),
+                        radius = 1400f
+                    )
+                )
+        )
+    }
+}
 
 /**
  * 風詳細画面 (WindDetailScreen) と完全に共通の設計思想を持つプレミアム詳細画面 Scaffold:
@@ -57,7 +140,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
  * 1. statusBarsPadding に完全対応した固定フロストトップバー
  * 2. 弾性アニメーション (m3eBouncyClick) つきの丸い戻るボタン
  * 3. BlendMode.DstIn による「上部の滑らかに消えるやつ」(スクロール見切れグラデーションマスク)
- * 4. Material You トーナルアンビエント背景 ＋ テーマカラーフロストハイライト光彩層
+ * 4. 天候動的パーティクル背景 (WeatherAtmosphereCanvas) ＋ テーマカラーフロストすりガラス拡散レイヤー
  * 5. navigationBarsPadding に完全対応したフッター余白
  */
 @Composable
@@ -147,70 +230,16 @@ fun DetailScaffold(
         ) {
             val themeColorScheme = MaterialTheme.colorScheme
             val themeSurface = themeColorScheme.surface
-            val themeContainer = themeColorScheme.surfaceContainer
-            val themeContainerHigh = themeColorScheme.surfaceContainerHigh
-            val themeTint = themeColorScheme.surfaceTint
 
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to themeSurface,
-                            0.45f to themeContainer,
-                            1.0f to themeContainerHigh
-                        )
-                    )
-            ) {
-                // 1. Material You トーナルアンビエント背景（primaryContainer / tertiaryContainer）
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1400f
-                            )
-                        )
+            Box(modifier = modifier.fillMaxSize()) {
+                // 1. ライブ天候フロスト背景（空色グラデーション + 動的パーティクル + すりガラス拡散）
+                DetailAtmosphereBackdrop(
+                    condition = weather.condition,
+                    isDay = isDay,
+                    isDark = isDark
                 )
 
-                // 2. Material You セカンダリアンビエント光彩（tertiaryContainer）
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(1100f, 1800f),
-                                radius = 1400f
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1100f
-                            )
-                        )
-                )
-
-                // 4. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
+                // 2. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
                 val scrollState = rememberScrollState()
                 val density = LocalDensity.current
                 val fadeHeightDp = 52.dp
@@ -227,8 +256,8 @@ fun DetailScaffold(
                             .fillMaxWidth()
                             .background(
                                 Brush.verticalGradient(
-                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.88f else 0.80f),
-                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.58f),
+                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.56f),
+                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.42f else 0.30f),
                                     1.0f to themeSurface.copy(alpha = 0f)
                                 )
                             )
@@ -243,7 +272,11 @@ fun DetailScaffold(
                             // 戻るボタン
                             Surface(
                                 shape = CircleShape,
-                                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.90f),
+                                color = getDetailCardColor(
+                                    isDark = isDark,
+                                    colorScheme = themeColorScheme,
+                                    alpha = if (isDark) 0.78f else 0.80f
+                                ),
                                 modifier = Modifier
                                     .size(44.dp)
                                     .m3eBouncyClick(scaleDown = 0.88f, overshootScale = 1.12f) {

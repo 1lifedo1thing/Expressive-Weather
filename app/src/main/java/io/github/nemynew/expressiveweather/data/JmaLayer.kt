@@ -98,6 +98,17 @@ enum class JmaLayerCategory(
             BASE_MAP -> "Mapas base"
             TYPHOON -> "Informações de tufões"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            NOWCAST -> "Осадки, грозы и торнадо"
+            RAINFALL -> "Прогноз осадков"
+            RISK -> "Kikikuru (Риски)"
+            HIMAWARI -> "Спутник Himawari"
+            SNOW -> "Снег и снегопады"
+            WEATHER_DIST -> "Погода и температура"
+            MARINE -> "Морской прогноз"
+            BASE_MAP -> "Базовые карты"
+            TYPHOON -> "Тайфуны"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -178,6 +189,17 @@ enum class JmaLayerCategory(
             MARINE -> "Previsão de altura das ondas e vento marítimo"
             BASE_MAP -> "Mapa claro GSI, mapa padrão JMA e camadas de risco"
             TYPHOON -> "Trajetória oficial JMA, áreas de ventania e tempestade"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            NOWCAST -> "Недавние наблюдения и краткосрочный прогноз"
+            RAINFALL -> "Прогноз накопленных осадков на 1–24 часа"
+            RISK -> "Карты рисков оползней, ливней и наводнений"
+            HIMAWARI -> "Снимки геостационарного спутника в реальном времени"
+            SNOW -> "Текущая высота снежного покрова и ожидаемые снегопады"
+            WEATHER_DIST -> "Региональное распределение погоды и температур"
+            MARINE -> "Прогноз высоты волн и ветра на море"
+            BASE_MAP -> "Светлая карта GSI, стандартная карта JMA и зоны затопления"
+            TYPHOON -> "Официальная траектория JMA, зоны штормового ветра"
         }
     }
 }
@@ -786,6 +808,35 @@ enum class JmaLayerType(
             FLOOD_HAZARD -> "Mapa de áreas alagáveis (MLIT)"
             TYPHOON -> "Informações de tufões (Trajetória e alertas)"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            HRPNS -> "Радар осадков (Наукаст)"
+            THNS -> "Грозовая активность (Молнии)"
+            TRNS -> "Вероятность торнадо"
+            RASRF_1H -> "Прогноз осадков (1 час)"
+            RASRF_3H -> "Прогноз осадков (3 часа)"
+            RASRF_24H -> "Прогноз осадков (24 часа)"
+            LANDSLIDE -> "Kikikuru: Оползни (Риск)"
+            HEAVY_RAIN -> "Kikikuru: Ливень (Подтопления и реки)"
+            INUNDATION -> "Kikikuru: Городские подтопления"
+            FLOOD -> "Kikikuru: Разлив рек"
+            HIMAWARI_TRUECOLOR -> "Himawari (Естественные цвета)"
+            HIMAWARI_INFRARED -> "Himawari (Инфракрасный / 24 ч)"
+            HIMAWARI_STEAM -> "Himawari (Водяной пар)"
+            HIMAWARI_CLOUDTOP -> "Himawari (Верхняя граница облаков)"
+            SNOW_DEPTH -> "Высота снежного покрова"
+            SNOWFALL_3H -> "Снегопад (3 ч)"
+            SNOWFALL_24H -> "Снегопад (24 ч)"
+            WEATHER_DIST -> "Распределение погоды"
+            TEMP_DIST -> "Распределение температуры"
+            MAX_TEMP -> "Дневной максимум температуры"
+            MIN_TEMP -> "Утренний минимум температуры"
+            WAVE_HEIGHT -> "Прогноз высоты волн"
+            WIND_SPEED -> "Прогноз морского ветра"
+            GSI_PALE -> "Светлая карта GSI"
+            JMA_BASE -> "Стандартная карта JMA"
+            FLOOD_HAZARD -> "Карта зон затопления (MLIT)"
+            TYPHOON -> "Тайфуны (Траектория и предупреждения)"
+        }
     }
 
     fun shortName(language: AppLanguage): String = when (language) {
@@ -993,6 +1044,35 @@ enum class JmaLayerType(
             FLOOD_HAZARD -> "Risco cheia"
             TYPHOON -> "Tufão"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            HRPNS -> "Радар дождя"
+            THNS -> "Грозы"
+            TRNS -> "Торнадо"
+            RASRF_1H -> "Дождь 1 ч"
+            RASRF_3H -> "Дождь 3 ч"
+            RASRF_24H -> "Дождь 24 ч"
+            LANDSLIDE -> "Оползни"
+            HEAVY_RAIN -> "Ливень"
+            INUNDATION -> "Подтопление"
+            FLOOD -> "Наводнение"
+            HIMAWARI_TRUECOLOR -> "Himawari Цвет"
+            HIMAWARI_INFRARED -> "Himawari ИК"
+            HIMAWARI_STEAM -> "Himawari Пар"
+            HIMAWARI_CLOUDTOP -> "Верх облаков"
+            SNOW_DEPTH -> "Снежный покров"
+            SNOWFALL_3H -> "Снег 3 ч"
+            SNOWFALL_24H -> "Снег 24 ч"
+            WEATHER_DIST -> "Погода"
+            TEMP_DIST -> "Температура"
+            MAX_TEMP -> "Макс. темп."
+            MIN_TEMP -> "Мин. темп."
+            WAVE_HEIGHT -> "Волны"
+            WIND_SPEED -> "Ветер на море"
+            GSI_PALE -> "GSI Светлая"
+            JMA_BASE -> "База JMA"
+            FLOOD_HAZARD -> "Зоны паводка"
+            TYPHOON -> "Тайфун"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -1199,6 +1279,35 @@ enum class JmaLayerType(
             JMA_BASE -> "Mapa base oficial otimizado para camadas meteorológicas"
             FLOOD_HAZARD -> "Camada de profundidade máxima estimada de inundação fluvial"
             TYPHOON -> "Posição oficial JMA do centro, velocidade, direção, áreas de vento e círculos de previsão"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            HRPNS -> "Наблюдения за последний час и высокоточный прогноз осадков на 1 час"
+            THNS -> "Признаки сильных гроз и вероятность ударов молнии (Активность 1–4)"
+            TRNS -> "Риск торнадо и сильных шквалов (Категории 1 и 2)"
+            RASRF_1H -> "Распределение ожидаемых осадков на ближайший час"
+            RASRF_3H -> "Распределение ожидаемых осадков на ближайшие 3 часа"
+            RASRF_24H -> "Распределение накопленных осадков на ближайшие 24 часа"
+            LANDSLIDE -> "Риск оползней из-за сильного дождя (Внимание / Тревога / Опасность / Критично)"
+            HEAVY_RAIN -> "Общий риск городских подтоплений и речных паводков при ливнях"
+            INUNDATION -> "Риск подтопления дорог и зданий при кратковременных ливнях"
+            FLOOD -> "Распределение риска подъёма уровня воды и разлива рек"
+            HIMAWARI_TRUECOLOR -> "Спутниковый снимок высокого разрешения в естественных цветах"
+            HIMAWARI_INFRARED -> "Визуализация температуры и высоты облаков (круглосуточно)"
+            HIMAWARI_STEAM -> "Потоки водяного пара в средних и верхних слоях атмосферы"
+            HIMAWARI_CLOUDTOP -> "Цветовое выделение вершин грозовых кучево-дождевых облаков"
+            SNOW_DEPTH -> "Распределение высоты снежного покрова в реальном времени"
+            SNOWFALL_3H -> "Накопленный снегопад за последние 3 часа"
+            SNOWFALL_24H -> "Накопленный снегопад за последние 24 часа"
+            WEATHER_DIST -> "Региональный прогноз: ясно, облачно, дождь и снег"
+            TEMP_DIST -> "Почасовое распределение прогнозируемой температуры"
+            MAX_TEMP -> "Прогноз максимальной дневной температуры на сегодня"
+            MIN_TEMP -> "Прогноз минимальной температуры на завтрашнее утро"
+            WAVE_HEIGHT -> "Прогноз высоты волн в прибрежных и открытых водах"
+            WIND_SPEED -> "Прогноз скорости ветра в морских акваториях"
+            GSI_PALE -> "Светлая базовая карта с чёткими дорогами и названиями"
+            JMA_BASE -> "Официальная базовая карта, оптимизированная для метеослоёв"
+            FLOOD_HAZARD -> "Слой расчётной максимальной глубины речного затопления"
+            TYPHOON -> "Официальное положение центра JMA, скорость, направление, зоны ветра и круги прогноза"
         }
     }
 }

@@ -29,6 +29,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Material You colorido"
             AppLanguage.FRENCH -> "Material You coloré"
             AppLanguage.PORTUGUESE -> "Material You colorido"
+            AppLanguage.RUSSIAN -> "Material You цветной"
         }
         MATERIAL_YOU_TONAL -> when (language) {
             AppLanguage.JAPANESE -> "Material You テーマ統一"
@@ -39,6 +40,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Material You tonal"
             AppLanguage.FRENCH -> "Material You tonal"
             AppLanguage.PORTUGUESE -> "Material You tonal"
+            AppLanguage.RUSSIAN -> "Material You тональный"
         }
         CLASSIC_VIVID -> when (language) {
             AppLanguage.JAPANESE -> "クラシック カラフル"
@@ -49,6 +51,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Colorido clásico"
             AppLanguage.FRENCH -> "Coloré classique"
             AppLanguage.PORTUGUESE -> "Colorido clássico"
+            AppLanguage.RUSSIAN -> "Классический яркий"
         }
     }
 
@@ -62,6 +65,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Acentos multicolores de Material You armonizados con tu tema"
             AppLanguage.FRENCH -> "Accents multicolores Material You harmonisés avec votre thème"
             AppLanguage.PORTUGUESE -> "Destaques multicoloridos do Material You harmonizados com seu tema"
+            AppLanguage.RUSSIAN -> "Многоцветные тональные акценты Material You в гармонии с вашей темой"
         }
         MATERIAL_YOU_TONAL -> when (language) {
             AppLanguage.JAPANESE -> "テーマのプライマリ系カラーのみで統一したミニマル配色"
@@ -72,6 +76,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Estilo minimalista unificado usando solo tu esquema de tema"
             AppLanguage.FRENCH -> "Style minimaliste unifié utilisant uniquement la palette du thème"
             AppLanguage.PORTUGUESE -> "Visual minimalista unificado usando apenas o esquema do tema"
+            AppLanguage.RUSSIAN -> "Минималистичный единый стиль только в цветах активной темы"
         }
         CLASSIC_VIVID -> when (language) {
             AppLanguage.JAPANESE -> "従来の鮮やかなマルチカラーでタイルやグラフを彩る"
@@ -82,6 +87,7 @@ enum class AccentColorMode(val id: String) {
             AppLanguage.SPANISH -> "Acentos multicolores clásicos y vibrantes para mosaicos y gráficos"
             AppLanguage.FRENCH -> "Accents multicolores classiques et vifs pour tuiles et graphiques"
             AppLanguage.PORTUGUESE -> "Destaques multicoloridos clássicos e vibrantes para blocos e gráficos"
+            AppLanguage.RUSSIAN -> "Классические яркие многоцветные акценты для плиток и графиков"
         }
     }
 

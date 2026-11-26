@@ -29,6 +29,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Adaptado al clima"
             AppLanguage.FRENCH -> "Adapté à la météo"
             AppLanguage.PORTUGUESE -> "Adaptado ao clima"
+            AppLanguage.RUSSIAN -> "Адаптивный по погоде"
         }
         MATERIAL_YOU -> when (language) {
             AppLanguage.JAPANESE -> "Material You (壁紙連動)"
@@ -39,6 +40,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Material You (Dinámico)"
             AppLanguage.FRENCH -> "Material You (Dynamique)"
             AppLanguage.PORTUGUESE -> "Material You (Dinâmico)"
+            AppLanguage.RUSSIAN -> "Material You (Динамический)"
         }
         FROSTED_GLASS -> when (language) {
             AppLanguage.JAPANESE -> "Material You 半透明"
@@ -49,6 +51,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Material You translúcido"
             AppLanguage.FRENCH -> "Material You translucide"
             AppLanguage.PORTUGUESE -> "Material You translúcido"
+            AppLanguage.RUSSIAN -> "Полупрозрачный Material You"
         }
     }
 
@@ -62,6 +65,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Degradados de cielo expresivos según el clima y la luz en tiempo real"
             AppLanguage.FRENCH -> "Dégradés de ciel expressifs selon la météo et la lumière en temps réel"
             AppLanguage.PORTUGUESE -> "Gradientes de céu expressivos conforme o clima e a luz em tempo real"
+            AppLanguage.RUSSIAN -> "Выразительные градиенты неба по текущей погоде и времени суток"
         }
         MATERIAL_YOU -> when (language) {
             AppLanguage.JAPANESE -> "ホーム画面の壁紙カラーとダーク/ライト設定に自動調和"
@@ -72,6 +76,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Se adapta automáticamente a los colores del fondo y al tema del sistema"
             AppLanguage.FRENCH -> "S'adapte automatiquement aux couleurs du fond d'écran et au thème système"
             AppLanguage.PORTUGUESE -> "Adapta-se automaticamente às cores do papel de parede e ao tema do sistema"
+            AppLanguage.RUSSIAN -> "Автоматически подстраивается под цвета обоев и тему системы"
         }
         FROSTED_GLASS -> when (language) {
             AppLanguage.JAPANESE -> "端末の Material You カラーをベースにした半透明デザイン（透明度調整可）"
@@ -82,6 +87,7 @@ enum class WidgetStyle(val id: String) {
             AppLanguage.SPANISH -> "Tarjeta translúcida teñida con tu paleta Material You (opacidad ajustable)"
             AppLanguage.FRENCH -> "Carte translucide teintée par votre palette Material You (opacité réglable)"
             AppLanguage.PORTUGUESE -> "Cartão translúcido com tons da sua paleta Material You (opacidade ajustável)"
+            AppLanguage.RUSSIAN -> "Полупрозрачная карточка в тонах Material You (настраиваемая прозрачность)"
         }
     }
 
@@ -150,6 +156,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Pill (Predeterminado)"
             AppLanguage.FRENCH -> "Pill (Par défaut)"
             AppLanguage.PORTUGUESE -> "Pill (Padrão)"
+            AppLanguage.RUSSIAN -> "Pill (По умолчанию)"
         }
         OVAL -> when (language) {
             AppLanguage.JAPANESE -> "Oval"
@@ -160,6 +167,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Oval"
             AppLanguage.FRENCH -> "Oval"
             AppLanguage.PORTUGUESE -> "Oval"
+            AppLanguage.RUSSIAN -> "Oval"
         }
         COOKIE_12 -> when (language) {
             AppLanguage.JAPANESE -> "Cookie"
@@ -170,6 +178,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Cookie"
             AppLanguage.FRENCH -> "Cookie"
             AppLanguage.PORTUGUESE -> "Cookie"
+            AppLanguage.RUSSIAN -> "Cookie"
         }
         CLOVER_4 -> when (language) {
             AppLanguage.JAPANESE -> "Clover"
@@ -180,6 +189,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Clover"
             AppLanguage.FRENCH -> "Clover"
             AppLanguage.PORTUGUESE -> "Clover"
+            AppLanguage.RUSSIAN -> "Clover"
         }
         SUNNY -> when (language) {
             AppLanguage.JAPANESE -> "Sunny"
@@ -190,6 +200,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Sunny"
             AppLanguage.FRENCH -> "Sunny"
             AppLanguage.PORTUGUESE -> "Sunny"
+            AppLanguage.RUSSIAN -> "Sunny"
         }
         PUFFY -> when (language) {
             AppLanguage.JAPANESE -> "Puffy"
@@ -200,6 +211,7 @@ enum class MaterialWidgetShape(val id: String) {
             AppLanguage.SPANISH -> "Puffy"
             AppLanguage.FRENCH -> "Puffy"
             AppLanguage.PORTUGUESE -> "Puffy"
+            AppLanguage.RUSSIAN -> "Puffy"
         }
     }
 }

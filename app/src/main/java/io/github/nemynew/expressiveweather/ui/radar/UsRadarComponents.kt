@@ -190,6 +190,7 @@ fun RadarTimelineController(
                             AppLanguage.SPANISH -> "Cargando datos..."
                             AppLanguage.FRENCH -> "Chargement des données..."
                             AppLanguage.PORTUGUESE -> "Carregando dados..."
+                            AppLanguage.RUSSIAN -> "Загрузка данных..."
                         }
                         Text(
                             text = currentFrame?.displayLabel ?: loadingText,
@@ -219,6 +220,7 @@ fun RadarTimelineController(
                                 AppLanguage.SPANISH -> "Previsión HRRR"
                                 AppLanguage.FRENCH -> "Prévision HRRR"
                                 AppLanguage.PORTUGUESE -> "Previsão HRRR"
+                                AppLanguage.RUSSIAN -> "Прогноз HRRR"
                             }
                         } else {
                             when (language) {
@@ -230,6 +232,7 @@ fun RadarTimelineController(
                                 AppLanguage.SPANISH -> "MRMS en vivo"
                                 AppLanguage.FRENCH -> "MRMS en direct"
                                 AppLanguage.PORTUGUESE -> "MRMS ao vivo"
+                                AppLanguage.RUSSIAN -> "MRMS сейчас"
                             }
                         }
 
@@ -282,6 +285,7 @@ fun RadarTimelineController(
                             AppLanguage.SPANISH -> "Ajustar opacidad"
                             AppLanguage.FRENCH -> "Régler l'opacité"
                             AppLanguage.PORTUGUESE -> "Ajustar opacidade"
+                            AppLanguage.RUSSIAN -> "Настроить прозрачность"
                         }
                         Icon(
                             imageVector = Icons.Rounded.Opacity,
@@ -324,6 +328,7 @@ fun RadarTimelineController(
                         AppLanguage.SPANISH -> "Opacidad del radar"
                         AppLanguage.FRENCH -> "Opacité du radar"
                         AppLanguage.PORTUGUESE -> "Opacidade do radar"
+                        AppLanguage.RUSSIAN -> "Прозрачность радара"
                     }
                     Text(
                         text = opacityLabel,
@@ -386,6 +391,7 @@ fun RadarTimelineController(
                     AppLanguage.SPANISH -> "Ir a hace 2 horas"
                     AppLanguage.FRENCH -> "Aller à il y a 2 h"
                     AppLanguage.PORTUGUESE -> "Ir para 2 horas atrás"
+                    AppLanguage.RUSSIAN -> "Перейти на 2 ч назад"
                 }
                 IconButton(
                     onClick = onSeekToStart,
@@ -408,6 +414,7 @@ fun RadarTimelineController(
                     AppLanguage.SPANISH -> "Paso atrás"
                     AppLanguage.FRENCH -> "Image précédente"
                     AppLanguage.PORTUGUESE -> "Voltar um quadro"
+                    AppLanguage.RUSSIAN -> "Кадр назад"
                 }
                 IconButton(
                     onClick = onStepBackward,
@@ -436,6 +443,7 @@ fun RadarTimelineController(
                         AppLanguage.SPANISH -> "Pausar"
                         AppLanguage.FRENCH -> "Pause"
                         AppLanguage.PORTUGUESE -> "Pausar"
+                        AppLanguage.RUSSIAN -> "Пауза"
                     }
                 } else {
                     when (language) {
@@ -447,6 +455,7 @@ fun RadarTimelineController(
                         AppLanguage.SPANISH -> "Reproducir"
                         AppLanguage.FRENCH -> "Lire"
                         AppLanguage.PORTUGUESE -> "Reproduzir"
+                        AppLanguage.RUSSIAN -> "Воспроизвести"
                     }
                 }
 
@@ -476,6 +485,7 @@ fun RadarTimelineController(
                     AppLanguage.SPANISH -> "Paso adelante"
                     AppLanguage.FRENCH -> "Image suivante"
                     AppLanguage.PORTUGUESE -> "Avançar um quadro"
+                    AppLanguage.RUSSIAN -> "Кадр вперёд"
                 }
                 IconButton(
                     onClick = onStepForward,
@@ -498,6 +508,7 @@ fun RadarTimelineController(
                     AppLanguage.SPANISH -> "AHORA"
                     AppLanguage.FRENCH -> "DIRECT"
                     AppLanguage.PORTUGUESE -> "AGORA"
+                    AppLanguage.RUSSIAN -> "СЕЙЧАС"
                 }
                 Surface(
                     shape = RoundedCornerShape(14.dp),
@@ -554,6 +565,7 @@ private fun TimelineZoneSlider(
                 AppLanguage.SPANISH -> "◀ Últimas 2h (MRMS en vivo)"
                 AppLanguage.FRENCH -> "◀ 2 dern. h (MRMS en direct)"
                 AppLanguage.PORTUGUESE -> "◀ Últimas 2h (MRMS ao vivo)"
+                AppLanguage.RUSSIAN -> "◀ Прошлые 2 ч (MRMS)"
             }
             Text(
                 text = pastZoneLabel,
@@ -573,6 +585,7 @@ private fun TimelineZoneSlider(
                 AppLanguage.SPANISH -> "Próx. 18h (Previsión HRRR) ▶"
                 AppLanguage.FRENCH -> "18 proch. h (Prévision HRRR) ▶"
                 AppLanguage.PORTUGUESE -> "Próx. 18h (Previsão HRRR) ▶"
+                AppLanguage.RUSSIAN -> "След. 18 ч (Прогноз HRRR) ▶"
             }
             Text(
                 text = futureZoneLabel,
@@ -720,6 +733,7 @@ private fun TimelineZoneSlider(
                 AppLanguage.SPANISH -> "-2h"
                 AppLanguage.FRENCH -> "-2h"
                 AppLanguage.PORTUGUESE -> "-2h"
+                AppLanguage.RUSSIAN -> "-2 ч"
             }
             Text(
                 text = minus2h,
@@ -737,6 +751,7 @@ private fun TimelineZoneSlider(
                 AppLanguage.SPANISH -> "Ahora"
                 AppLanguage.FRENCH -> "Maintenant"
                 AppLanguage.PORTUGUESE -> "Agora"
+                AppLanguage.RUSSIAN -> "Сейчас"
             }
             Text(
                 text = currentLabel,
@@ -755,6 +770,7 @@ private fun TimelineZoneSlider(
                 AppLanguage.SPANISH -> "+18h"
                 AppLanguage.FRENCH -> "+18h"
                 AppLanguage.PORTUGUESE -> "+18h"
+                AppLanguage.RUSSIAN -> "+18 ч"
             }
             Text(
                 text = plus18h,
@@ -817,6 +833,7 @@ fun RadarDbzLegendBar(
                     AppLanguage.SPANISH -> "Reflectividad (dBZ)"
                     AppLanguage.FRENCH -> "Réflectivité (dBZ)"
                     AppLanguage.PORTUGUESE -> "Refletividade (dBZ)"
+                    AppLanguage.RUSSIAN -> "Отражаемость (дБZ)"
                 }
                 Text(
                     text = legendTitle,
@@ -834,6 +851,7 @@ fun RadarDbzLegendBar(
                     AppLanguage.SPANISH -> "Detalles de la leyenda"
                     AppLanguage.FRENCH -> "Détails de la légende"
                     AppLanguage.PORTUGUESE -> "Detalhes da legenda"
+                    AppLanguage.RUSSIAN -> "Подробности легенды"
                 }
                 Icon(
                     imageVector = Icons.Rounded.Info,

@@ -120,6 +120,7 @@ fun BugReportCardSection(
             AppLanguage.SPANISH -> "Comentarios"
             AppLanguage.FRENCH -> "Retours"
             AppLanguage.PORTUGUESE -> "Feedback"
+            AppLanguage.RUSSIAN -> "Обратная связь"
             AppLanguage.ENGLISH -> "Feedback"
         }
     }
@@ -133,6 +134,7 @@ fun BugReportCardSection(
             AppLanguage.SPANISH -> "Prelanzamiento"
             AppLanguage.FRENCH -> "Préversion"
             AppLanguage.PORTUGUESE -> "Pré-lançamento"
+            AppLanguage.RUSSIAN -> "Пререлиз"
             AppLanguage.ENGLISH -> "Pre-release"
         }
     }
@@ -146,6 +148,7 @@ fun BugReportCardSection(
             AppLanguage.SPANISH -> "Envía reportes de errores o ideas de nuevas funciones"
             AppLanguage.FRENCH -> "Signalez des bugs ou partagez vos idées de fonctionnalités"
             AppLanguage.PORTUGUESE -> "Envie relatórios de bugs ou sugestões de recursos"
+            AppLanguage.RUSSIAN -> "Сообщите об ошибке или предложите новую функцию"
             AppLanguage.ENGLISH -> "Share bug reports or ideas for new features"
         }
     }
@@ -159,6 +162,7 @@ fun BugReportCardSection(
             AppLanguage.SPANISH -> "Reportar error"
             AppLanguage.FRENCH -> "Signaler un bug"
             AppLanguage.PORTUGUESE -> "Reportar bug"
+            AppLanguage.RUSSIAN -> "Сообщить об ошибке"
             AppLanguage.ENGLISH -> "Report Bug"
         }
     }
@@ -172,6 +176,7 @@ fun BugReportCardSection(
             AppLanguage.SPANISH -> "Sugerir función"
             AppLanguage.FRENCH -> "Suggérer"
             AppLanguage.PORTUGUESE -> "Sugerir recurso"
+            AppLanguage.RUSSIAN -> "Предложить идею"
             AppLanguage.ENGLISH -> "Request Feature"
         }
     }
@@ -375,6 +380,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Reportar error"
         AppLanguage.FRENCH -> "Signaler un bug"
         AppLanguage.PORTUGUESE -> "Reportar bug"
+        AppLanguage.RUSSIAN -> "Ошибка"
         AppLanguage.ENGLISH -> "Bug Report"
     }
     val featureTabLabel = when (language) {
@@ -385,6 +391,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Sugerir función"
         AppLanguage.FRENCH -> "Suggestion"
         AppLanguage.PORTUGUESE -> "Sugerir recurso"
+        AppLanguage.RUSSIAN -> "Идея"
         AppLanguage.ENGLISH -> "Feature Request"
     }
     val sheetSubtitle = if (isBugMode) {
@@ -396,6 +403,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Envíalo por GitHub Issues, cópialo o compártelo. Nunca se incluyen tu ubicación exacta ni datos personales."
             AppLanguage.FRENCH -> "Envoyez via GitHub Issues, copiez ou partagez. Votre position exacte et vos données personnelles ne sont jamais incluses."
             AppLanguage.PORTUGUESE -> "Envie pelo GitHub Issues, copie ou compartilhe. Localização exata e dados pessoais nunca são incluídos."
+            AppLanguage.RUSSIAN -> "Отправьте через GitHub Issues, скопируйте или поделитесь. Точное местоположение и личные данные не включаются."
             AppLanguage.ENGLISH -> "Submit via GitHub Issues, copy, or share. Exact location and personal data are never included."
         }
     } else {
@@ -407,6 +415,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Envía ideas de nuevas funciones o mejoras de interfaz y datos por GitHub Issues, copia o compartir."
             AppLanguage.FRENCH -> "Envoyez vos idées de fonctionnalités ou améliorations via GitHub Issues, copier ou partager."
             AppLanguage.PORTUGUESE -> "Envie ideias de novos recursos ou melhorias de interface e dados pelo GitHub Issues, copiar ou compartilhar."
+            AppLanguage.RUSSIAN -> "Отправляйте идеи новых функций и улучшений интерфейса или данных через GitHub Issues, копирование или «Поделиться»."
             AppLanguage.ENGLISH -> "Send new feature ideas or UI/data improvements via GitHub Issues, copy, or share."
         }
     }
@@ -418,6 +427,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Categoría"
         AppLanguage.FRENCH -> "Catégorie"
         AppLanguage.PORTUGUESE -> "Categoria"
+        AppLanguage.RUSSIAN -> "Категория"
         AppLanguage.ENGLISH -> "Category"
     }
     val bugDescriptionLabel = when (language) {
@@ -428,6 +438,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Qué ocurrió y pasos para reproducirlo"
         AppLanguage.FRENCH -> "Problème rencontré et étapes pour le reproduire"
         AppLanguage.PORTUGUESE -> "O que aconteceu e passos para reproduzir"
+        AppLanguage.RUSSIAN -> "Что произошло и шаги для воспроизведения"
         AppLanguage.ENGLISH -> "What happened & steps to reproduce"
     }
     val bugDescriptionPlaceholder = when (language) {
@@ -438,6 +449,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Ej.: Al abrir la pantalla del radar ocurre..."
         AppLanguage.FRENCH -> "Ex. : Ouvrir l'écran radar provoque..."
         AppLanguage.PORTUGUESE -> "Ex.: Ao abrir a tela do radar acontece..."
+        AppLanguage.RUSSIAN -> "Напр.: при открытии экрана радара происходит..."
         AppLanguage.ENGLISH -> "e.g. Opening the radar screen causes..."
     }
     val bugExpectedLabel = when (language) {
@@ -448,6 +460,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Comportamiento esperado (opcional)"
         AppLanguage.FRENCH -> "Comportement attendu (facultatif)"
         AppLanguage.PORTUGUESE -> "Comportamento esperado (opcional)"
+        AppLanguage.RUSSIAN -> "Ожидаемое поведение (необязательно)"
         AppLanguage.ENGLISH -> "Expected behavior (optional)"
     }
     val featureProposalLabel = when (language) {
@@ -458,6 +471,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Función o mejora propuesta"
         AppLanguage.FRENCH -> "Fonctionnalité ou amélioration proposée"
         AppLanguage.PORTUGUESE -> "Recurso ou melhoria proposta"
+        AppLanguage.RUSSIAN -> "Предлагаемая функция или улучшение"
         AppLanguage.ENGLISH -> "Proposed feature or improvement"
     }
     val featureProposalPlaceholder = when (language) {
@@ -468,6 +482,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Ej.: Añadir un gráfico de probabilidad de lluvia a los widgets"
         AppLanguage.FRENCH -> "Ex. : Ajouter un graphique de probabilité de pluie aux widgets"
         AppLanguage.PORTUGUESE -> "Ex.: Adicionar um gráfico de probabilidade de chuva aos widgets"
+        AppLanguage.RUSSIAN -> "Напр.: добавить график вероятности осадков в виджеты"
         AppLanguage.ENGLISH -> "e.g. Add a precipitation probability chart to widgets"
     }
     val featureProblemLabel = when (language) {
@@ -478,6 +493,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Problema o motivación (opcional)"
         AppLanguage.FRENCH -> "Problème ou motivation (facultatif)"
         AppLanguage.PORTUGUESE -> "Problema ou motivação (opcional)"
+        AppLanguage.RUSSIAN -> "Проблема или мотивация (необязательно)"
         AppLanguage.ENGLISH -> "Problem or motivation (optional)"
     }
     val featureAlternativesLabel = when (language) {
@@ -488,6 +504,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Contexto adicional o fuentes de datos (opcional)"
         AppLanguage.FRENCH -> "Contexte supplémentaire ou sources de données (facultatif)"
         AppLanguage.PORTUGUESE -> "Contexto adicional ou fontes de dados (opcional)"
+        AppLanguage.RUSSIAN -> "Доп. контекст или источники данных (необязательно)"
         AppLanguage.ENGLISH -> "Additional context or data sources (optional)"
     }
     val diagnosticsHeading = when (language) {
@@ -498,6 +515,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Diagnóstico adjunto"
         AppLanguage.FRENCH -> "Diagnostics joints"
         AppLanguage.PORTUGUESE -> "Diagnósticos anexados"
+        AppLanguage.RUSSIAN -> "Прилагаемая диагностика"
         AppLanguage.ENGLISH -> "Attached Diagnostics"
     }
     val includeDeviceLabel = when (language) {
@@ -508,6 +526,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Dispositivo y versión de la app (${snapshot.versionName})"
         AppLanguage.FRENCH -> "Appareil et version de l'application (${snapshot.versionName})"
         AppLanguage.PORTUGUESE -> "Dispositivo e versão do app (${snapshot.versionName})"
+        AppLanguage.RUSSIAN -> "Устройство и версия приложения (${snapshot.versionName})"
         AppLanguage.ENGLISH -> "Device & app version (${snapshot.versionName})"
     }
     val includeStateLabel = when (language) {
@@ -518,6 +537,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Proveedor y ajustes de la app (sin coordenadas)"
         AppLanguage.FRENCH -> "Fournisseur et paramètres de l'app (sans coordonnées)"
         AppLanguage.PORTUGUESE -> "Provedor e configurações do app (sem coordenadas)"
+        AppLanguage.RUSSIAN -> "Источник данных и настройки (без координат)"
         AppLanguage.ENGLISH -> "Provider & app settings (no coordinates)"
     }
     val includeLogsLabel = when (language) {
@@ -528,6 +548,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Registros recientes de errores (${snapshot.recentLogs.size})"
         AppLanguage.FRENCH -> "Journaux d'erreurs récents (${snapshot.recentLogs.size})"
         AppLanguage.PORTUGUESE -> "Logs de erros recentes do app (${snapshot.recentLogs.size})"
+        AppLanguage.RUSSIAN -> "Недавние журналы ошибок (${snapshot.recentLogs.size})"
         AppLanguage.ENGLISH -> "Recent in-app error logs (${snapshot.recentLogs.size})"
     }
     val includeFeatureAppInfoLabel = when (language) {
@@ -538,6 +559,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Incluir info básica de la app (Ver ${snapshot.versionName}, idioma)"
         AppLanguage.FRENCH -> "Inclure les infos de base (Ver ${snapshot.versionName}, langue)"
         AppLanguage.PORTUGUESE -> "Incluir info básica do app (Ver ${snapshot.versionName}, idioma)"
+        AppLanguage.RUSSIAN -> "Приложить базовые данные (Ver ${snapshot.versionName}, язык)"
         AppLanguage.ENGLISH -> "Include basic app info (Ver ${snapshot.versionName}, language)"
     }
     val previewToggleLabel = when (language) {
@@ -548,6 +570,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Vista previa del texto de diagnóstico"
         AppLanguage.FRENCH -> "Aperçu du texte de diagnostic"
         AppLanguage.PORTUGUESE -> "Pré-visualizar texto de diagnóstico"
+        AppLanguage.RUSSIAN -> "Просмотр текста диагностики"
         AppLanguage.ENGLISH -> "Preview diagnostic text"
     }
     val openGitHubLabel = if (isBugMode) {
@@ -559,6 +582,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Reportar en GitHub (prellenado)"
             AppLanguage.FRENCH -> "Signaler sur GitHub (prérempli)"
             AppLanguage.PORTUGUESE -> "Reportar no GitHub (pré-preenchido)"
+            AppLanguage.RUSSIAN -> "Отправить на GitHub (автозаполнение)"
             AppLanguage.ENGLISH -> "Report on GitHub (Pre-filled)"
         }
     } else {
@@ -570,6 +594,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Enviar sugerencia en GitHub"
             AppLanguage.FRENCH -> "Envoyer la suggestion sur GitHub"
             AppLanguage.PORTUGUESE -> "Enviar sugestão no GitHub"
+            AppLanguage.RUSSIAN -> "Отправить идею на GitHub"
             AppLanguage.ENGLISH -> "Submit Feature Request on GitHub"
         }
     }
@@ -581,6 +606,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Copiar"
         AppLanguage.FRENCH -> "Copier"
         AppLanguage.PORTUGUESE -> "Copiar"
+        AppLanguage.RUSSIAN -> "Копировать"
         AppLanguage.ENGLISH -> "Copy"
     }
     val shareLabel = when (language) {
@@ -591,6 +617,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "Compartir"
         AppLanguage.FRENCH -> "Partager"
         AppLanguage.PORTUGUESE -> "Compartilhar"
+        AppLanguage.RUSSIAN -> "Поделиться"
         AppLanguage.ENGLISH -> "Share"
     }
     val copiedToast = if (isBugMode) {
@@ -602,6 +629,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Reporte de error copiado al portapapeles"
             AppLanguage.FRENCH -> "Rapport de bug copié dans le presse-papiers"
             AppLanguage.PORTUGUESE -> "Relatório de bug copiado para a área de transferência"
+            AppLanguage.RUSSIAN -> "Отчёт об ошибке скопирован в буфер обмена"
             AppLanguage.ENGLISH -> "Bug report copied to clipboard"
         }
     } else {
@@ -613,6 +641,7 @@ private fun FeedbackBottomSheet(
             AppLanguage.SPANISH -> "Sugerencia copiada al portapapeles"
             AppLanguage.FRENCH -> "Suggestion copiée dans le presse-papiers"
             AppLanguage.PORTUGUESE -> "Sugestão de recurso copiada para a área de transferência"
+            AppLanguage.RUSSIAN -> "Предложение скопировано в буфер обмена"
             AppLanguage.ENGLISH -> "Feature request copied to clipboard"
         }
     }
@@ -624,6 +653,7 @@ private fun FeedbackBottomSheet(
         AppLanguage.SPANISH -> "No se pudo abrir el navegador. Usa Copiar en su lugar."
         AppLanguage.FRENCH -> "Impossible d'ouvrir le navigateur. Veuillez utiliser Copier."
         AppLanguage.PORTUGUESE -> "Não foi possível abrir o navegador. Use Copiar."
+        AppLanguage.RUSSIAN -> "Не удалось открыть браузер. Воспользуйтесь кнопкой «Копировать»."
         AppLanguage.ENGLISH -> "Could not open browser. Please use Copy instead."
     }
 

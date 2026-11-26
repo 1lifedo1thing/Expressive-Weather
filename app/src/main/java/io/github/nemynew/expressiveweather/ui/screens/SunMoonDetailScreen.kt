@@ -57,6 +57,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -94,6 +95,7 @@ fun SunMoonDetailScreen(
         AppLanguage.SPANISH -> "Amanecer y atardecer"
         AppLanguage.FRENCH -> "Lever et coucher du soleil"
         AppLanguage.PORTUGUESE -> "Nascer e pôr do sol"
+        AppLanguage.RUSSIAN -> "Восход и закат"
     }
 
     val daylightLabel = when (language) {
@@ -105,6 +107,7 @@ fun SunMoonDetailScreen(
         AppLanguage.SPANISH -> "Luz diurna: ${sunSchedule.daylightHours}"
         AppLanguage.FRENCH -> "Jour : ${sunSchedule.daylightHours}"
         AppLanguage.PORTUGUESE -> "Luz do dia: ${sunSchedule.daylightHours}"
+        AppLanguage.RUSSIAN -> "Световой день: ${sunSchedule.daylightHours}"
     }
 
     val sunriseLabel = strings.sunrise
@@ -119,6 +122,7 @@ fun SunMoonDetailScreen(
         AppLanguage.SPANISH -> "Salida y puesta del sol (7 días)"
         AppLanguage.FRENCH -> "Lever et coucher du soleil (7 j)"
         AppLanguage.PORTUGUESE -> "Nascer e pôr do sol (7 dias)"
+        AppLanguage.RUSSIAN -> "Восход и закат (7 дней)"
     }
 
     DetailScaffold(
@@ -142,7 +146,7 @@ fun SunMoonDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -380,7 +384,7 @@ fun SunMoonDetailScreen(
             Card(
                 shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                    containerColor = getDetailCardColor()
                 ),
                 elevation = CardDefaults.cardElevation(0.dp),
                 modifier = Modifier.fillMaxWidth()

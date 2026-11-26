@@ -107,6 +107,12 @@ enum class UsRadarLayerFilter(
             EXTRAPOLATION_ONLY -> "Extrapolação imediata (0-60 min)"
             HRRR_FORECAST_ONLY -> "Radar de previsão (Simulação HRRR)"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            ALL -> "Единая шкала (Набл. + Сейчас + Прогноз)"
+            OBSERVATION_ONLY -> "Радар наблюдений (NEXRAD / MRMS)"
+            EXTRAPOLATION_ONLY -> "Краткосрочная экстраполяция (0–60 мин)"
+            HRRR_FORECAST_ONLY -> "Прогнозный радар (Модель HRRR)"
+        }
         else -> titleEn
     }
     fun description(language: AppLanguage): String = when (language) {
@@ -129,6 +135,12 @@ enum class UsRadarLayerFilter(
             OBSERVATION_ONLY -> "Acompanhamento de observação em alta resolução das últimas 2 h"
             EXTRAPOLATION_ONLY -> "Previsão imediata por vetores de deslocamento para os próximos 60 min"
             HRRR_FORECAST_ONLY -> "Simulação numérica meteorológica até 18 h à frente"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            ALL -> "Непрерывное воспроизведение от -2 ч до +18 ч"
+            OBSERVATION_ONLY -> "Наблюдения высокого разрешения за последние 2 часа"
+            EXTRAPOLATION_ONLY -> "Наукаст по векторам движения на ближайшие 60 минут"
+            HRRR_FORECAST_ONLY -> "Численный прогноз погоды на 18 часов вперёд"
         }
         else -> descriptionEn
     }
@@ -212,6 +224,12 @@ enum class UsLayerCategory(
             NOWCAST -> "Extrapolação imediata (0-60 min)"
             OBSERVATION -> "Radar de observação"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            UNIFIED -> "Единая шкала"
+            HRRR_FORECAST -> "Прогноз HRRR"
+            NOWCAST -> "Наукаст (0–60 мин)"
+            OBSERVATION -> "Радар наблюдений"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -252,6 +270,12 @@ enum class UsLayerCategory(
             HRRR_FORECAST -> "Simulações de 18 h do modelo NOAA de alta resolução"
             NOWCAST -> "Previsão imediata por vetores de eco radar NEXRAD (60 min)"
             OBSERVATION -> "Observações multirradar NEXRAD e MRMS em todos os EUA"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            UNIFIED -> "Непрерывное воспроизведение от прошлых наблюдений до 18-часового прогноза HRRR"
+            HRRR_FORECAST -> "18-часовые симуляции высокоточной модели NOAA HRRR"
+            NOWCAST -> "Краткосрочный прогноз по векторам радиоэха NEXRAD (60 мин)"
+            OBSERVATION -> "Наблюдения сети радаров NEXRAD и MRMS по всей территории США"
         }
     }
 }
@@ -523,6 +547,20 @@ enum class UsRadarLayerType(
             MRMS_ECHO_TOPS -> "Topos de eco MRMS (18 dBZ / 50 dBZ)"
             MRMS_QPE_1H -> "Precipitação radar MRMS em 1 hora (QPE)"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            UNIFIED_ALL -> "Единый радар (Набл. + Сейчас + HRRR)"
+            HRRR_COMPOSITE_REFL -> "Модельная отражаемость HRRR 1 км"
+            HRRR_PRECIP_TYPE -> "Тип осадков HRRR (Дождь/Снег/Лёд)"
+            HRRR_TOTAL_PRECIP -> "Суммарные осадки HRRR (18 ч)"
+            HRRR_WIND_GUSTS -> "Порывы приземного ветра HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Потенциал торнадо и спиральность HRRR (STP/UH)"
+            HRRR_CLOUD_COVER -> "Облачность и туман HRRR"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Экстраполяция NEXRAD (0–60 мин)"
+            NEXRAD_STORM_MOTION -> "Движение и трекинг штормов NEXRAD"
+            MRMS_BASE_REFLECTIVITY -> "Базовая отражаемость MRMS"
+            MRMS_ECHO_TOPS -> "Верхняя граница эха MRMS (18 / 50 dBZ)"
+            MRMS_QPE_1H -> "Оценка осадков MRMS за 1 час (QPE)"
+        }
     }
 
     fun shortName(language: AppLanguage): String = when (language) {
@@ -612,6 +650,20 @@ enum class UsRadarLayerType(
             MRMS_ECHO_TOPS -> "Topos de eco"
             MRMS_QPE_1H -> "MRMS 1 h"
         }
+        AppLanguage.RUSSIAN -> when (this) {
+            UNIFIED_ALL -> "Единый"
+            HRRR_COMPOSITE_REFL -> "Отраж. HRRR"
+            HRRR_PRECIP_TYPE -> "Тип осадков"
+            HRRR_TOTAL_PRECIP -> "Сумма HRRR"
+            HRRR_WIND_GUSTS -> "Порывы HRRR"
+            HRRR_TORNADO_POTENTIAL -> "Торнадо/UH"
+            HRRR_CLOUD_COVER -> "Облака/Туман"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "NEXRAD Сейчас"
+            NEXRAD_STORM_MOTION -> "Трекинг гроз"
+            MRMS_BASE_REFLECTIVITY -> "MRMS База"
+            MRMS_ECHO_TOPS -> "Верх эха"
+            MRMS_QPE_1H -> "MRMS 1 ч"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -700,6 +752,20 @@ enum class UsRadarLayerType(
             MRMS_BASE_REFLECTIVITY -> "Observação nacional multissensor NEXRAD de refletividade em superfície"
             MRMS_ECHO_TOPS -> "Altura dos topos de nuvens monitorando desenvolvimento convectivo rápido"
             MRMS_QPE_1H -> "Estimativa quantitativa de precipitação por radar multissensor (1 hora)"
+        }
+        AppLanguage.RUSSIAN -> when (this) {
+            UNIFIED_ALL -> "Непрерывное воспроизведение от 2 ч наблюдений до 18 ч прогноза HRRR"
+            HRRR_COMPOSITE_REFL -> "Прогноз модельной отражаемости на высоте 1 км до 18 часов"
+            HRRR_PRECIP_TYPE -> "Моделируемый тип осадков: дождь, снег, ледяная крупа и ледяной дождь"
+            HRRR_TOTAL_PRECIP -> "Симуляция суммарного количества осадков за ближайшие 18 часов"
+            HRRR_WIND_GUSTS -> "Прогноз приземных порывов ветра и нисходящих потоков"
+            HRRR_TORNADO_POTENTIAL -> "Моделирование восходящей спиральности и индекса торнадо"
+            HRRR_CLOUD_COVER -> "Прогноз общей облачности, тумана и низкой видимости"
+            NEXRAD_NOWCAST_EXTRAPOLATION -> "Краткосрочная векторная экстраполяция на ближайшие 60 минут"
+            NEXRAD_STORM_MOTION -> "Отслеживание грозовых ячеек и прогноз их траектории"
+            MRMS_BASE_REFLECTIVITY -> "Национальная карта базовой отражаемости сети NEXRAD"
+            MRMS_ECHO_TOPS -> "Высота вершин облаков для отслеживания быстрой конвекции"
+            MRMS_QPE_1H -> "Количественная оценка осадков мультисенсорным радаром за 1 час"
         }
     }
 }
@@ -832,6 +898,15 @@ data class DbzColorLevel(
             55 -> "Aguaceiro intenso"
             else -> "Tempestade severa / Granizo"
         }
+        AppLanguage.RUSSIAN -> when (dbzValue) {
+            5 -> "Слабый / Морось"
+            15 -> "Небольшой дождь"
+            25 -> "Умеренный дождь"
+            35 -> "Сильный дождь"
+            45 -> "Очень сильный дождь"
+            55 -> "Проливной ливень"
+            else -> "Сильная гроза / Град"
+        }
     }
 
     fun description(language: AppLanguage): String = when (language) {
@@ -898,6 +973,15 @@ data class DbzColorLevel(
             45 -> "Chuva intensa com trovoadas (15-30 mm/h)"
             55 -> "Aguaceiro violento, risco de alagamentos locais (30-60 mm/h)"
             else -> "Refletividade máxima; alto risco de supercélulas e granizo grande (60+ mm/h)"
+        }
+        AppLanguage.RUSSIAN -> when (dbzValue) {
+            5 -> "Очень слабая морось (0,1–0,5 мм/ч)"
+            15 -> "Небольшой дождь, рекомендуется зонт (1–2 мм/ч)"
+            25 -> "Устойчивый дождь, мокрые дороги (2–5 мм/ч)"
+            35 -> "Сильный дождь, образование луж (5–15 мм/ч)"
+            45 -> "Сильный ливень с грозой (15–30 мм/ч)"
+            55 -> "Проливной ливень, риск локальных подтоплений (30–60 мм/ч)"
+            else -> "Максимальная отражаемость; высокий риск суперъячеек и крупного града (60+ мм/ч)"
         }
     }
 }

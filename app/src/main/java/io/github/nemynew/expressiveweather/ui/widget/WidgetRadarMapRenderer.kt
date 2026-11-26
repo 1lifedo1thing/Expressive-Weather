@@ -543,6 +543,7 @@ object WidgetRadarMapRenderer {
             AppLanguage.SPANISH -> "Radar"
             AppLanguage.FRENCH -> "Radar"
             AppLanguage.PORTUGUESE -> "Radar"
+            AppLanguage.RUSSIAN -> "Радар"
         }
         val t = timeLabel?.trim()?.takeIf { it.isNotBlank() } ?: return live
         return when (language) {
@@ -554,6 +555,7 @@ object WidgetRadarMapRenderer {
             AppLanguage.SPANISH -> "$t En vivo"
             AppLanguage.FRENCH -> "$t Direct"
             AppLanguage.PORTUGUESE -> "$t Ao vivo"
+            AppLanguage.RUSSIAN -> "$t Онлайн"
         }
     }
 

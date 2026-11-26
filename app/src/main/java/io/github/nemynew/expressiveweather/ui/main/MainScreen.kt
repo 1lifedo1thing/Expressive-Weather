@@ -501,6 +501,7 @@ fun MainScreen(
                         AppLanguage.SPANISH -> "Chiyoda (Prueba)"
                         AppLanguage.FRENCH -> "Chiyoda (Test)"
                         AppLanguage.PORTUGUESE -> "Chiyoda (Teste)"
+                        AppLanguage.RUSSIAN -> "Тиёда (Тест)"
                         AppLanguage.JAPANESE -> "千代田区 (テスト)"
                     }
                     val mockHeadline = when (uiState.language) {
@@ -511,6 +512,7 @@ fun MainScreen(
                         AppLanguage.SPANISH -> "【Equivalente a Nivel de Alerta 4】Situación extremadamente peligrosa. Pueden ocurrir desastres potencialmente mortales en cualquier momento."
                         AppLanguage.FRENCH -> "【Équivalent Niveau d'alerte 4】Situation extrêmement dangereuse. Des catastrophes mettant la vie en danger peuvent survenir à tout moment."
                         AppLanguage.PORTUGUESE -> "【Equivalente ao Nível de Alerta 4】Situação extremamente perigosa. Desastres com risco de vida podem ocorrer a qualquer momento."
+                        AppLanguage.RUSSIAN -> "【Соответствует уровню угрозы 4】Чрезвычайно опасная ситуация. Угрожающие жизни бедствия могут произойти в любой момент."
                         AppLanguage.JAPANESE -> "【警戒レベル４相当】これは、命に危険が及ぶ土砂災害や浸水害がいつ発生してもおかしくない極めて危険な状況です。"
                     }
                     MunicipalityAlertInfo(
@@ -1459,6 +1461,7 @@ private fun SavedCitiesAlertBanner(
         AppLanguage.SPANISH -> "⚠️ Ubicación guardada [$displayPlace]: [Nivel ${savedMaxAlert.alertLevel.level}] activo (Toca para ver)"
         AppLanguage.FRENCH -> "⚠️ Lieu enregistré [$displayPlace] : [Niveau ${savedMaxAlert.alertLevel.level}] actif (Appuyer pour voir)"
         AppLanguage.PORTUGUESE -> "⚠️ Local salvo [$displayPlace]: [Nível ${savedMaxAlert.alertLevel.level}] ativo (Toque para ver)"
+        AppLanguage.RUSSIAN -> "⚠️ Сохранённое место [$displayPlace]: [Уровень ${savedMaxAlert.alertLevel.level}] (Нажмите для просмотра)"
     }
 
     Surface(

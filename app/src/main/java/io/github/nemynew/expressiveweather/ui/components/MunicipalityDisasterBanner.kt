@@ -179,6 +179,7 @@ fun MunicipalityDisasterBanner(
                     AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${nwsAlerts.size - 1} más"
                     AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${nwsAlerts.size - 1} autres"
                     AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${nwsAlerts.size - 1}"
+                    AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${nwsAlerts.size - 1}"
                     AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${nwsAlerts.size - 1}件の警報・注意報"
                 }
             }
@@ -217,6 +218,7 @@ fun MunicipalityDisasterBanner(
                     AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${wmoAlerts.size - 1} más"
                     AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${wmoAlerts.size - 1} autres"
                     AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${wmoAlerts.size - 1}"
+                    AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${wmoAlerts.size - 1}"
                     AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${wmoAlerts.size - 1}件のWMO世界警報"
                 }
             }
@@ -257,6 +259,7 @@ fun MunicipalityDisasterBanner(
                     AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${meteoAlarmAlerts.size - 1} más"
                     AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${meteoAlarmAlerts.size - 1} autres"
                     AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${meteoAlarmAlerts.size - 1}"
+                    AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${meteoAlarmAlerts.size - 1}"
                     AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${meteoAlarmAlerts.size - 1}件の欧州気象警報"
                 }
             }
@@ -297,6 +300,7 @@ fun MunicipalityDisasterBanner(
                     AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${gdacsAlerts.size - 1} más"
                     AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${gdacsAlerts.size - 1} autres"
                     AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${gdacsAlerts.size - 1}"
+                    AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${gdacsAlerts.size - 1}"
                     AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${gdacsAlerts.size - 1}件の全球警報"
                 }
             }
@@ -592,6 +596,7 @@ private fun NwsAccordionCard(
             AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${alerts.size - 1} más"
             AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${alerts.size - 1} autres"
             AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${alerts.size - 1}"
+            AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${alerts.size - 1}"
             AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${alerts.size - 1}件の警報・注意報"
         }
     }
@@ -779,6 +784,7 @@ private fun WmoAccordionCard(
             AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${alerts.size - 1} más"
             AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${alerts.size - 1} autres"
             AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${alerts.size - 1}"
+            AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${alerts.size - 1}"
             AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${alerts.size - 1}件のWMO世界警報"
         }
     }
@@ -964,6 +970,7 @@ fun MeteoAlarmIndividualAlertCard(
             AppLanguage.SPANISH -> "Alerta roja (Peligro extremo)"
             AppLanguage.FRENCH -> "Vigilance rouge (Danger extrême)"
             AppLanguage.PORTUGUESE -> "Alerta vermelho (Perigo extremo)"
+            AppLanguage.RUSSIAN -> "Красный уровень (Чрезвычайная опасность)"
         }
         WeatherWarningType.WARNING -> when (language) {
             AppLanguage.JAPANESE -> "警戒 (Orange: Severe)"
@@ -974,6 +981,7 @@ fun MeteoAlarmIndividualAlertCard(
             AppLanguage.SPANISH -> "Alerta naranja (Peligro grave)"
             AppLanguage.FRENCH -> "Vigilance orange (Danger important)"
             AppLanguage.PORTUGUESE -> "Alerta laranja (Perigo severo)"
+            AppLanguage.RUSSIAN -> "Оранжевый уровень (Серьёзная опасность)"
         }
         else -> when (language) {
             AppLanguage.JAPANESE -> "注意 (Yellow: Moderate)"
@@ -984,6 +992,7 @@ fun MeteoAlarmIndividualAlertCard(
             AppLanguage.SPANISH -> "Alerta amarilla (Peligro moderado)"
             AppLanguage.FRENCH -> "Vigilance jaune (Danger modéré)"
             AppLanguage.PORTUGUESE -> "Alerta amarelo (Perigo moderado)"
+            AppLanguage.RUSSIAN -> "Жёлтый уровень (Умеренная опасность)"
         }
     }
 
@@ -1125,6 +1134,7 @@ fun MeteoAlarmIndividualAlertCard(
                             AppLanguage.SPANISH -> "Inmediato"
                             AppLanguage.FRENCH -> "Immédiat"
                             AppLanguage.PORTUGUESE -> "Imediato"
+                            AppLanguage.RUSSIAN -> "Немедленно"
                         }
                         val tbdLabel = when (language) {
                             AppLanguage.JAPANESE -> "未定"
@@ -1135,6 +1145,7 @@ fun MeteoAlarmIndividualAlertCard(
                             AppLanguage.SPANISH -> "Por determinar"
                             AppLanguage.FRENCH -> "À déterminer"
                             AppLanguage.PORTUGUESE -> "A definir"
+                            AppLanguage.RUSSIAN -> "Уточняется"
                         }
                         val onsetStr = formatIsoAlertTimestamp(alert.effectiveTime) ?: immediateLabel
                         val expiresStr = formatIsoAlertTimestamp(alert.expiresTime) ?: tbdLabel
@@ -1147,6 +1158,7 @@ fun MeteoAlarmIndividualAlertCard(
                             AppLanguage.SPANISH -> "【Período de vigencia】"
                             AppLanguage.FRENCH -> "【Période de validité】"
                             AppLanguage.PORTUGUESE -> "【Período de vigência】"
+                            AppLanguage.RUSSIAN -> "【Период действия】"
                         }
                         Column {
                             Text(
@@ -1179,6 +1191,7 @@ fun MeteoAlarmIndividualAlertCard(
                             AppLanguage.SPANISH -> "Fuente: EUMETNET / MeteoAlarm y servicios met. europeos (NMHS)"
                             AppLanguage.FRENCH -> "Source : EUMETNET / MeteoAlarm et services météo européens (NMHS)"
                             AppLanguage.PORTUGUESE -> "Fonte: EUMETNET / MeteoAlarm e serviços met. europeus (NMHS)"
+                            AppLanguage.RUSSIAN -> "Источник: EUMETNET / MeteoAlarm и метеослужбы Европы (NMHS)"
                         }
                         Text(
                             text = creditText,
@@ -1224,6 +1237,7 @@ private fun GdacsAccordionCard(
             AppLanguage.SPANISH -> "${topAlert.getLocalizedTitle(language)} y ${alerts.size - 1} más"
             AppLanguage.FRENCH -> "${topAlert.getLocalizedTitle(language)} et ${alerts.size - 1} autres"
             AppLanguage.PORTUGUESE -> "${topAlert.getLocalizedTitle(language)} e mais ${alerts.size - 1}"
+            AppLanguage.RUSSIAN -> "${topAlert.getLocalizedTitle(language)} и ещё ${alerts.size - 1}"
             AppLanguage.JAPANESE -> "${topAlert.getLocalizedTitle(language)} ほか${alerts.size - 1}件の全球警報"
         }
     }
@@ -1369,6 +1383,7 @@ internal fun getJmaOverviewLabel(language: AppLanguage): String = when (language
     AppLanguage.SPANISH -> "【Boletín meteorológico regional】"
     AppLanguage.FRENCH -> "【Bulletin météo régional】"
     AppLanguage.PORTUGUESE -> "【Boletim meteorológico regional】"
+    AppLanguage.RUSSIAN -> "【Региональная метеосводка】"
 }
 
 internal fun getPhenomenonLabel(language: AppLanguage): String = when (language) {
@@ -1380,6 +1395,7 @@ internal fun getPhenomenonLabel(language: AppLanguage): String = when (language)
     AppLanguage.SPANISH -> "【Riesgos e impactos previstos】"
     AppLanguage.FRENCH -> "【Risques et impacts prévus】"
     AppLanguage.PORTUGUESE -> "【Riscos e impactos previstos】"
+    AppLanguage.RUSSIAN -> "【Ожидаемые опасности и последствия】"
 }
 
 internal fun getActionGuideLabel(language: AppLanguage): String = when (language) {
@@ -1391,6 +1407,7 @@ internal fun getActionGuideLabel(language: AppLanguage): String = when (language
     AppLanguage.SPANISH -> "【Medidas de seguridad recomendadas】"
     AppLanguage.FRENCH -> "【Consignes de sécurité recommandées】"
     AppLanguage.PORTUGUESE -> "【Ações de segurança recomendadas】"
+    AppLanguage.RUSSIAN -> "【Рекомендуемые меры безопасности】"
 }
 
 internal fun getCautionPointsLabel(language: AppLanguage): String = when (language) {
@@ -1402,6 +1419,7 @@ internal fun getCautionPointsLabel(language: AppLanguage): String = when (langua
     AppLanguage.SPANISH -> "【Puntos clave de vigilancia】"
     AppLanguage.FRENCH -> "【Points de vigilance clés】"
     AppLanguage.PORTUGUESE -> "【Pontos-chave de atenção】"
+    AppLanguage.RUSSIAN -> "【Ключевые меры осторожности】"
 }
 
 internal fun getNwsInstructionLabel(language: AppLanguage): String = when (language) {
@@ -1413,6 +1431,7 @@ internal fun getNwsInstructionLabel(language: AppLanguage): String = when (langu
     AppLanguage.SPANISH -> "【Acciones recomendadas】"
     AppLanguage.FRENCH -> "【Actions recommandées】"
     AppLanguage.PORTUGUESE -> "【Ações recomendadas】"
+    AppLanguage.RUSSIAN -> "【Рекомендуемые действия】"
 }
 
 internal fun getNwsDescriptionLabel(language: AppLanguage): String = when (language) {
@@ -1424,6 +1443,7 @@ internal fun getNwsDescriptionLabel(language: AppLanguage): String = when (langu
     AppLanguage.SPANISH -> "【Descripción detallada】"
     AppLanguage.FRENCH -> "【Description détaillée】"
     AppLanguage.PORTUGUESE -> "【Descrição detalhada】"
+    AppLanguage.RUSSIAN -> "【Подробное описание】"
 }
 
 internal fun getGdacsDescriptionLabel(language: AppLanguage): String = when (language) {
@@ -1435,6 +1455,7 @@ internal fun getGdacsDescriptionLabel(language: AppLanguage): String = when (lan
     AppLanguage.SPANISH -> "【Resumen del desastre】"
     AppLanguage.FRENCH -> "【Résumé de la catastrophe】"
     AppLanguage.PORTUGUESE -> "【Resumo do desastre】"
+    AppLanguage.RUSSIAN -> "【Сводка о бедствии】"
 }
 
 internal fun getWmoOverviewLabel(language: AppLanguage): String = when (language) {
@@ -1446,6 +1467,7 @@ internal fun getWmoOverviewLabel(language: AppLanguage): String = when (language
     AppLanguage.SPANISH -> "【Resumen y estado de la alerta】"
     AppLanguage.FRENCH -> "【Aperçu et état de l'alerte】"
     AppLanguage.PORTUGUESE -> "【Resumo e status do alerta】"
+    AppLanguage.RUSSIAN -> "【Обзор и статус оповещения】"
 }
 
 internal fun getWmoAreaLabel(language: AppLanguage): String = when (language) {
@@ -1457,6 +1479,7 @@ internal fun getWmoAreaLabel(language: AppLanguage): String = when (language) {
     AppLanguage.SPANISH -> "【Área afectada】"
     AppLanguage.FRENCH -> "【Zone concernée】"
     AppLanguage.PORTUGUESE -> "【Área afetada】"
+    AppLanguage.RUSSIAN -> "【Зона воздействия】"
 }
 
 internal fun getMeteoAlarmOverviewLabel(language: AppLanguage): String = when (language) {
@@ -1468,6 +1491,7 @@ internal fun getMeteoAlarmOverviewLabel(language: AppLanguage): String = when (l
     AppLanguage.SPANISH -> "【Alerta meteorológica y detalles】"
     AppLanguage.FRENCH -> "【Alerte météo et détails】"
     AppLanguage.PORTUGUESE -> "【Alerta meteorológico e detalhes】"
+    AppLanguage.RUSSIAN -> "【Метеопредупреждение и детали】"
 }
 
 internal fun getMeteoAlarmInstructionLabel(language: AppLanguage): String = when (language) {
@@ -1479,6 +1503,7 @@ internal fun getMeteoAlarmInstructionLabel(language: AppLanguage): String = when
     AppLanguage.SPANISH -> "【Medidas de seguridad recomendadas】"
     AppLanguage.FRENCH -> "【Consignes de sécurité recommandées】"
     AppLanguage.PORTUGUESE -> "【Ações de segurança recomendadas】"
+    AppLanguage.RUSSIAN -> "【Рекомендуемые меры безопасности】"
 }
 
 internal fun getMeteoAlarmAreaLabel(language: AppLanguage): String = when (language) {
@@ -1490,6 +1515,7 @@ internal fun getMeteoAlarmAreaLabel(language: AppLanguage): String = when (langu
     AppLanguage.SPANISH -> "【Región afectada】"
     AppLanguage.FRENCH -> "【Région concernée】"
     AppLanguage.PORTUGUESE -> "【Região afetada】"
+    AppLanguage.RUSSIAN -> "【Затронутый регион】"
 }
 
 internal fun getExpandCollapseDescription(isExpanded: Boolean, language: AppLanguage): String = when (language) {
@@ -1501,6 +1527,7 @@ internal fun getExpandCollapseDescription(isExpanded: Boolean, language: AppLang
     AppLanguage.SPANISH -> if (isExpanded) "Contraer" else "Ver detalles"
     AppLanguage.FRENCH -> if (isExpanded) "Réduire" else "Voir les détails"
     AppLanguage.PORTUGUESE -> if (isExpanded) "Recolher" else "Ver detalhes"
+    AppLanguage.RUSSIAN -> if (isExpanded) "Свернуть" else "Подробнее"
 }
 
 /**
@@ -1666,6 +1693,25 @@ internal fun formatWarningDescription(
             rawTitle.contains("霜") -> "Previsão de geada. Proteja plantações sensíveis."
             rawTitle.contains("低温") -> "Temperaturas muito baixas. Atenção a tubulações congeladas e lavouras."
             else -> "Alertas ou avisos meteorológicos em vigor. Tome as precauções necessárias."
+        }
+        AppLanguage.RUSSIAN -> when {
+            rawTitle.contains("特別") -> "Непосредственная угроза жизни. Немедленно укройтесь в безопасном месте."
+            rawTitle.contains("大雨") && rawTitle.contains("洪水") -> "Ожидаются внезапные паводки и опасный подъём уровня рек."
+            rawTitle.contains("大雨") -> "Будьте готовы к оползням и подтоплению низин."
+            rawTitle.contains("洪水") -> "Следите за подъёмом уровня воды в реках и возможным наводнением."
+            rawTitle.contains("暴風雪") -> "Ожидается сильная метель и снежные заносы на дорогах."
+            rawTitle.contains("暴風") || rawTitle.contains("強風") -> "Ожидаются опасный ветер и штормовые условия. Оставайтесь в помещении."
+            rawTitle.contains("大雪") -> "Ожидаются сильный снегопад и сложная обстановка на дорогах."
+            rawTitle.contains("高潮") || rawTitle.contains("波浪") -> "Ожидаются высокие волны и штормовой нагон. Держитесь подальше от берега."
+            rawTitle.contains("雷") -> "Остерегайтесь молний, внезапных ливней и порывистого ветра."
+            rawTitle.contains("濃霧") -> "Предупреждение о густом тумане. Будьте осторожны из-за плохой видимости."
+            rawTitle.contains("乾燥") -> "Сухая погода. Соблюдайте повышенную пожарную осторожность."
+            rawTitle.contains("なだれ") -> "Лавинная опасность в горах. Избегайте крутых склонов."
+            rawTitle.contains("融雪") -> "Риск таяния снега: возможны подтопления и оползни."
+            rawTitle.contains("着氷") || rawTitle.contains("着雪") -> "Риск обледенения и налипания снега на проводах и конструкциях."
+            rawTitle.contains("霜") -> "Ожидаются заморозки. Защитите чувствительные культуры."
+            rawTitle.contains("低温") -> "Сильные морозы. Остерегайтесь промерзания труб и повреждения урожая."
+            else -> "Действуют метеопредупреждения. Примите необходимые меры предосторожности."
         }
     }
 }

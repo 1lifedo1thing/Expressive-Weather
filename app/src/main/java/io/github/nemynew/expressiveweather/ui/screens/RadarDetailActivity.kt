@@ -54,6 +54,7 @@ class RadarDetailActivity : ComponentActivity() {
             io.github.nemynew.expressiveweather.data.AppLanguage.SPANISH -> "Ubicación actual"
             io.github.nemynew.expressiveweather.data.AppLanguage.FRENCH -> "Position actuelle"
             io.github.nemynew.expressiveweather.data.AppLanguage.PORTUGUESE -> "Localização atual"
+            io.github.nemynew.expressiveweather.data.AppLanguage.RUSSIAN -> "Текущее местоположение"
         }
 
         val intentCityName = intent.getStringExtra("city_name")?.takeIf { it.isNotBlank() }

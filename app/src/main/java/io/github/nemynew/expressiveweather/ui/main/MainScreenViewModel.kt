@@ -1074,6 +1074,7 @@ class MainScreenViewModel(
                         AppLanguage.SPANISH -> "No se pudieron actualizar los datos meteorológicos: ${e.localizedMessage ?: "Error de red"}"
                         AppLanguage.FRENCH -> "Échec de la mise à jour des données météo : ${e.localizedMessage ?: "Erreur réseau"}"
                         AppLanguage.PORTUGUESE -> "Falha ao atualizar os dados meteorológicos: ${e.localizedMessage ?: "Erro de rede"}"
+                        AppLanguage.RUSSIAN -> "Не удалось обновить данные о погоде: ${e.localizedMessage ?: "Ошибка сети"}"
                         AppLanguage.ENGLISH -> "Failed to refresh weather data: ${e.localizedMessage ?: "Network error"}"
                     }
                     current.copy(

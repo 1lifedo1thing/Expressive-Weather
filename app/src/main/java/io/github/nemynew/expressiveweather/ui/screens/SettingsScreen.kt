@@ -346,6 +346,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Color del tema"
                                     AppLanguage.FRENCH -> "Couleur du thème"
                                     AppLanguage.PORTUGUESE -> "Cor do tema"
+                                    AppLanguage.RUSSIAN -> "Цвет темы"
                                 },
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
@@ -365,6 +366,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Seguir el color del dispositivo"
                                         AppLanguage.FRENCH -> "Suivre la couleur de l'appareil"
                                         AppLanguage.PORTUGUESE -> "Seguir cor do tema do dispositivo"
+                                        AppLanguage.RUSSIAN -> "Цвет темы устройства"
                                     },
                                     subtitle = if (currentPreset == ThemePreset.SYSTEM) {
                                         when (currentLang) {
@@ -376,6 +378,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Sincronizado con el fondo mediante Material You"
                                             AppLanguage.FRENCH -> "Assorti au fond d'écran via Material You"
                                             AppLanguage.PORTUGUESE -> "Sincronizado com o papel de parede via Material You"
+                                            AppLanguage.RUSSIAN -> "Подстраивается под обои через Material You"
                                         }
                                     } else {
                                         when (currentLang) {
@@ -387,6 +390,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Desactivado (usando color personalizado o del clima)"
                                             AppLanguage.FRENCH -> "Désactivé (couleur personnalisée ou météo)"
                                             AppLanguage.PORTUGUESE -> "Desativado (usando cor personalizada ou do clima)"
+                                            AppLanguage.RUSSIAN -> "Выкл. (используется свой или погодный цвет)"
                                         }
                                     },
                                     icon = Icons.Rounded.Palette,
@@ -436,6 +440,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Adaptado al clima"
                                         AppLanguage.FRENCH -> "Adapté à la météo"
                                         AppLanguage.PORTUGUESE -> "Adaptável ao clima"
+                                        AppLanguage.RUSSIAN -> "Адаптация к погоде"
                                     },
                                     subtitle = if (currentPreset == ThemePreset.WEATHER) {
                                         when (currentLang) {
@@ -447,6 +452,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Los colores dinámicos se adaptan al clima"
                                             AppLanguage.FRENCH -> "Les couleurs s'adaptent à la météo"
                                             AppLanguage.PORTUGUESE -> "Cores dinâmicas se adaptam ao clima"
+                                            AppLanguage.RUSSIAN -> "Динамические цвета меняются с погодой"
                                         }
                                     } else if (currentPreset == ThemePreset.SYSTEM) {
                                         when (currentLang) {
@@ -458,6 +464,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Desactivado (color del dispositivo activo)"
                                             AppLanguage.FRENCH -> "Désactivé (couleur de l'appareil active)"
                                             AppLanguage.PORTUGUESE -> "Desativado (cor do dispositivo ativa)"
+                                            AppLanguage.RUSSIAN -> "Выкл. (активен цвет устройства)"
                                         }
                                     } else {
                                         when (currentLang) {
@@ -469,6 +476,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Fijo: ${currentPreset.displayName(currentLang)}"
                                             AppLanguage.FRENCH -> "Fixe : ${currentPreset.displayName(currentLang)}"
                                             AppLanguage.PORTUGUESE -> "Fixo: ${currentPreset.displayName(currentLang)}"
+                                            AppLanguage.RUSSIAN -> "Фиксированный: ${currentPreset.displayName(currentLang)}"
                                         }
                                     },
                                     icon = Icons.Rounded.WbSunny,
@@ -591,6 +599,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Idioma y unidades"
                             AppLanguage.FRENCH -> "Langue et unités"
                             AppLanguage.PORTUGUESE -> "Idioma e unidades"
+                            AppLanguage.RUSSIAN -> "Язык и единицы измерения"
                         }
                     ) {
                         // 1. 言語を変更
@@ -624,6 +633,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Celsius (°C)"
                                     AppLanguage.FRENCH -> "Celsius (°C)"
                                     AppLanguage.PORTUGUESE -> "Celsius (°C)"
+                                    AppLanguage.RUSSIAN -> "Цельсий (°C)"
                                 }
                             } else {
                                 when (currentLang) {
@@ -635,6 +645,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Fahrenheit (°F)"
                                     AppLanguage.FRENCH -> "Fahrenheit (°F)"
                                     AppLanguage.PORTUGUESE -> "Fahrenheit (°F)"
+                                    AppLanguage.RUSSIAN -> "Фаренгейт (°F)"
                                 }
                             },
                             icon = Icons.Rounded.DeviceThermostat,
@@ -657,6 +668,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Automático (según idioma)"
                                     AppLanguage.FRENCH -> "Auto (selon la langue)"
                                     AppLanguage.PORTUGUESE -> "Automático (seguir idioma)"
+                                    AppLanguage.RUSSIAN -> "Авто (по языку)"
                                 }
                                 WindSpeedUnit.MS -> "m/s"
                                 WindSpeedUnit.KMH -> "km/h"
@@ -681,6 +693,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Actualización y permisos"
                             AppLanguage.FRENCH -> "Mises à jour et autorisations"
                             AppLanguage.PORTUGUESE -> "Atualização e permissões"
+                            AppLanguage.RUSSIAN -> "Автообновление и разрешения"
                         }
                     ) {
                         // 4. 天気の自動更新頻度 (Weather Update Frequency)
@@ -699,6 +712,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> " • Última sinc.: $timeStr$cityPart"
                                 AppLanguage.FRENCH -> " • Dernière synchro : $timeStr$cityPart"
                                 AppLanguage.PORTUGUESE -> " • Última sinc.: $timeStr$cityPart"
+                                AppLanguage.RUSSIAN -> " • Посл. синхр.: $timeStr$cityPart"
                             }
                         } else ""
 
@@ -712,6 +726,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Frecuencia de actualización"
                                 AppLanguage.FRENCH -> "Fréquence de mise à jour"
                                 AppLanguage.PORTUGUESE -> "Frequência de atualização"
+                                AppLanguage.RUSSIAN -> "Частота обновления"
                             },
                             subtitle = "${currentWeatherUpdateInterval.getLabel(currentLang)}$lastSyncStr・" + when (currentLang) {
                                 AppLanguage.JAPANESE -> "現在地の天気とウィジェットをバックグラウンドで自動同期"
@@ -722,6 +737,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Sincroniza automáticamente el clima actual y los widgets en segundo plano"
                                 AppLanguage.FRENCH -> "Synchronise automatiquement la météo actuelle et les widgets en arrière-plan"
                                 AppLanguage.PORTUGUESE -> "Sincroniza automaticamente o clima atual e os widgets em segundo plano"
+                                AppLanguage.RUSSIAN -> "Автоматически обновляет погоду и виджеты в фоне"
                             },
                             icon = Icons.Rounded.Update,
                             iconBackgroundColor = colorScheme.primaryContainer,
@@ -749,6 +765,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Ubicación en segundo plano (Siempre)"
                                 AppLanguage.FRENCH -> "Position en arrière-plan (Toujours)"
                                 AppLanguage.PORTUGUESE -> "Localização em segundo plano (Sempre)"
+                                AppLanguage.RUSSIAN -> "Геолокация в фоне (Всегда)"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> if (hasBgLocation) "バックグラウンドで移動先の警報をリアルタイム監視中" else "バックグラウンド監視には「常に許可」が必要です。タップして設定"
@@ -759,6 +776,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> if (hasBgLocation) "Monitoreando alertas de ubicación en segundo plano" else "Requiere «Permitir siempre» para monitoreo en segundo plano. Toca para configurar"
                                 AppLanguage.FRENCH -> if (hasBgLocation) "Surveillance des alertes de position en arrière-plan" else "Nécessite « Toujours autoriser » en arrière-plan. Appuyez pour configurer"
                                 AppLanguage.PORTUGUESE -> if (hasBgLocation) "Monitorando alertas da localização em segundo plano" else "Requer «Permitir sempre» para monitoramento em segundo plano. Toque para configurar"
+                                AppLanguage.RUSSIAN -> if (hasBgLocation) "Отслеживание оповещений для текущего места в фоне" else "Требуется «Разрешать всегда» для фонового мониторинга. Нажмите для настройки"
                             },
                             icon = Icons.Rounded.LocationOn,
                             iconBackgroundColor = if (hasBgLocation) colorScheme.primaryContainer else colorScheme.tertiaryContainer,
@@ -784,6 +802,7 @@ fun SettingsScreen(
                                                 AppLanguage.SPANISH -> "Siempre"
                                                 AppLanguage.FRENCH -> "Toujours"
                                                 AppLanguage.PORTUGUESE -> "Sempre"
+                                                AppLanguage.RUSSIAN -> "Всегда"
                                             },
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
@@ -802,6 +821,7 @@ fun SettingsScreen(
                                                 AppLanguage.SPANISH -> "Configurar"
                                                 AppLanguage.FRENCH -> "Configurer"
                                                 AppLanguage.PORTUGUESE -> "Configurar"
+                                                AppLanguage.RUSSIAN -> "Настроить"
                                             },
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
@@ -837,6 +857,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> if (allowDirectBatteryExemption) "Exención de optimización de batería" else "Ajustes de batería (Opcional)"
                                 AppLanguage.FRENCH -> if (allowDirectBatteryExemption) "Exemption d'optimisation batterie" else "Paramètres de batterie (Optionnel)"
                                 AppLanguage.PORTUGUESE -> if (allowDirectBatteryExemption) "Isenção de otimização de bateria" else "Configurações de bateria (Opcional)"
+                                AppLanguage.RUSSIAN -> if (allowDirectBatteryExemption) "Исключение оптимизации батареи" else "Настройки батареи (Необязательно)"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> if (isBatteryIgnored) "制限なし（バックグラウンド監視が停止されません）" else "Androidのアプリ設定からバックグラウンド動作を確認できます"
@@ -847,6 +868,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> if (isBatteryIgnored) "Sin restricciones (el monitoreo en segundo plano no se detendrá)" else "Abre los ajustes de Android para revisar el uso de batería en segundo plano"
                                 AppLanguage.FRENCH -> if (isBatteryIgnored) "Sans restriction (la surveillance en arrière-plan reste active)" else "Ouvrez les paramètres Android pour vérifier la batterie en arrière-plan"
                                 AppLanguage.PORTUGUESE -> if (isBatteryIgnored) "Sem restrições (o monitoramento em segundo plano não será interrompido)" else "Abra as configurações do Android para revisar a bateria em segundo plano"
+                                AppLanguage.RUSSIAN -> if (isBatteryIgnored) "Без ограничений (фоновый мониторинг не будет остановлен)" else "Откройте настройки Android для проверки работы батареи в фоне"
                             },
                             icon = Icons.Rounded.BatteryChargingFull,
                             iconBackgroundColor = when {
@@ -880,6 +902,7 @@ fun SettingsScreen(
                                                 AppLanguage.SPANISH -> "Sin restricciones"
                                                 AppLanguage.FRENCH -> "Sans restriction"
                                                 AppLanguage.PORTUGUESE -> "Sem restrições"
+                                                AppLanguage.RUSSIAN -> "Без ограничений"
                                             },
                                             style = MaterialTheme.typography.labelSmall,
                                             fontWeight = FontWeight.Bold,
@@ -900,6 +923,7 @@ fun SettingsScreen(
                                                     AppLanguage.SPANISH -> "Desactivar"
                                                     AppLanguage.FRENCH -> "Désactiver"
                                                     AppLanguage.PORTUGUESE -> "Desativar"
+                                                    AppLanguage.RUSSIAN -> "Отключить"
                                                 }
                                             } else {
                                                 when (currentLang) {
@@ -911,6 +935,7 @@ fun SettingsScreen(
                                                     AppLanguage.SPANISH -> "Abrir"
                                                     AppLanguage.FRENCH -> "Ouvrir"
                                                     AppLanguage.PORTUGUESE -> "Abrir"
+                                                    AppLanguage.RUSSIAN -> "Открыть"
                                                 }
                                             },
                                             style = MaterialTheme.typography.labelSmall,
@@ -943,6 +968,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Alertas y notificaciones"
                             AppLanguage.FRENCH -> "Alertes et notifications"
                             AppLanguage.PORTUGUESE -> "Alertas e notificações"
+                            AppLanguage.RUSSIAN -> "Оповещения и уведомления"
                         }
                     ) {
                         // 7. 警戒レベル・キキクルLive Updates通知（自動監視周期の案内も統合）
@@ -956,6 +982,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Alertas de desastres en vivo"
                                 AppLanguage.FRENCH -> "Alertes catastrophe en direct"
                                 AppLanguage.PORTUGUESE -> "Alertas de desastres ao vivo"
+                                AppLanguage.RUSSIAN -> "Оповещения о бедствиях в реальном времени"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> if (currentLiveAlertNotification) "発表時に常駐通知で表示・現在地を自動監視（平常時10分／警戒時3分）" else "通知は現在オフです"
@@ -966,6 +993,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> if (currentLiveAlertNotification) "Avisos en vivo • Monitoreo de ubicación actual (10 min / 3 min en alerta)" else "Notificaciones desactivadas actualmente"
                                 AppLanguage.FRENCH -> if (currentLiveAlertNotification) "Alertes en direct • Surveillance de la position (10 min / 3 min en alerte)" else "Notifications actuellement désactivées"
                                 AppLanguage.PORTUGUESE -> if (currentLiveAlertNotification) "Alertas ao vivo • Monitora local atual (10 min / 3 min em alerta)" else "Notificações desativadas no momento"
+                                AppLanguage.RUSSIAN -> if (currentLiveAlertNotification) "Активные оповещения • Мониторинг локации (10 мин / 3 мин при тревоге)" else "Уведомления сейчас отключены"
                             },
                             icon = Icons.Rounded.NotificationsActive,
                             iconBackgroundColor = if (currentLiveAlertNotification) colorScheme.errorContainer else colorScheme.surfaceContainerHighest,
@@ -1013,6 +1041,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Nivel de notificación de alertas"
                                     AppLanguage.FRENCH -> "Niveau de notification d'alerte"
                                     AppLanguage.PORTUGUESE -> "Nível de notificação de alertas"
+                                    AppLanguage.RUSSIAN -> "Уровень уведомлений об угрозах"
                                 },
                                 subtitle = when (currentThreshold) {
                                     AlertNotificationThreshold.ADVISORY_AND_ABOVE -> when (currentLang) {
@@ -1024,6 +1053,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Aviso y superior (Nivel 2+)"
                                         AppLanguage.FRENCH -> "Avis et supérieur (Niveau 2+)"
                                         AppLanguage.PORTUGUESE -> "Aviso e superior (Nível 2+)"
+                                        AppLanguage.RUSSIAN -> "Оповещения и выше (Уровень 2+)"
                                     }
                                     AlertNotificationThreshold.WARNING_AND_ABOVE -> when (currentLang) {
                                         AppLanguage.JAPANESE -> "警報以上（レベル3以上で通知）"
@@ -1034,6 +1064,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Alerta y superior (Nivel 3+)"
                                         AppLanguage.FRENCH -> "Alerte et supérieure (Niveau 3+)"
                                         AppLanguage.PORTUGUESE -> "Alerta e superior (Nível 3+)"
+                                        AppLanguage.RUSSIAN -> "Предупреждения и выше (Уровень 3+)"
                                     }
                                     AlertNotificationThreshold.EMERGENCY_ONLY -> when (currentLang) {
                                         AppLanguage.JAPANESE -> "特別警報・危険のみ（レベル4以上で通知）"
@@ -1044,6 +1075,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Solo emergencias (Nivel 4+)"
                                         AppLanguage.FRENCH -> "Urgences uniquement (Niveau 4+)"
                                         AppLanguage.PORTUGUESE -> "Apenas emergências (Nível 4+)"
+                                        AppLanguage.RUSSIAN -> "Только экстренные (Уровень 4+)"
                                     }
                                     AlertNotificationThreshold.OFF -> when (currentLang) {
                                         AppLanguage.JAPANESE -> "通知オフ"
@@ -1054,6 +1086,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Desactivado"
                                         AppLanguage.FRENCH -> "Désactivé"
                                         AppLanguage.PORTUGUESE -> "Desativado"
+                                        AppLanguage.RUSSIAN -> "Выкл."
                                     }
                                 },
                                 icon = Icons.Rounded.NotificationImportant,
@@ -1084,6 +1117,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Háptica"
                             AppLanguage.FRENCH -> "Retour haptique"
                             AppLanguage.PORTUGUESE -> "Resposta tátil"
+                            AppLanguage.RUSSIAN -> "Тактильный отклик"
                         }
                     ) {
                         // 9. ハプティクス強度
@@ -1097,6 +1131,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Intensidad háptica"
                                 AppLanguage.FRENCH -> "Intensité haptique"
                                 AppLanguage.PORTUGUESE -> "Intensidade tátil"
+                                AppLanguage.RUSSIAN -> "Интенсивность вибрации"
                             },
                             subtitle = currentHapticIntensity.getLabel(currentLang),
                             icon = Icons.Rounded.Vibration,
@@ -1130,6 +1165,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Háptica reactiva al clima"
                                     AppLanguage.FRENCH -> "Haptique réactive à la météo"
                                     AppLanguage.PORTUGUESE -> "Resposta tátil ao clima"
+                                    AppLanguage.RUSSIAN -> "Погодная вибрация"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "雨粒・雷鳴・降雪・突風など天候ごとの固有振動を再生"
@@ -1140,6 +1176,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Reproduce vibraciones de lluvia, trueno, nieve y viento"
                                     AppLanguage.FRENCH -> "Joue des vibrations propres à la pluie, l'orage, la neige et le vent"
                                     AppLanguage.PORTUGUESE -> "Reproduz vibrações de chuva, trovão, neve e vento"
+                                    AppLanguage.RUSSIAN -> "Воспроизводит тактильные эффекты дождя, грома, снега и ветра"
                                 },
                                 icon = Icons.Rounded.Thunderstorm,
                                 iconBackgroundColor = if (currentWeatherHaptics) colorScheme.secondaryContainer else colorScheme.surfaceContainerHighest,
@@ -1179,6 +1216,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Acerca de"
                                 AppLanguage.FRENCH -> "À propos"
                                 AppLanguage.PORTUGUESE -> "Sobre"
+                                AppLanguage.RUSSIAN -> "О приложении"
                             }
                         ) {
                             Android15SettingsCard(
@@ -1253,6 +1291,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Datos meteorológicos y radar"
                             AppLanguage.FRENCH -> "Données météo et radar"
                             AppLanguage.PORTUGUESE -> "Dados meteorológicos e radar"
+                            AppLanguage.RUSSIAN -> "Погодные данные и радар"
                         }
                     ) {
                         // 1. 雨雲レーダー提供元
@@ -1266,6 +1305,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Fuente del radar de precipitaciones"
                                 AppLanguage.FRENCH -> "Source du radar de précipitations"
                                 AppLanguage.PORTUGUESE -> "Fonte do radar de precipitação"
+                                AppLanguage.RUSSIAN -> "Источник радара осадков"
                             },
                             subtitle = currentRadarSourceMode.title(currentLang),
                             icon = Icons.Rounded.Radar,
@@ -1294,6 +1334,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> strings.dataSourcesTitle
                                 AppLanguage.FRENCH -> strings.dataSourcesTitle
                                 AppLanguage.PORTUGUESE -> strings.dataSourcesTitle
+                                AppLanguage.RUSSIAN -> strings.dataSourcesTitle
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "気象庁 (JMA) / Open-Meteo"
@@ -1304,6 +1345,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "JMA (Japón) y Open-Meteo (Global)"
                                 AppLanguage.FRENCH -> "JMA (Japon) et Open-Meteo (Mondial)"
                                 AppLanguage.PORTUGUESE -> "JMA (Japão) e Open-Meteo (Global)"
+                                AppLanguage.RUSSIAN -> "JMA (Япония) и Open-Meteo (Мир)"
                             },
                             icon = Icons.Rounded.CloudQueue,
                             iconBackgroundColor = colorScheme.surfaceContainerHighest,
@@ -1332,6 +1374,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Alertas meteorológicas y de desastres"
                             AppLanguage.FRENCH -> "Alertes météo et catastrophes mondiales"
                             AppLanguage.PORTUGUESE -> "Alertas globais de clima e desastres"
+                            AppLanguage.RUSSIAN -> "Глобальные метеооповещения и бедствия"
                         }
                     ) {
                         // 3. MeteoAlarm 欧州公式気象警報（欧州専用）
@@ -1345,6 +1388,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Alertas oficiales europeas MeteoAlarm"
                                 AppLanguage.FRENCH -> "Alertes européennes officielles MeteoAlarm"
                                 AppLanguage.PORTUGUESE -> "Alertas oficiais europeus MeteoAlarm"
+                                AppLanguage.RUSSIAN -> "Официальные оповещения Европы MeteoAlarm"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "EUMETNET加盟の欧州39カ国の国立気象機関による公式警報（最優先取得）"
@@ -1355,6 +1399,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Avisos oficiales de 39 servicios meteorológicos europeos (EUMETNET - máxima prioridad)"
                                 AppLanguage.FRENCH -> "Alertes officielles de 39 services météo européens (EUMETNET - priorité maximale)"
                                 AppLanguage.PORTUGUESE -> "Alertas oficiais de 39 serviços meteorológicos europeus (EUMETNET - prioridade máxima)"
+                                AppLanguage.RUSSIAN -> "Официальные предупреждения 39 метеослужб Европы (EUMETNET — высший приоритет)"
                             },
                             icon = Icons.Rounded.Warning,
                             iconBackgroundColor = if (currentMeteoAlarmAlerts) colorScheme.secondaryContainer else colorScheme.surfaceContainerHighest,
@@ -1389,6 +1434,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Alertas oficiales de la OMM (Internacional)"
                                 AppLanguage.FRENCH -> "Alertes officielles de l'OMM (International)"
                                 AppLanguage.PORTUGUESE -> "Alertas oficiais da OMM (Internacional)"
+                                AppLanguage.RUSSIAN -> "Официальные оповещения ВМО (Международные)"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "世界190カ国以上の国家気象警報を取得（日本・米国・MeteoAlarm対象国除く）"
@@ -1399,6 +1445,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Alertas meteorológicas oficiales en más de 190 países (excl. JP, EE. UU. y MeteoAlarm)"
                                 AppLanguage.FRENCH -> "Alertes météo officielles dans plus de 190 pays (hors JP, US et MeteoAlarm)"
                                 AppLanguage.PORTUGUESE -> "Alertas meteorológicos oficiais em mais de 190 países (exceto JP, EUA e MeteoAlarm)"
+                                AppLanguage.RUSSIAN -> "Официальные метеопредупреждения в 190+ странах (кроме JP, US и MeteoAlarm)"
                             },
                             icon = Icons.Rounded.Public,
                             iconBackgroundColor = if (currentWmoAlerts) colorScheme.primaryContainer else colorScheme.surfaceContainerHighest,
@@ -1438,6 +1485,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Activar siempre OMM (incl. JP, EE. UU. y MeteoAlarm)"
                                     AppLanguage.FRENCH -> "Toujours activer l'OMM (y compris JP, US et MeteoAlarm)"
                                     AppLanguage.PORTUGUESE -> "Sempre ativar OMM (incl. JP, EUA e MeteoAlarm)"
+                                    AppLanguage.RUSSIAN -> "Всегда включать ВМО (включая JP, US и MeteoAlarm)"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "直接取得（気象庁/NWS/MeteoAlarm）に加えWMO警報も並行取得"
@@ -1448,6 +1496,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Obtiene alertas de la OMM además de los datos directos de JMA / NWS / MeteoAlarm"
                                     AppLanguage.FRENCH -> "Récupère les alertes OMM en plus des données directes JMA / NWS / MeteoAlarm"
                                     AppLanguage.PORTUGUESE -> "Obtém alertas da OMM além dos dados diretos da JMA / NWS / MeteoAlarm"
+                                    AppLanguage.RUSSIAN -> "Получает оповещения ВМО дополнительно к данным JMA / NWS / MeteoAlarm"
                                 },
                                 icon = Icons.Rounded.Sync,
                                 iconBackgroundColor = if (currentWmoAlways) colorScheme.secondaryContainer else colorScheme.surfaceContainerHighest,
@@ -1483,6 +1532,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Alertas globales de desastres GDACS"
                                 AppLanguage.FRENCH -> "Alertes mondiales de catastrophes GDACS"
                                 AppLanguage.PORTUGUESE -> "Alertas globais de desastres GDACS"
+                                AppLanguage.RUSSIAN -> "Глобальные оповещения о бедствиях GDACS"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "重大な全球災害警報を取得して表示"
@@ -1493,6 +1543,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Obtiene y muestra alertas globales de grandes desastres"
                                 AppLanguage.FRENCH -> "Récupère et affiche les alertes mondiales majeures"
                                 AppLanguage.PORTUGUESE -> "Obtém e exibe grandes alertas globais de desastres"
+                                AppLanguage.RUSSIAN -> "Получает и отображает крупные глобальные оповещения о бедствиях"
                             },
                             icon = Icons.Rounded.Public,
                             iconBackgroundColor = if (currentGdacsAlerts) colorScheme.tertiaryContainer else colorScheme.surfaceContainerHighest,
@@ -1528,6 +1579,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Gestión de datos"
                             AppLanguage.FRENCH -> "Gestion des données"
                             AppLanguage.PORTUGUESE -> "Gerenciamento de dados"
+                            AppLanguage.RUSSIAN -> "Управление данными"
                         }
                     ) {
                         // 7. 天候データを今すぐ更新
@@ -1541,6 +1593,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Actualizar datos del clima"
                                 AppLanguage.FRENCH -> "Actualiser les données météo"
                                 AppLanguage.PORTUGUESE -> "Atualizar dados do clima"
+                                AppLanguage.RUSSIAN -> "Обновить данные о погоде"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "最新の気象情報をネットワークから再取得"
@@ -1551,6 +1604,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Obtiene los datos meteorológicos más recientes de la red"
                                 AppLanguage.FRENCH -> "Télécharge les dernières données météo depuis le réseau"
                                 AppLanguage.PORTUGUESE -> "Busca os dados meteorológicos mais recentes da rede"
+                                AppLanguage.RUSSIAN -> "Загрузить актуальные данные из сети"
                             },
                             icon = Icons.Rounded.Refresh,
                             iconBackgroundColor = colorScheme.secondaryContainer,
@@ -1569,6 +1623,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Actualizando datos del clima..."
                                         AppLanguage.FRENCH -> "Actualisation des données météo..."
                                         AppLanguage.PORTUGUESE -> "Atualizando dados do clima..."
+                                        AppLanguage.RUSSIAN -> "Обновление данных о погоде..."
                                     },
                                     Toast.LENGTH_SHORT
                                 ).show()
@@ -1587,6 +1642,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Borra los datos en caché del clima y la ubicación"
                                 AppLanguage.FRENCH -> "Efface les données météo et de position en cache"
                                 AppLanguage.PORTUGUESE -> "Limpa os dados em cache de clima e localização"
+                                AppLanguage.RUSSIAN -> "Очистить кэшированные данные о погоде и локациях"
                             },
                             icon = Icons.Rounded.DeleteSweep,
                             iconBackgroundColor = colorScheme.errorContainer.copy(alpha = 0.7f),
@@ -1615,6 +1671,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Modo de depuración"
                             AppLanguage.FRENCH -> "Mode débogage"
                             AppLanguage.PORTUGUESE -> "Modo de depuração"
+                            AppLanguage.RUSSIAN -> "Режим отладки"
                         }
                     ) {
                         // 0. デバッグ設定の有効化状態（オフにすると非表示化）
@@ -1628,6 +1685,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Ajustes de depuración activados"
                                 AppLanguage.FRENCH -> "Paramètres de débogage activés"
                                 AppLanguage.PORTUGUESE -> "Configurações de depuração ativadas"
+                                AppLanguage.RUSSIAN -> "Настройки отладки включены"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "オフにすると非表示に戻り、再有効化にはバージョン名の連続7回タップが必要です"
@@ -1638,6 +1696,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Desactívalo para ocultarlos hasta pulsar 7 veces seguidas"
                                 AppLanguage.FRENCH -> "Désactivez pour masquer jusqu'à 7 appuis rapides"
                                 AppLanguage.PORTUGUESE -> "Desative para ocultar até tocar 7 vezes rapidamente"
+                                AppLanguage.RUSSIAN -> "Отключите, чтобы скрыть до 7 быстрых нажатий"
                             },
                             icon = Icons.Rounded.BugReport,
                             iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -1664,6 +1723,7 @@ fun SettingsScreen(
                                                     AppLanguage.SPANISH -> "Ajustes de depuración ocultos"
                                                     AppLanguage.FRENCH -> "Paramètres de débogage masqués"
                                                     AppLanguage.PORTUGUESE -> "Configurações de depuração ocultadas"
+                                                    AppLanguage.RUSSIAN -> "Настройки отладки скрыты"
                                                 },
                                                 Toast.LENGTH_SHORT
                                             ).show()
@@ -1687,6 +1747,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "Ajustes de depuración ocultos"
                                         AppLanguage.FRENCH -> "Paramètres de débogage masqués"
                                         AppLanguage.PORTUGUESE -> "Configurações de depuração ocultadas"
+                                        AppLanguage.RUSSIAN -> "Настройки отладки скрыты"
                                     },
                                     Toast.LENGTH_SHORT
                                 ).show()
@@ -1705,6 +1766,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Simuladores"
                             AppLanguage.FRENCH -> "Simulateurs"
                             AppLanguage.PORTUGUESE -> "Simuladores"
+                            AppLanguage.RUSSIAN -> "Симуляторы"
                         }
                     ) {
                         // 1. 天候シミュレーション
@@ -1719,6 +1781,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Previsualiza manualmente efectos de lluvia, nieve y tormenta"
                                 AppLanguage.FRENCH -> "Prévisualiser manuellement pluie, neige et orage"
                                 AppLanguage.PORTUGUESE -> "Pré-visualize manualmente efeitos de chuva, neve e tempestade"
+                                AppLanguage.RUSSIAN -> "Ручной предпросмотр эффектов дождя, снега и грозы"
                             },
                             icon = Icons.Rounded.AutoFixHigh,
                             iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -1749,6 +1812,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Simulador de fases lunares"
                                 AppLanguage.FRENCH -> "Simulateur de phases lunaires"
                                 AppLanguage.PORTUGUESE -> "Simulador de fases da lua"
+                                AppLanguage.RUSSIAN -> "Симулятор фаз Луны"
                             },
                             subtitle = if (simulatedMoonInfo != null) {
                                 when (currentLang) {
@@ -1760,6 +1824,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Simulando: ${simulatedMoonInfo.phaseName} (Edad ${simulatedMoonInfo.ageDays}d · ${simulatedMoonInfo.illumination}%)"
                                     AppLanguage.FRENCH -> "Simulation : ${simulatedMoonInfo.phaseName} (Âge ${simulatedMoonInfo.ageDays} j · ${simulatedMoonInfo.illumination}%)"
                                     AppLanguage.PORTUGUESE -> "Simulando: ${simulatedMoonInfo.phaseName} (Idade ${simulatedMoonInfo.ageDays}d · ${simulatedMoonInfo.illumination}%)"
+                                    AppLanguage.RUSSIAN -> "Симуляция: ${simulatedMoonInfo.phaseName} (Возраст ${simulatedMoonInfo.ageDays} дн. · ${simulatedMoonInfo.illumination}%)"
                                 }
                             } else {
                                 when (currentLang) {
@@ -1771,6 +1836,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Previsualiza luna nueva, creciente, cuarto y llena en tiempo real"
                                     AppLanguage.FRENCH -> "Prévisualiser nouvelle lune, croissant, quartier et pleine lune"
                                     AppLanguage.PORTUGUESE -> "Pré-visualize lua nova, crescente, quarto e cheia em tempo real"
+                                    AppLanguage.RUSSIAN -> "Предпросмотр новолуния, четвертей и полнолуния в реальном времени"
                                 }
                             },
                             icon = Icons.Rounded.NightsStay,
@@ -1815,6 +1881,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Reabrir pantalla de configuración"
                                 AppLanguage.FRENCH -> "Rouvrir l'écran de configuration"
                                 AppLanguage.PORTUGUESE -> "Reabrir tela de configuração"
+                                AppLanguage.RUSSIAN -> "Открыть экран первоначальной настройки"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "初回起動時の「ようこそ」画面と登録フローを体験"
@@ -1825,6 +1892,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Prueba la pantalla de bienvenida y configuración de ubicación"
                                 AppLanguage.FRENCH -> "Tester l'accueil initial et la configuration de position"
                                 AppLanguage.PORTUGUESE -> "Experimente a tela de boas-vindas e configuração de local"
+                                AppLanguage.RUSSIAN -> "Повторить экран приветствия и настройки местоположения"
                             },
                             icon = Icons.Rounded.Celebration,
                             iconBackgroundColor = colorScheme.secondaryContainer,
@@ -1856,6 +1924,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Opciones de depuración del radar"
                             AppLanguage.FRENCH -> "Options de débogage du radar"
                             AppLanguage.PORTUGUESE -> "Opções de depuração do radar"
+                            AppLanguage.RUSSIAN -> "Отладка радара"
                         }
                     ) {
                         // 4. 雨雲レーダー ズーム倍率表示
@@ -1869,6 +1938,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Indicador de zoom del radar"
                                 AppLanguage.FRENCH -> "Indicateur de zoom du radar"
                                 AppLanguage.PORTUGUESE -> "Indicador de zoom do radar"
+                                AppLanguage.RUSSIAN -> "Индикатор масштаба радара"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "雨雲レーダー上に現在のズーム倍率バッジを表示"
@@ -1879,6 +1949,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Muestra la insignia de nivel de zoom en el mapa del radar"
                                 AppLanguage.FRENCH -> "Affiche le niveau de zoom en temps réel sur la carte radar"
                                 AppLanguage.PORTUGUESE -> "Exibe o selo de nível de zoom em tempo real no mapa do radar"
+                                AppLanguage.RUSSIAN -> "Показывает значок уровня масштаба на карте радара"
                             },
                             icon = Icons.Rounded.ZoomIn,
                             iconBackgroundColor = colorScheme.secondaryContainer,
@@ -1913,6 +1984,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Insignia de fuente del radar"
                                 AppLanguage.FRENCH -> "Badge de source du radar"
                                 AppLanguage.PORTUGUESE -> "Selo de fonte do radar"
+                                AppLanguage.RUSSIAN -> "Значок источника радара"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "メイン画面の雨雲レーダー右下に出典名を表示"
@@ -1923,6 +1995,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Muestra la fuente (JMA / NEXRAD / RainViewer) en la tarjeta principal"
                                 AppLanguage.FRENCH -> "Affiche le fournisseur (JMA / NEXRAD / RainViewer) sur la carte principale"
                                 AppLanguage.PORTUGUESE -> "Exibe o provedor (JMA / NEXRAD / RainViewer) no cartão principal"
+                                AppLanguage.RUSSIAN -> "Показывает провайдера (JMA / NEXRAD / RainViewer) на главной карточке"
                             },
                             icon = Icons.Rounded.Layers,
                             iconBackgroundColor = colorScheme.primaryContainer,
@@ -1957,6 +2030,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Mostrar todas las capas de radar de Japón"
                                 AppLanguage.FRENCH -> "Afficher toutes les couches radar du Japon"
                                 AppLanguage.PORTUGUESE -> "Exibir todas as camadas de radar do Japão"
+                                AppLanguage.RUSSIAN -> "Показать все слои радара Японии"
                             },
                             subtitle = when (currentLang) {
                                 AppLanguage.JAPANESE -> "雨雲・雷・キキクル・雪以外の追加レイヤー（ひまわり・天気・今後の雨など）をレーダーに表示"
@@ -1967,6 +2041,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Muestra capas adicionales (satélite Himawari, clima, lluvia esperada, etc.) en el radar"
                                 AppLanguage.FRENCH -> "Affiche les couches supplémentaires (satellite Himawari, météo, pluie prévue, etc.)"
                                 AppLanguage.PORTUGUESE -> "Exibe camadas adicionais (satélite Himawari, clima, chuva prevista, etc.) no radar"
+                                AppLanguage.RUSSIAN -> "Отображает дополнительные слои (спутник Himawari, погода, прогноз дождя и др.)"
                             },
                             icon = Icons.Rounded.Layers,
                             iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -2003,6 +2078,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Pruebas de alertas y notificaciones"
                                 AppLanguage.FRENCH -> "Tests d'alertes et notifications"
                                 AppLanguage.PORTUGUESE -> "Testes de alertas e notificações"
+                                AppLanguage.RUSSIAN -> "Тестирование оповещений и уведомлений"
                             }
                         ) {
                             Android15SettingsCard(
@@ -2015,6 +2091,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar Kikikuru"
                                     AppLanguage.FRENCH -> "Tester Kikikuru"
                                     AppLanguage.PORTUGUESE -> "Testar Kikikuru"
+                                    AppLanguage.RUSSIAN -> "Тест Kikikuru"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "メイン画面にキキクル警戒レベルカードをテスト表示"
@@ -2025,6 +2102,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Muestra una tarjeta de alerta Kikikuru de prueba en la pantalla principal"
                                     AppLanguage.FRENCH -> "Affiche une carte d'alerte Kikikuru de test sur l'écran principal"
                                     AppLanguage.PORTUGUESE -> "Exibe um cartão de alerta Kikikuru de teste na tela principal"
+                                    AppLanguage.RUSSIAN -> "Показывает тестовую карточку Kikikuru на главном экране"
                                 },
                                 icon = Icons.Rounded.Warning,
                                 iconBackgroundColor = colorScheme.errorContainer,
@@ -2054,6 +2132,7 @@ fun SettingsScreen(
                                                 AppLanguage.SPANISH -> "Prueba de Kikikuru activada (tarjeta visible en inicio)"
                                                 AppLanguage.FRENCH -> "Test Kikikuru activé (carte affichée sur l'accueil)"
                                                 AppLanguage.PORTUGUESE -> "Teste Kikikuru ativado (exibindo cartão na tela inicial)"
+                                                AppLanguage.RUSSIAN -> "Тест Kikikuru включён (карточка показана на главном экране)"
                                             },
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -2070,6 +2149,7 @@ fun SettingsScreen(
                                                 AppLanguage.SPANISH -> "Prueba de Kikikuru desactivada"
                                                 AppLanguage.FRENCH -> "Test Kikikuru désactivé"
                                                 AppLanguage.PORTUGUESE -> "Teste Kikikuru desativado"
+                                                AppLanguage.RUSSIAN -> "Тест Kikikuru отключён"
                                             },
                                             Toast.LENGTH_SHORT
                                         ).show()
@@ -2088,6 +2168,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar alerta meteorológica NWS (EE. UU.)"
                                     AppLanguage.FRENCH -> "Tester l'alerte météo NWS (États-Unis)"
                                     AppLanguage.PORTUGUESE -> "Testar alerta meteorológico NWS (EUA)"
+                                    AppLanguage.RUSSIAN -> "Тест метеооповещений NWS (США)"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "メイン画面に竜巻警報・鉄砲水注意報カードをテスト表示"
@@ -2098,6 +2179,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Muestra aviso de tornado y vigilancia de inundaciones en la pantalla principal"
                                     AppLanguage.FRENCH -> "Affiche une alerte tornade et vigilance crue éclair sur l'écran principal"
                                     AppLanguage.PORTUGUESE -> "Exibe alerta de tornado e aviso de enchente na tela principal"
+                                    AppLanguage.RUSSIAN -> "Показывает предупреждение о торнадо и паводке на главном экране"
                                 },
                                 icon = Icons.Rounded.CrisisAlert,
                                 iconBackgroundColor = colorScheme.errorContainer,
@@ -2125,6 +2207,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> if (next) "Alertas de prueba NWS activadas" else "Alertas de prueba NWS desactivadas"
                                             AppLanguage.FRENCH -> if (next) "Alertes de test NWS activées" else "Alertes de test NWS désactivées"
                                             AppLanguage.PORTUGUESE -> if (next) "Alertas de teste NWS ativados" else "Alertas de teste NWS desativados"
+                                            AppLanguage.RUSSIAN -> if (next) "Тестовые оповещения NWS включены" else "Тестовые оповещения NWS отключены"
                                         },
                                         Toast.LENGTH_SHORT
                                     ).show()
@@ -2142,6 +2225,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar alerta global GDACS"
                                     AppLanguage.FRENCH -> "Tester l'alerte mondiale GDACS"
                                     AppLanguage.PORTUGUESE -> "Testar alerta global GDACS"
+                                    AppLanguage.RUSSIAN -> "Тест глобальных оповещений GDACS"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "メイン画面にスーパータイフーン・大地震カードをテスト表示"
@@ -2152,6 +2236,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Muestra supertifón y terremoto mayor en la pantalla principal"
                                     AppLanguage.FRENCH -> "Affiche super typhon et séisme majeur sur l'écran principal"
                                     AppLanguage.PORTUGUESE -> "Exibe supertufão e grande terremoto na tela principal"
+                                    AppLanguage.RUSSIAN -> "Показывает супертайфун и сильное землетрясение на главном экране"
                                 },
                                 icon = Icons.Rounded.Public,
                                 iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -2179,6 +2264,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> if (next) "Alertas de prueba GDACS activadas" else "Alertas de prueba GDACS desactivadas"
                                             AppLanguage.FRENCH -> if (next) "Alertes de test GDACS activées" else "Alertes de test GDACS désactivées"
                                             AppLanguage.PORTUGUESE -> if (next) "Alertas de teste GDACS ativados" else "Alertas de teste GDACS desativados"
+                                            AppLanguage.RUSSIAN -> if (next) "Тестовые оповещения GDACS включены" else "Тестовые оповещения GDACS отключены"
                                         },
                                         Toast.LENGTH_SHORT
                                     ).show()
@@ -2196,6 +2282,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar alertas meteorológicas OMM"
                                     AppLanguage.FRENCH -> "Tester les alertes météo OMM"
                                     AppLanguage.PORTUGUESE -> "Testar alertas meteorológicos OMM"
+                                    AppLanguage.RUSSIAN -> "Тест метеооповещений ВМО"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "特別警戒(赤)・警戒(橙)・注意(黄)のWMO警報カードをテスト表示"
@@ -2206,6 +2293,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Muestra alertas de ejemplo OMM (rojo, naranja, amarillo)"
                                     AppLanguage.FRENCH -> "Affiche des exemples d'alertes OMM (rouge, orange, jaune)"
                                     AppLanguage.PORTUGUESE -> "Exibe alertas de exemplo da OMM (vermelho, laranja, amarelo)"
+                                    AppLanguage.RUSSIAN -> "Показывает примеры оповещений ВМО (красный, оранжевый, жёлтый)"
                                 },
                                 icon = Icons.Rounded.Public,
                                 iconBackgroundColor = colorScheme.primaryContainer,
@@ -2233,6 +2321,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> if (next) "Alertas de prueba OMM activadas" else "Alertas de prueba OMM desactivadas"
                                             AppLanguage.FRENCH -> if (next) "Alertes de test OMM activées" else "Alertes de test OMM désactivées"
                                             AppLanguage.PORTUGUESE -> if (next) "Alertas de teste OMM ativados" else "Alertas de teste OMM desativados"
+                                            AppLanguage.RUSSIAN -> if (next) "Тестовые оповещения ВМО включены" else "Тестовые оповещения ВМО отключены"
                                         },
                                         Toast.LENGTH_SHORT
                                     ).show()
@@ -2250,6 +2339,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar alertas europeas MeteoAlarm"
                                     AppLanguage.FRENCH -> "Tester les alertes européennes MeteoAlarm"
                                     AppLanguage.PORTUGUESE -> "Testar alertas europeus MeteoAlarm"
+                                    AppLanguage.RUSSIAN -> "Тест европейских оповещений MeteoAlarm"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "特別警戒(雪崩)・警戒(暴風)・注意(大雨)の欧州警報カードをテスト表示"
@@ -2260,6 +2350,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Muestra alertas europeas de ejemplo (avalancha, viento, lluvia)"
                                     AppLanguage.FRENCH -> "Affiche des exemples d'alertes européennes (avalanche, vent, pluie)"
                                     AppLanguage.PORTUGUESE -> "Exibe alertas europeus de exemplo (avalanche, vento, chuva)"
+                                    AppLanguage.RUSSIAN -> "Показывает примеры европейских оповещений (лавина, ветер, дождь)"
                                 },
                                 icon = Icons.Rounded.Warning,
                                 iconBackgroundColor = colorScheme.secondaryContainer,
@@ -2287,6 +2378,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> if (next) "Alertas de prueba MeteoAlarm activadas" else "Alertas de prueba MeteoAlarm desactivadas"
                                             AppLanguage.FRENCH -> if (next) "Alertes de test MeteoAlarm activées" else "Alertes de test MeteoAlarm désactivées"
                                             AppLanguage.PORTUGUESE -> if (next) "Alertas de teste MeteoAlarm ativados" else "Alertas de teste MeteoAlarm desativados"
+                                            AppLanguage.RUSSIAN -> if (next) "Тестовые оповещения MeteoAlarm включены" else "Тестовые оповещения MeteoAlarm отключены"
                                         },
                                         Toast.LENGTH_SHORT
                                     ).show()
@@ -2304,6 +2396,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "ON: Lluvia esta noche (21:00, 80%)"
                                     AppLanguage.FRENCH -> "ON : Pluie ce soir (21h00, 80 %)"
                                     AppLanguage.PORTUGUESE -> "ON: Chuva hoje à noite (21:00, 80%)"
+                                    AppLanguage.RUSSIAN -> "ВКЛ.: Дождь сегодня вечером (21:00, 80%)"
                                 }
                                 RainStatus.RAIN_APPROACHING -> when (currentLang) {
                                     AppLanguage.JAPANESE -> "ON: 接近中 (あと20分)"
@@ -2314,6 +2407,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "ON: Acercándose (20 min)"
                                     AppLanguage.FRENCH -> "ON : En approche (20 min)"
                                     AppLanguage.PORTUGUESE -> "ON: Aproximando-se (20 min)"
+                                    AppLanguage.RUSSIAN -> "ВКЛ.: Приближается (20 мин)"
                                 }
                                 RainStatus.RAINING -> when (currentLang) {
                                     AppLanguage.JAPANESE -> "ON: 降雨中 (あと35分)"
@@ -2324,6 +2418,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "ON: Lloviendo (35 min)"
                                     AppLanguage.FRENCH -> "ON : Pluie en cours (35 min)"
                                     AppLanguage.PORTUGUESE -> "ON: Chovendo (35 min)"
+                                    AppLanguage.RUSSIAN -> "ВКЛ.: Идёт дождь (35 мин)"
                                 }
                                 else -> when (currentLang) {
                                     AppLanguage.JAPANESE -> "OFF (実データ表示)"
@@ -2334,6 +2429,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "OFF (Datos reales)"
                                     AppLanguage.FRENCH -> "OFF (Données réelles)"
                                     AppLanguage.PORTUGUESE -> "OFF (Dados reais)"
+                                    AppLanguage.RUSSIAN -> "ВЫКЛ. (Реальные данные)"
                                 }
                             }
                             Android15SettingsCard(
@@ -2346,6 +2442,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Probar cuenta regresiva de lluvia en vivo"
                                     AppLanguage.FRENCH -> "Tester le compte à rebours pluie en direct"
                                     AppLanguage.PORTUGUESE -> "Testar contagem regressiva de chuva ao vivo"
+                                    AppLanguage.RUSSIAN -> "Тест таймера дождя в реальном времени"
                                 },
                                 subtitle = when (currentLang) {
                                     AppLanguage.JAPANESE -> "現在: $demoStateLabel / タップで切替 (今夜の雨 → 接近中 → 降雨中 → 実データ)"
@@ -2356,6 +2453,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Actual: $demoStateLabel / Toca para cambiar"
                                     AppLanguage.FRENCH -> "Actuel : $demoStateLabel / Appuyer pour changer"
                                     AppLanguage.PORTUGUESE -> "Atual: $demoStateLabel / Toque para alternar"
+                                    AppLanguage.RUSSIAN -> "Текущий: $demoStateLabel / Нажмите для смены"
                                 },
                                 icon = Icons.Rounded.WaterDrop,
                                 iconBackgroundColor = colorScheme.primaryContainer,
@@ -2381,6 +2479,7 @@ fun SettingsScreen(
                                                         AppLanguage.SPANISH -> "Prueba de lluvia desactivada (datos reales)"
                                                         AppLanguage.FRENCH -> "Test de prévision pluie désactivé (données réelles)"
                                                         AppLanguage.PORTUGUESE -> "Teste de previsão de chuva desativado (dados reais)"
+                                                        AppLanguage.RUSSIAN -> "Тест прогноза дождя выключен (реальные данные)"
                                                     },
                                                     Toast.LENGTH_SHORT
                                                 ).show()
@@ -2407,6 +2506,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Vista previa: Lluvia esta noche (21:00, 80%)"
                                             AppLanguage.FRENCH -> "Aperçu test : Pluie ce soir (21h00, 80 %)"
                                             AppLanguage.PORTUGUESE -> "Prévia de teste: Chuva hoje à noite (21:00, 80%)"
+                                            AppLanguage.RUSSIAN -> "Тест: Дождь сегодня вечером (21:00, 80%)"
                                         }
                                         RainStatus.RAIN_APPROACHING -> when (currentLang) {
                                             AppLanguage.JAPANESE -> "テスト表示: 雨雲接近中 (あと20分)"
@@ -2417,6 +2517,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Vista previa: Lluvia acercándose (20 min)"
                                             AppLanguage.FRENCH -> "Aperçu test : Pluie en approche (20 min)"
                                             AppLanguage.PORTUGUESE -> "Prévia de teste: Chuva se aproximando (20 min)"
+                                            AppLanguage.RUSSIAN -> "Тест: Приближается дождь (20 мин)"
                                         }
                                         RainStatus.RAINING -> when (currentLang) {
                                             AppLanguage.JAPANESE -> "テスト表示: 降雨中 (あと35分)"
@@ -2427,6 +2528,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Vista previa: Lloviendo (35 min)"
                                             AppLanguage.FRENCH -> "Aperçu test : Pluie en cours (35 min)"
                                             AppLanguage.PORTUGUESE -> "Prévia de teste: Chovendo (35 min)"
+                                            AppLanguage.RUSSIAN -> "Тест: Идёт дождь (35 мин)"
                                         }
                                         else -> when (currentLang) {
                                             AppLanguage.JAPANESE -> "雨雲予測テストをOFFにしました（実データ表示）"
@@ -2437,6 +2539,7 @@ fun SettingsScreen(
                                             AppLanguage.SPANISH -> "Prueba de lluvia desactivada (datos reales)"
                                             AppLanguage.FRENCH -> "Test de prévision pluie désactivé (données réelles)"
                                             AppLanguage.PORTUGUESE -> "Teste de previsão de chuva desativado (dados reais)"
+                                            AppLanguage.RUSSIAN -> "Тест прогноза дождя выключен (реальные данные)"
                                         }
                                     }
                                     Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show()
@@ -2456,6 +2559,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Vistas previas de UI"
                             AppLanguage.FRENCH -> "Aperçus d'interface"
                             AppLanguage.PORTUGUESE -> "Prévias de UI"
+                            AppLanguage.RUSSIAN -> "Предпросмотр интерфейса"
                         }
                     ) {
                         var showCardsPreview by rememberSaveable { mutableStateOf(false) }
@@ -2469,6 +2573,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Vista previa de tarjetas de alerta"
                                 AppLanguage.FRENCH -> "Aperçu des cartes d'alerte météo"
                                 AppLanguage.PORTUGUESE -> "Prévia dos cartões de alerta"
+                                AppLanguage.RUSSIAN -> "Предпросмотр карточек оповещений"
                             },
                             subtitle = if (showCardsPreview) {
                                 when (currentLang) {
@@ -2480,6 +2585,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Toca para contraer"
                                     AppLanguage.FRENCH -> "Appuyez pour réduire"
                                     AppLanguage.PORTUGUESE -> "Toque para recolher"
+                                    AppLanguage.RUSSIAN -> "Нажмите, чтобы свернуть"
                                 }
                             } else {
                                 when (currentLang) {
@@ -2491,6 +2597,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "Toca para ver todas las tarjetas"
                                     AppLanguage.FRENCH -> "Appuyez pour afficher toutes les cartes"
                                     AppLanguage.PORTUGUESE -> "Toque para visualizar todos os cartões"
+                                    AppLanguage.RUSSIAN -> "Нажмите для просмотра всех карточек"
                                 }
                             },
                             icon = Icons.Rounded.NotificationsActive,
@@ -2528,6 +2635,7 @@ fun SettingsScreen(
                                     AppLanguage.SPANISH -> "◆ Tarjetas de nivel de alerta Kikikuru (12SidedShape)"
                                     AppLanguage.FRENCH -> "◆ Cartes de niveau d'alerte Kikikuru (12SidedShape)"
                                     AppLanguage.PORTUGUESE -> "◆ Cartões de nível de alerta Kikikuru (12SidedShape)"
+                                    AppLanguage.RUSSIAN -> "◆ Карточки уровней опасности Kikikuru (12SidedShape)"
                                 }
                                 Text(
                                     text = previewTitle,
@@ -2563,6 +2671,7 @@ fun SettingsScreen(
                                         AppLanguage.SPANISH -> "◆ Tarjetas de alertas y avisos"
                                         AppLanguage.FRENCH -> "◆ Cartes d'alertes et vigilances"
                                         AppLanguage.PORTUGUESE -> "◆ Cartões de alertas e avisos"
+                                        AppLanguage.RUSSIAN -> "◆ Карточки предупреждений и оповещений"
                                     },
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
@@ -2652,6 +2761,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Tema, cristal y formas"
                                 AppLanguage.FRENCH -> "Thème, verre et formes"
                                 AppLanguage.PORTUGUESE -> "Tema, vidro e formas"
+                                AppLanguage.RUSSIAN -> "Тема, стекло и формы"
                             }
                             SettingsPaneCategory.GENERAL -> "${currentLang.displayName} • ${if (currentUnit == TemperatureUnit.CELSIUS) "°C" else "°F"}"
                             SettingsPaneCategory.SOURCES -> when (currentLang) {
@@ -2663,6 +2773,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Radar, alertas globales y caché"
                                 AppLanguage.FRENCH -> "Radar, alertes mondiales et cache"
                                 AppLanguage.PORTUGUESE -> "Radar, alertas globais e cache"
+                                AppLanguage.RUSSIAN -> "Радар, оповещения и кэш"
                             }
                             SettingsPaneCategory.APP_INFO -> "Ver $versionName"
                             SettingsPaneCategory.DEBUG -> when (currentLang) {
@@ -2674,6 +2785,7 @@ fun SettingsScreen(
                                 AppLanguage.SPANISH -> "Simulación y vistas previas"
                                 AppLanguage.FRENCH -> "Simulation et aperçus"
                                 AppLanguage.PORTUGUESE -> "Simulação e prévias"
+                                AppLanguage.RUSSIAN -> "Симуляция и предпросмотр"
                             }
                         }
                     }
@@ -3007,6 +3119,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Celsius (°C)"
                     AppLanguage.FRENCH -> "Celsius (°C)"
                     AppLanguage.PORTUGUESE -> "Celsius (°C)"
+                    AppLanguage.RUSSIAN -> "Цельсий (°C)"
                 }
                 val fahrenheitText = when (currentLang) {
                     AppLanguage.JAPANESE -> "華氏 (°F)"
@@ -3017,6 +3130,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Fahrenheit (°F)"
                     AppLanguage.FRENCH -> "Fahrenheit (°F)"
                     AppLanguage.PORTUGUESE -> "Fahrenheit (°F)"
+                    AppLanguage.RUSSIAN -> "Фаренгейт (°F)"
                 }
                 SingleChoiceDialog(
                     title = strings.tempUnitTitle,
@@ -3048,6 +3162,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Seguir el idioma (Recomendado)"
                     AppLanguage.FRENCH -> "Selon la langue (Recommandé)"
                     AppLanguage.PORTUGUESE -> "Seguir idioma (Recomendado)"
+                    AppLanguage.RUSSIAN -> "По языку (Рекомендуется)"
                 }
                 val msText = when (currentLang) {
                     AppLanguage.JAPANESE -> "メートル毎秒 (m/s)"
@@ -3058,6 +3173,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Metros por segundo (m/s)"
                     AppLanguage.FRENCH -> "Mètres par seconde (m/s)"
                     AppLanguage.PORTUGUESE -> "Metros por segundo (m/s)"
+                    AppLanguage.RUSSIAN -> "Метры в секунду (m/s)"
                 }
                 val kmhText = when (currentLang) {
                     AppLanguage.JAPANESE -> "キロメートル毎時 (km/h)"
@@ -3068,6 +3184,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Kilómetros por hora (km/h)"
                     AppLanguage.FRENCH -> "Kilomètres par heure (km/h)"
                     AppLanguage.PORTUGUESE -> "Quilômetros por hora (km/h)"
+                    AppLanguage.RUSSIAN -> "Километры в час (km/h)"
                 }
                 val mphText = when (currentLang) {
                     AppLanguage.JAPANESE -> "マイル毎時 (mph)"
@@ -3078,6 +3195,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Millas por hora (mph)"
                     AppLanguage.FRENCH -> "Milles par heure (mph)"
                     AppLanguage.PORTUGUESE -> "Milhas por hora (mph)"
+                    AppLanguage.RUSSIAN -> "Мили в час (mph)"
                 }
                 SingleChoiceDialog(
                     title = strings.windSpeedUnitTitle,
@@ -3109,6 +3227,7 @@ fun SettingsScreen(
                         AppLanguage.SPANISH -> "Intensidad háptica"
                         AppLanguage.FRENCH -> "Intensité haptique"
                         AppLanguage.PORTUGUESE -> "Intensidade tátil"
+                        AppLanguage.RUSSIAN -> "Интенсивность вибрации"
                     },
                     options = HapticIntensity.entries.map { it to it.getLabel(currentLang) },
                     selectedOption = currentHapticIntensity,
@@ -3137,6 +3256,7 @@ fun SettingsScreen(
                         AppLanguage.SPANISH -> "Frecuencia de actualización"
                         AppLanguage.FRENCH -> "Fréquence de mise à jour"
                         AppLanguage.PORTUGUESE -> "Frequência de atualização"
+                        AppLanguage.RUSSIAN -> "Частота обновления"
                     },
                     options = WeatherUpdateInterval.entries.map { interval ->
                         interval to interval.getLabel(currentLang)
@@ -3154,6 +3274,7 @@ fun SettingsScreen(
                             AppLanguage.SPANISH -> "Frecuencia de actualización establecida en «${it.getLabel(currentLang)}»"
                             AppLanguage.FRENCH -> "Fréquence de mise à jour réglée sur « ${it.getLabel(currentLang)} »"
                             AppLanguage.PORTUGUESE -> "Frequência de atualização definida para «${it.getLabel(currentLang)}»"
+                            AppLanguage.RUSSIAN -> "Частота обновления: «${it.getLabel(currentLang)}»"
                         }
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                     },
@@ -3173,6 +3294,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Aviso y superior (Nivel 2+)"
                     AppLanguage.FRENCH -> "Avis et supérieur (Niveau 2+)"
                     AppLanguage.PORTUGUESE -> "Aviso e superior (Nível 2+)"
+                    AppLanguage.RUSSIAN -> "Оповещения и выше (Уровень 2+)"
                 }
                 val warningText = when (currentLang) {
                     AppLanguage.JAPANESE -> "警報以上（レベル3以上）"
@@ -3183,6 +3305,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Alerta y superior (Nivel 3+)"
                     AppLanguage.FRENCH -> "Alerte et supérieure (Niveau 3+)"
                     AppLanguage.PORTUGUESE -> "Alerta e superior (Nível 3+)"
+                    AppLanguage.RUSSIAN -> "Предупреждения и выше (Уровень 3+)"
                 }
                 val emergencyText = when (currentLang) {
                     AppLanguage.JAPANESE -> "特別警報・危険のみ（レベル4以上）"
@@ -3193,6 +3316,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Solo emergencias (Nivel 4+)"
                     AppLanguage.FRENCH -> "Urgences uniquement (Niveau 4+)"
                     AppLanguage.PORTUGUESE -> "Apenas emergências (Nível 4+)"
+                    AppLanguage.RUSSIAN -> "Только экстренные (Уровень 4+)"
                 }
                 val offText = when (currentLang) {
                     AppLanguage.JAPANESE -> "通知オフ"
@@ -3203,6 +3327,7 @@ fun SettingsScreen(
                     AppLanguage.SPANISH -> "Desactivado"
                     AppLanguage.FRENCH -> "Désactivé"
                     AppLanguage.PORTUGUESE -> "Desativado"
+                    AppLanguage.RUSSIAN -> "Выкл."
                 }
 
                 SingleChoiceDialog(
@@ -3215,6 +3340,7 @@ fun SettingsScreen(
                         AppLanguage.SPANISH -> "Nivel de notificación de alertas"
                         AppLanguage.FRENCH -> "Niveau de notification d'alerte"
                         AppLanguage.PORTUGUESE -> "Nível de notificação de alertas"
+                        AppLanguage.RUSSIAN -> "Уровень уведомлений об угрозах"
                     },
                     options = listOf(
                         AlertNotificationThreshold.ADVISORY_AND_ABOVE to advisoryText,
@@ -3292,6 +3418,7 @@ fun SettingsScreen(
                         AppLanguage.SPANISH -> "Fuente del radar de precipitaciones"
                         AppLanguage.FRENCH -> "Source du radar de précipitations"
                         AppLanguage.PORTUGUESE -> "Fonte do radar de precipitação"
+                        AppLanguage.RUSSIAN -> "Источник радара осадков"
                     },
                     options = radarSourceOptions,
                     selectedOption = currentRadarSourceMode,
@@ -3319,6 +3446,7 @@ fun SettingsScreen(
                         AppLanguage.SPANISH -> "Borrar"
                         AppLanguage.FRENCH -> "Effacer"
                         AppLanguage.PORTUGUESE -> "Limpar"
+                        AppLanguage.RUSSIAN -> "Очистить"
                     },
                     cancelText = strings.cancel,
                     onConfirm = {
@@ -3465,6 +3593,7 @@ private fun DarkModeToggleSection(
                 AppLanguage.SPANISH -> "Tema oscuro"
                 AppLanguage.FRENCH -> "Thème sombre"
                 AppLanguage.PORTUGUESE -> "Tema escuro"
+                AppLanguage.RUSSIAN -> "Тёмная тема"
             },
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
@@ -3484,6 +3613,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Seguir el clima"
                     AppLanguage.FRENCH -> "Suivre la météo"
                     AppLanguage.PORTUGUESE -> "Seguir o clima"
+                    AppLanguage.RUSSIAN -> "По погоде"
                 },
                 subtitle = when (language) {
                     AppLanguage.JAPANESE -> "日の出・日の入りの時間帯に連動"
@@ -3494,6 +3624,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Se adapta al amanecer y atardecer"
                     AppLanguage.FRENCH -> "S'adapte au lever et coucher du soleil"
                     AppLanguage.PORTUGUESE -> "Adapta-se ao nascer e pôr do sol"
+                    AppLanguage.RUSSIAN -> "Подстраивается под восход и закат"
                 },
                 icon = Icons.Rounded.WbSunny,
                 iconBackgroundColor = colorScheme.primaryContainer,
@@ -3528,6 +3659,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Seguir al sistema"
                     AppLanguage.FRENCH -> "Suivre le système"
                     AppLanguage.PORTUGUESE -> "Seguir o sistema"
+                    AppLanguage.RUSSIAN -> "Как в системе"
                 },
                 subtitle = when (language) {
                     AppLanguage.JAPANESE -> "端末のダークモード設定に連動"
@@ -3538,6 +3670,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Coincide con el tema del dispositivo"
                     AppLanguage.FRENCH -> "Correspond au thème système de l'appareil"
                     AppLanguage.PORTUGUESE -> "Combina com o tema do sistema do dispositivo"
+                    AppLanguage.RUSSIAN -> "Соответствует системной теме устройства"
                 },
                 icon = Icons.Rounded.Smartphone,
                 iconBackgroundColor = colorScheme.secondaryContainer,
@@ -3572,6 +3705,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Siempre modo oscuro"
                     AppLanguage.FRENCH -> "Toujours en mode sombre"
                     AppLanguage.PORTUGUESE -> "Sempre modo escuro"
+                    AppLanguage.RUSSIAN -> "Всегда тёмная тема"
                 },
                 subtitle = when (language) {
                     AppLanguage.JAPANESE -> "オフで常にライトモード"
@@ -3582,6 +3716,7 @@ private fun DarkModeToggleSection(
                     AppLanguage.SPANISH -> "Desactivado para siempre modo claro"
                     AppLanguage.FRENCH -> "Désactivé pour toujours en mode clair"
                     AppLanguage.PORTUGUESE -> "Desativado para sempre modo claro"
+                    AppLanguage.RUSSIAN -> "Выкл. — всегда светлая тема"
                 },
                 icon = Icons.Rounded.DarkMode,
                 iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -3641,6 +3776,7 @@ private fun VisualEffectsSettingsSection(
                     AppLanguage.SPANISH -> "Efectos visuales"
                     AppLanguage.FRENCH -> "Effets visuels"
                     AppLanguage.PORTUGUESE -> "Efeitos visuais"
+                    AppLanguage.RUSSIAN -> "Визуальные эффекты"
                 },
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
@@ -3659,6 +3795,7 @@ private fun VisualEffectsSettingsSection(
                         AppLanguage.SPANISH -> "Efecto de cristal esmerilado"
                         AppLanguage.FRENCH -> "Effet verre dépoli"
                         AppLanguage.PORTUGUESE -> "Efeito vidro fosco"
+                        AppLanguage.RUSSIAN -> "Эффект матового стекла"
                     },
                     subtitle = when (language) {
                         AppLanguage.JAPANESE -> "カードやタイルの背景に半透明すりガラスぼかしを適用"
@@ -3669,6 +3806,7 @@ private fun VisualEffectsSettingsSection(
                         AppLanguage.SPANISH -> "Desenfoque óptico translúcido en las tarjetas"
                         AppLanguage.FRENCH -> "Flou optique translucide sur les cartes"
                         AppLanguage.PORTUGUESE -> "Desfoque óptico translúcido nos cartões"
+                        AppLanguage.RUSSIAN -> "Полупрозрачное оптическое размытие карточек"
                     },
                     icon = Icons.Rounded.BlurOn,
                     iconBackgroundColor = colorScheme.primaryContainer,
@@ -3707,6 +3845,7 @@ private fun VisualEffectsSettingsSection(
                     AppLanguage.SPANISH -> "Estilo de colores de acento"
                     AppLanguage.FRENCH -> "Style de couleurs d'accent"
                     AppLanguage.PORTUGUESE -> "Estilo de cores de destaque"
+                    AppLanguage.RUSSIAN -> "Стиль акцентных цветов"
                 },
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
@@ -3888,6 +4027,7 @@ fun AppInfoScreen(
         AppLanguage.SPANISH -> "Información de la app"
         AppLanguage.FRENCH -> "À propos de l'appli"
         AppLanguage.PORTUGUESE -> "Sobre o app"
+        AppLanguage.RUSSIAN -> "О приложении"
     }
 
     Scaffold(
@@ -4004,6 +4144,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "Versión"
                         AppLanguage.FRENCH -> "Version"
                         AppLanguage.PORTUGUESE -> "Versão"
+                        AppLanguage.RUSSIAN -> "Версия"
                     },
                     subtitle = versionName,
                     icon = Icons.Rounded.Sell,
@@ -4027,6 +4168,7 @@ fun AppInfoScreen(
                                     AppLanguage.SPANISH -> "Los ajustes de depuración ya están activados"
                                     AppLanguage.FRENCH -> "Les paramètres de débogage sont déjà activés"
                                     AppLanguage.PORTUGUESE -> "As configurações de depuração já estão ativadas"
+                                    AppLanguage.RUSSIAN -> "Настройки отладки уже включены"
                                 },
                                 Toast.LENGTH_SHORT
                             ).apply { show() }
@@ -4056,6 +4198,7 @@ fun AppInfoScreen(
                                         AppLanguage.SPANISH -> "¡Ajustes de depuración activados!"
                                         AppLanguage.FRENCH -> "Paramètres de débogage activés !"
                                         AppLanguage.PORTUGUESE -> "Configurações de depuração ativadas!"
+                                        AppLanguage.RUSSIAN -> "Настройки отладки включены!"
                                     },
                                     Toast.LENGTH_SHORT
                                 ).apply { show() }
@@ -4076,6 +4219,7 @@ fun AppInfoScreen(
                                         AppLanguage.SPANISH -> "Toca $remaining veces más seguidas"
                                         AppLanguage.FRENCH -> "Appuyez encore $remaining fois rapidement"
                                         AppLanguage.PORTUGUESE -> "Toque mais $remaining vezes rapidamente"
+                                        AppLanguage.RUSSIAN -> "Нажмите ещё $remaining раз(а) подряд"
                                     },
                                     Toast.LENGTH_SHORT
                                 ).apply { show() }
@@ -4095,6 +4239,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "Fuentes de datos y créditos"
                         AppLanguage.FRENCH -> "Sources de données et crédits"
                         AppLanguage.PORTUGUESE -> "Fontes de dados e créditos"
+                        AppLanguage.RUSSIAN -> "Источники данных и авторы"
                     },
                     subtitle = when (language) {
                         AppLanguage.JAPANESE -> "気象庁、Open-Meteo、NOAA、MeteoAlarm、国土地理院 ほか"
@@ -4105,6 +4250,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "JMA, Open-Meteo, NOAA, MeteoAlarm, GSI, etc."
                         AppLanguage.FRENCH -> "JMA, Open-Meteo, NOAA, MeteoAlarm, GSI, etc."
                         AppLanguage.PORTUGUESE -> "JMA, Open-Meteo, NOAA, MeteoAlarm, GSI, etc."
+                        AppLanguage.RUSSIAN -> "JMA, Open-Meteo, NOAA, MeteoAlarm, GSI и др."
                     },
                     icon = Icons.Rounded.Public,
                     iconBackgroundColor = colorScheme.tertiaryContainer,
@@ -4123,6 +4269,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "Política de privacidad"
                         AppLanguage.FRENCH -> "Politique de confidentialité"
                         AppLanguage.PORTUGUESE -> "Política de privacidade"
+                        AppLanguage.RUSSIAN -> "Политика конфиденциальности"
                     },
                     subtitle = when (language) {
                         AppLanguage.JAPANESE -> "位置情報・データ送信先・端末内保存の取り扱い"
@@ -4133,6 +4280,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "Cómo se gestionan la ubicación, las API y los datos locales"
                         AppLanguage.FRENCH -> "Gestion de la position, des requêtes API et des données locales"
                         AppLanguage.PORTUGUESE -> "Como localização, solicitações de API e dados locais são tratados"
+                        AppLanguage.RUSSIAN -> "Как обрабатываются геолокация, запросы API и локальные данные"
                     },
                     icon = Icons.Rounded.PrivacyTip,
                     iconBackgroundColor = colorScheme.secondaryContainer,
@@ -4151,6 +4299,7 @@ fun AppInfoScreen(
                         AppLanguage.SPANISH -> "Licencias de código abierto"
                         AppLanguage.FRENCH -> "Licences open source"
                         AppLanguage.PORTUGUESE -> "Licenças de código aberto"
+                        AppLanguage.RUSSIAN -> "Лицензии открытого ПО"
                     },
                     subtitle = "Apache License 2.0 & Third-Party Notices",
                     icon = Icons.Rounded.Policy,
@@ -4176,6 +4325,7 @@ fun AppInfoScreen(
                             AppLanguage.SPANISH -> "Apoyar al desarrollador (Buy Me a Coffee)"
                             AppLanguage.FRENCH -> "Soutenir le développeur (Buy Me a Coffee)"
                             AppLanguage.PORTUGUESE -> "Apoiar o desenvolvedor (Buy Me a Coffee)"
+                            AppLanguage.RUSSIAN -> "Поддержать разработчика (Buy Me a Coffee)"
                         },
                         subtitle = when (language) {
                             AppLanguage.JAPANESE -> "buymeacoffee.com/nemynew を開く"
@@ -4186,6 +4336,7 @@ fun AppInfoScreen(
                             AppLanguage.SPANISH -> "Abrir buymeacoffee.com/nemynew"
                             AppLanguage.FRENCH -> "Ouvrir buymeacoffee.com/nemynew"
                             AppLanguage.PORTUGUESE -> "Abrir buymeacoffee.com/nemynew"
+                            AppLanguage.RUSSIAN -> "Открыть buymeacoffee.com/nemynew"
                         },
                         icon = Icons.Rounded.LocalCafe,
                         iconBackgroundColor = colorScheme.secondaryContainer,
@@ -4219,6 +4370,7 @@ fun AppInfoScreen(
                                         AppLanguage.SPANISH -> "No se pudo abrir el navegador"
                                         AppLanguage.FRENCH -> "Impossible d'ouvrir le navigateur"
                                         AppLanguage.PORTUGUESE -> "Não foi possível abrir o navegador"
+                                        AppLanguage.RUSSIAN -> "Не удалось открыть браузер"
                                     },
                                     Toast.LENGTH_SHORT
                                 ).apply { show() }
@@ -4257,6 +4409,7 @@ fun AppInfoScreen(
                             AppLanguage.SPANISH -> "Nota: Esta es una aplicación no oficial de terceros y no está afiliada a la Agencia Meteorológica de Japón (JMA), NOAA ni a ninguna entidad gubernamental. En emergencias, consulte los avisos oficiales."
                             AppLanguage.FRENCH -> "Remarque : Ceci est une application tierce non officielle, sans affiliation avec l'Agence météorologique du Japon (JMA), la NOAA ou tout organisme public. En cas d'urgence, consultez les annonces officielles."
                             AppLanguage.PORTUGUESE -> "Nota: Este é um aplicativo não oficial de terceiros e não tem vínculo com a Agência Meteorológica do Japão (JMA), NOAA ou qualquer órgão governamental. Em emergências, consulte os comunicados oficiais."
+                            AppLanguage.RUSSIAN -> "Примечание: это неофициальное стороннее приложение, не связанное с JMA, NOAA или какими-либо государственными органами. В чрезвычайных ситуациях обращайтесь к официальным сообщениям."
                         },
                         style = MaterialTheme.typography.bodySmall,
                         color = colorScheme.onSurfaceVariant,
@@ -4280,6 +4433,7 @@ fun AppInfoScreen(
                             AppLanguage.SPANISH -> "Desactivar ajustes de depuración"
                             AppLanguage.FRENCH -> "Désactiver les paramètres de débogage"
                             AppLanguage.PORTUGUESE -> "Desativar configurações de depuração"
+                            AppLanguage.RUSSIAN -> "Отключить настройки отладки"
                         },
                         subtitle = when (language) {
                             AppLanguage.JAPANESE -> "タップするとデバッグ設定が非表示に戻ります"
@@ -4290,6 +4444,7 @@ fun AppInfoScreen(
                             AppLanguage.SPANISH -> "Oculta los ajustes de depuración hasta volver a activarlos"
                             AppLanguage.FRENCH -> "Masque les paramètres de débogage jusqu'à réactivation"
                             AppLanguage.PORTUGUESE -> "Oculta as configurações de depuração até serem ativadas novamente"
+                            AppLanguage.RUSSIAN -> "Скрывает настройки отладки до повторного включения"
                         },
                         icon = Icons.Rounded.BugReport,
                         iconBackgroundColor = colorScheme.errorContainer.copy(alpha = 0.5f),
@@ -4309,6 +4464,7 @@ fun AppInfoScreen(
                                     AppLanguage.SPANISH -> "Ajustes de depuración desactivados"
                                     AppLanguage.FRENCH -> "Paramètres de débogage désactivés"
                                     AppLanguage.PORTUGUESE -> "Configurações de depuração desativadas"
+                                    AppLanguage.RUSSIAN -> "Настройки отладки отключены"
                                 },
                                 Toast.LENGTH_SHORT
                             ).apply { show() }

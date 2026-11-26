@@ -161,6 +161,7 @@ fun RadarCardSection(
         AppLanguage.SPANISH -> "Radar de precipitaciones"
         AppLanguage.FRENCH -> "Radar de précipitations"
         AppLanguage.PORTUGUESE -> "Radar de precipitação"
+        AppLanguage.RUSSIAN -> "Радар осадков"
     }
 
     val timeFormatter = remember(language) {
@@ -185,6 +186,7 @@ fun RadarCardSection(
                     AppLanguage.SPANISH -> "Ahora"
                     AppLanguage.FRENCH -> "Maintenant"
                     AppLanguage.PORTUGUESE -> "Agora"
+                    AppLanguage.RUSSIAN -> "Сейчас"
                 }
                 diffMin < 0 -> {
                     val absMin = -diffMin
@@ -200,6 +202,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> if (mins == 0) "Hace ${hours}h" else "Hace ${hours}h ${mins}m"
                             AppLanguage.FRENCH -> if (mins == 0) "Il y a ${hours}h" else "Il y a ${hours}h ${mins}m"
                             AppLanguage.PORTUGUESE -> if (mins == 0) "Há ${hours}h" else "Há ${hours}h ${mins}m"
+                            AppLanguage.RUSSIAN -> if (mins == 0) "${hours} ч назад" else "${hours} ч ${mins} мин назад"
                         }
                     } else {
                         when (language) {
@@ -211,6 +214,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> "Hace ${absMin}m"
                             AppLanguage.FRENCH -> "Il y a ${absMin}m"
                             AppLanguage.PORTUGUESE -> "Há ${absMin}m"
+                            AppLanguage.RUSSIAN -> "${absMin} мин назад"
                         }
                     }
                 }
@@ -227,6 +231,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.FRENCH -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
                             AppLanguage.PORTUGUESE -> if (mins == 0) "+${hours}h" else "+${hours}h ${mins}m"
+                            AppLanguage.RUSSIAN -> if (mins == 0) "+${hours} ч" else "+${hours} ч ${mins} м"
                         }
                     } else {
                         when (language) {
@@ -238,6 +243,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> "+${diffMin}m prev."
                             AppLanguage.FRENCH -> "+${diffMin}m prév."
                             AppLanguage.PORTUGUESE -> "+${diffMin}m prev."
+                            AppLanguage.RUSSIAN -> "+${diffMin} мин прогн."
                         }
                     }
                 }
@@ -295,6 +301,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> "JMA Nowcast de alta resolución"
                             AppLanguage.FRENCH -> "JMA Nowcast haute résolution"
                             AppLanguage.PORTUGUESE -> "JMA Nowcast de alta resolução"
+                            AppLanguage.RUSSIAN -> "JMA Nowcast высокого разрешения"
                         }
                         RadarDataSource.US_NEXRAD_HRRR -> when (language) {
                             AppLanguage.JAPANESE -> "全米 NEXRAD / HRRR (実況・外挿予測・予報)"
@@ -305,6 +312,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> "EE. UU. NEXRAD / HRRR (Obs., Nowcast, Prev.)"
                             AppLanguage.FRENCH -> "É.-U. NEXRAD / HRRR (Obs., Nowcast, Prév.)"
                             AppLanguage.PORTUGUESE -> "EUA NEXRAD / HRRR (Obs., Nowcast, Prev.)"
+                            AppLanguage.RUSSIAN -> "США NEXRAD / HRRR (Набл., Nowcast, Прогноз)"
                         }
                         RadarDataSource.RAIN_VIEWER -> when (language) {
                             AppLanguage.JAPANESE -> "世界レーダー (RainViewer)"
@@ -315,6 +323,7 @@ fun RadarCardSection(
                             AppLanguage.SPANISH -> "Radar global (RainViewer)"
                             AppLanguage.FRENCH -> "Radar mondial (RainViewer)"
                             AppLanguage.PORTUGUESE -> "Radar global (RainViewer)"
+                            AppLanguage.RUSSIAN -> "Глобальный радар (RainViewer)"
                         }
                     }
                     Text(
@@ -416,6 +425,7 @@ fun RadarCardSection(
                                     AppLanguage.SPANISH -> "JMA Nowcast"
                                     AppLanguage.FRENCH -> "JMA Nowcast"
                                     AppLanguage.PORTUGUESE -> "JMA Nowcast"
+                                    AppLanguage.RUSSIAN -> "JMA Nowcast"
                                 }
                                 RadarDataSource.US_NEXRAD_HRRR -> when (language) {
                                     AppLanguage.JAPANESE -> "NEXRAD / HRRR (実況・外挿・予報)"
@@ -426,6 +436,7 @@ fun RadarCardSection(
                                     AppLanguage.SPANISH -> "NEXRAD / HRRR (Obs./Prev.)"
                                     AppLanguage.FRENCH -> "NEXRAD / HRRR (Obs./Prév.)"
                                     AppLanguage.PORTUGUESE -> "NEXRAD / HRRR (Obs./Prev.)"
+                                    AppLanguage.RUSSIAN -> "NEXRAD / HRRR (Набл./Прогн.)"
                                 }
                                 RadarDataSource.RAIN_VIEWER -> "RainViewer"
                             },
@@ -470,6 +481,7 @@ fun RadarCardSection(
                                         AppLanguage.SPANISH -> "Pausar"
                                         AppLanguage.FRENCH -> "Pause"
                                         AppLanguage.PORTUGUESE -> "Pausar"
+                                        AppLanguage.RUSSIAN -> "Пауза"
                                     }
                                 } else {
                                     when (language) {
@@ -481,6 +493,7 @@ fun RadarCardSection(
                                         AppLanguage.SPANISH -> "Reproducir"
                                         AppLanguage.FRENCH -> "Lire"
                                         AppLanguage.PORTUGUESE -> "Reproduzir"
+                                        AppLanguage.RUSSIAN -> "Воспроизвести"
                                     }
                                 },
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,

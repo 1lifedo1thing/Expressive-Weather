@@ -63,6 +63,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.components.MoonPhaseDisc
 import java.util.Calendar
 import java.util.TimeZone
@@ -165,6 +166,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Fase lunar"
         AppLanguage.FRENCH -> "Phase de la lune"
         AppLanguage.PORTUGUESE -> "Fase da lua"
+        AppLanguage.RUSSIAN -> "Фаза Луны"
     }
 
     val lunarTrackTitle = when (language) {
@@ -176,6 +178,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Salida y puesta lunar"
         AppLanguage.FRENCH -> "Lever et coucher de lune"
         AppLanguage.PORTUGUESE -> "Nascer e pôr da lua"
+        AppLanguage.RUSSIAN -> "Восход и заход Луны"
     }
 
     val southernBadgeLabel = when (language) {
@@ -187,6 +190,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Hemisferio sur"
         AppLanguage.FRENCH -> "Hémisphère sud"
         AppLanguage.PORTUGUESE -> "Hemisfério sul"
+        AppLanguage.RUSSIAN -> "Южное полушарие"
     }
 
     val moonriseLabel = when (language) {
@@ -198,6 +202,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Salida lunar"
         AppLanguage.FRENCH -> "Lever de lune"
         AppLanguage.PORTUGUESE -> "Nascer da lua"
+        AppLanguage.RUSSIAN -> "Восход Луны"
     }
 
     val moonsetLabel = when (language) {
@@ -209,6 +214,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Puesta lunar"
         AppLanguage.FRENCH -> "Coucher de lune"
         AppLanguage.PORTUGUESE -> "Pôr da lua"
+        AppLanguage.RUSSIAN -> "Заход Луны"
     }
 
     val horizonStatusText = if (moonSchedule.isAboveHorizon) {
@@ -222,6 +228,7 @@ fun MoonDetailScreen(
             AppLanguage.SPANISH -> "Sobre el horizonte · ${altRounded}°"
             AppLanguage.FRENCH -> "Au-dessus · ${altRounded}°"
             AppLanguage.PORTUGUESE -> "Acima do horizonte · ${altRounded}°"
+            AppLanguage.RUSSIAN -> "Над горизонтом · ${altRounded}°"
         }
     } else {
         when (language) {
@@ -233,6 +240,7 @@ fun MoonDetailScreen(
             AppLanguage.SPANISH -> "Bajo el horizonte"
             AppLanguage.FRENCH -> "Sous l'horizon"
             AppLanguage.PORTUGUESE -> "Abaixo do horizonte"
+            AppLanguage.RUSSIAN -> "Под горизонтом"
         }
     }
 
@@ -245,6 +253,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Calendario lunar (7 días)"
         AppLanguage.FRENCH -> "Calendrier lunaire (7 j)"
         AppLanguage.PORTUGUESE -> "Calendário lunar (7 dias)"
+        AppLanguage.RUSSIAN -> "Лунный календарь (7 дней)"
     }
 
     val noEventNote = when (language) {
@@ -256,6 +265,7 @@ fun MoonDetailScreen(
         AppLanguage.SPANISH -> "Dado que el día lunar dura ~24h 50m, algunos días no tienen salida o puesta lunar (--:--)."
         AppLanguage.FRENCH -> "Un jour lunaire durant ~24h 50m, certains jours n'ont pas de lever ou de coucher (--:--)."
         AppLanguage.PORTUGUESE -> "Como o dia lunar dura ~24h 50m, alguns dias não têm nascer ou pôr da lua (--:--)."
+        AppLanguage.RUSSIAN -> "Лунные сутки длятся ~24 ч 50 мин, поэтому в некоторые дни восхода или захода Луны нет (--:--)."
     }
 
     DetailScaffold(
@@ -280,7 +290,7 @@ fun MoonDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -354,6 +364,7 @@ fun MoonDetailScreen(
                         AppLanguage.SPANISH -> "Edad lunar: ~${moonInfo.ageDays} d (${moonInfo.illumination}% ilum.)"
                         AppLanguage.FRENCH -> "Âge lunaire : ~${moonInfo.ageDays} j (${moonInfo.illumination} %)"
                         AppLanguage.PORTUGUESE -> "Idade lunar: ~${moonInfo.ageDays} d (${moonInfo.illumination}%)"
+                        AppLanguage.RUSSIAN -> "Возраст Луны: ~${moonInfo.ageDays} дн. (освещ. ${moonInfo.illumination}%)"
                     }
 
                     val nextFullMoonLabel = when (language) {
@@ -365,6 +376,7 @@ fun MoonDetailScreen(
                         AppLanguage.SPANISH -> "Próxima luna llena: en ~${moonInfo.daysToFullMoon} d"
                         AppLanguage.FRENCH -> "Prochaine pleine lune : ~${moonInfo.daysToFullMoon} j"
                         AppLanguage.PORTUGUESE -> "Próxima lua cheia: em ~${moonInfo.daysToFullMoon} d"
+                        AppLanguage.RUSSIAN -> "Полнолуние: через ~${moonInfo.daysToFullMoon} дн."
                     }
 
                     val nextNewMoonLabel = when (language) {
@@ -376,6 +388,7 @@ fun MoonDetailScreen(
                         AppLanguage.SPANISH -> "Próxima luna nueva: en ~${moonInfo.daysToNewMoon} d"
                         AppLanguage.FRENCH -> "Prochaine nouvelle lune : ~${moonInfo.daysToNewMoon} j"
                         AppLanguage.PORTUGUESE -> "Próxima lua nova: em ~${moonInfo.daysToNewMoon} d"
+                        AppLanguage.RUSSIAN -> "Новолуние: через ~${moonInfo.daysToNewMoon} дн."
                     }
 
                     Column(modifier = Modifier.weight(1f)) {
@@ -415,7 +428,7 @@ fun MoonDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()
@@ -649,7 +662,7 @@ fun MoonDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             elevation = CardDefaults.cardElevation(0.dp),
             modifier = Modifier.fillMaxWidth()

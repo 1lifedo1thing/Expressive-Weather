@@ -321,6 +321,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Cuenta regresiva de lluvia en vivo"
                 AppLanguage.FRENCH -> "Compte à rebours pluie en direct"
                 AppLanguage.PORTUGUESE -> "Contagem regressiva de chuva ao vivo"
+                AppLanguage.RUSSIAN -> "Таймер осадков в реальном времени"
                 AppLanguage.JAPANESE -> "雨雲接近・降雨カウントダウン Live Updates"
             }
             val descriptionText = when (language) {
@@ -331,6 +332,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Notificaciones en tiempo real cuando se acerca la lluvia y cuándo dejará de llover"
                 AppLanguage.FRENCH -> "Notifications en temps réel à l'approche de la pluie et jusqu'à son arrêt"
                 AppLanguage.PORTUGUESE -> "Notificações em tempo real da aproximação da chuva e de quando ela vai parar"
+                AppLanguage.RUSSIAN -> "Уведомления с обратным отсчётом до начала и окончания дождя"
                 AppLanguage.JAPANESE -> "雨雲接近時の降り始め予測および雨が止むまでの残り時間のリアルタイム・カウントダウン通知"
             }
             val importance = NotificationManager.IMPORTANCE_HIGH
@@ -369,6 +371,7 @@ object PrecipitationLiveNotificationManager {
             AppLanguage.SPANISH -> "en breve"
             AppLanguage.FRENCH -> "bientôt"
             AppLanguage.PORTUGUESE -> "em breve"
+            AppLanguage.RUSSIAN -> "скоро"
             AppLanguage.JAPANESE -> "まもなく"
         }
         val targetTimestamp = nowcast.targetTimestampMillis
@@ -384,6 +387,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Lluvia ${minutesRemaining}m"
                     AppLanguage.FRENCH -> "Pluie ${minutesRemaining}m"
                     AppLanguage.PORTUGUESE -> "Chuva ${minutesRemaining}m"
+                    AppLanguage.RUSSIAN -> "Дождь ${minutesRemaining}м"
                     AppLanguage.JAPANESE -> "あと${minutesRemaining}分で雨"
                 }
                 RainStatus.RAINING -> when (language) {
@@ -394,6 +398,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Para ${minutesRemaining}m"
                     AppLanguage.FRENCH -> "Fin ${minutesRemaining}m"
                     AppLanguage.PORTUGUESE -> "Para ${minutesRemaining}m"
+                    AppLanguage.RUSSIAN -> "Конец ${minutesRemaining}м"
                     AppLanguage.JAPANESE -> "あと${minutesRemaining}分で止む"
                 }
                 else -> when (language) {
@@ -404,6 +409,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Lluvia ${minutesRemaining}m"
                     AppLanguage.FRENCH -> "Pluie ${minutesRemaining}m"
                     AppLanguage.PORTUGUESE -> "Chuva ${minutesRemaining}m"
+                    AppLanguage.RUSSIAN -> "Дождь ${minutesRemaining}м"
                     AppLanguage.JAPANESE -> "あと${minutesRemaining}分"
                 }
             }
@@ -416,6 +422,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Lluvia continua"
                 AppLanguage.FRENCH -> "Pluie continue"
                 AppLanguage.PORTUGUESE -> "Chuva contínua"
+                AppLanguage.RUSSIAN -> "Затяжной дождь"
                 AppLanguage.JAPANESE -> "降雨継続中"
             }
         }
@@ -429,6 +436,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Empezará a llover en breve • $cityName"
                 AppLanguage.FRENCH -> "La pluie arrive bientôt • $cityName"
                 AppLanguage.PORTUGUESE -> "Vai começar a chover em breve • $cityName"
+                AppLanguage.RUSSIAN -> "Скоро начнётся дождь • $cityName"
                 AppLanguage.JAPANESE -> "まもなく雨が降り始めます • $cityName"
             }
             RainStatus.RAINING -> if (minutesRemaining != null) {
@@ -440,6 +448,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Lluvia hasta aprox. las $targetTime • $cityName"
                     AppLanguage.FRENCH -> "Pluie jusqu'à environ $targetTime • $cityName"
                     AppLanguage.PORTUGUESE -> "Chuva até por volta das $targetTime • $cityName"
+                    AppLanguage.RUSSIAN -> "Дождь примерно до $targetTime • $cityName"
                     AppLanguage.JAPANESE -> "雨は${targetTime}頃まで続く見込み • $cityName"
                 }
             } else {
@@ -451,6 +460,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Continúa la lluvia • $cityName"
                     AppLanguage.FRENCH -> "La pluie continue • $cityName"
                     AppLanguage.PORTUGUESE -> "Chuva contínua persiste • $cityName"
+                    AppLanguage.RUSSIAN -> "Продолжается затяжной дождь • $cityName"
                     AppLanguage.JAPANESE -> "雨は当面降り続く見込み • $cityName"
                 }
             }
@@ -462,6 +472,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Pronóstico de precipitación • $cityName"
                 AppLanguage.FRENCH -> "Prévision de précipitations • $cityName"
                 AppLanguage.PORTUGUESE -> "Previsão de precipitação • $cityName"
+                AppLanguage.RUSSIAN -> "Прогноз осадков • $cityName"
                 AppLanguage.JAPANESE -> "降雨予測 • $cityName"
             }
         }
@@ -476,6 +487,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Se espera lluvia sobre las $targetTime (en aprox. ${minutesRemaining} min)"
                     AppLanguage.FRENCH -> "Pluie attendue vers $targetTime (dans env. ${minutesRemaining} min)"
                     AppLanguage.PORTUGUESE -> "Previsão de chuva por volta das $targetTime (em aprox. ${minutesRemaining} min)"
+                    AppLanguage.RUSSIAN -> "Дождь ожидается около $targetTime (примерно через ${minutesRemaining} мин)"
                     AppLanguage.JAPANESE -> "${targetTime}頃から雨の予想（あと約${minutesRemaining}分）"
                 }
             } else nowcast.localizedSubText(language)
@@ -488,6 +500,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Aprox. ${minutesRemaining} min para que deje de llover"
                     AppLanguage.FRENCH -> "Environ ${minutesRemaining} min avant la fin de la pluie"
                     AppLanguage.PORTUGUESE -> "Cerca de ${minutesRemaining} min para a chuva parar"
+                    AppLanguage.RUSSIAN -> "До конца дождя примерно ${minutesRemaining} мин"
                     AppLanguage.JAPANESE -> "雨が止むまであと約${minutesRemaining}分です"
                 }
             } else nowcast.localizedSubText(language)
@@ -546,6 +559,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "${minutesRemaining}m"
                 AppLanguage.FRENCH -> "${minutesRemaining}m"
                 AppLanguage.PORTUGUESE -> "${minutesRemaining}m"
+                AppLanguage.RUSSIAN -> "${minutesRemaining}м"
                 AppLanguage.JAPANESE -> "あと${minutesRemaining}分"
             }
         } else {
@@ -557,6 +571,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Lluvia"
                 AppLanguage.FRENCH -> "Pluie"
                 AppLanguage.PORTUGUESE -> "Chuva"
+                AppLanguage.RUSSIAN -> "Дождь"
                 AppLanguage.JAPANESE -> "降雨中"
             }
         }
@@ -596,6 +611,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Radar"
                     AppLanguage.FRENCH -> "Radar"
                     AppLanguage.PORTUGUESE -> "Radar"
+                    AppLanguage.RUSSIAN -> "Радар"
                 },
                 radarPendingIntent
             )
@@ -610,6 +626,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Abrir app"
                     AppLanguage.FRENCH -> "Ouvrir l'app"
                     AppLanguage.PORTUGUESE -> "Abrir app"
+                    AppLanguage.RUSSIAN -> "Открыть"
                 },
                 mainAppPendingIntent
             )
@@ -624,6 +641,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Descartar"
                     AppLanguage.FRENCH -> "Ignorer"
                     AppLanguage.PORTUGUESE -> "Dispensar"
+                    AppLanguage.RUSSIAN -> "Скрыть"
                 },
                 dismissPendingIntent
             )
@@ -684,6 +702,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Ubicación actual"
                 AppLanguage.FRENCH -> "Position actuelle"
                 AppLanguage.PORTUGUESE -> "Localização atual"
+                AppLanguage.RUSSIAN -> "Текущее местоположение"
                 AppLanguage.JAPANESE -> "現在地"
             }
             return buildRainLiveNotification(appContext, nowcast, currentActiveCityName.ifBlank { fallbackCity })
@@ -705,6 +724,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Monitoreando precipitaciones"
                     AppLanguage.FRENCH -> "Surveillance des précipitations"
                     AppLanguage.PORTUGUESE -> "Monitorando precipitações"
+                    AppLanguage.RUSSIAN -> "Отслеживание осадков"
                     AppLanguage.JAPANESE -> "雨雲接近・降雨予測を監視中"
                 }
             )
@@ -717,6 +737,7 @@ object PrecipitationLiveNotificationManager {
                     AppLanguage.SPANISH -> "Consultando el radar para tu ubicación actual"
                     AppLanguage.FRENCH -> "Consultation du radar pour votre position actuelle"
                     AppLanguage.PORTUGUESE -> "Verificando o radar para sua localização atual"
+                    AppLanguage.RUSSIAN -> "Проверка радара для вашего местоположения"
                     AppLanguage.JAPANESE -> "現在地の最新気象レーダーを受信待機しています"
                 }
             )
@@ -911,6 +932,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Ha empezado a llover"
                 AppLanguage.FRENCH -> "La pluie a commencé"
                 AppLanguage.PORTUGUESE -> "Começou a chover"
+                AppLanguage.RUSSIAN -> "Начался дождь"
                 AppLanguage.JAPANESE -> "雨が降り始めました"
             }
         } else {
@@ -922,6 +944,7 @@ object PrecipitationLiveNotificationManager {
                 AppLanguage.SPANISH -> "Ha dejado de llover"
                 AppLanguage.FRENCH -> "La pluie s'est arrêtée"
                 AppLanguage.PORTUGUESE -> "A chuva parou"
+                AppLanguage.RUSSIAN -> "Дождь закончился"
                 AppLanguage.JAPANESE -> "雨が止みました"
             }
         }

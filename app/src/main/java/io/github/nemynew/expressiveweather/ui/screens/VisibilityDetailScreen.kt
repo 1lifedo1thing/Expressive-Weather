@@ -55,6 +55,7 @@ import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
 import io.github.nemynew.expressiveweather.ui.components.DetailScaffold
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 
 /**
  * 視程（Visibility）詳細画面 - Material 3 Expressive 準拠、多言語対応、枠線フリー
@@ -130,7 +131,7 @@ fun VisibilityDetailScreen(
         Card(
             shape = RoundedCornerShape(28.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -154,6 +155,7 @@ fun VisibilityDetailScreen(
                             AppLanguage.SPANISH -> "Visibilidad horizontal"
                             AppLanguage.FRENCH -> "Visibilité horizontale"
                             AppLanguage.PORTUGUESE -> "Visibilidade horizontal"
+                            AppLanguage.RUSSIAN -> "Горизонтальная видимость"
                             AppLanguage.KOREAN -> "수평 가시거리"
                             AppLanguage.SIMPLIFIED_CHINESE -> "水平能见度"
                             AppLanguage.TRADITIONAL_CHINESE -> "水平能見度"
@@ -244,7 +246,7 @@ fun VisibilityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -255,6 +257,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Estándares internacionales de visibilidad (OACI)"
                         AppLanguage.FRENCH -> "Normes internationales de visibilité (OACI)"
                         AppLanguage.PORTUGUESE -> "Padrões internacionais de visibilidade (OACI)"
+                        AppLanguage.RUSSIAN -> "Международные нормы видимости (ИКАО)"
                         AppLanguage.KOREAN -> "국제 항공 기상(ICAO) 시정 등급"
                         AppLanguage.SIMPLIFIED_CHINESE -> "国际航空气象 (ICAO) 能见度分级"
                         AppLanguage.TRADITIONAL_CHINESE -> "國際航空氣象 (ICAO) 能見度分級"
@@ -270,6 +273,7 @@ fun VisibilityDetailScreen(
                 VisibilityGradeRow(
                     distance = when (language) {
                         AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> "≥ 10 km"
+                        AppLanguage.RUSSIAN -> "≥ 10 км"
                         AppLanguage.KOREAN -> "10 km 이상"
                         AppLanguage.SIMPLIFIED_CHINESE -> "10 公里以上"
                         AppLanguage.TRADITIONAL_CHINESE -> "10 公里以上"
@@ -280,6 +284,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Excelente (Despejado)"
                         AppLanguage.FRENCH -> "Excellente (Dégagée)"
                         AppLanguage.PORTUGUESE -> "Excelente (Límpida)"
+                        AppLanguage.RUSSIAN -> "Отличная (Ясно)"
                         AppLanguage.KOREAN -> "매우 좋음 (쾌청)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "极佳 (通透清晰)"
                         AppLanguage.TRADITIONAL_CHINESE -> "極佳 (通透清晰)"
@@ -290,6 +295,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Los puntos de referencia lejanos, el horizonte y el relieve se ven con total nitidez."
                         AppLanguage.FRENCH -> "Les repères lointains, l'horizon et le relief sont parfaitement nets."
                         AppLanguage.PORTUGUESE -> "Marcos distantes, horizontes e contornos do relevo ficam perfeitamente nítidos."
+                        AppLanguage.RUSSIAN -> "Далёкие ориентиры, горизонт и контуры рельефа видны предельно чётко."
                         AppLanguage.KOREAN -> "먼 산과 건물의 윤곽까지 또렷하게 보일 정도로 시야가 맑습니다."
                         AppLanguage.SIMPLIFIED_CHINESE -> "远景地平线与地标轮廓分明，视界极为开阔清晰。"
                         AppLanguage.TRADITIONAL_CHINESE -> "遠景地平線與地標輪廓分明，視野極為開闊清晰。"
@@ -300,6 +306,7 @@ fun VisibilityDetailScreen(
                 VisibilityGradeRow(
                     distance = when (language) {
                         AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> "4 – 10 km"
+                        AppLanguage.RUSSIAN -> "4 – 10 км"
                         AppLanguage.KOREAN -> "4 ~ 10 km"
                         AppLanguage.SIMPLIFIED_CHINESE -> "4 ～ 10 公里"
                         AppLanguage.TRADITIONAL_CHINESE -> "4 ～ 10 公里"
@@ -310,6 +317,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Buena (Normal)"
                         AppLanguage.FRENCH -> "Bonne (Normale)"
                         AppLanguage.PORTUGUESE -> "Boa (Normal)"
+                        AppLanguage.RUSSIAN -> "Хорошая (Норма)"
                         AppLanguage.KOREAN -> "좋음 (보통)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "良好 (正常)"
                         AppLanguage.TRADITIONAL_CHINESE -> "良好 (正常)"
@@ -320,6 +328,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Visibilidad estándar; los desplazamientos por carretera y actividades cotidianas no tienen impedimentos."
                         AppLanguage.FRENCH -> "Visibilité standard ; la conduite et les déplacements quotidiens se font sans aucune gêne."
                         AppLanguage.PORTUGUESE -> "Visibilidade padrão; o tráfego rodoviário e as atividades diárias ao ar livre ocorrem sem restrições."
+                        AppLanguage.RUSSIAN -> "Стандартная видимость: поездки и прогулки проходят без каких-либо помех."
                         AppLanguage.KOREAN -> "일상적인 이동과 운전에 지장이 없는 표준적인 시야입니다."
                         AppLanguage.SIMPLIFIED_CHINESE -> "标准常规视界，对日常出行、通勤与道路驾驶毫无妨碍。"
                         AppLanguage.TRADITIONAL_CHINESE -> "標準常規視野，對日常出行、通勤與道路駕駛毫無妨礙。"
@@ -330,6 +339,7 @@ fun VisibilityDetailScreen(
                 VisibilityGradeRow(
                     distance = when (language) {
                         AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> "1 – 4 km"
+                        AppLanguage.RUSSIAN -> "1 – 4 км"
                         AppLanguage.KOREAN -> "1 ~ 4 km"
                         AppLanguage.SIMPLIFIED_CHINESE -> "1 ～ 4 公里"
                         AppLanguage.TRADITIONAL_CHINESE -> "1 ～ 4 公里"
@@ -340,6 +350,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Moderada (Bruma / Lluvia)"
                         AppLanguage.FRENCH -> "Modérée (Brume / Pluie)"
                         AppLanguage.PORTUGUESE -> "Moderada (Névoa / Chuva)"
+                        AppLanguage.RUSSIAN -> "Умеренная (Дымка / Дождь)"
                         AppLanguage.KOREAN -> "다소 흐림 (박무·강수)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "轻度受限 (微雾/降雨)"
                         AppLanguage.TRADITIONAL_CHINESE -> "輕度受限 (微霧/降雨)"
@@ -350,6 +361,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "El paisaje lejano aparece parcialmente velado por neblina, partículas o lluvia."
                         AppLanguage.FRENCH -> "Les paysages lointains sont légèrement voilés par la brume, les particules ou la pluie."
                         AppLanguage.PORTUGUESE -> "Paisagens distantes parcialmente encobertas por névoa leve, partículas no ar ou chuva."
+                        AppLanguage.RUSSIAN -> "Дальний пейзаж слегка затянут дымкой, частицами в воздухе или осадками."
                         AppLanguage.KOREAN -> "비나 옅은 안개, 미세먼지 등으로 원경이 뿌옇게 보입니다."
                         AppLanguage.SIMPLIFIED_CHINESE -> "受轻雾、微尘或降雨影响，远距离视界稍显灰白朦胧。"
                         AppLanguage.TRADITIONAL_CHINESE -> "受輕霧、微粒或降雨影響，遠距離視野稍顯灰白朦朧。"
@@ -360,6 +372,7 @@ fun VisibilityDetailScreen(
                 VisibilityGradeRow(
                     distance = when (language) {
                         AppLanguage.ENGLISH, AppLanguage.SPANISH, AppLanguage.FRENCH, AppLanguage.PORTUGUESE -> "< 1 km"
+                        AppLanguage.RUSSIAN -> "< 1 км"
                         AppLanguage.KOREAN -> "1 km 미만"
                         AppLanguage.SIMPLIFIED_CHINESE -> "1 公里以下"
                         AppLanguage.TRADITIONAL_CHINESE -> "1 公里以下"
@@ -370,6 +383,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Reducida (Niebla / Lluvia fuerte)"
                         AppLanguage.FRENCH -> "Faible (Brouillard / Forte pluie)"
                         AppLanguage.PORTUGUESE -> "Baixa (Neblina / Chuva forte)"
+                        AppLanguage.RUSSIAN -> "Плохая (Туман / Ливень)"
                         AppLanguage.KOREAN -> "시야 불량 (안개·짙은 안개)"
                         AppLanguage.SIMPLIFIED_CHINESE -> "视界不良 (大雾预警)"
                         AppLanguage.TRADITIONAL_CHINESE -> "視界不良 (大霧預警)"
@@ -380,6 +394,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Visibilidad frontal muy limitada. Reduce la velocidad y enciende las luces de cruce."
                         AppLanguage.FRENCH -> "Visibilité fortement réduite. Ralentissez et allumez vos feux de croisement."
                         AppLanguage.PORTUGUESE -> "Visibilidade à frente muito reduzida. Diminua a velocidade e acenda os faróis baixos."
+                        AppLanguage.RUSSIAN -> "Видимость сильно ограничена. Снизьте скорость и включите ближний свет."
                         AppLanguage.KOREAN -> "전방 시야가 크게 제한됩니다. 운전 시 전조등을 켜고 충분히 감속하세요."
                         AppLanguage.SIMPLIFIED_CHINESE -> "前方可视距离受限。驾车外出务必减速慢行并开启近光灯或雾灯。"
                         AppLanguage.TRADITIONAL_CHINESE -> "前方可視距離受限。行車外出務必減速慢行並開啟近光燈或霧燈。"
@@ -394,7 +409,7 @@ fun VisibilityDetailScreen(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+                containerColor = getDetailCardColor()
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -413,6 +428,7 @@ fun VisibilityDetailScreen(
                             AppLanguage.SPANISH -> "Desplazamientos y actividades al aire libre"
                             AppLanguage.FRENCH -> "Déplacements et activités extérieures"
                             AppLanguage.PORTUGUESE -> "Viagens e atividades ao ar livre"
+                            AppLanguage.RUSSIAN -> "Поездки и прогулки"
                             AppLanguage.KOREAN -> "이동·야외 활동 영향"
                             AppLanguage.SIMPLIFIED_CHINESE -> "出行与户外活动建议"
                             AppLanguage.TRADITIONAL_CHINESE -> "出行與戶外活動建議"
@@ -433,6 +449,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Seguridad vial"
                         AppLanguage.FRENCH -> "Sécurité routière"
                         AppLanguage.PORTUGUESE -> "Segurança ao dirigir"
+                        AppLanguage.RUSSIAN -> "Безопасность вождения"
                         AppLanguage.KOREAN -> "차량 운전"
                         AppLanguage.SIMPLIFIED_CHINESE -> "车辆驾驶与交通"
                         AppLanguage.TRADITIONAL_CHINESE -> "車輛駕駛與交通"
@@ -455,6 +472,10 @@ fun VisibilityDetailScreen(
                             "A visibilidade nas vias está limpa; dirija com tranquilidade em condições normais."
                         else
                             "Visibilidade reduzida: mantenha distância segura e acenda os faróis."
+                        AppLanguage.RUSSIAN -> if (visibilityKm >= 5.0)
+                            "Дорожная видимость хорошая; можно спокойно ехать в обычном режиме."
+                        else
+                            "Пониженная видимость: держите увеличенную дистанцию и включите фары."
                         AppLanguage.KOREAN -> if (visibilityKm >= 5.0)
                             "시야가 양호하여 평소처럼 안전하게 주행할 수 있습니다."
                         else
@@ -480,6 +501,7 @@ fun VisibilityDetailScreen(
                         AppLanguage.SPANISH -> "Vistas panorámicas y horizonte"
                         AppLanguage.FRENCH -> "Panoramas et horizon"
                         AppLanguage.PORTUGUESE -> "Vistas panorâmicas e horizonte"
+                        AppLanguage.RUSSIAN -> "Панорамы и горизонт"
                         AppLanguage.KOREAN -> "전망·풍경 조망"
                         AppLanguage.SIMPLIFIED_CHINESE -> "景观与高台远眺"
                         AppLanguage.TRADITIONAL_CHINESE -> "景觀與高台遠眺"
@@ -502,6 +524,10 @@ fun VisibilityDetailScreen(
                             "Ótimas condições para mirantes panorâmicos, torres e vistas de montanhas."
                         else
                             "O horizonte distante pode ficar encoberto ou esbranquiçado pela umidade do ar."
+                        AppLanguage.RUSSIAN -> if (visibilityKm >= 10.0)
+                            "Прекрасные условия для смотровых площадок, башен и горных панорам."
+                        else
+                            "Дальний горизонт может быть слегка размыт из-за влажности воздуха."
                         AppLanguage.KOREAN -> if (visibilityKm >= 10.0)
                             "전망이 매우 쾌청해 전망대나 높은 곳에서 탁 트인 경치를 감상하기 좋습니다."
                         else
@@ -610,6 +636,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Totalmente despejado"
                 AppLanguage.FRENCH -> "Parfaitement dégagée"
                 AppLanguage.PORTUGUESE -> "Cristalina"
+                AppLanguage.RUSSIAN -> "Кристально чисто"
                 AppLanguage.KOREAN -> "시야 매우 좋음"
                 AppLanguage.SIMPLIFIED_CHINESE -> "视野极佳"
                 AppLanguage.TRADITIONAL_CHINESE -> "視野極佳"
@@ -621,6 +648,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Visibilidad completamente despejada hasta el horizonte más lejano."
                 AppLanguage.FRENCH -> "Visibilité totalement dégagée s'étendant jusqu'à l'horizon."
                 AppLanguage.PORTUGUESE -> "Visibilidade completamente desobstruída até o horizonte mais distante."
+                AppLanguage.RUSSIAN -> "Полностью чистая видимость вплоть до самого горизонта."
                 AppLanguage.KOREAN -> "먼 지평선까지 가리는 것 없이 맑고 쾌청한 시야가 펼쳐져 있습니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "极度通透澄澈的视界，视野毫无遮挡直至地平线。"
                 AppLanguage.TRADITIONAL_CHINESE -> "極度通透澄澈的視野，毫無遮擋直至地平線。"
@@ -633,6 +661,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Buena visibilidad"
                 AppLanguage.FRENCH -> "Bonne visibilité"
                 AppLanguage.PORTUGUESE -> "Boa visibilidade"
+                AppLanguage.RUSSIAN -> "Хорошая видимость"
                 AppLanguage.KOREAN -> "좋음"
                 AppLanguage.SIMPLIFIED_CHINESE -> "能见度良好"
                 AppLanguage.TRADITIONAL_CHINESE -> "能見度良好"
@@ -644,6 +673,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Visibilidad clara normal. Puede haber una ligera bruma a gran distancia sin causar obstáculos."
                 AppLanguage.FRENCH -> "Visibilité normale et claire. Une légère brume peut apparaître au loin sans gêner."
                 AppLanguage.PORTUGUESE -> "Visibilidade limpa padrão. Pode haver leve névoa ao longe, sem causar obstruções."
+                AppLanguage.RUSSIAN -> "Обычная ясная видимость. Вдали возможна лёгкая дымка без помех."
                 AppLanguage.KOREAN -> "양호한 시야입니다. 먼 곳에 약간의 연무가 있을 수 있으나 이동에 지장은 없습니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "常规良好视界。远处虽有轻微泛白，但不影响任何户外活动。"
                 AppLanguage.TRADITIONAL_CHINESE -> "常規良好視野。遠處雖有輕微泛白，但不影響任何戶外活動。"
@@ -656,6 +686,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Bruma moderada"
                 AppLanguage.FRENCH -> "Brume modérée"
                 AppLanguage.PORTUGUESE -> "Névoa moderada"
+                AppLanguage.RUSSIAN -> "Умеренная дымка"
                 AppLanguage.KOREAN -> "다소 흐림"
                 AppLanguage.SIMPLIFIED_CHINESE -> "轻度朦胧"
                 AppLanguage.TRADITIONAL_CHINESE -> "輕度朦朧"
@@ -667,6 +698,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Visibilidad algo reducida debido a neblina, humedad o precipitaciones."
                 AppLanguage.FRENCH -> "Visibilité légèrement réduite en raison de la brume, de l'humidité ou des précipitations."
                 AppLanguage.PORTUGUESE -> "Visibilidade um pouco reduzida devido a névoa, umidade ou precipitação."
+                AppLanguage.RUSSIAN -> "Видимость слегка снижена из-за дымки, влажности или осадков."
                 AppLanguage.KOREAN -> "박무, 미세먼지 또는 강수의 영향으로 가시거리가 다소 떨어졌습니다."
                 AppLanguage.SIMPLIFIED_CHINESE -> "受轻雾、微粒或降雨影响，中远距离视程有所下降。"
                 AppLanguage.TRADITIONAL_CHINESE -> "受輕霧、懸浮微粒或降雨影響，中遠距離視程有所下降。"
@@ -679,6 +711,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "Mala visibilidad (Aviso de niebla)"
                 AppLanguage.FRENCH -> "Faible visibilité (Alerte brouillard)"
                 AppLanguage.PORTUGUESE -> "Baixa visibilidade (Alerta de neblina)"
+                AppLanguage.RUSSIAN -> "Плохая видимость (Туман)"
                 AppLanguage.KOREAN -> "시야 불량 (안개 주의)"
                 AppLanguage.SIMPLIFIED_CHINESE -> "视界不良 (大雾注意)"
                 AppLanguage.TRADITIONAL_CHINESE -> "視界不良 (大霧注意)"
@@ -690,6 +723,7 @@ private fun getVisibilityInfo(
                 AppLanguage.SPANISH -> "La niebla densa o la lluvia intensa limitan la visibilidad a menos de 1 km. Extrema la precaución."
                 AppLanguage.FRENCH -> "Un brouillard épais ou une forte pluie limite la visibilité à moins d'1 km. Redoublez de prudence."
                 AppLanguage.PORTUGUESE -> "Neblina densa ou chuva forte limita a visão à frente a menos de 1 km. Redobre a atenção."
+                AppLanguage.RUSSIAN -> "Плотный туман или сильный дождь ограничивают видимость менее 1 км. Будьте предельно осторожны."
                 AppLanguage.KOREAN -> "짙은 안개나 강한 비로 1km 앞도 보기 어려운 상태입니다. 통행에 각별히 주의하세요."
                 AppLanguage.SIMPLIFIED_CHINESE -> "浓雾或暴雨导致1公里外难以辨析，出行需极度谨慎。"
                 AppLanguage.TRADITIONAL_CHINESE -> "濃霧或暴雨導致1公里外難以辨認，出行需極度謹慎。"

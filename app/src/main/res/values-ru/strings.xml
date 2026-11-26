@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Погода</string>
+    <string name="widget_name_compact">Погода (Компактный)</string>
+    <string name="widget_desc_compact">Текущая погода, температура и максимум/минимум в компактной плитке.</string>
+    <string name="widget_name_medium">Погода и по часам (Средний)</string>
+    <string name="widget_desc_medium">Текущие условия и прогноз на ближайшие 5 часов с первого взгляда.</string>
+    <string name="widget_name_large">Панель погоды (Большой)</string>
+    <string name="widget_desc_large">Выразительная панель с текущей погодой, почасовым и 7-дневным прогнозом.</string>
+    <string name="widget_name_shape">Погода (Material Shape)</string>
+    <string name="widget_desc_shape">Минималистичная органическая форма Material 3 Expressive с текущей температурой и значком погоды.</string>
+    <string name="widget_name_radar">Радар осадков (Material You 4×2)</string>
+    <string name="widget_desc_radar">Живая карта радара осадков в стиле Material You с текущей температурой и почасовым трендом.</string>
+    <string name="widget_config_title">Настройки виджета</string>
+    <string name="widget_preview_city">Токио</string>
+    <string name="widget_preview_sunny">Ясно</string>
+    <string name="widget_preview_now">Сейчас</string>
+    <string name="widget_preview_radar_live">17:10 Онлайн</string>
+    <string name="widget_preview_d0">Сегодня</string>
+    <string name="widget_preview_d1">Завтра</string>
+    <string name="widget_preview_d2">Пн</string>
+    <string name="widget_preview_d3">Вт</string>
+    <string name="widget_preview_d4">Ср</string>
+    <string name="widget_preview_d5">Чт</string>
+    <string name="widget_preview_d6">Пт</string>
+</resources>

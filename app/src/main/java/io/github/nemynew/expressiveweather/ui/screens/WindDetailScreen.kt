@@ -85,7 +85,9 @@ import io.github.nemynew.expressiveweather.data.LocalAppLanguage
 import io.github.nemynew.expressiveweather.data.LocalAppStrings
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.WindSpeedUnit
+import io.github.nemynew.expressiveweather.data.windFlowRotationDegrees
 import io.github.nemynew.expressiveweather.data.getLocalizedDayLabel
+import io.github.nemynew.expressiveweather.data.getLocalizedTimeLabel
 import io.github.nemynew.expressiveweather.data.getLocalizedWindDirection
 import io.github.nemynew.expressiveweather.data.localizedName
 import io.github.nemynew.expressiveweather.theme.ExpressiveWeatherTheme
@@ -94,8 +96,10 @@ import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
+import io.github.nemynew.expressiveweather.ui.components.DetailAtmosphereBackdrop
 import io.github.nemynew.expressiveweather.ui.components.DetailDataSourceCard
 import io.github.nemynew.expressiveweather.ui.components.DetailMetricType
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -141,6 +145,7 @@ fun WindDetailScreen(
                         AppLanguage.SPANISH -> "Los datos meteorológicos no están disponibles"
                         AppLanguage.FRENCH -> "Les données météo ne sont pas disponibles"
                         AppLanguage.PORTUGUESE -> "Os dados do tempo não estão disponíveis"
+                        AppLanguage.RUSSIAN -> "Данные о погоде временно недоступны"
                     },
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -156,6 +161,7 @@ fun WindDetailScreen(
                             AppLanguage.SPANISH -> "Volver"
                             AppLanguage.FRENCH -> "Retour"
                             AppLanguage.PORTUGUESE -> "Voltar"
+                            AppLanguage.RUSSIAN -> "Назад"
                         }
                     )
                 }
@@ -183,70 +189,16 @@ fun WindDetailScreen(
         ) {
             val themeColorScheme = MaterialTheme.colorScheme
             val themeSurface = themeColorScheme.surface
-            val themeContainer = themeColorScheme.surfaceContainer
-            val themeContainerHigh = themeColorScheme.surfaceContainerHigh
-            val themeTint = themeColorScheme.surfaceTint
 
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to themeSurface,
-                            0.45f to themeContainer,
-                            1.0f to themeContainerHigh
-                        )
-                    )
-            ) {
-                // 1. Material You トーナルアンビエント背景
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1400f
-                            )
-                        )
+            Box(modifier = modifier.fillMaxSize()) {
+                // 1. ライブ天候フロスト背景（空色グラデーション + 動的パーティクル + すりガラス拡散）
+                DetailAtmosphereBackdrop(
+                    condition = condition,
+                    isDay = isDay,
+                    isDark = isDark
                 )
 
-                // 2. Material You セカンダリアンビエント光彩
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(1100f, 1800f),
-                                radius = 1400f
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.12f else 0.08f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1100f
-                            )
-                        )
-                )
-
-                // 4. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
+                // 2. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
                 val scrollState = rememberScrollState()
                 val density = LocalDensity.current
                 val fadeHeightDp = 52.dp
@@ -263,8 +215,8 @@ fun WindDetailScreen(
                             .fillMaxWidth()
                             .background(
                                 Brush.verticalGradient(
-                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.88f else 0.80f),
-                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.58f),
+                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.56f),
+                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.42f else 0.30f),
                                     1.0f to themeSurface.copy(alpha = 0f)
                                 )
                             )
@@ -279,7 +231,11 @@ fun WindDetailScreen(
                             // 戻るボタン
                             Surface(
                                 shape = CircleShape,
-                                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.90f),
+                                color = getDetailCardColor(
+                                    isDark = isDark,
+                                    colorScheme = themeColorScheme,
+                                    alpha = if (isDark) 0.78f else 0.80f
+                                ),
                                 modifier = Modifier
                                     .size(44.dp)
                                     .m3eBouncyClick(scaleDown = 0.88f, overshootScale = 1.12f) {
@@ -418,7 +374,7 @@ private fun HeroWindSection(
     val localizedDir = getLocalizedWindDirection(wind.windDegree, language)
 
     val animatedWindDegree by animateFloatAsState(
-        targetValue = wind.windDegree,
+        targetValue = windFlowRotationDegrees(wind.windDegree),
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessLow
@@ -428,7 +384,7 @@ private fun HeroWindSection(
 
     Surface(
         shape = RoundedCornerShape(32.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -603,7 +559,7 @@ private fun HourlyWindForecastSection(
 
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -633,7 +589,7 @@ private fun HourlyWindForecastSection(
                         color = gustRole.container
                     ) {
                         Text(
-                            text = "Max ${windSpeedUnit.format(peakSpeedKmH, language)} ($peakTime)",
+                            text = "Max ${windSpeedUnit.format(peakSpeedKmH, language)} (${getLocalizedTimeLabel(peakTime, language)})",
                             fontFamily = GoogleSansFlex,
                             fontWeight = FontWeight.Bold,
                             fontSize = 11.sp,
@@ -720,14 +676,14 @@ private fun HourlyWindForecastSection(
 
                         Spacer(modifier = Modifier.height(6.dp))
 
-                        // 風向アロー (0°=北=上向き基準で正確に回転)
+                        // 風向アロー (風の吹く向きへ回転: 北風0°→南向き180°)
                         Icon(
                             imageVector = Icons.Rounded.North,
                             contentDescription = null,
                             tint = colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .size(14.dp)
-                                .rotate(item.windDegree)
+                                .rotate(windFlowRotationDegrees(item.windDegree))
                         )
                     }
                 }
@@ -752,7 +708,7 @@ private fun DailyWindForecastSection(
 
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -817,7 +773,7 @@ private fun DailyWindForecastSection(
                                 tint = currentAccentPalette().sunset.accent,
                                 modifier = Modifier
                                     .size(16.dp)
-                                    .rotate(day.dominantWindDegree)
+                                    .rotate(windFlowRotationDegrees(day.dominantWindDegree))
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
@@ -907,7 +863,7 @@ private fun BeaufortAndLifeInsightsSection(
 
     Surface(
         shape = RoundedCornerShape(28.dp),
-        color = colorScheme.surfaceContainerHigh,
+        color = getDetailCardColor(colorScheme = colorScheme),
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
@@ -987,6 +943,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Secado lento"
                             AppLanguage.FRENCH -> "Séchage lent"
                             AppLanguage.PORTUGUESE -> "Secagem lenta"
+                            AppLanguage.RUSSIAN -> "Медленная сушка"
                         } to colorScheme.onSurfaceVariant
                         windMs < 8.0 -> when (language) {
                             AppLanguage.JAPANESE -> "外干しに最適"
@@ -997,6 +954,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Ideal para secar"
                             AppLanguage.FRENCH -> "Idéal pour sécher"
                             AppLanguage.PORTUGUESE -> "Ótimo para secar"
+                            AppLanguage.RUSSIAN -> "Отлично для сушки"
                         } to colorScheme.primary
                         windMs < 10.8 -> when (language) {
                             AppLanguage.JAPANESE -> "飛ばされないよう留める"
@@ -1007,6 +965,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Sujetar bien"
                             AppLanguage.FRENCH -> "Bien fixer"
                             AppLanguage.PORTUGUESE -> "Prender bem"
+                            AppLanguage.RUSSIAN -> "Надёжно закрепите"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "部屋干し推奨"
@@ -1017,6 +976,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Secar en interior"
                             AppLanguage.FRENCH -> "Sécher à l'intérieur"
                             AppLanguage.PORTUGUESE -> "Secar em ambiente interno"
+                            AppLanguage.RUSSIAN -> "Сушите в помещении"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1038,6 +998,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Uso seguro"
                             AppLanguage.FRENCH -> "Sans problème"
                             AppLanguage.PORTUGUESE -> "Uso seguro"
+                            AppLanguage.RUSSIAN -> "Безопасно"
                         } to colorScheme.primary
                         windMs < 10.8 -> when (language) {
                             AppLanguage.JAPANESE -> "両手でしっかり保持"
@@ -1048,6 +1009,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Sujetar con firmeza"
                             AppLanguage.FRENCH -> "Tenir fermement"
                             AppLanguage.PORTUGUESE -> "Segurar firme"
+                            AppLanguage.RUSSIAN -> "Держите крепче"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "傘破損・転倒の恐れ"
@@ -1058,6 +1020,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Vientos dañinos"
                             AppLanguage.FRENCH -> "Vents violents"
                             AppLanguage.PORTUGUESE -> "Ventos fortes"
+                            AppLanguage.RUSSIAN -> "Опасный ветер"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1084,6 +1047,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Trayecto cómodo"
                             AppLanguage.FRENCH -> "Trajet agréable"
                             AppLanguage.PORTUGUESE -> "Pedalada tranquila"
+                            AppLanguage.RUSSIAN -> "Комфортная езда"
                         } to colorScheme.primary
                         windMs < 13.9 -> when (language) {
                             AppLanguage.JAPANESE -> "横風に煽られ注意"
@@ -1094,6 +1058,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Cuidado con viento lateral"
                             AppLanguage.FRENCH -> "Attention au vent latéral"
                             AppLanguage.PORTUGUESE -> "Atenção ao vento lateral"
+                            AppLanguage.RUSSIAN -> "Осторожно: боковой ветер"
                         } to colorScheme.tertiary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "転倒の恐れあり危険"
@@ -1104,6 +1069,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Peligroso"
                             AppLanguage.FRENCH -> "Dangereux"
                             AppLanguage.PORTUGUESE -> "Perigoso"
+                            AppLanguage.RUSSIAN -> "Опасно"
                         } to colorScheme.error
                     }
                     InsightTile(
@@ -1125,6 +1091,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Buena ventilación"
                             AppLanguage.FRENCH -> "Bonne aération"
                             AppLanguage.PORTUGUESE -> "Boa ventilação"
+                            AppLanguage.RUSSIAN -> "Хорошее проветривание"
                         } to colorScheme.primary
                         else -> when (language) {
                             AppLanguage.JAPANESE -> "強風のため戸締まり推奨"
@@ -1135,6 +1102,7 @@ private fun BeaufortAndLifeInsightsSection(
                             AppLanguage.SPANISH -> "Mantén las ventanas cerradas"
                             AppLanguage.FRENCH -> "Fermez les fenêtres"
                             AppLanguage.PORTUGUESE -> "Mantenha as janelas fechadas"
+                            AppLanguage.RUSSIAN -> "Держите окна закрытыми"
                         } to colorScheme.error
                     }
                     InsightTile(

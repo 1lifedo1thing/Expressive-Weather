@@ -4,6 +4,26 @@ All notable changes to **Expressive Weather** will be documented in this file.
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-11-26 (Pre-release)
+
+### Added
+- Added full **Russian (`AppLanguage.RUSSIAN`)** localization across the app UI, weather descriptions, warnings, radar, widgets, and city search (`values-ru/strings.xml`, Russian city dictionary, and `m/s` default wind unit).
+- Added **3-mode Accent Color system** (Classic Colorful default, Material You Colorful via OkLCH harmonizer, and Material You Tonal).
+- Added **Dryness Index** (volumetric absolute humidity with wind and relative humidity adjustments) and hourly dryness chart to the Humidity Detail screen.
+- Added **Moon Phase** bento tile with motion, on-device lunar ephemeris calculator, Moon Detail screen, and traditional Japanese moon names (三日月, 十六夜, 立待月, 居待月, 寝待月, 更待月, 二十六夜, etc.).
+- Added hourly and daily wind direction parsing from Open-Meteo (`wind_direction_10m` / `wind_direction_10m_dominant`) for Japan regions.
+
+### Changed
+- Unified detail screen hero visuals with their corresponding home-screen bento tiles (Pressure, Humidity, AQI, Wind, UV, Visibility, Feels Like).
+- Restored translucent live weather sky backdrops (`DetailAtmosphereBackdrop`) and theme-tinted frosted glass cards (`getDetailCardColor`) across all detail screens.
+- Hardened Play flavor background scheduling policy and updated `PRIVACY_POLICY.md` for Open-Meteo fallback geocoding.
+
+### Fixed
+- Fixed wind direction arrow orientation (`+180°` flow direction) across bento tiles, hourly/daily forecasts, and Wind Detail screen, and fixed Japan wind direction getting stuck on south (`180°`).
+- Fixed current UV index staying stuck at `4` by reading real Open-Meteo `uv_index` data with solar-elevation fallback.
+- Fixed Feels Like bento tile (`ComfortCard`) Material shape slightly overflowing its tile bounds.
+- Added ProGuard/R8 keep rules for persisted/Intent enum names (`TemperatureUnit`, `WindSpeedUnit`, `AlertSource`, `RainStatus`).
+
 ## [0.1.0] - 2026-11-23 (Pre-release)
 
 ### Added

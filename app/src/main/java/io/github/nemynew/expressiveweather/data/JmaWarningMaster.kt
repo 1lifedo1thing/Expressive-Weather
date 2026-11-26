@@ -602,6 +602,38 @@ object JmaWarningMaster {
     /**
      * 警報・注意報名の多言語翻訳取得
      */
+    private val warningTranslationsRu = mapOf(
+        "大雨特別警報" to "Экстренное предупреждение о сильном ливне",
+        "暴風特別警報" to "Экстренное предупреждение об ураганном ветре",
+        "暴風雪特別警報" to "Экстренное предупреждение о снежном урагане",
+        "大雪特別警報" to "Экстренное предупреждение о сильном снегопаде",
+        "波浪特別警報" to "Экстренное предупреждение о высоких волнах",
+        "高潮特別警報" to "Экстренное предупреждение о штормовом нагоне",
+        "大雨警報" to "Предупреждение о сильном дожде",
+        "洪水警報" to "Предупреждение о наводнении",
+        "暴風警報" to "Штормовое предупреждение о ветре",
+        "暴風雪警報" to "Предупреждение о метели",
+        "大雪警報" to "Предупреждение о сильном снегопаде",
+        "波浪警報" to "Предупреждение о высоких волнах",
+        "高潮警報" to "Предупреждение о штормовом нагоне",
+        "大雨注意報" to "Оповещение о сильном дожде",
+        "洪水注意報" to "Оповещение о паводке",
+        "強風注意報" to "Оповещение о сильном ветре",
+        "風雪注意報" to "Оповещение о ветре и снеге",
+        "大雪注意報" to "Оповещение о снегопаде",
+        "波浪注意報" to "Оповещение о волнении на море",
+        "高潮注意報" to "Оповещение о приливной волне",
+        "雷注意報" to "Оповещение о грозе",
+        "融雪注意報" to "Оповещение о таянии снега",
+        "濃霧注意報" to "Оповещение о густом тумане",
+        "乾燥注意報" to "Оповещение о сухом воздухе",
+        "なだれ注意報" to "Оповещение о лавиноопасности",
+        "低温注意報" to "Оповещение о низкой температуре",
+        "霜注意報" to "Оповещение о заморозках",
+        "着氷注意報" to "Оповещение об обледенении",
+        "着雪注意報" to "Оповещение о налипании снега"
+    )
+
     fun getLocalizedWarningName(name: String, language: AppLanguage): String {
         return when (language) {
             AppLanguage.ENGLISH -> warningTranslationsEn[name] ?: name
@@ -611,6 +643,7 @@ object JmaWarningMaster {
             AppLanguage.SPANISH -> warningTranslationsEs[name] ?: name
             AppLanguage.FRENCH -> warningTranslationsFr[name] ?: name
             AppLanguage.PORTUGUESE -> warningTranslationsPt[name] ?: name
+            AppLanguage.RUSSIAN -> warningTranslationsRu[name] ?: name
             AppLanguage.JAPANESE -> name
         }
     }
@@ -725,6 +758,21 @@ object JmaWarningMaster {
                 name.contains("なだれ") -> "Instabilidade na camada de neve com alto risco de avalanches em encostas íngremes."
                 else -> "A Agência Meteorológica do Japão emitiu: ${getLocalizedWarningName(name, AppLanguage.PORTUGUESE)}. Fique atento a mudanças bruscas no tempo."
             }
+            AppLanguage.RUSSIAN -> when {
+                name.contains("特別") -> "Чрезвычайно опасные условия, возникающие раз в десятилетия. Вероятны или уже происходят масштабные бедствия: оползни и сильные наводнения."
+                name.contains("大雨") -> "Сильные дожди могут вызвать оползни, разливы рек и подтопление низин."
+                name.contains("洪水") -> "Ожидается быстрый подъём уровня воды в реках с угрозой наводнения."
+                name.contains("暴風雪") -> "Сильная метель с почти нулевой видимостью и снежными заносами может парализовать движение."
+                name.contains("暴風") -> "Ураганный ветер способен повредить здания, повалить деревья и вызвать отключения электричества."
+                name.contains("大雪") -> "Сильный снегопад создаёт риск схода лавин, блокировки дорог и сбоев в транспорте."
+                name.contains("高潮") -> "Опасный подъём уровня моря с угрозой затопления прибрежных районов."
+                name.contains("波浪") -> "Крайне высокие волны и шторм на море представляют опасность для побережья и судов."
+                name.contains("雷") -> "Возможны внезапные ливни, удары молний, град и шквалистые порывы ветра."
+                name.contains("濃霧") -> "Густой туман резко снижает видимость и затрудняет движение транспорта."
+                name.contains("乾燥") -> "Очень сухой воздух повышает риск возникновения и быстрого распространения пожаров."
+                name.contains("なだれ") -> "Неустойчивый снежный покров создаёт высокий риск схода лавин на крутых склонах."
+                else -> "Японское метеорологическое агентство выпустило: ${getLocalizedWarningName(name, AppLanguage.RUSSIAN)}. Будьте внимательны к резким изменениям погоды."
+            }
             AppLanguage.JAPANESE -> fallback
         }
     }
@@ -789,6 +837,14 @@ object JmaWarningMaster {
                 name.contains("波浪") || name.contains("高潮") -> "Mantenha-se totalmente afastado do litoral, quebra-mares e portos. Evacue imediatamente se morar em áreas costeiras baixas."
                 name.contains("雷") -> "Procure abrigo imediatamente em um prédio sólido ou veículo ao ouvir trovões. Evite árvores e áreas abertas."
                 else -> "Acompanhe os alertas oficiais locais e o radar meteorológico. Garanta sua segurança e prepare itens de emergência."
+            }
+            AppLanguage.RUSSIAN -> when {
+                name.contains("特別") -> "Немедленно примите меры для спасения жизни. Если выходить на улицу опасно, поднимитесь на 2-й этаж или выше прочного здания, подальше от склонов."
+                name.contains("大雨") || name.contains("洪水") -> "Проверьте распоряжения об эвакуации и карты рисков. Заранее переместитесь на возвышенность или в укрытие, пока дороги не затоплены."
+                name.contains("暴風") || name.contains("暴風雪") -> "Избегайте любых необязательных поездок. Оставайтесь в помещении подальше от окон до стихания ветра или метели."
+                name.contains("波浪") || name.contains("高潮") -> "Держитесь подальше от побережья, волнорезов и портов. При проживании в прибрежных низинах эвакуируйтесь немедленно."
+                name.contains("雷") -> "Услышав гром, немедленно укройтесь в прочном здании или автомобиле. Избегайте деревьев и открытых пространств."
+                else -> "Следите за официальными оповещениями и радаром. Обеспечьте безопасность и подготовьте предметы первой необходимости."
             }
             AppLanguage.JAPANESE -> fallback
         }
@@ -876,6 +932,17 @@ object JmaWarningMaster {
                 name.contains("雷") -> listOf("Descargas elétricas (raios)", "Rajadas súbitas e vendavais locais", "Granizo com danos a bens e lavouras")
                 else -> listOf("Piora rápida do tempo", "Alertas de evacuação das autoridades locais")
             }
+            AppLanguage.RUSSIAN -> when {
+                name.contains("大雨") -> listOf("Оползни и обрушение склонов", "Подтопление дорог и подземных переходов", "Быстрое переполнение ливнёвок и ручьёв")
+                name.contains("洪水") -> listOf("Резкий подъём уровня рек", "Размыв и прорыв дамб", "Затопление прибрежных низин")
+                name.contains("暴風") -> listOf("Летящие обломки при ураганном ветре", "Падение деревьев и повреждение зданий", "Массовые отключения электроэнергии")
+                name.contains("暴風雪") -> listOf("Почти нулевая видимость из-за метели", "Застрявшие в снегу автомобили", "Изоляция горных и сельских районов")
+                name.contains("大雪") -> listOf("Тяжёлый снег и повреждение крыш", "Гололёд и скользкие дороги", "Сход лавин на крутых склонах")
+                name.contains("波浪") -> listOf("Волны, перехлёстывающие через волнорезы", "Повреждение судов и портов", "Сильный прибой на побережье")
+                name.contains("高潮") -> listOf("Экстремальный подъём уровня моря", "Перелив морской воды через защитные сооружения", "Затопление подземных объектов")
+                name.contains("雷") -> listOf("Удары молнии в землю", "Внезапные шквалы и порывы ветра", "Град, повреждающий имущество и посевы")
+                else -> listOf("Резкое ухудшение погоды", "Оповещения местных властей об эвакуации")
+            }
             AppLanguage.JAPANESE -> fallback
         }
     }
@@ -944,6 +1011,7 @@ object JmaWarningMaster {
             AppLanguage.SPANISH -> "$topName y $otherCount más"
             AppLanguage.FRENCH -> "$topName et $otherCount autre${if (otherCount > 1) "s" else ""}"
             AppLanguage.PORTUGUESE -> "$topName e mais $otherCount"
+            AppLanguage.RUSSIAN -> "$topName и ещё $otherCount"
         }
     }
 }

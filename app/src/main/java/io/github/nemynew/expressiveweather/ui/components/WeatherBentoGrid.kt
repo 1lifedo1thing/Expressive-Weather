@@ -88,6 +88,7 @@ import io.github.nemynew.expressiveweather.data.MoonPhaseStage
 import io.github.nemynew.expressiveweather.data.TemperatureUnit
 import io.github.nemynew.expressiveweather.data.WeatherData
 import io.github.nemynew.expressiveweather.data.WindSpeedUnit
+import io.github.nemynew.expressiveweather.data.windFlowRotationDegrees
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import io.github.nemynew.expressiveweather.data.getLocalizedWindDirection
 import io.github.nemynew.expressiveweather.theme.WeatherAtmosphereTheme
@@ -462,7 +463,7 @@ private fun WindCard(
     val innerArrowSize = tileSize * 0.58f
 
     val animatedWindDegree by androidx.compose.animation.core.animateFloatAsState(
-        targetValue = weather.windDegree,
+        targetValue = windFlowRotationDegrees(weather.windDegree),
         animationSpec = androidx.compose.animation.core.spring(
             dampingRatio = androidx.compose.animation.core.Spring.DampingRatioMediumBouncy,
             stiffness = androidx.compose.animation.core.Spring.StiffnessLow
@@ -539,7 +540,7 @@ private fun WindCard(
                 ) {
                     Row(verticalAlignment = Alignment.Bottom) {
                         val speedText = when (windSpeedUnit) {
-                            WindSpeedUnit.MS, WindSpeedUnit.FOLLOW_LANGUAGE -> if (language == AppLanguage.JAPANESE || (language == AppLanguage.KOREAN && displayUnit == "m/s")) String.format(Locale.US, "%.1f", convertedSpeed) else String.format(Locale.US, "%.0f", convertedSpeed)
+                            WindSpeedUnit.MS, WindSpeedUnit.FOLLOW_LANGUAGE -> if (displayUnit == "m/s") String.format(Locale.US, "%.1f", convertedSpeed) else String.format(Locale.US, "%.0f", convertedSpeed)
                             else -> String.format(Locale.US, "%.0f", convertedSpeed)
                         }
                         Text(
@@ -578,6 +579,7 @@ private fun WindCard(
                 AppLanguage.SPANISH -> "Rachas"
                 AppLanguage.FRENCH -> "Rafales"
                 AppLanguage.PORTUGUESE -> "Rajadas"
+                AppLanguage.RUSSIAN -> "Порывы"
             }
             val gustFormatted = windSpeedUnit.formatFromMs(gustsMs, language)
             Text(
@@ -754,7 +756,8 @@ private fun UvCard(
             }
 
             // フッター: 日最高UV
-            val maxUv = weather.dailyForecast.firstOrNull()?.uvMax?.toInt() ?: weather.uvIndex
+            val dailyMaxUv = weather.dailyForecast.firstOrNull()?.uvMax?.let { kotlin.math.round(it).toInt() } ?: weather.uvIndex
+            val maxUv = maxOf(dailyMaxUv, weather.uvIndex)
             Text(
                 text = strings.uvDailyMax(maxUv),
                 style = MaterialTheme.typography.labelSmall,
@@ -1968,6 +1971,7 @@ private fun PrecipitationCard(
                             AppLanguage.SPANISH -> "Ahora $mmStr mm/h"
                             AppLanguage.FRENCH -> "Actuel $mmStr mm/h"
                             AppLanguage.PORTUGUESE -> "Agora $mmStr mm/h"
+                            AppLanguage.RUSSIAN -> "Сейчас $mmStr мм/ч"
                         }
                     } else {
                         strings.todayTotalPrecip
@@ -2037,17 +2041,17 @@ private fun ComfortCard(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // 中央背景: やわらかな温熱クローバーシェイプ (タイル最大化サーモトーンレイヤー)
+            // 中央背景: やわらかな温熱クローバーシェイプ (円形タイル内に収まるサーモトーンレイヤー)
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxSize()
             ) {
-                // 外層 (タイル内に収まる最大サイズのクローバーシェイプ)
+                // 外層 (パルス最大時 1.04x でも円形外枠をはみ出さないサイズ)
                 Surface(
                     shape = cloverShape,
                     color = cloverColor.copy(alpha = if (isColorful) 0.22f else 0.15f),
                     modifier = Modifier
-                        .fillMaxSize(0.93f)
+                        .fillMaxSize(0.82f)
                         .graphicsLayer {
                             scaleX = pulseScaleState.value
                             scaleY = pulseScaleState.value
@@ -2057,7 +2061,7 @@ private fun ComfortCard(
                 Surface(
                     shape = cloverShape,
                     color = cloverColor.copy(alpha = if (isColorful) 0.48f else 0.32f),
-                    modifier = Modifier.fillMaxSize(0.76f)
+                    modifier = Modifier.fillMaxSize(0.67f)
                 ) {}
             }
 
@@ -2323,6 +2327,7 @@ private fun MoonPhaseCard(
         AppLanguage.SPANISH -> "${moonInfo.ageDays} d"
         AppLanguage.FRENCH -> "${moonInfo.ageDays} j"
         AppLanguage.PORTUGUESE -> "${moonInfo.ageDays} d"
+        AppLanguage.RUSSIAN -> "${moonInfo.ageDays} дн."
     }
     val badgeText = when (moonInfo.stage) {
         MoonPhaseStage.FULL_MOON, MoonPhaseStage.NEW_MOON -> "${moonInfo.phaseName} · $ageShortText"

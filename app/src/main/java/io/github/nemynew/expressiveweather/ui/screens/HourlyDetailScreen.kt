@@ -103,7 +103,9 @@ import io.github.nemynew.expressiveweather.theme.ThemeMode
 import io.github.nemynew.expressiveweather.theme.ThemePreset
 import io.github.nemynew.expressiveweather.theme.currentAccentPalette
 import androidx.compose.foundation.isSystemInDarkTheme
+import io.github.nemynew.expressiveweather.ui.components.DetailAtmosphereBackdrop
 import io.github.nemynew.expressiveweather.ui.components.WeatherIconHelper
+import io.github.nemynew.expressiveweather.ui.components.getDetailCardColor
 import io.github.nemynew.expressiveweather.ui.components.m3eBouncyClick
 import java.util.Locale
 
@@ -118,11 +120,12 @@ enum class HourlyChartMetric(
     val labelZhHant: String,
     val labelEs: String,
     val labelFr: String,
-    val labelPt: String
+    val labelPt: String,
+    val labelRu: String
 ) {
-    TEMPERATURE("気温", "기온", "Temperature", "气温", "氣溫", "Temperatura", "Température", "Temperatura"),
-    PRECIPITATION("降水", "강수", "Precipitation", "降水", "降水", "Precipitación", "Précipitations", "Precipitação"),
-    WIND("風速", "풍속", "Wind Speed", "风速", "風速", "Viento", "Vent", "Vento");
+    TEMPERATURE("気温", "기온", "Temperature", "气温", "氣溫", "Temperatura", "Température", "Temperatura", "Температура"),
+    PRECIPITATION("降水", "강수", "Precipitation", "降水", "降水", "Precipitación", "Précipitations", "Precipitação", "Осадки"),
+    WIND("風速", "풍속", "Wind Speed", "风速", "風速", "Viento", "Vent", "Vento", "Ветер");
 
     fun getLabel(language: AppLanguage): String = when (language) {
         AppLanguage.JAPANESE -> labelJa
@@ -133,6 +136,7 @@ enum class HourlyChartMetric(
         AppLanguage.SPANISH -> labelEs
         AppLanguage.FRENCH -> labelFr
         AppLanguage.PORTUGUESE -> labelPt
+        AppLanguage.RUSSIAN -> labelRu
     }
 }
 
@@ -176,6 +180,7 @@ fun HourlyDetailScreen(
                         AppLanguage.SPANISH -> "Cargando datos del tiempo..."
                         AppLanguage.FRENCH -> "Chargement des données météo..."
                         AppLanguage.PORTUGUESE -> "Carregando dados do tempo..."
+                        AppLanguage.RUSSIAN -> "Загрузка данных о погоде..."
                     },
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -190,6 +195,7 @@ fun HourlyDetailScreen(
                             AppLanguage.SPANISH -> "Atrás"
                             AppLanguage.FRENCH -> "Retour"
                             AppLanguage.PORTUGUESE -> "Voltar"
+                            AppLanguage.RUSSIAN -> "Назад"
                         }
                     )
                 }
@@ -234,9 +240,6 @@ fun HourlyDetailScreen(
         ) {
             val themeColorScheme = MaterialTheme.colorScheme
             val themeSurface = themeColorScheme.surface
-            val themeContainer = themeColorScheme.surfaceContainer
-            val themeContainerHigh = themeColorScheme.surfaceContainerHigh
-            val themeTint = themeColorScheme.surfaceTint
             val expressHaptics = LocalExpressiveHaptics.current
             val selectHourWithHaptic: (Int) -> Unit = { newIndex ->
                 if (newIndex != selectedIndex && hourlyList.isNotEmpty()) {
@@ -256,79 +259,15 @@ fun HourlyDetailScreen(
                 selectedMetric = newMetric
             }
 
-            Box(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to themeSurface,
-                            0.45f to themeContainer,
-                            1.0f to themeContainerHigh
-                        )
-                    )
-            ) {
-                // 1. Material You トーナルアンビエント背景
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.primaryContainer.copy(alpha = if (isDark) 0.28f else 0.42f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1400f
-                            )
-                        )
+            Box(modifier = modifier.fillMaxSize()) {
+                // 1. ライブ天候フロスト背景（空色グラデーション + 動的パーティクル + すりガラス拡散）
+                DetailAtmosphereBackdrop(
+                    condition = condition,
+                    isDay = isDay,
+                    isDark = isDark
                 )
 
-                // 2. Material You セカンダリアンビエント光彩
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeColorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.16f else 0.24f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(1100f, 1800f),
-                                radius = 1400f
-                            )
-                        )
-                )
-
-                // 2. テーマカラーに沿ったフロストすりガラス拡散レイヤー
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                0.0f to themeSurface.copy(alpha = if (isDark) 0.65f else 0.55f),
-                                0.5f to themeContainer.copy(alpha = if (isDark) 0.70f else 0.60f),
-                                1.0f to themeContainerHigh.copy(alpha = if (isDark) 0.80f else 0.72f)
-                            )
-                        )
-                )
-
-                // 3. テーマカラーのフロストハイライト光彩層（すりガラスの質感とテーマカラーの美しい反射）
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.radialGradient(
-                                colors = listOf(
-                                    themeTint.copy(alpha = if (isDark) 0.14f else 0.10f),
-                                    Color.Transparent
-                                ),
-                                center = Offset(0f, 0f),
-                                radius = 1400f
-                            )
-                        )
-                )
-
-                // 4. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
+                // 2. メインコンテンツ（固定トップバー + スクロール可能な詳細データ）
                 val scrollState = rememberScrollState()
                 val density = LocalDensity.current
                 val fadeHeightDp = 52.dp
@@ -345,8 +284,8 @@ fun HourlyDetailScreen(
                             .fillMaxWidth()
                             .background(
                                 Brush.verticalGradient(
-                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.88f else 0.80f),
-                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.58f),
+                                    0.0f to themeSurface.copy(alpha = if (isDark) 0.68f else 0.56f),
+                                    0.65f to themeSurface.copy(alpha = if (isDark) 0.42f else 0.30f),
                                     1.0f to themeSurface.copy(alpha = 0f)
                                 )
                             )
@@ -468,7 +407,7 @@ private fun HourlyTopBar(
         // 戻るボタン
         Surface(
             shape = CircleShape,
-            color = colorScheme.surfaceContainerHigh.copy(alpha = 0.90f),
+            color = getDetailCardColor(colorScheme = colorScheme, alpha = 0.78f),
             modifier = Modifier
                 .size(44.dp)
                 .m3eBouncyClick(scaleDown = 0.88f, overshootScale = 1.12f) {
@@ -486,6 +425,7 @@ private fun HourlyTopBar(
                         AppLanguage.SPANISH -> "Atrás"
                         AppLanguage.FRENCH -> "Retour"
                         AppLanguage.PORTUGUESE -> "Voltar"
+                        AppLanguage.RUSSIAN -> "Назад"
                     },
                     tint = colorScheme.onSurface,
                     modifier = Modifier.size(24.dp)
@@ -507,6 +447,7 @@ private fun HourlyTopBar(
                     AppLanguage.SPANISH -> "Pronóstico de 24 horas"
                     AppLanguage.FRENCH -> "Prévisions sur 24 h"
                     AppLanguage.PORTUGUESE -> "Previsão de 24 horas"
+                    AppLanguage.RUSSIAN -> "Прогноз на 24 часа"
                 },
                 fontFamily = GoogleSansFlex,
                 fontWeight = FontWeight.Bold,
@@ -535,7 +476,7 @@ private fun SelectedHourHeroCard(
     language: AppLanguage
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val cardColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.90f)
+    val cardColor = getDetailCardColor(colorScheme = colorScheme)
 
     Card(
         shape = RoundedCornerShape(32.dp),
@@ -608,6 +549,7 @@ private fun SelectedHourHeroCard(
                                     AppLanguage.SPANISH -> "Día"
                                     AppLanguage.FRENCH -> "Jour"
                                     AppLanguage.PORTUGUESE -> "Dia"
+                                    AppLanguage.RUSSIAN -> "День"
                                 }
                             } else {
                                 when (language) {
@@ -619,6 +561,7 @@ private fun SelectedHourHeroCard(
                                     AppLanguage.SPANISH -> "Noche"
                                     AppLanguage.FRENCH -> "Nuit"
                                     AppLanguage.PORTUGUESE -> "Noite"
+                                    AppLanguage.RUSSIAN -> "Ночь"
                                 }
                             },
                             fontFamily = GoogleSansFlex,
@@ -673,6 +616,7 @@ private fun SelectedHourHeroCard(
                         AppLanguage.SPANISH -> "Humedad"
                         AppLanguage.FRENCH -> "Humidité"
                         AppLanguage.PORTUGUESE -> "Umidade"
+                        AppLanguage.RUSSIAN -> "Влажность"
                     },
                     value = "${item.humidity}%",
                     modifier = Modifier.weight(1f)
@@ -688,6 +632,7 @@ private fun SelectedHourHeroCard(
                         AppLanguage.SPANISH -> "Viento"
                         AppLanguage.FRENCH -> "Vent"
                         AppLanguage.PORTUGUESE -> "Vento"
+                        AppLanguage.RUSSIAN -> "Ветер"
                     },
                     value = windSpeedUnit.formatCompact(item.windSpeedKmH, language),
                     modifier = Modifier.weight(1f)
@@ -703,6 +648,7 @@ private fun SelectedHourHeroCard(
                         AppLanguage.SPANISH -> "Lluvia"
                         AppLanguage.FRENCH -> "Pluie"
                         AppLanguage.PORTUGUESE -> "Chuva"
+                        AppLanguage.RUSSIAN -> "Осадки"
                     },
                     value = "${item.precipProb}%",
                     modifier = Modifier.weight(1f)
@@ -775,7 +721,7 @@ private fun HourlyInteractiveTimelineCard(
     if (hourlyList.isEmpty()) return
 
     val colorScheme = MaterialTheme.colorScheme
-    val cardColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+    val cardColor = getDetailCardColor(colorScheme = colorScheme)
 
     Card(
         shape = RoundedCornerShape(32.dp),
@@ -806,6 +752,7 @@ private fun HourlyInteractiveTimelineCard(
                         AppLanguage.SPANISH -> "Línea temporal"
                         AppLanguage.FRENCH -> "Chronologie"
                         AppLanguage.PORTUGUESE -> "Linha do tempo"
+                        AppLanguage.RUSSIAN -> "Шкала времени"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 17.sp,
@@ -1114,6 +1061,7 @@ private fun HourlyInteractiveTimelineCard(
                                                 AppLanguage.SPANISH -> "Calma"
                                                 AppLanguage.FRENCH -> "Calme"
                                                 AppLanguage.PORTUGUESE -> "Calmo"
+                                                AppLanguage.RUSSIAN -> "Штиль"
                                             }
                                             windSpeed < 20.0 -> when (language) {
                                                 AppLanguage.JAPANESE -> "微風"
@@ -1124,6 +1072,7 @@ private fun HourlyInteractiveTimelineCard(
                                                 AppLanguage.SPANISH -> "Suave"
                                                 AppLanguage.FRENCH -> "Léger"
                                                 AppLanguage.PORTUGUESE -> "Fraco"
+                                                AppLanguage.RUSSIAN -> "Слабый"
                                             }
                                             windSpeed < 32.0 -> when (language) {
                                                 AppLanguage.JAPANESE -> "和風"
@@ -1134,6 +1083,7 @@ private fun HourlyInteractiveTimelineCard(
                                                 AppLanguage.SPANISH -> "Brisa"
                                                 AppLanguage.FRENCH -> "Brise"
                                                 AppLanguage.PORTUGUESE -> "Brisa"
+                                                AppLanguage.RUSSIAN -> "Бриз"
                                             }
                                             else -> when (language) {
                                                 AppLanguage.JAPANESE -> "強風"
@@ -1144,6 +1094,7 @@ private fun HourlyInteractiveTimelineCard(
                                                 AppLanguage.SPANISH -> "Fuerte"
                                                 AppLanguage.FRENCH -> "Fort"
                                                 AppLanguage.PORTUGUESE -> "Forte"
+                                                AppLanguage.RUSSIAN -> "Сильный"
                                             }
                                         }
                                         Text(
@@ -1200,6 +1151,7 @@ private fun HourlyInsightsSection(
                 AppLanguage.SPANISH -> "Resumen de 24 horas"
                 AppLanguage.FRENCH -> "Points clés sur 24 h"
                 AppLanguage.PORTUGUESE -> "Destaques de 24 horas"
+                AppLanguage.RUSSIAN -> "Сводка за 24 часа"
             },
             fontFamily = GoogleSansFlex,
             fontSize = 17.sp,
@@ -1221,6 +1173,7 @@ private fun HourlyInsightsSection(
                     AppLanguage.SPANISH -> "Máx. / Mín."
                     AppLanguage.FRENCH -> "Max / Min"
                     AppLanguage.PORTUGUESE -> "Máx. / Mín."
+                    AppLanguage.RUSSIAN -> "Макс. / Мин."
                 },
                 mainText = if (maxTempItem != null && minTempItem != null) {
                     "${temperatureUnit.convert(maxTempItem.tempC)}° / ${temperatureUnit.convert(minTempItem.tempC)}°"
@@ -1235,6 +1188,7 @@ private fun HourlyInsightsSection(
                         AppLanguage.SPANISH -> "Máxima a las ${maxTempItem.timeLabel}"
                         AppLanguage.FRENCH -> "Pic à ${maxTempItem.timeLabel}"
                         AppLanguage.PORTUGUESE -> "Máxima às ${maxTempItem.timeLabel}"
+                        AppLanguage.RUSSIAN -> "Пик в ${maxTempItem.timeLabel}"
                     }
                 } else "",
                 modifier = Modifier.weight(1f)
@@ -1251,6 +1205,7 @@ private fun HourlyInsightsSection(
                     AppLanguage.SPANISH -> "Pico de lluvia"
                     AppLanguage.FRENCH -> "Pic de pluie"
                     AppLanguage.PORTUGUESE -> "Pico de chuva"
+                    AppLanguage.RUSSIAN -> "Пик осадков"
                 },
                 mainText = if (maxPrecipItem != null) "${maxPrecipItem.precipProb}%" else "0%",
                 subText = if (maxPrecipItem != null && maxPrecipItem.precipProb > 0) {
@@ -1263,6 +1218,7 @@ private fun HourlyInsightsSection(
                         AppLanguage.SPANISH -> "Hacia las ${maxPrecipItem.timeLabel}"
                         AppLanguage.FRENCH -> "Vers ${maxPrecipItem.timeLabel}"
                         AppLanguage.PORTUGUESE -> "Por volta das ${maxPrecipItem.timeLabel}"
+                        AppLanguage.RUSSIAN -> "Около ${maxPrecipItem.timeLabel}"
                     }
                 } else {
                     when (language) {
@@ -1274,6 +1230,7 @@ private fun HourlyInsightsSection(
                         AppLanguage.SPANISH -> "Sin lluvia prevista"
                         AppLanguage.FRENCH -> "Aucune pluie prévue"
                         AppLanguage.PORTUGUESE -> "Sem previsão de chuva"
+                        AppLanguage.RUSSIAN -> "Осадки не ожидаются"
                     }
                 },
                 modifier = Modifier.weight(1f)
@@ -1295,6 +1252,7 @@ private fun HourlyInsightsSection(
                     AppLanguage.SPANISH -> "Viento máx."
                     AppLanguage.FRENCH -> "Vent max"
                     AppLanguage.PORTUGUESE -> "Vento máx."
+                    AppLanguage.RUSSIAN -> "Макс. ветер"
                 },
                 mainText = if (maxWindItem != null) {
                     windSpeedUnit.format(maxWindItem.windSpeedKmH, language)
@@ -1309,6 +1267,7 @@ private fun HourlyInsightsSection(
                         AppLanguage.SPANISH -> "Máximo a las ${maxWindItem.timeLabel}"
                         AppLanguage.FRENCH -> "Pic à ${maxWindItem.timeLabel}"
                         AppLanguage.PORTUGUESE -> "Pico às ${maxWindItem.timeLabel}"
+                        AppLanguage.RUSSIAN -> "Пик в ${maxWindItem.timeLabel}"
                     }
                 } else "",
                 modifier = Modifier.weight(1f)
@@ -1325,6 +1284,7 @@ private fun HourlyInsightsSection(
                     AppLanguage.SPANISH -> "Amanecer y atardecer"
                     AppLanguage.FRENCH -> "Lever / Coucher"
                     AppLanguage.PORTUGUESE -> "Nascer e pôr do sol"
+                    AppLanguage.RUSSIAN -> "Восход и закат"
                 },
                 mainText = "$sunrise / $sunset",
                 subText = when (language) {
@@ -1336,6 +1296,7 @@ private fun HourlyInsightsSection(
                     AppLanguage.SPANISH -> "$daylightHours de luz"
                     AppLanguage.FRENCH -> "$daylightHours de jour"
                     AppLanguage.PORTUGUESE -> "$daylightHours de luz"
+                    AppLanguage.RUSSIAN -> "Световой день: $daylightHours"
                 },
                 modifier = Modifier.weight(1f)
             )
@@ -1351,7 +1312,7 @@ private fun InsightCard(
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
-    val cardColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.85f)
+    val cardColor = getDetailCardColor(colorScheme = colorScheme)
 
     Card(
         shape = RoundedCornerShape(22.dp),
@@ -1406,7 +1367,7 @@ private fun HourlyBreakdownListCard(
     if (hourlyList.isEmpty()) return
 
     val colorScheme = MaterialTheme.colorScheme
-    val cardColor = colorScheme.surfaceContainerHigh.copy(alpha = 0.88f)
+    val cardColor = getDetailCardColor(colorScheme = colorScheme)
 
     Card(
         shape = RoundedCornerShape(32.dp),
@@ -1435,6 +1396,7 @@ private fun HourlyBreakdownListCard(
                         AppLanguage.SPANISH -> "Detalle por hora"
                         AppLanguage.FRENCH -> "Détail heure par heure"
                         AppLanguage.PORTUGUESE -> "Detalhes por hora"
+                        AppLanguage.RUSSIAN -> "Почасовая сводка"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 17.sp,
@@ -1451,6 +1413,7 @@ private fun HourlyBreakdownListCard(
                         AppLanguage.SPANISH -> "24 horas"
                         AppLanguage.FRENCH -> "24 heures"
                         AppLanguage.PORTUGUESE -> "24 horas"
+                        AppLanguage.RUSSIAN -> "24 часа"
                     },
                     fontFamily = GoogleSansFlex,
                     fontSize = 12.sp,

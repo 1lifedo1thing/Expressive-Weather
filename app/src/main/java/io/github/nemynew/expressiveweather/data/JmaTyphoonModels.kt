@@ -21,6 +21,7 @@ enum class JmaTyphoonIntensity(
     val esName: String,
     val frName: String,
     val ptName: String,
+    val ruName: String,
     val badgeColor: Color,
     val badgeContentColor: Color
 ) {
@@ -34,6 +35,7 @@ enum class JmaTyphoonIntensity(
         esName = "Violento",
         frName = "Violent",
         ptName = "Violento",
+        ruName = "Сверхсильный",
         badgeColor = Color(0xFF9C27B0), // Purple 500
         badgeContentColor = Color.White
     ),
@@ -47,6 +49,7 @@ enum class JmaTyphoonIntensity(
         esName = "Muy fuerte",
         frName = "Très fort",
         ptName = "Muito forte",
+        ruName = "Очень сильный",
         badgeColor = Color(0xFFD32F2F), // Red 700
         badgeContentColor = Color.White
     ),
@@ -60,6 +63,7 @@ enum class JmaTyphoonIntensity(
         esName = "Fuerte",
         frName = "Fort",
         ptName = "Forte",
+        ruName = "Сильный",
         badgeColor = Color(0xFFFF9800), // Orange 500
         badgeContentColor = Color(0xFF2E1500)
     ),
@@ -73,6 +77,7 @@ enum class JmaTyphoonIntensity(
         esName = "",
         frName = "",
         ptName = "",
+        ruName = "",
         badgeColor = Color(0xFF0288D1), // Light Blue 700
         badgeContentColor = Color.White
     );
@@ -86,6 +91,7 @@ enum class JmaTyphoonIntensity(
         AppLanguage.SPANISH -> esName
         AppLanguage.FRENCH -> frName
         AppLanguage.PORTUGUESE -> ptName
+        AppLanguage.RUSSIAN -> ruName
     }
 
     companion object {
@@ -117,7 +123,8 @@ enum class JmaTyphoonScale(
     val zhTwName: String,
     val esName: String,
     val frName: String,
-    val ptName: String
+    val ptName: String,
+    val ruName: String
 ) {
     VERY_LARGE(
         id = "very_large",
@@ -128,7 +135,8 @@ enum class JmaTyphoonScale(
         zhTwName = "超大型",
         esName = "Muy grande",
         frName = "Très vaste",
-        ptName = "Muito grande"
+        ptName = "Muito grande",
+        ruName = "Очень крупный"
     ),
     LARGE(
         id = "large",
@@ -139,7 +147,8 @@ enum class JmaTyphoonScale(
         zhTwName = "大型",
         esName = "Grande",
         frName = "Vaste",
-        ptName = "Grande"
+        ptName = "Grande",
+        ruName = "Крупный"
     ),
     NONE(
         id = "none",
@@ -150,7 +159,8 @@ enum class JmaTyphoonScale(
         zhTwName = "",
         esName = "",
         frName = "",
-        ptName = ""
+        ptName = "",
+        ruName = ""
     );
 
     fun displayName(language: AppLanguage): String = when (language) {
@@ -162,6 +172,7 @@ enum class JmaTyphoonScale(
         AppLanguage.SPANISH -> esName
         AppLanguage.FRENCH -> frName
         AppLanguage.PORTUGUESE -> ptName
+        AppLanguage.RUSSIAN -> ruName
     }
 
     companion object {
@@ -353,6 +364,32 @@ data class JmaTyphoonPoint(
                     else -> base
                 }
             }
+            AppLanguage.RUSSIAN -> {
+                val isFeminine = categoryName.contains("熱帯低気圧")
+                val base = when {
+                    categoryName.contains("温帯") -> "Внетропический циклон"
+                    isFeminine -> "Тропическая депрессия"
+                    else -> "Тайфун"
+                }
+                val baseLower = base.replaceFirstChar { it.lowercase() }
+                val scaleAdj = when (scale) {
+                    JmaTyphoonScale.VERY_LARGE -> if (isFeminine) "очень крупная" else "очень крупный"
+                    JmaTyphoonScale.LARGE -> if (isFeminine) "крупная" else "крупный"
+                    JmaTyphoonScale.NONE -> ""
+                }
+                val intensityAdj = when (intensity) {
+                    JmaTyphoonIntensity.VIOLENT -> if (isFeminine) "сверхсильная" else "сверхсильный"
+                    JmaTyphoonIntensity.VERY_STRONG -> if (isFeminine) "очень сильная" else "очень сильный"
+                    JmaTyphoonIntensity.STRONG -> if (isFeminine) "сильная" else "сильный"
+                    JmaTyphoonIntensity.NONE -> ""
+                }
+                when {
+                    hasScale && hasIntensity -> "${scaleAdj.replaceFirstChar { it.uppercase() }} и $intensityAdj $baseLower"
+                    hasScale -> "${scaleAdj.replaceFirstChar { it.uppercase() }} $baseLower"
+                    hasIntensity -> "${intensityAdj.replaceFirstChar { it.uppercase() }} $baseLower"
+                    else -> base
+                }
+            }
         }
     }
 }
@@ -409,6 +446,7 @@ data class JmaTyphoonItem(
             AppLanguage.SPANISH -> if (num != null) "Tifón n.º $num ($nameEn)" else "Tifón $formattedNumber ($nameEn)"
             AppLanguage.FRENCH -> if (num != null) "Typhon n° $num ($nameEn)" else "Typhon $formattedNumber ($nameEn)"
             AppLanguage.PORTUGUESE -> if (num != null) "Tufão nº $num ($nameEn)" else "Tufão $formattedNumber ($nameEn)"
+            AppLanguage.RUSSIAN -> if (num != null) "Тайфун № $num ($nameEn)" else "Тайфун $formattedNumber ($nameEn)"
         }
     }
 
@@ -423,6 +461,7 @@ data class JmaTyphoonItem(
             AppLanguage.SPANISH -> if (num != null) "N.º $num $nameEn" else "$formattedNumber $nameEn"
             AppLanguage.FRENCH -> if (num != null) "N° $num $nameEn" else "$formattedNumber $nameEn"
             AppLanguage.PORTUGUESE -> if (num != null) "Nº $num $nameEn" else "$formattedNumber $nameEn"
+            AppLanguage.RUSSIAN -> if (num != null) "№ $num $nameEn" else "$formattedNumber $nameEn"
         }
     }
 }

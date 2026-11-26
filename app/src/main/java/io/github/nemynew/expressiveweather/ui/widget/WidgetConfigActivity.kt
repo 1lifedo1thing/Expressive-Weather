@@ -260,6 +260,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Ajustes del widget"
         AppLanguage.FRENCH -> "Paramètres du widget"
         AppLanguage.PORTUGUESE -> "Configurações do widget"
+        AppLanguage.RUSSIAN -> "Настройки виджета"
     }
     val locationSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "表示する地域"
@@ -270,6 +271,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Ubicación"
         AppLanguage.FRENCH -> "Lieu"
         AppLanguage.PORTUGUESE -> "Localização"
+        AppLanguage.RUSSIAN -> "Местоположение"
     }
     val currentLocLabel = when (language) {
         AppLanguage.JAPANESE -> "現在地 (GPS自動追従)"
@@ -280,6 +282,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Ubicación actual (GPS automático)"
         AppLanguage.FRENCH -> "Position actuelle (GPS auto)"
         AppLanguage.PORTUGUESE -> "Localização atual (GPS automático)"
+        AppLanguage.RUSSIAN -> "Текущее место (Авто GPS)"
     }
     val styleSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "外観スタイル"
@@ -290,6 +293,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Estilo de apariencia"
         AppLanguage.FRENCH -> "Style d'apparence"
         AppLanguage.PORTUGUESE -> "Estilo de aparência"
+        AppLanguage.RUSSIAN -> "Стиль оформления"
     }
     val optionsSectionTitle = when (language) {
         AppLanguage.JAPANESE -> "表示オプション"
@@ -300,6 +304,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Opciones de visualización"
         AppLanguage.FRENCH -> "Options d'affichage"
         AppLanguage.PORTUGUESE -> "Opções de exibição"
+        AppLanguage.RUSSIAN -> "Параметры отображения"
     }
     val alertToggleLabel = when (language) {
         AppLanguage.JAPANESE -> "雨雲接近・キキクル警報を表示"
@@ -310,6 +315,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Mostrar alertas y previsión de lluvia"
         AppLanguage.FRENCH -> "Afficher alertes et pluie imminente"
         AppLanguage.PORTUGUESE -> "Mostrar alertas e previsão de chuva"
+        AppLanguage.RUSSIAN -> "Показывать осадки и оповещения"
     }
     val refreshToggleLabel = when (language) {
         AppLanguage.JAPANESE -> "クイック更新ボタンを表示"
@@ -320,6 +326,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Mostrar botón de actualización rápida"
         AppLanguage.FRENCH -> "Afficher le bouton d'actualisation rapide"
         AppLanguage.PORTUGUESE -> "Mostrar botão de atualização rápida"
+        AppLanguage.RUSSIAN -> "Кнопка быстрого обновления"
     }
     val searchPlaceholder = when (language) {
         AppLanguage.JAPANESE -> "都市名を検索して固定…"
@@ -330,6 +337,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Buscar una ciudad para fijar…"
         AppLanguage.FRENCH -> "Rechercher une ville à épingler…"
         AppLanguage.PORTUGUESE -> "Pesquisar uma cidade para fixar…"
+        AppLanguage.RUSSIAN -> "Поиск города для закрепления…"
     }
     val applyText = when (language) {
         AppLanguage.JAPANESE -> "ウィジェットを適用"
@@ -340,6 +348,7 @@ private fun WidgetConfigScreen(
         AppLanguage.SPANISH -> "Aplicar widget"
         AppLanguage.FRENCH -> "Appliquer le widget"
         AppLanguage.PORTUGUESE -> "Aplicar widget"
+        AppLanguage.RUSSIAN -> "Применить виджет"
     }
 
     Scaffold(
@@ -363,6 +372,7 @@ private fun WidgetConfigScreen(
                             AppLanguage.SPANISH -> "Cerrar"
                             AppLanguage.FRENCH -> "Fermer"
                             AppLanguage.PORTUGUESE -> "Fechar"
+                            AppLanguage.RUSSIAN -> "Закрыть"
                         }
                         Icon(Icons.Rounded.Close, contentDescription = closeDesc)
                     }
@@ -469,6 +479,7 @@ private fun WidgetConfigScreen(
                         AppLanguage.SPANISH -> "Forma Material"
                         AppLanguage.FRENCH -> "Forme Material"
                         AppLanguage.PORTUGUESE -> "Forma Material"
+                        AppLanguage.RUSSIAN -> "Форма Material"
                     }
                     SectionHeader(icon = Icons.Rounded.AutoAwesome, title = shapeSectionTitle)
                     Spacer(Modifier.height(8.dp))
@@ -550,6 +561,7 @@ private fun WidgetConfigScreen(
                         AppLanguage.SPANISH -> "Opacidad translúcida"
                         AppLanguage.FRENCH -> "Opacité translucide"
                         AppLanguage.PORTUGUESE -> "Opacidade translúcida"
+                        AppLanguage.RUSSIAN -> "Непрозрачность"
                     }
                     val opacityHint = when (language) {
                         AppLanguage.JAPANESE -> "Material You カラーの濃さと透明度を調整します（左：透明寄り / 右：濃いめ）"
@@ -560,6 +572,7 @@ private fun WidgetConfigScreen(
                         AppLanguage.SPANISH -> "Ajusta la intensidad y transparencia del color Material You"
                         AppLanguage.FRENCH -> "Ajuste l'intensité et la transparence de la teinte Material You"
                         AppLanguage.PORTUGUESE -> "Ajuste a intensidade e a transparência da cor Material You"
+                        AppLanguage.RUSSIAN -> "Настройте насыщенность и прозрачность оттенка Material You"
                     }
                     Surface(
                         shape = RoundedCornerShape(20.dp),
@@ -643,6 +656,7 @@ private fun WidgetConfigScreen(
                                     AppLanguage.SPANISH -> "Borrar búsqueda"
                                     AppLanguage.FRENCH -> "Effacer la recherche"
                                     AppLanguage.PORTUGUESE -> "Limpar pesquisa"
+                                    AppLanguage.RUSSIAN -> "Очистить поиск"
                                 }
                                 Icon(Icons.Rounded.Close, contentDescription = clearDesc)
                             }

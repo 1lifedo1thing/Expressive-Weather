@@ -58,6 +58,23 @@ fun getFrostedCardColor(
 fun getFrostedCardBorder(isFrosted: Boolean, isDark: Boolean): BorderStroke? = null
 
 /**
+ * 詳細画面カード用の半透明フロストサーフェス色を取得。
+ * テーマカラーをほのかにブレンドしつつ、背後の天候グラデーションや大気パーティクルが
+ * 透けて見える透過度（白浮きを抑えた上質なすりガラス質感）を維持する。
+ */
+@Composable
+fun getDetailCardColor(
+    isDark: Boolean = io.github.nemynew.expressiveweather.theme.LocalDarkTheme.current,
+    colorScheme: ColorScheme = MaterialTheme.colorScheme,
+    alpha: Float = if (isDark) 0.72f else 0.74f
+): Color = getFrostedCardColor(
+    isFrosted = true,
+    isDark = isDark,
+    colorScheme = colorScheme,
+    frostedAlpha = alpha
+)
+
+/**
  * Hazeによる実時間背景光学ぼかし効果を適用する Modifier
  * ぼかし強度 54.dp に加え、テーマカラーのティント（色合い）を Haze に適用して
  * すりガラスぼかしそのものにもテーマカラーが鮮明に反映されるようにする。
